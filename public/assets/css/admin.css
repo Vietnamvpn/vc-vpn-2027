@@ -1,0 +1,105 @@
+@import url("app.css");
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+}
+
+@media (min-width: 992px) {
+  .admin-layout {
+    grid-template-columns: 260px 1fr;
+  }
+}
+
+/* Sidebar Glass */
+.admin-sidebar {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-right: 1px solid var(--glass-border);
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-sidebar .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--ios-text);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.admin-sidebar .nav-item:hover,
+.admin-sidebar .nav-item.active {
+  background: rgba(0, 122, 255, 0.12);
+  color: var(--ios-blue);
+}
+
+/* Main Content Area */
+.admin-main {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Dashboard Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stat-card .title {
+  font-size: 0.85rem;
+  color: var(--ios-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card .value {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+/* Glass Table */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+}
+
+.glass-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.glass-table th,
+.glass-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.glass-table th {
+  color: var(--ios-text-secondary);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.glass-table tr:last-child td {
+  border-bottom: none;
+}

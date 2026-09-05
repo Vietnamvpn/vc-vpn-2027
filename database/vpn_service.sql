@@ -1,0 +1,255 @@
+
+CREATE TABLE `vc_settings` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `setting_key` VARCHAR(100) NOT NULL UNIQUE,
+    `setting_value` TEXT NULL,
+    `description` VARCHAR(255) NULL,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_users` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `username` VARCHAR(50) NOT NULL UNIQUE,
+    `email` VARCHAR(100) NOT NULL UNIQUE,
+    `password_hash` VARCHAR(255) NOT NULL,
+    `full_name` VARCHAR(100) NULL,
+    `phone` VARCHAR(20) NULL,
+    `role` ENUM('admin', 'staff', 'user') NOT NULL DEFAULT 'user',
+    `status` ENUM('active', 'inactive', 'banned') NOT NULL DEFAULT 'active',
+    `balance` DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    `commission_balance` DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    `ref_code` VARCHAR(20) NULL UNIQUE,
+    `referred_by` BIGINT UNSIGNED NULL,
+    `register_ip` VARCHAR(45) NULL,
+    `last_login_ip` VARCHAR(45) NULL,
+    `last_login_time` TIMESTAMP NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`referred_by`) REFERENCES `vc_users`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_access_logs` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` BIGINT UNSIGNED NOT NULL,
+    `action` VARCHAR(50) NOT NULL,
+    `ip_address` VARCHAR(45) NOT NULL,
+    `user_agent` TEXT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `vc_users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_server_groups` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(100) NOT NULL,
+    `description` TEXT NULL,
+    `status` ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_servers` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `group_id` INT UNSIGNED NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `country_code` VARCHAR(10) NOT NULL,
+    `location` VARCHAR(100) NOT NULL,
+    `ip_address` VARCHAR(45) NOT NULL UNIQUE,
+    `api_port` INT NOT NULL DEFAULT 80,
+    `api_token` VARCHAR(255) NULL,
+    `last_check_in` TIMESTAMP NULL,
+    `status` ENUM('active', 'maintenance', 'offline') NOT NULL DEFAULT 'active',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`group_id`) REFERENCES `vc_server_groups`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_node_inbounds` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `server_id` INT UNSIGNED NOT NULL,
+    `port` INT NOT NULL,
+    `protocol` ENUM('vmess', 'vless', 'trojan', 'shadowsocks', 'wireguard', 'hy2', 'tuic') NOT NULL,
+    `network` ENUM('tcp', 'ws', 'grpc', 'udp', 'quic') NOT NULL DEFAULT 'tcp',
+    `tls` TINYINT(1) NOT NULL DEFAULT 1,
+    `sni` VARCHAR(255) NULL,
+    `host` VARCHAR(255) NULL,
+    `path` VARCHAR(100) NULL,
+    `status` ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    FOREIGN KEY (`server_id`) REFERENCES `vc_servers`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_node_tasks` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `server_id` INT UNSIGNED NOT NULL,
+    `action` ENUM('add_user', 'update_user', 'delete_user', 'sync_all') NOT NULL,
+    `payload` JSON NOT NULL,
+    `status` ENUM('pending', 'completed', 'failed') NOT NULL DEFAULT 'pending',
+    `attempts` INT NOT NULL DEFAULT 0,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`server_id`) REFERENCES `vc_servers`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_vpn_plans` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `group_id` INT UNSIGNED NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `code` VARCHAR(50) NOT NULL UNIQUE,
+    `price` DECIMAL(15, 2) NOT NULL,
+    `duration_days` INT NOT NULL,
+    `bandwidth_limit_gb` INT NOT NULL DEFAULT 0,
+    `max_devices` INT NOT NULL DEFAULT 1,
+    `status` ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`group_id`) REFERENCES `vc_server_groups`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_coupons` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `code` VARCHAR(50) NOT NULL UNIQUE,
+    `discount_type` ENUM('percent', 'fixed') NOT NULL,
+    `discount_value` DECIMAL(15, 2) NOT NULL,
+    `max_uses` INT NOT NULL DEFAULT 0,
+    `used_count` INT NOT NULL DEFAULT 0,
+    `expires_at` TIMESTAMP NULL,
+    `status` ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_orders` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `order_code` VARCHAR(50) NOT NULL UNIQUE,
+    `user_id` BIGINT UNSIGNED NOT NULL,
+    `plan_id` INT UNSIGNED NOT NULL,
+    `coupon_id` INT UNSIGNED NULL,
+    `total_amount` DECIMAL(15, 2) NOT NULL,
+    `purchase_ip` VARCHAR(45) NULL,
+    `payment_status` ENUM('pending', 'completed', 'failed', 'cancelled') NOT NULL DEFAULT 'pending',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `vc_users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`plan_id`) REFERENCES `vc_vpn_plans`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`coupon_id`) REFERENCES `vc_coupons`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_payments` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` BIGINT UNSIGNED NOT NULL,
+    `order_id` BIGINT UNSIGNED NULL,
+    `type` ENUM('deposit', 'payment') NOT NULL,
+    `payment_method` VARCHAR(50) NOT NULL,
+    `transaction_id` VARCHAR(100) NULL UNIQUE,
+    `amount` DECIMAL(15, 2) NOT NULL,
+    `status` ENUM('pending', 'success', 'failed') NOT NULL DEFAULT 'pending',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `vc_users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`order_id`) REFERENCES `vc_orders`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_subscriptions` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` BIGINT UNSIGNED NOT NULL,
+    `plan_id` INT UNSIGNED NOT NULL,
+    `order_id` BIGINT UNSIGNED NULL,
+    `uuid` VARCHAR(36) NOT NULL UNIQUE,
+    `sub_token` VARCHAR(64) NOT NULL UNIQUE,
+    `transfer_enable` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    `upload` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    `download` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    `last_used_ip` VARCHAR(45) NULL,
+    `start_date` TIMESTAMP NOT NULL,
+    `end_date` TIMESTAMP NOT NULL,
+    `status` ENUM('active', 'expired', 'suspended', 'cancelled') NOT NULL DEFAULT 'active',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `vc_users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`plan_id`) REFERENCES `vc_vpn_plans`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`order_id`) REFERENCES `vc_orders`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_referral_commissions` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `referrer_id` BIGINT UNSIGNED NOT NULL,
+    `referred_user_id` BIGINT UNSIGNED NOT NULL,
+    `order_id` BIGINT UNSIGNED NOT NULL,
+    `commission_rate` DECIMAL(5, 2) NOT NULL,
+    `commission_amount` DECIMAL(15, 2) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`referrer_id`) REFERENCES `vc_users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`referred_user_id`) REFERENCES `vc_users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`order_id`) REFERENCES `vc_orders`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_withdrawals` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` BIGINT UNSIGNED NOT NULL,
+    `amount` DECIMAL(15, 2) NOT NULL,
+    `bank_name` VARCHAR(100) NOT NULL,
+    `bank_account_number` VARCHAR(50) NOT NULL,
+    `bank_account_name` VARCHAR(100) NOT NULL,
+    `status` ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `vc_users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_posts` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `author_id` BIGINT UNSIGNED NOT NULL,
+    `title` VARCHAR(255) NOT NULL,
+    `slug` VARCHAR(255) NOT NULL UNIQUE,
+    `content` LONGTEXT NOT NULL,
+    `type` ENUM('news', 'tutorial', 'faq') NOT NULL DEFAULT 'news',
+    `status` ENUM('published', 'draft', 'hidden') NOT NULL DEFAULT 'published',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`author_id`) REFERENCES `vc_users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_support_tickets` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` BIGINT UNSIGNED NOT NULL,
+    `assigned_staff_id` BIGINT UNSIGNED NULL,
+    `subject` VARCHAR(255) NOT NULL,
+    `status` ENUM('open', 'in_progress', 'resolved', 'closed') NOT NULL DEFAULT 'open',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `vc_users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`assigned_staff_id`) REFERENCES `vc_users`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_ticket_messages` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `ticket_id` BIGINT UNSIGNED NOT NULL,
+    `sender_id` BIGINT UNSIGNED NOT NULL,
+    `message` TEXT NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`ticket_id`) REFERENCES `vc_support_tickets`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`sender_id`) REFERENCES `vc_users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_system_logs` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` BIGINT UNSIGNED NULL,
+    `action` VARCHAR(100) NOT NULL,
+    `description` TEXT NULL,
+    `ip_address` VARCHAR(45) NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `vc_users`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_email_logs` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `recipient` VARCHAR(100) NOT NULL,
+    `subject` VARCHAR(255) NOT NULL,
+    `body` TEXT NOT NULL,
+    `status` ENUM('sent', 'failed') NOT NULL DEFAULT 'sent',
+    `error_message` TEXT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `vc_expenses` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `title` VARCHAR(255) NOT NULL,
+    `amount` DECIMAL(15, 2) NOT NULL,
+    `category` VARCHAR(100) NULL,
+    `note` TEXT NULL,
+    `expense_date` DATE NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
