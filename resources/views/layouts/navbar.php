@@ -64,10 +64,10 @@
             </div>
         <?php else: ?>
             <!-- Desktop view -->
-            <div class="guest-desktop-actions">
-                <a href="/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 500;">Đăng nhập</a>
-                <a href="/register" class="glass-btn" style="padding: 0.45rem 0.85rem; font-size: 0.85rem;">Đăng ký</a>
-            </div>
+<div class="guest-desktop-actions">
+    <a href="/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 500;">Đăng nhập</a>
+    <a href="/register" style="color: var(--ios-warning); text-decoration: none; font-size: 0.85rem; font-weight: 600;">Đăng ký</a>
+</div>
 
             <!-- Mobile view: Nút Toggle Menu Khách -->
             <div class="guest-mobile-wrapper">
