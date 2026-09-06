@@ -1,4 +1,4 @@
-<nav class="glass-card navbar-container" style="margin: 0; padding: 0.875rem 1.5rem; border-radius: 0; border-top: none; border-left: none; border-right: none; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; width: 100%; position: relative; z-index: 1000;">
+<nav class="glass-card navbar-container" style="margin: 0; padding: 0.875rem 1.5rem; border-radius: 0; border-top: none; border-left: none; border-right: none; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; width: 100%; position: relative; z-index: 1000; background: rgba(0, 122, 255, 0.12);">
     <!-- Bên trái: Toggle Sidebar Mobile (khi đã đăng nhập) OR Tên Web (khi chưa đăng nhập) -->
     <div style="display: flex; align-items: center; gap: 0.75rem;">
         <?php if (isset($_SESSION['user_id'])): ?>
@@ -40,11 +40,11 @@
                             <?= htmlspecialchars($_SESSION['full_name'] ?? $_SESSION['username'] ?? 'N/A') ?>
                         </div>
                         <div style="font-size: 0.75rem; color: var(--ios-text-secondary); margin-top: 0.15rem; word-break: break-all;">
-                            <?= htmlspecialchars($_SESSION['email'] ?? 'Chưa cập nhật email') ?>
+                            Email: <?= htmlspecialchars($_SESSION['email'] ?? 'Chưa cập nhật email') ?>
                         </div>
                     </div>
 
-                    <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.825rem; margin-top: 0.5rem;">
+                    <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.825rem; margin-top: 0.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--glass-border);">
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: var(--ios-text-secondary);">Số dư:</span>
                             <span style="font-weight: 700; color: var(--ios-success);"><?= number_format($_SESSION['balance'] ?? 0, 0, ',', '.') ?> đ</span>
@@ -55,7 +55,7 @@
                         </div>
                     </div>
 
-                    <div style="border-top: 1px solid var(--glass-border); margin-top: 0.75rem; padding-top: 0.75rem;">
+                    <div style="margin-top: 0.75rem; padding-top: 0.25rem;">
                         <a href="/logout" style="display: flex; align-items: center; justify-content: center; gap: 0.4rem; width: 100%; color: var(--ios-danger); text-decoration: none; font-size: 0.85rem; font-weight: 700; padding: 0.5rem; background: rgba(255, 59, 48, 0.1); border-radius: var(--radius-sm); transition: var(--transition);">
                             🚪 Đăng xuất
                         </a>

@@ -176,7 +176,6 @@ class AuthController extends BaseController
     {
         unset($_SESSION['user_id'], $_SESSION['username'], $_SESSION['role']);
         session_destroy();
-        header('Location: /login');
-        exit;
+        $this->redirect('/');
     }
 }
