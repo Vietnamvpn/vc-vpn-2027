@@ -308,6 +308,7 @@ body.overlay-open .admin-main {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(142, 142, 147, 0.5);
 }
+
 /* Guest Navigation Styles */
 .nav-public-links {
   display: flex;
@@ -337,20 +338,23 @@ body.overlay-open .admin-main {
   display: none;
 }
 
+/* Menu Mobile nằm sát trực tiếp bên dưới Navbar và phủ full chiều ngang 100% */
 .guest-mobile-menu {
   position: absolute;
-  top: calc(100% + 0.5rem);
+  top: 100%;
+  left: 0;
   right: 0;
-  width: 220px;
-  padding: 1rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
   display: none;
   flex-direction: column;
   gap: 0.75rem;
-  border-radius: var(--radius-md);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
+  border-top: none;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
   z-index: 1005;
 }

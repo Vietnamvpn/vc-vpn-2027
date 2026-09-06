@@ -14,6 +14,7 @@
     <!-- Giữa: Nút điều hướng các trang công khai (Desktop) -->
     <?php if (!isset($_SESSION['user_id'])): ?>
         <div class="nav-public-links">
+            <a href="/" class="nav-public-link">Trang chủ</a>
             <a href="/plans" class="nav-public-link">Gói dịch vụ</a>
             <a href="/faq" class="nav-public-link">Hướng dẫn</a>
             <a href="/contact" class="nav-public-link">Liên hệ</a>
@@ -68,21 +69,25 @@
             </div>
 
             <!-- Mobile view: Nút Toggle Menu Khách -->
-            <div class="guest-mobile-wrapper" style="position: relative;">
+            <div class="guest-mobile-wrapper">
                 <button type="button" id="guest-menu-btn" class="guest-mobile-trigger" style="background: transparent; border: 1px solid var(--glass-border); padding: 0.4rem 0.7rem; border-radius: var(--radius-sm); color: var(--ios-text); cursor: pointer; font-size: 1.1rem; align-items: center; justify-content: center;">
                     ☰
                 </button>
-
-                <div id="guest-dropdown-menu" class="guest-mobile-menu glass-card">
-                    <a href="/plans" style="color: var(--ios-text); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0;">Gói dịch vụ</a>
-                    <a href="/faq" style="color: var(--ios-text); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0;">Hướng dẫn</a>
-                    <a href="/contact" style="color: var(--ios-text); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0;">Liên hệ</a>
-                    <div style="border-top: 1px solid var(--glass-border); margin-top: 0.25rem; padding-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                        <a href="/auth/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 600; text-align: center; padding: 0.5rem; background: rgba(0, 0, 0, 0.05); border-radius: var(--radius-sm);">Đăng nhập</a>
-                        <a href="/auth/register" class="glass-btn" style="padding: 0.5rem; font-size: 0.85rem; text-align: center; width: 100%;">Đăng ký</a>
-                    </div>
-                </div>
             </div>
         <?php endif; ?>
     </div>
+
+    <!-- Mobile Dropdown Menu nằm sát bên dưới Navbar với chiều ngang 100% -->
+    <?php if (!isset($_SESSION['user_id'])): ?>
+        <div id="guest-dropdown-menu" class="guest-mobile-menu glass-card">
+            <a href="/" style="color: var(--ios-text); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0;">Trang chủ</a>
+            <a href="/plans" style="color: var(--ios-text); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0;">Gói dịch vụ</a>
+            <a href="/faq" style="color: var(--ios-text); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0;">Hướng dẫn</a>
+            <a href="/contact" style="color: var(--ios-text); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0;">Liên hệ</a>
+            <div style="border-top: 1px solid var(--glass-border); margin-top: 0.25rem; padding-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                <a href="/auth/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 600; text-align: center; padding: 0.5rem; background: rgba(0, 0, 0, 0.05); border-radius: var(--radius-sm);">Đăng nhập</a>
+                <a href="/auth/register" class="glass-btn" style="padding: 0.5rem; font-size: 0.85rem; text-align: center; width: 100%;">Đăng ký</a>
+            </div>
+        </div>
+    <?php endif; ?>
 </nav>
