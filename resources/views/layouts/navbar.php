@@ -65,7 +65,7 @@
         <?php else: ?>
             <!-- Desktop view -->
 <div class="guest-desktop-actions">
-    <a href="/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 500;">Đăng nhập</a>
+    <a href="/login" style="color: #007aff; text-decoration: none; font-size: 0.85rem; font-weight: 600;">Đăng nhập</a>
     <a href="/register" style="color: var(--ios-warning); text-decoration: none; font-size: 0.85rem; font-weight: 600;">Đăng ký</a>
 </div>
 
