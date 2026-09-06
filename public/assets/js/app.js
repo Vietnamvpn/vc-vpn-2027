@@ -1,72 +1,57 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // 1. Xử lý Sidebar Drawer trên Mobile (Mở kèm lớp phủ mờ)
     const sidebar = document.querySelector('.admin-sidebar');
     const toggleBtn = document.getElementById('sidebar-toggle');
     const overlay = document.querySelector('.sidebar-overlay');
-    const profileBtn = document.getElementById('profile-dropdown-btn');
-    const profileMenu = document.getElementById('profile-dropdown-menu');
 
-    // Hàm đóng tất cả menu và ẩn lớp phủ đen mờ
-    function closeAll() {
+    function openSidebar() {
+        if (sidebar) sidebar.classList.add('active');
+        if (overlay) overlay.classList.add('active');
+    }
+
+    function closeSidebar() {
         if (sidebar) sidebar.classList.remove('active');
-        if (profileMenu) profileMenu.classList.remove('show');
         if (overlay) overlay.classList.remove('active');
     }
 
-    // 1. Toggle Sidebar Mobile (Menu 3 gạch)
     if (sidebar && toggleBtn) {
-        toggleBtn.onclick = function (e) {
+        toggleBtn.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            if (profileMenu) profileMenu.classList.remove('show');
-
-            const isSidebarActive = sidebar.classList.toggle('active');
-            if (overlay) {
-                if (isSidebarActive) {
-                    overlay.classList.add('active');
-                } else {
-                    overlay.classList.remove('active');
-                }
+            if (sidebar.classList.contains('active')) {
+                closeSidebar();
+            } else {
+                openSidebar();
             }
-        };
+        });
+
+        if (overlay) {
+            overlay.addEventListener('click', closeSidebar);
+        }
+
+        window.addEventListener('resize', function () {
+            if (window.innerWidth >= 992) {
+                closeSidebar();
+            }
+        });
     }
 
-    // 2. Toggle Menu Profile (Hiển thị cùng nền đen mờ)
+    // 2. Xử lý Profile Dropdown Menu (Độc lập, không kích hoạt lớp mờ toàn màn hình)
+    const profileBtn = document.getElementById('profile-dropdown-btn');
+    const profileMenu = document.getElementById('profile-dropdown-menu');
+
     if (profileBtn && profileMenu) {
-        profileBtn.onclick = function (e) {
+        profileBtn.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            if (sidebar) sidebar.classList.remove('active');
+            profileMenu.classList.toggle('show');
+        });
 
-            const isProfileShow = profileMenu.classList.toggle('show');
-            if (overlay) {
-                if (isProfileShow) {
-                    overlay.classList.add('active');
-                } else {
-                    overlay.classList.remove('active');
-                }
+        // Click bất kỳ vị trí nào ra ngoài Profile Menu thì tự động đóng
+        document.addEventListener('click', function (e) {
+            if (!profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
+                profileMenu.classList.remove('show');
             }
-        };
+        });
     }
-
-    // 3. Bấm vào lớp phủ mờ đen thì đóng toàn bộ menu
-    if (overlay) {
-        overlay.onclick = function () {
-            closeAll();
-        };
-    }
-
-    // 4. Bấm ra ngoài vùng menu cũng đóng toàn bộ
-    document.onclick = function (e) {
-        if (profileBtn && profileMenu && !profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
-            if (profileMenu.classList.contains('show')) {
-                closeAll();
-            }
-        }
-    };
-
-    window.addEventListener('resize', function () {
-        if (window.innerWidth >= 992) {
-            if (sidebar) sidebar.classList.remove('active');
-        }
-    });
 });
