@@ -117,8 +117,6 @@ html, body {
   height: 100vh;
   min-width: 0;
   overflow: hidden;
-  position: relative;
-  z-index: 1000;
 }
 
 /* Navbar Container sát viền phẳng */
