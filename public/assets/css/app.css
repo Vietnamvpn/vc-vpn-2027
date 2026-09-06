@@ -333,13 +333,19 @@ body.overlay-open .admin-main {
   grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
-  background: var(--glass-bg);
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   border-top: none;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
   z-index: 105;
+}
+
+@media (prefers-color-scheme: dark) {
+  .guest-mobile-menu {
+    background: rgba(28, 28, 30, 0.92);
+  }
 }
 
 .guest-mobile-menu.show {

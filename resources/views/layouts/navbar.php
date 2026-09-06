@@ -64,8 +64,8 @@
         <?php else: ?>
             <!-- Desktop view -->
             <div class="guest-desktop-actions">
-                <a href="/auth/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 500;">Đăng nhập</a>
-                <a href="/auth/register" class="glass-btn" style="padding: 0.45rem 0.85rem; font-size: 0.85rem;">Đăng ký</a>
+                <a href="/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 500;">Đăng nhập</a>
+                <a href="/register" class="glass-btn" style="padding: 0.45rem 0.85rem; font-size: 0.85rem;">Đăng ký</a>
             </div>
 
             <!-- Mobile view: Nút Toggle Menu Khách -->
@@ -85,8 +85,8 @@
             <a href="/faq" class="guest-nav-link">Hướng dẫn</a>
             <a href="/contact" class="guest-nav-link">Liên hệ</a>
             <div class="guest-auth-group">
-                <a href="/auth/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 600; text-align: center; padding: 0.5rem; background: rgba(0, 0, 0, 0.05); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;">Đăng nhập</a>
-                <a href="/auth/register" class="glass-btn" style="padding: 0.5rem; font-size: 0.85rem; text-align: center; width: 100%;">Đăng ký</a>
+                <a href="/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 600; text-align: center; padding: 0.5rem; background: rgba(0, 0, 0, 0.05); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;">Đăng nhập</a>
+                <a href="/register" class="glass-btn" style="padding: 0.5rem; font-size: 0.85rem; text-align: center; width: 100%;">Đăng ký</a>
             </div>
         </div>
     <?php endif; ?>

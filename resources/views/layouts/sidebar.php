@@ -6,9 +6,9 @@ $userRole = $_SESSION['role'] ?? 'user';
 $logoHref = '/';
 if (isset($_SESSION['user_id'])) {
     if ($userRole === 'admin') {
-        $logoHref = $isAdminRoute ? '/user/dashboard' : '/admin/dashboard';
+        $logoHref = $isAdminRoute ? '/dashboard' : '/admin';
     } else {
-        $logoHref = '/user/dashboard';
+        $logoHref = '/dashboard';
     }
 }
 ?>
@@ -29,31 +29,31 @@ if (isset($_SESSION['user_id'])) {
     <div style="padding: 0.25rem 0.5rem; font-weight: 700; color: var(--ios-text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
         Menu Khách Hàng
     </div>
-    <a href="/user/dashboard" class="nav-item <?= ($activeMenu ?? '') === 'dashboard' ? 'active' : '' ?>">
+    <a href="/dashboard" class="nav-item <?= ($activeMenu ?? '') === 'dashboard' ? 'active' : '' ?>">
         <span>📊 Dashboard</span>
     </a>
     <a href="/user/plans" class="nav-item <?= ($activeMenu ?? '') === 'plans' ? 'active' : '' ?>">
         <span>📦 Gói Dịch Vụ</span>
     </a>
-    <a href="/user/subscriptions" class="nav-item <?= ($activeMenu ?? '') === 'subscriptions' ? 'active' : '' ?>">
+    <a href="/subscriptions" class="nav-item <?= ($activeMenu ?? '') === 'subscriptions' ? 'active' : '' ?>">
         <span>⚡ Gói Đã Mua</span>
     </a>
-    <a href="/user/orders" class="nav-item <?= ($activeMenu ?? '') === 'orders' ? 'active' : '' ?>">
+    <a href="/orders" class="nav-item <?= ($activeMenu ?? '') === 'orders' ? 'active' : '' ?>">
         <span>🛒 Đơn Hàng</span>
     </a>
-    <a href="/user/payments" class="nav-item <?= ($activeMenu ?? '') === 'payments' ? 'active' : '' ?>">
+    <a href="/payments" class="nav-item <?= ($activeMenu ?? '') === 'payments' ? 'active' : '' ?>">
         <span>💳 Lịch Sử Giao Dịch</span>
     </a>
-    <a href="/user/wallet" class="nav-item <?= ($activeMenu ?? '') === 'wallet' ? 'active' : '' ?>">
+    <a href="/wallet" class="nav-item <?= ($activeMenu ?? '') === 'wallet' ? 'active' : '' ?>">
         <span>💰 Ví Tiền</span>
     </a>
-    <a href="/user/referrals" class="nav-item <?= ($activeMenu ?? '') === 'referrals' ? 'active' : '' ?>">
+    <a href="/referrals" class="nav-item <?= ($activeMenu ?? '') === 'referrals' ? 'active' : '' ?>">
         <span>🎁 Tiếp Thị Liên Kết</span>
     </a>
-    <a href="/user/tickets" class="nav-item <?= ($activeMenu ?? '') === 'tickets' ? 'active' : '' ?>">
+    <a href="/tickets" class="nav-item <?= ($activeMenu ?? '') === 'tickets' ? 'active' : '' ?>">
         <span>🎧 Hỗ Trợ</span>
     </a>
-    <a href="/user/profile" class="nav-item <?= ($activeMenu ?? '') === 'profile' ? 'active' : '' ?>">
+    <a href="/profile" class="nav-item <?= ($activeMenu ?? '') === 'profile' ? 'active' : '' ?>">
         <span>👤 Tài Khoản</span>
     </a>
 </aside>
