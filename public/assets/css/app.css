@@ -186,7 +186,7 @@ html, body {
   z-index: 999;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease, top 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
 .sidebar-overlay.active {
@@ -194,9 +194,20 @@ html, body {
   pointer-events: auto;
 }
 
-/* Khi mở Profile Menu, lớp phủ chỉ che phần nội dung bên dưới Navbar */
+/* Khi mở Profile Menu: chỉ phủ vùng main bên dưới Navbar và bên phải Sidebar */
 .sidebar-overlay.profile-mode {
   top: 60px;
+}
+
+@media (min-width: 992px) {
+  .sidebar-overlay.profile-mode {
+    left: 260px;
+  }
+}
+
+/* Chống cuộn nội dung chính bên dưới khi màn đen xuất hiện */
+body.overlay-open .admin-main {
+  overflow: hidden !important;
 }
 
 /* Components Glassmorphism */

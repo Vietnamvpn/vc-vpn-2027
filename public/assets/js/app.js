@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
             overlay.classList.remove('active');
             overlay.classList.remove('profile-mode');
         }
+        document.body.classList.remove('overlay-open');
     }
 
     // 1. Toggle Sidebar Mobile
@@ -26,14 +27,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 overlay.classList.remove('profile-mode');
                 if (isSidebarActive) {
                     overlay.classList.add('active');
+                    document.body.classList.add('overlay-open');
                 } else {
                     overlay.classList.remove('active');
+                    document.body.classList.remove('overlay-open');
                 }
             }
         });
     }
 
-    // 2. Toggle Profile Menu (Mở kèm lớp phủ đen mờ che nội dung phía dưới Navbar)
+    // 2. Toggle Profile Menu (Mở kèm màn đen chỉ phủ vùng main và khóa cuộn)
     if (profileBtn && profileMenu) {
         profileBtn.addEventListener('click', function (e) {
             e.preventDefault();
@@ -45,20 +48,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (isProfileShow) {
                     overlay.classList.add('profile-mode');
                     overlay.classList.add('active');
+                    document.body.classList.add('overlay-open');
                 } else {
                     overlay.classList.remove('active');
                     overlay.classList.remove('profile-mode');
+                    document.body.classList.remove('overlay-open');
                 }
             }
         });
     }
 
-    // 3. Bấm vào lớp đen mờ -> Đóng tất cả
+    // 3. Bấm vào màn đen -> Đóng tất cả
     if (overlay) {
         overlay.addEventListener('click', closeAll);
     }
 
-    // 4. Bấm ra ngoài vùng menu -> Đóng Profile Menu & tắt lớp mờ
+    // 4. Bấm ra ngoài vùng menu -> Đóng Profile Menu & tắt màn đen
     document.addEventListener('click', function (e) {
         if (profileBtn && profileMenu && !profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
             if (profileMenu.classList.contains('show')) {
@@ -71,8 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (window.innerWidth >= 992) {
             if (sidebar) sidebar.classList.remove('active');
             if (overlay && (!profileMenu || !profileMenu.classList.contains('show'))) {
-                overlay.classList.remove('active');
-                overlay.classList.remove('profile-mode');
+                closeAll();
             }
         }
     });
