@@ -15,7 +15,7 @@ if (isset($_SESSION['user_id'])) {
 <aside class="admin-sidebar" style="background: rgba(0, 122, 255, 0.12);">
     <!-- Tên Web đặt trong Sidebar -->
     <div class="sidebar-brand" style="padding: 0.5rem 0.5rem 1rem 0.5rem; border-bottom: 1px solid var(--glass-border); margin-bottom: 0.75rem;">
-        <a href="<?= $logoHref ?>" style="display: flex; align-items: center; text-decoration: none; font-weight: 800; font-size: 1.25rem; letter-spacing: 0.6px; background: linear-gradient(135deg, #007aff 0%, #00d4ff 50%, #0051a8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0px 2px 8px rgba(0, 122, 255, 0.45));">
+        <a href="<?= $logoHref ?>" style="display: flex; align-items: center; text-decoration: none; font-weight: 800; font-size: 1.25rem; letter-spacing: 0.6px; background: linear-gradient(135deg, #FFCC00 0%, #FF9500 50%, #FF2D55 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0px 2px 10px rgba(255, 149, 0, 0.5));">
             <span>VC VPN 2027</span>
         </a>
     </div>

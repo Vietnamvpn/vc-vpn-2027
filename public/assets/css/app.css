@@ -96,17 +96,17 @@ html, body {
 }
 
 .admin-sidebar .nav-item:hover {
-  background: rgba(0, 122, 255, 0.08);
+  background: rgba(0, 122, 255, 0.15);
   color: var(--ios-blue);
-  border-color: rgba(0, 122, 255, 0.15);
+  border-color: rgba(0, 122, 255, 0.25);
 }
 
 .admin-sidebar .nav-item.active {
-  background: rgba(0, 122, 255, 0.15);
-  color: var(--ios-blue);
+  background: var(--ios-blue);
+  color: #ffffff;
   font-weight: 600;
-  border-color: rgba(0, 122, 255, 0.25);
-  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(0, 122, 255, 0.35);
 }
 
 /* Khung Phải Chứa Navbar & Nội Dung */
@@ -390,19 +390,19 @@ body.overlay-open .admin-main {
   }
 }
 
-/* Scrollbar Custom */
+/* Scrollbar Custom thu nhỏ 3px */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 3px;
+  height: 3px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(142, 142, 147, 0.3);
+  background: rgba(0, 122, 255, 0.3);
   border-radius: 9999px;
   backdrop-filter: blur(10px);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(142, 142, 147, 0.5);
+  background: rgba(0, 122, 255, 0.6);
 }
