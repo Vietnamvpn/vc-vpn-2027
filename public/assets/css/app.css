@@ -119,6 +119,17 @@ html, body {
   overflow: hidden;
 }
 
+/* Navbar container ép phẳng sát góc */
+.navbar-container {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid var(--glass-border);
+  width: 100%;
+}
+
 /* Vùng Nội Dung Cuộn */
 .admin-main {
   padding: 1.5rem;

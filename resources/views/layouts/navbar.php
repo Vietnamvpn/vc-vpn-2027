@@ -1,4 +1,4 @@
-<nav class="glass-card navbar-container" style="margin: 0.75rem 1rem 0 1rem; padding: 0.75rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-radius: var(--radius-md); flex-shrink: 0; z-index: 100;">
+<nav class="glass-card navbar-container" style="margin: 0; padding: 0.875rem 1.5rem; border-radius: 0; border-top: none; border-left: none; border-right: none; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; width: 100%; z-index: 100;">
     <div style="display: flex; align-items: center; gap: 0.75rem;">
         <!-- Nút Toggle Sidebar (Hiện trên Mobile/Tablet < 992px) -->
         <button id="sidebar-toggle" type="button" aria-label="Toggle Sidebar" style="background: transparent; border: none; font-size: 1.3rem; color: var(--ios-text); cursor: pointer; padding: 0.25rem 0.5rem; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm);" class="mobile-only-btn">
