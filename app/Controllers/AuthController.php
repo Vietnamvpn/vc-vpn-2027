@@ -9,7 +9,7 @@ class AuthController extends BaseController
     public function showLogin(): void
     {
         if (isset($_SESSION['user_id'])) {
-            $this->redirect('/user/dashboard');
+            $this->redirect('/dashboard');
         }
 
         $error = $_SESSION['error'] ?? null;
@@ -27,7 +27,7 @@ class AuthController extends BaseController
 
         if (empty($username) || empty($password)) {
             $_SESSION['error'] = 'Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.';
-            $this->redirect('/auth/login');
+            $this->redirect('/login');
         }
 
         if (class_exists('App\Models\User')) {
@@ -38,7 +38,7 @@ class AuthController extends BaseController
             if ($user && password_verify($password, $user['password_hash'])) {
                 if (($user['status'] ?? 'active') !== 'active') {
                     $_SESSION['error'] = 'Tài khoản của bạn đã bị khóa hoặc chưa kích hoạt.';
-                    $this->redirect('/auth/login');
+                    $this->redirect('/login');
                 }
 
                 $_SESSION['user_id'] = $user['id'];
@@ -46,21 +46,21 @@ class AuthController extends BaseController
                 $_SESSION['role'] = $user['role'] ?? 'user';
 
                 if ($_SESSION['role'] === 'admin') {
-                    $this->redirect('/admin/dashboard');
+                    $this->redirect('/admin');
                 } else {
-                    $this->redirect('/user/dashboard');
+                    $this->redirect('/dashboard');
                 }
             }
         }
 
         $_SESSION['error'] = 'Tên đăng nhập hoặc mật khẩu không chính xác.';
-        $this->redirect('/auth/login');
+        $this->redirect('/login');
     }
 
     public function showRegister(): void
     {
         if (isset($_SESSION['user_id'])) {
-            $this->redirect('/user/dashboard');
+            $this->redirect('/dashboard');
         }
 
         $error = $_SESSION['error'] ?? null;
@@ -81,12 +81,12 @@ class AuthController extends BaseController
 
         if (empty($username) || empty($email) || empty($password)) {
             $_SESSION['error'] = 'Vui lòng điền đầy đủ thông tin.';
-            $this->redirect('/auth/register');
+            $this->redirect('/register');
         }
 
         if ($password !== $passwordConfirm) {
             $_SESSION['error'] = 'Mật khẩu xác nhận không trùng khớp.';
-            $this->redirect('/auth/register');
+            $this->redirect('/register');
         }
 
         if (class_exists('App\Models\User')) {
@@ -94,12 +94,12 @@ class AuthController extends BaseController
 
             if ($userModel->findByUsernameOrEmail($username)) {
                 $_SESSION['error'] = 'Tên đăng nhập đã được sử dụng.';
-                $this->redirect('/auth/register');
+                $this->redirect('/register');
             }
 
             if ($userModel->findByUsernameOrEmail($email)) {
                 $_SESSION['error'] = 'Email đã được sử dụng.';
-                $this->redirect('/auth/register');
+                $this->redirect('/register');
             }
 
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -114,12 +114,12 @@ class AuthController extends BaseController
 
             if ($created) {
                 $_SESSION['success'] = 'Đăng ký tài khoản thành công. Vui lòng đăng nhập.';
-                $this->redirect('/auth/login');
+                $this->redirect('/login');
             }
         }
 
         $_SESSION['error'] = 'Đã có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại sau.';
-        $this->redirect('/auth/register');
+        $this->redirect('/register');
     }
 
     public function showForgotPassword(): void
@@ -140,11 +140,11 @@ class AuthController extends BaseController
 
         if (empty($email)) {
             $_SESSION['error'] = 'Vui lòng nhập địa chỉ email.';
-            $this->redirect('/auth/forgot-password');
+            $this->redirect('/forgot-password');
         }
 
         $_SESSION['success'] = 'Nếu email tồn tại trong hệ thống, chúng tôi đã gửi liên kết khôi phục mật khẩu.';
-        $this->redirect('/auth/forgot-password');
+        $this->redirect('/forgot-password');
     }
 
     public function showResetPassword(): void
@@ -165,18 +165,18 @@ class AuthController extends BaseController
 
         if (empty($password) || $password !== $passwordConfirm) {
             $_SESSION['error'] = 'Mật khẩu không hợp lệ hoặc xác nhận không khớp.';
-            $this->redirect('/auth/reset-password?token=' . urlencode($token));
+            $this->redirect('/reset-password?token=' . urlencode($token));
         }
 
         $_SESSION['success'] = 'Mật khẩu đã được cập nhật thành công. Vui lòng đăng nhập.';
-        $this->redirect('/auth/login');
+        $this->redirect('/login');
     }
 
     public function logout(): void
     {
         unset($_SESSION['user_id'], $_SESSION['username'], $_SESSION['role']);
         session_destroy();
-        header('Location: /auth/login');
+        header('Location: /login');
         exit;
     }
 }
