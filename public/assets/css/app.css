@@ -36,7 +36,9 @@
   padding: 0;
 }
 
-body {
+html, body {
+  height: 100%;
+  overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
   background-color: var(--ios-bg);
   background-image: 
@@ -45,7 +47,6 @@ body {
     radial-gradient(at 50% 50%, rgba(255, 149, 0, 0.05) 0px, transparent 50%);
   background-attachment: fixed;
   color: var(--ios-text);
-  min-height: 100vh;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -115,7 +116,138 @@ body {
   transform: scale(0.98);
 }
 
-/* Custom Scrollbar for iOS feel */
+/* Khung Ứng Dụng Cố Định */
+.admin-app {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.admin-body {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Sidebar Cố Định */
+.admin-sidebar {
+  width: 260px;
+  min-width: 260px;
+  height: 100%;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-right: 1px solid var(--glass-border);
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  box-shadow: var(--glass-shadow);
+  z-index: 1000;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.admin-sidebar .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--ios-text);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+
+.admin-sidebar .nav-item:hover {
+  background: rgba(0, 122, 255, 0.08);
+  color: var(--ios-blue);
+  border-color: rgba(0, 122, 255, 0.15);
+}
+
+.admin-sidebar .nav-item.active {
+  background: rgba(0, 122, 255, 0.15);
+  color: var(--ios-blue);
+  font-weight: 600;
+  border-color: rgba(0, 122, 255, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
+}
+
+/* Responsive Sidebar (< 992px) */
+@media (max-width: 991px) {
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+  }
+
+  .admin-sidebar.active {
+    transform: translateX(0);
+  }
+}
+
+.mobile-only-btn {
+  display: flex;
+}
+
+@media (min-width: 992px) {
+  .mobile-only-btn {
+    display: none !important;
+  }
+}
+
+/* Lớp phủ Mobile Backdrop */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Vùng Cuộn Nội Dung */
+.admin-main {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Profile Menu Dropdown */
+.profile-menu.show {
+  display: flex !important;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

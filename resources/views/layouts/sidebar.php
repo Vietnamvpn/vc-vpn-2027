@@ -1,5 +1,5 @@
-<aside class="admin-sidebar" style="border-radius: var(--radius-lg);">
-    <div style="padding: 0.5rem 1rem; font-weight: 700; color: var(--ios-text-secondary); font-size: 0.75rem; text-transform: uppercase;">
+<aside class="admin-sidebar">
+    <div style="padding: 0.5rem 1rem; font-weight: 700; color: var(--ios-text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
         Menu Khách Hàng
     </div>
     <a href="/user/dashboard" class="nav-item <?= ($activeMenu ?? '') === 'dashboard' ? 'active' : '' ?>">
