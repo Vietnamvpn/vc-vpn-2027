@@ -4,10 +4,12 @@ vc-vpn-2027/
 ├── vc_install.sh
 ├── vc_update.sh
 ├── .env.example
+├── .htaccess
 ├── composer.json
 ├── README.md
 │
 ├── public/
+│   ├── .htaccess
 │   ├── index.php
 │   ├── favicon.ico
 │   └── assets/
@@ -35,22 +37,34 @@ vc-vpn-2027/
 │
 ├── app/
 │   ├── Controllers/
+│   │   ├── BaseController.php
+│   │   ├── HomeController.php
 │   │   ├── AuthController.php
-│   │   ├── DashboardController.php
 │   │   ├── UserController.php
-│   │   ├── ServerController.php
-│   │   ├── NodeController.php
-│   │   ├── PlanController.php
-│   │   ├── CouponController.php
-│   │   ├── OrderController.php
-│   │   ├── PaymentController.php
-│   │   ├── SubscriptionController.php
-│   │   ├── ReferralController.php
-│   │   ├── WithdrawalController.php
-│   │   ├── PostController.php
-│   │   ├── TicketController.php
-│   │   ├── SettingController.php
-│   │   └── LogController.php
+│   │   │
+│   │   ├── Admin/
+│   │   │   ├── DashboardController.php
+│   │   │   ├── UserController.php
+│   │   │   ├── ServerGroupController.php
+│   │   │   ├── ServerController.php
+│   │   │   ├── NodeController.php
+│   │   │   ├── PlanController.php
+│   │   │   ├── CouponController.php
+│   │   │   ├── OrderController.php
+│   │   │   ├── PaymentController.php
+│   │   │   ├── SubscriptionController.php
+│   │   │   ├── ReferralController.php
+│   │   │   ├── WithdrawalController.php
+│   │   │   ├── PostController.php
+│   │   │   ├── TicketController.php
+│   │   │   ├── ExpenseController.php
+│   │   │   ├── SettingController.php
+│   │   │   └── LogController.php
+│   │   │
+│   │   └── Api/
+│   │       ├── ClientController.php
+│   │       ├── ServerController.php
+│   │       └── PaymentController.php
 │   │
 │   ├── Models/
 │   │   ├── Setting.php
@@ -82,7 +96,6 @@ vc-vpn-2027/
 │
 ├── resources/
 │   └── views/
-│       │
 │       ├── layouts/
 │       │   ├── app.php
 │       │   ├── admin.php
@@ -116,119 +129,93 @@ vc-vpn-2027/
 │       │
 │       ├── user/
 │       │   ├── dashboard.php
-│       │   │
 │       │   ├── profile/
 │       │   │   ├── index.php
 │       │   │   └── password.php
-│       │   │
 │       │   ├── plans/
 │       │   │   ├── index.php
 │       │   │   └── checkout.php
-│       │   │
 │       │   ├── orders/
 │       │   │   ├── index.php
 │       │   │   └── detail.php
-│       │   │
 │       │   ├── subscriptions/
 │       │   │   ├── index.php
 │       │   │   ├── detail.php
 │       │   │   └── connect.php
-│       │   │
 │       │   ├── payments/
 │       │   │   ├── index.php
 │       │   │   └── deposit.php
-│       │   │
 │       │   ├── wallet/
 │       │   │   └── index.php
-│       │   │
 │       │   ├── referrals/
 │       │   │   └── index.php
-│       │   │
 │       │   ├── withdrawals/
 │       │   │   ├── index.php
 │       │   │   └── create.php
-│       │   │
 │       │   ├── tickets/
 │       │   │   ├── index.php
 │       │   │   ├── create.php
 │       │   │   └── detail.php
-│       │   │
 │       │   └── notifications/
 │       │       └── index.php
 │       │
 │       └── admin/
 │           ├── dashboard.php
-│           │
 │           ├── users/
 │           │   ├── index.php
 │           │   ├── create.php
 │           │   ├── edit.php
 │           │   └── detail.php
-│           │
 │           ├── server-groups/
 │           │   ├── index.php
 │           │   ├── create.php
 │           │   └── edit.php
-│           │
 │           ├── servers/
 │           │   ├── index.php
 │           │   ├── create.php
 │           │   ├── edit.php
 │           │   └── detail.php
-│           │
 │           ├── nodes/
 │           │   ├── index.php
 │           │   ├── create.php
 │           │   ├── edit.php
 │           │   └── detail.php
-│           │
 │           ├── plans/
 │           │   ├── index.php
 │           │   ├── create.php
 │           │   └── edit.php
-│           │
 │           ├── coupons/
 │           │   ├── index.php
 │           │   ├── create.php
 │           │   └── edit.php
-│           │
 │           ├── orders/
 │           │   ├── index.php
 │           │   └── detail.php
-│           │
 │           ├── payments/
 │           │   ├── index.php
 │           │   └── detail.php
-│           │
 │           ├── subscriptions/
 │           │   ├── index.php
 │           │   └── detail.php
-│           │
 │           ├── referrals/
 │           │   └── index.php
-│           │
 │           ├── withdrawals/
 │           │   ├── index.php
 │           │   └── detail.php
-│           │
 │           ├── posts/
 │           │   ├── index.php
 │           │   ├── create.php
 │           │   ├── edit.php
 │           │   └── detail.php
-│           │
 │           ├── tickets/
 │           │   ├── index.php
 │           │   └── detail.php
-│           │
 │           ├── expenses/
 │           │   ├── index.php
 │           │   ├── create.php
 │           │   └── edit.php
-│           │
 │           ├── settings/
 │           │   └── index.php
-│           │
 │           └── logs/
 │               ├── system.php
 │               ├── access.php
