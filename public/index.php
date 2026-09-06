@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+ini_set('error_log', '/tmp/php_error.log');
+
 session_start();
 
 define('BASE_PATH', dirname(__DIR__));
@@ -33,14 +38,10 @@ if (file_exists(BASE_PATH . '/.env')) {
 $appConfig = file_exists(BASE_PATH . '/config/app.php') ? require BASE_PATH . '/config/app.php' : [];
 date_default_timezone_set($appConfig['timezone'] ?? 'Asia/Ho_Chi_Minh');
 
-if (!empty($appConfig['debug'])) {
-    ini_set('display_errors', '1');
-    ini_set('display_startup_errors', '1');
-    error_reporting(E_ALL);
-} else {
-    ini_set('display_errors', '0');
-    error_reporting(0);
-}
+// Ép buộc bật chế độ hiển thị lỗi để phục vụ debug
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
 
 // 4. Autoload đơn giản cho các class thuộc App\ namespace
 spl_autoload_register(function ($class) {

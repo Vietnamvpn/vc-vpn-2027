@@ -34,7 +34,8 @@ class AuthController extends BaseController
             $userModel = new User();
             $user = $userModel->findByUsernameOrEmail($username);
 
-            if ($user && password_verify($password, $user['password'])) {
+            // Sửa $user['password'] thành $user['password_hash']
+            if ($user && password_verify($password, $user['password_hash'])) {
                 if (($user['status'] ?? 'active') !== 'active') {
                     $_SESSION['error'] = 'Tài khoản của bạn đã bị khóa hoặc chưa kích hoạt.';
                     $this->redirect('/auth/login');
@@ -102,11 +103,13 @@ class AuthController extends BaseController
             }
 
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+            
+            // Sửa 'password' thành 'password_hash' và xử lý ref_code rỗng thành null
             $created = $userModel->create([
                 'username' => $username,
                 'email' => $email,
-                'password' => $hashedPassword,
-                'ref_code' => $refCode
+                'password_hash' => $hashedPassword,
+                'ref_code' => !empty($refCode) ? $refCode : null
             ]);
 
             if ($created) {
