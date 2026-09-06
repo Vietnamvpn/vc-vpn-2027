@@ -77,15 +77,15 @@
         <?php endif; ?>
     </div>
 
-    <!-- Mobile Dropdown Menu nằm sát bên dưới Navbar với chiều ngang 100% -->
+    <!-- Mobile Dropdown Menu nằm sát bên dưới Navbar hiển thị dạng 2 cột -->
     <?php if (!isset($_SESSION['user_id'])): ?>
         <div id="guest-dropdown-menu" class="guest-mobile-menu glass-card">
-            <a href="/" style="color: var(--ios-text); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0;">Trang chủ</a>
-            <a href="/plans" style="color: var(--ios-text); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0;">Gói dịch vụ</a>
-            <a href="/faq" style="color: var(--ios-text); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0;">Hướng dẫn</a>
-            <a href="/contact" style="color: var(--ios-text); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0;">Liên hệ</a>
-            <div style="border-top: 1px solid var(--glass-border); margin-top: 0.25rem; padding-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                <a href="/auth/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 600; text-align: center; padding: 0.5rem; background: rgba(0, 0, 0, 0.05); border-radius: var(--radius-sm);">Đăng nhập</a>
+            <a href="/" class="guest-nav-link">Trang chủ</a>
+            <a href="/plans" class="guest-nav-link">Gói dịch vụ</a>
+            <a href="/faq" class="guest-nav-link">Hướng dẫn</a>
+            <a href="/contact" class="guest-nav-link">Liên hệ</a>
+            <div class="guest-auth-group">
+                <a href="/auth/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 600; text-align: center; padding: 0.5rem; background: rgba(0, 0, 0, 0.05); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;">Đăng nhập</a>
                 <a href="/auth/register" class="glass-btn" style="padding: 0.5rem; font-size: 0.85rem; text-align: center; width: 100%;">Đăng ký</a>
             </div>
         </div>

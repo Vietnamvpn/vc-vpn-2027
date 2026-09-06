@@ -193,7 +193,7 @@ html, body {
   pointer-events: auto;
 }
 
-/* Khi mở Profile Menu: chỉ phủ vùng main bên dưới Navbar */
+/* Khi mở Profile Menu hoặc Guest Menu: chỉ phủ vùng main bên dưới Navbar */
 .sidebar-overlay.profile-mode {
   top: 60px;
 }
@@ -292,23 +292,6 @@ body.overlay-open .admin-main {
   display: flex !important;
 }
 
-/* Scrollbar Custom */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(142, 142, 147, 0.3);
-  border-radius: 9999px;
-  backdrop-filter: blur(10px);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(142, 142, 147, 0.5);
-}
-
 /* Guest Navigation Styles */
 .nav-public-links {
   display: flex;
@@ -338,7 +321,7 @@ body.overlay-open .admin-main {
   display: none;
 }
 
-/* Menu Mobile nằm sát trực tiếp bên dưới Navbar và phủ full chiều ngang 100% */
+/* Menu Mobile hiển thị 2 cột phủ sát bên dưới Navbar */
 .guest-mobile-menu {
   position: absolute;
   top: 100%;
@@ -347,7 +330,7 @@ body.overlay-open .admin-main {
   width: 100%;
   padding: 1rem 1.5rem;
   display: none;
-  flex-direction: column;
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   background: var(--glass-bg);
@@ -356,11 +339,39 @@ body.overlay-open .admin-main {
   border: 1px solid var(--glass-border);
   border-top: none;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-  z-index: 1005;
+  z-index: 105;
 }
 
 .guest-mobile-menu.show {
-  display: flex !important;
+  display: grid !important;
+}
+
+.guest-mobile-menu .guest-nav-link {
+  color: var(--ios-text);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.6rem;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  transition: var(--transition);
+}
+
+.guest-mobile-menu .guest-nav-link:hover {
+  background: rgba(0, 122, 255, 0.12);
+  color: var(--ios-blue);
+}
+
+.guest-mobile-menu .guest-auth-group {
+  grid-column: span 2;
+  border-top: 1px solid var(--glass-border);
+  margin-top: 0.25rem;
+  padding-top: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
 }
 
 @media (max-width: 991px) {
@@ -371,4 +382,21 @@ body.overlay-open .admin-main {
   .guest-mobile-trigger {
     display: flex !important;
   }
+}
+
+/* Scrollbar Custom */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(142, 142, 147, 0.3);
+  border-radius: 9999px;
+  backdrop-filter: blur(10px);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(142, 142, 147, 0.5);
 }
