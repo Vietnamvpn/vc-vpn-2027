@@ -1,33 +1,12 @@
-<?php
-$currentUri = $_SERVER['REQUEST_URI'] ?? '';
-$isAdminRoute = (strncmp($currentUri, '/admin', 6) === 0);
-$userRole = $_SESSION['role'] ?? 'user';
-
-$logoHref = '/';
-if (isset($_SESSION['user_id'])) {
-    if ($userRole === 'admin') {
-        $logoHref = $isAdminRoute ? '/user/dashboard' : '/admin/dashboard';
-    } else {
-        $logoHref = '/user/dashboard';
-    }
-}
-?>
-
-<nav class="glass-card navbar-container" style="margin: 0; padding: 0.75rem 1.5rem; border-radius: 0; border-left: none; border-right: none; border-top: none; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 1001;">
+<nav class="glass-card navbar-container" style="margin: 0.75rem 1rem 0 1rem; padding: 0.75rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-radius: var(--radius-md); flex-shrink: 0; z-index: 100;">
     <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <!-- Nút Toggle Sidebar (Hiện trên Mobile/Tablet < 992px) -->
         <button id="sidebar-toggle" type="button" aria-label="Toggle Sidebar" style="background: transparent; border: none; font-size: 1.3rem; color: var(--ios-text); cursor: pointer; padding: 0.25rem 0.5rem; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm);" class="mobile-only-btn">
             ☰
         </button>
-
-        <a href="<?= $logoHref ?>" title="<?= ($userRole === 'admin') ? ($isAdminRoute ? 'Chuyển sang Trang User' : 'Chuyển sang Trang Admin') : 'Trang Chủ' ?>" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--ios-text); font-weight: 700; font-size: 1.1rem;">
-            <img src="/assets/images/logo.png" alt="Logo" style="height: 32px; width: 32px; border-radius: 8px;">
-            <span>VC VPN 2027</span>
-            <?php if ($userRole === 'admin'): ?>
-                <span style="font-size: 0.65rem; background: rgba(0, 122, 255, 0.15); color: var(--ios-blue); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid rgba(0,122,255,0.2);">
-                    <?= $isAdminRoute ? 'ADMIN' : 'USER' ?>
-                </span>
-            <?php endif; ?>
-        </a>
+        <span style="font-weight: 600; font-size: 0.95rem; color: var(--ios-text-secondary);" class="mobile-only-btn">
+            VC VPN 2027
+        </span>
     </div>
 
     <div style="display: flex; align-items: center; gap: 0.75rem;">

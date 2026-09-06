@@ -1,5 +1,32 @@
+<?php
+$currentUri = $_SERVER['REQUEST_URI'] ?? '';
+$isAdminRoute = (strncmp($currentUri, '/admin', 6) === 0);
+$userRole = $_SESSION['role'] ?? 'user';
+
+$logoHref = '/';
+if (isset($_SESSION['user_id'])) {
+    if ($userRole === 'admin') {
+        $logoHref = $isAdminRoute ? '/user/dashboard' : '/admin/dashboard';
+    } else {
+        $logoHref = '/user/dashboard';
+    }
+}
+?>
 <aside class="admin-sidebar">
-    <div style="padding: 0.5rem 1rem; font-weight: 700; color: var(--ios-text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
+    <!-- Logo & Tên Web đặt trong Sidebar -->
+    <div class="sidebar-brand" style="padding: 0.5rem 0.5rem 1rem 0.5rem; border-bottom: 1px solid var(--glass-border); margin-bottom: 0.75rem;">
+        <a href="<?= $logoHref ?>" title="<?= ($userRole === 'admin') ? ($isAdminRoute ? 'Chuyển sang Trang User' : 'Chuyển sang Trang Admin') : 'Trang Chủ' ?>" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--ios-text); font-weight: 700; font-size: 1.1rem;">
+            <img src="/assets/images/logo.png" alt="Logo" style="height: 32px; width: 32px; border-radius: 8px;">
+            <span>VC VPN 2027</span>
+            <?php if ($userRole === 'admin'): ?>
+                <span style="font-size: 0.65rem; background: rgba(0, 122, 255, 0.15); color: var(--ios-blue); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid rgba(0,122,255,0.2);">
+                    <?= $isAdminRoute ? 'ADMIN' : 'USER' ?>
+                </span>
+            <?php endif; ?>
+        </a>
+    </div>
+
+    <div style="padding: 0.25rem 0.5rem; font-weight: 700; color: var(--ios-text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
         Quản Trị Hệ Thống
     </div>
     <a href="/admin/dashboard" class="nav-item <?= ($activeMenu ?? '') === 'dashboard' ? 'active' : '' ?>">📈 Dashboard</a>

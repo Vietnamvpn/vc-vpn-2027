@@ -1,21 +1,20 @@
 <?php 
 $extraCss = 'admin';
-$extraJs = 'admin';
+$extraJs = 'app';
 require_once __DIR__ . '/header.php'; 
 ?>
 
 <div class="admin-app">
-    <!-- Navbar tràn ngang trên cùng -->
-    <?php require_once __DIR__ . '/navbar.php'; ?>
-    
-    <div class="admin-body">
-        <!-- Lớp phủ cho Mobile Sidebar -->
-        <div class="sidebar-overlay"></div>
+    <!-- Lớp phủ cho Mobile Sidebar Drawer -->
+    <div class="sidebar-overlay"></div>
 
-        <!-- Sidebar bên trái -->
-        <?php require_once __DIR__ . '/admin-sidebar.php'; ?>
+    <!-- Sidebar nằm song song bên trái trên Desktop -->
+    <?php require_once __DIR__ . '/admin-sidebar.php'; ?>
+    
+    <!-- Vùng Nội dung + Navbar nằm vừa vặn bên phải Sidebar -->
+    <div class="admin-main-wrapper">
+        <?php require_once __DIR__ . '/navbar.php'; ?>
         
-        <!-- Vùng nội dung cuộn bên phải -->
         <main class="admin-main">
             <div class="admin-content">
                 <?= $content ?? '' ?>

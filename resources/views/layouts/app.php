@@ -1,19 +1,24 @@
-<?php require_once __DIR__ . '/header.php'; ?>
-<?php require_once __DIR__ . '/navbar.php'; ?>
+<?php 
+$extraCss = $extraCss ?? 'admin';
+$extraJs = $extraJs ?? 'app';
+require_once __DIR__ . '/header.php'; 
+?>
 
-<main class="container">
+<div class="admin-app">
+    <div class="sidebar-overlay"></div>
+
     <?php if (isset($showSidebar) && $showSidebar): ?>
-        <div class="admin-layout">
-            <?php require_once __DIR__ . '/sidebar.php'; ?>
-            <section class="admin-main">
-                <?= $content ?? '' ?>
-            </section>
-        </div>
-    <?php else: ?>
-        <section style="padding: 1rem 0;">
-            <?= $content ?? '' ?>
-        </section>
+        <?php require_once __DIR__ . '/sidebar.php'; ?>
     <?php endif; ?>
-</main>
-
-<?php require_once __DIR__ . '/footer.php'; ?>
+    
+    <div class="admin-main-wrapper">
+        <?php require_once __DIR__ . '/navbar.php'; ?>
+        
+        <main class="admin-main">
+            <div class="admin-content">
+                <?= $content ?? '' ?>
+            </div>
+            <?php require_once __DIR__ . '/footer.php'; ?>
+        </main>
+    </div>
+</div>
