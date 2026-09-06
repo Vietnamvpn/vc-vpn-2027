@@ -1,14 +1,15 @@
 <nav class="glass-card navbar-container" style="margin: 0; padding: 0.875rem 1.5rem; border-radius: 0; border-top: none; border-left: none; border-right: none; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; width: 100%; position: relative; z-index: 1000;">
-    <!-- Bên trái: Toggle Sidebar Mobile & Tên Web luôn hiển thị -->
+    <!-- Bên trái: Toggle Sidebar Mobile (khi đã đăng nhập) OR Tên Web (khi chưa đăng nhập) -->
     <div style="display: flex; align-items: center; gap: 0.75rem;">
         <?php if (isset($_SESSION['user_id'])): ?>
             <button id="sidebar-toggle" type="button" aria-label="Toggle Sidebar" style="background: transparent; border: none; font-size: 1.3rem; color: var(--ios-text); cursor: pointer; padding: 0.25rem 0.5rem; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm);" class="mobile-only-btn">
                 ☰
             </button>
+        <?php else: ?>
+            <a href="/" style="font-weight: 700; font-size: 1.05rem; color: var(--ios-text); text-decoration: none; display: flex; align-items: center; gap: 0.4rem;">
+                <span style="color: var(--ios-blue);">VC VPN</span> 2027
+            </a>
         <?php endif; ?>
-        <a href="/" style="font-weight: 700; font-size: 1.05rem; color: var(--ios-text); text-decoration: none; display: flex; align-items: center; gap: 0.4rem;">
-            <span style="color: var(--ios-blue);">VC VPN</span> 2027
-        </a>
     </div>
 
     <!-- Giữa: Nút điều hướng các trang công khai (Desktop) -->
