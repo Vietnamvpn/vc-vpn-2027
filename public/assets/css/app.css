@@ -117,9 +117,11 @@ html, body {
   height: 100vh;
   min-width: 0;
   overflow: hidden;
+  position: relative;
+  z-index: 1000;
 }
 
-/* Navbar Container luôn nằm trên lớp phủ mờ */
+/* Navbar Container sát viền phẳng */
 .navbar-container {
   margin: 0 !important;
   border-radius: 0 !important;
@@ -129,7 +131,7 @@ html, body {
   border-bottom: 1px solid var(--glass-border);
   width: 100%;
   position: relative;
-  z-index: 1000;
+  z-index: 1001;
 }
 
 /* Vùng Nội Dung Cuộn */
@@ -178,18 +180,23 @@ html, body {
 .sidebar-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   z-index: 999;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, top 0.3s ease;
 }
 
 .sidebar-overlay.active {
   opacity: 1;
   pointer-events: auto;
+}
+
+/* Khi mở Profile Menu, lớp phủ chỉ che phần nội dung bên dưới Navbar */
+.sidebar-overlay.profile-mode {
+  top: 60px;
 }
 
 /* Components Glassmorphism */
@@ -249,7 +256,7 @@ html, body {
 /* Profile Dropdown Wrapper */
 .profile-dropdown-wrapper {
   position: relative;
-  z-index: 1001;
+  z-index: 1002;
 }
 
 /* Profile Menu Dropdown nổi rõ trên cùng */
@@ -267,7 +274,7 @@ html, body {
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
   z-index: 1005;
 }
 

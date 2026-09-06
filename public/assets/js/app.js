@@ -8,7 +8,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function closeAll() {
         if (sidebar) sidebar.classList.remove('active');
         if (profileMenu) profileMenu.classList.remove('show');
-        if (overlay) overlay.classList.remove('active');
+        if (overlay) {
+            overlay.classList.remove('active');
+            overlay.classList.remove('profile-mode');
+        }
     }
 
     // 1. Toggle Sidebar Mobile
@@ -20,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const isSidebarActive = sidebar.classList.toggle('active');
             if (overlay) {
+                overlay.classList.remove('profile-mode');
                 if (isSidebarActive) {
                     overlay.classList.add('active');
                 } else {
@@ -29,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 2. Toggle Profile Menu (Mở kèm lớp phủ đen mờ bên dưới)
+    // 2. Toggle Profile Menu (Mở kèm lớp phủ đen mờ che nội dung phía dưới Navbar)
     if (profileBtn && profileMenu) {
         profileBtn.addEventListener('click', function (e) {
             e.preventDefault();
@@ -39,9 +43,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const isProfileShow = profileMenu.classList.toggle('show');
             if (overlay) {
                 if (isProfileShow) {
+                    overlay.classList.add('profile-mode');
                     overlay.classList.add('active');
                 } else {
                     overlay.classList.remove('active');
+                    overlay.classList.remove('profile-mode');
                 }
             }
         });
@@ -66,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (sidebar) sidebar.classList.remove('active');
             if (overlay && (!profileMenu || !profileMenu.classList.contains('show'))) {
                 overlay.classList.remove('active');
+                overlay.classList.remove('profile-mode');
             }
         }
     });
