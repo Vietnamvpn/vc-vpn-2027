@@ -52,71 +52,7 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Glassmorphism Card Component */
-.glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--glass-shadow);
-  padding: 1.5rem;
-  transition: var(--transition);
-}
-
-.glass-card:hover {
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.1);
-}
-
-/* Glass Input */
-.glass-input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--glass-border);
-  background: rgba(255, 255, 255, 0.3);
-  color: var(--ios-text);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  outline: none;
-  font-size: 0.9rem;
-  transition: var(--transition);
-}
-
-.glass-input:focus {
-  border-color: var(--ios-blue);
-  background: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
-}
-
-/* Glass Button */
-.glass-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1.25rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--glass-border);
-  background: var(--ios-blue);
-  color: #ffffff;
-  cursor: pointer;
-  transition: var(--transition);
-  text-decoration: none;
-  box-shadow: 0 4px 14px 0 rgba(0, 122, 255, 0.35);
-}
-
-.glass-btn:hover {
-  background: var(--ios-blue-hover);
-  transform: translateY(-1px);
-}
-
-.glass-btn:active {
-  transform: scale(0.98);
-}
-
-/* Khung Ứng Dụng Cố Định Flex Row */
+/* Khung Bố Cục Toàn Trang Flex Row */
 .admin-app {
   display: flex;
   flex-direction: row;
@@ -125,17 +61,7 @@ html, body {
   overflow: hidden;
 }
 
-/* Vùng Bên Phải Chứa Navbar & Content */
-.admin-main-wrapper {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  min-width: 0;
-  overflow: hidden;
-}
-
-/* Sidebar Cố Định Bên Trái */
+/* Sidebar Bên Trái */
 .admin-sidebar {
   width: 260px;
   min-width: 260px;
@@ -183,7 +109,35 @@ html, body {
   box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
 }
 
-/* Responsive Sidebar (< 992px) */
+/* Khung Phải Chứa Navbar & Nội Dung */
+.admin-main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Vùng Nội Dung Cuộn */
+.admin-main {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Responsive Mobile / Tablet (< 992px) */
 @media (max-width: 991px) {
   .admin-sidebar {
     position: fixed;
@@ -207,7 +161,6 @@ html, body {
   }
 }
 
-/* Lớp phủ Mobile Backdrop */
 .sidebar-overlay {
   position: fixed;
   inset: 0;
@@ -225,22 +178,58 @@ html, body {
   pointer-events: auto;
 }
 
-/* Vùng Cuộn Nội Dung */
-.admin-main {
+/* Components Glassmorphism */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
   padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  transition: var(--transition);
 }
 
-.admin-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+.glass-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.3);
+  color: var(--ios-text);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  outline: none;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.glass-input:focus {
+  border-color: var(--ios-blue);
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
+}
+
+.glass-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: var(--ios-blue);
+  color: #ffffff;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  box-shadow: 0 4px 14px 0 rgba(0, 122, 255, 0.35);
+}
+
+.glass-btn:hover {
+  background: var(--ios-blue-hover);
+  transform: translateY(-1px);
 }
 
 /* Profile Menu Dropdown */
@@ -262,7 +251,7 @@ html, body {
   display: flex !important;
 }
 
-/* Custom Scrollbar */
+/* Scrollbar Custom */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
