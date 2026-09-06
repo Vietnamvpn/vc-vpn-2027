@@ -80,4 +80,22 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     });
+
+    // Handle Guest Mobile Dropdown Menu
+    const guestBtn = document.getElementById('guest-menu-btn');
+    const guestMenu = document.getElementById('guest-dropdown-menu');
+
+    if (guestBtn && guestMenu) {
+        guestBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            guestMenu.classList.toggle('show');
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!guestBtn.contains(e.target) && !guestMenu.contains(e.target)) {
+                guestMenu.classList.remove('show');
+            }
+        });
+    }
 });

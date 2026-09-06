@@ -1,14 +1,26 @@
 <nav class="glass-card navbar-container" style="margin: 0; padding: 0.875rem 1.5rem; border-radius: 0; border-top: none; border-left: none; border-right: none; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; width: 100%; position: relative; z-index: 1000;">
+    <!-- Bên trái: Toggle Sidebar Mobile & Tên Web luôn hiển thị -->
     <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <!-- Nút Toggle Sidebar (Hiện trên Mobile/Tablet < 992px) -->
-        <button id="sidebar-toggle" type="button" aria-label="Toggle Sidebar" style="background: transparent; border: none; font-size: 1.3rem; color: var(--ios-text); cursor: pointer; padding: 0.25rem 0.5rem; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm);" class="mobile-only-btn">
-            ☰
-        </button>
-        <span style="font-weight: 600; font-size: 0.95rem; color: var(--ios-text-secondary);" class="mobile-only-btn">
-            VC VPN 2027
-        </span>
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <button id="sidebar-toggle" type="button" aria-label="Toggle Sidebar" style="background: transparent; border: none; font-size: 1.3rem; color: var(--ios-text); cursor: pointer; padding: 0.25rem 0.5rem; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm);" class="mobile-only-btn">
+                ☰
+            </button>
+        <?php endif; ?>
+        <a href="/" style="font-weight: 700; font-size: 1.05rem; color: var(--ios-text); text-decoration: none; display: flex; align-items: center; gap: 0.4rem;">
+            <span style="color: var(--ios-blue);">VC VPN</span> 2027
+        </a>
     </div>
 
+    <!-- Giữa: Nút điều hướng các trang công khai (Desktop) -->
+    <?php if (!isset($_SESSION['user_id'])): ?>
+        <div class="nav-public-links">
+            <a href="/plans" class="nav-public-link">Gói dịch vụ</a>
+            <a href="/faq" class="nav-public-link">Hướng dẫn</a>
+            <a href="/contact" class="nav-public-link">Liên hệ</a>
+        </div>
+    <?php endif; ?>
+
+    <!-- Bên phải: Profile khi đã đăng nhập OR Đăng nhập/Đăng ký khi chưa đăng nhập -->
     <div style="display: flex; align-items: center; gap: 0.75rem;">
         <?php if (isset($_SESSION['user_id'])): ?>
             <div class="profile-dropdown-wrapper" style="position: relative; z-index: 1001;">
@@ -49,8 +61,28 @@
                 </div>
             </div>
         <?php else: ?>
-            <a href="/auth/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 500;">Đăng nhập</a>
-            <a href="/auth/register" class="glass-btn" style="padding: 0.45rem 0.85rem; font-size: 0.85rem;">Đăng ký</a>
+            <!-- Desktop view -->
+            <div class="guest-desktop-actions">
+                <a href="/auth/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 500;">Đăng nhập</a>
+                <a href="/auth/register" class="glass-btn" style="padding: 0.45rem 0.85rem; font-size: 0.85rem;">Đăng ký</a>
+            </div>
+
+            <!-- Mobile view: Nút Toggle Menu Khách -->
+            <div class="guest-mobile-wrapper" style="position: relative;">
+                <button type="button" id="guest-menu-btn" class="guest-mobile-trigger" style="background: transparent; border: 1px solid var(--glass-border); padding: 0.4rem 0.7rem; border-radius: var(--radius-sm); color: var(--ios-text); cursor: pointer; font-size: 1.1rem; align-items: center; justify-content: center;">
+                    ☰
+                </button>
+
+                <div id="guest-dropdown-menu" class="guest-mobile-menu glass-card">
+                    <a href="/plans" style="color: var(--ios-text); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0;">Gói dịch vụ</a>
+                    <a href="/faq" style="color: var(--ios-text); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0;">Hướng dẫn</a>
+                    <a href="/contact" style="color: var(--ios-text); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0;">Liên hệ</a>
+                    <div style="border-top: 1px solid var(--glass-border); margin-top: 0.25rem; padding-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <a href="/auth/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 600; text-align: center; padding: 0.5rem; background: rgba(0, 0, 0, 0.05); border-radius: var(--radius-sm);">Đăng nhập</a>
+                        <a href="/auth/register" class="glass-btn" style="padding: 0.5rem; font-size: 0.85rem; text-align: center; width: 100%;">Đăng ký</a>
+                    </div>
+                </div>
+            </div>
         <?php endif; ?>
     </div>
 </nav>
