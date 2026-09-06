@@ -5,13 +5,13 @@ require_once __DIR__ . '/header.php';
 ?>
 
 <div class="admin-app">
-    <div class="sidebar-overlay"></div>
-
     <?php require_once __DIR__ . '/admin-sidebar.php'; ?>
     
     <div class="admin-main-wrapper">
         <?php require_once __DIR__ . '/navbar.php'; ?>
         
+        <div class="sidebar-overlay"></div>
+
         <main class="admin-main">
             <div class="admin-content">
                 <?= $content ?? '' ?>
