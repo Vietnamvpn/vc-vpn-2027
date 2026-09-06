@@ -4,7 +4,7 @@ $authSubtitle = "Nhập email để nhận liên kết khôi phục";
 ob_start();
 ?>
 
-<form action="/auth/forgot-password" method="POST" class="auth-form">
+<form action="/forgot-password" method="POST" class="auth-form">
     <?php if (isset($error)): ?>
         <div style="background: rgba(255, 59, 48, 0.15); color: var(--ios-danger); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; border: 1px solid rgba(255, 59, 48, 0.3);">
             <?= htmlspecialchars($error) ?>
@@ -26,7 +26,7 @@ ob_start();
 </form>
 
 <div class="auth-footer" style="margin-top: 1rem;">
-    Quay lại <a href="/auth/login">Đăng nhập</a>
+    Quay lại <a href="/login">Đăng nhập</a>
 </div>
 
 <?php

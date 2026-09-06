@@ -4,7 +4,7 @@ $authSubtitle = "Tạo mật khẩu mới cho tài khoản của bạn";
 ob_start();
 ?>
 
-<form action="/auth/reset-password" method="POST" class="auth-form">
+<form action="/reset-password" method="POST" class="auth-form">
     <input type="hidden" name="token" value="<?= htmlspecialchars($_GET['token'] ?? '') ?>">
 
     <?php if (isset($error)): ?>
@@ -27,7 +27,7 @@ ob_start();
 </form>
 
 <div class="auth-footer" style="margin-top: 1rem;">
-    Quay lại <a href="/auth/login">Đăng nhập</a>
+    Quay lại <a href="/login">Đăng nhập</a>
 </div>
 
 <?php

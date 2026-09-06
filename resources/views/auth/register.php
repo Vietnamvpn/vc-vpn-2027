@@ -4,7 +4,7 @@ $authSubtitle = "Trải nghiệm dịch vụ VPN chất lượng cao";
 ob_start();
 ?>
 
-<form action="/auth/register" method="POST" class="auth-form">
+<form action="/register" method="POST" class="auth-form">
     <?php if (isset($error)): ?>
         <div style="background: rgba(255, 59, 48, 0.15); color: var(--ios-danger); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; border: 1px solid rgba(255, 59, 48, 0.3);">
             <?= htmlspecialchars($error) ?>
@@ -40,7 +40,7 @@ ob_start();
 </form>
 
 <div class="auth-footer" style="margin-top: 1rem;">
-    Đã có tài khoản? <a href="/auth/login">Đăng nhập</a>
+    Đã có tài khoản? <a href="/login">Đăng nhập</a>
 </div>
 
 <?php
