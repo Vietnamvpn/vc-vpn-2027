@@ -158,6 +158,14 @@ html, body {
     top: 0;
     left: 0;
     transform: translateX(-100%);
+    background: rgba(255, 255, 255, 0.96) !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .admin-sidebar {
+      background: rgba(28, 28, 30, 0.96) !important;
+    }
   }
 
   .admin-sidebar.active {
