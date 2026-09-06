@@ -7,7 +7,7 @@ require_once __DIR__ . '/header.php';
 <div class="admin-layout">
     <?php require_once __DIR__ . '/admin-sidebar.php'; ?>
     
-    <div style="display: flex; flex-direction: column; width: 100%;">
+    <div style="display: flex; flex-direction: column; min-width: 0; width: 100%;">
         <?php require_once __DIR__ . '/navbar.php'; ?>
         
         <main class="admin-main">

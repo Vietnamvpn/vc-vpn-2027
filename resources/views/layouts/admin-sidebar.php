@@ -1,5 +1,5 @@
 <aside class="admin-sidebar">
-    <div style="padding: 0.5rem 1rem; font-weight: 700; color: var(--ios-text-secondary); font-size: 0.75rem; text-transform: uppercase;">
+    <div style="padding: 0.5rem 1rem; font-weight: 700; color: var(--ios-text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
         Quản Trị Hệ Thống
     </div>
     <a href="/admin/dashboard" class="nav-item <?= ($activeMenu ?? '') === 'dashboard' ? 'active' : '' ?>">📈 Dashboard</a>

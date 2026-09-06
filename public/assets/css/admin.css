@@ -1,18 +1,26 @@
 @import url("app.css");
 
+/* Multi-Screen Responsive Grid Layout */
 .admin-layout {
   display: grid;
   grid-template-columns: 1fr;
   min-height: 100vh;
+  width: 100%;
 }
 
 @media (min-width: 992px) {
   .admin-layout {
-    grid-template-columns: 260px 1fr;
+    grid-template-columns: 280px 1fr;
   }
 }
 
-/* Sidebar Glass */
+@media (min-width: 1600px) {
+  .admin-layout {
+    grid-template-columns: 320px 1fr;
+  }
+}
+
+/* Sidebar Glassmorphism */
 .admin-sidebar {
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
@@ -21,7 +29,22 @@
   padding: 1.5rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.35rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  box-shadow: var(--glass-shadow);
+  z-index: 100;
+}
+
+@media (max-width: 991px) {
+  .admin-sidebar {
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 1px solid var(--glass-border);
+  }
 }
 
 .admin-sidebar .nav-item {
@@ -33,27 +56,45 @@
   text-decoration: none;
   border-radius: var(--radius-md);
   font-weight: 500;
+  font-size: 0.9rem;
   transition: var(--transition);
+  border: 1px solid transparent;
 }
 
-.admin-sidebar .nav-item:hover,
-.admin-sidebar .nav-item.active {
-  background: rgba(0, 122, 255, 0.12);
+.admin-sidebar .nav-item:hover {
+  background: rgba(0, 122, 255, 0.08);
   color: var(--ios-blue);
+  border-color: rgba(0, 122, 255, 0.15);
 }
 
-/* Main Content Area */
+.admin-sidebar .nav-item.active {
+  background: rgba(0, 122, 255, 0.15);
+  color: var(--ios-blue);
+  font-weight: 600;
+  border-color: rgba(0, 122, 255, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
+}
+
+/* Main Content Wrapper */
 .admin-main {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
-/* Dashboard Grid */
+@media (min-width: 1200px) {
+  .admin-main {
+    padding: 2rem;
+  }
+}
+
+/* Responsive Glass Stats Grid */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.25rem;
 }
 
@@ -64,8 +105,9 @@
 }
 
 .stat-card .title {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--ios-text-secondary);
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -73,19 +115,22 @@
 .stat-card .value {
   font-size: 1.8rem;
   font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
-/* Glass Table */
+/* Glass Table Component */
 .table-responsive {
   width: 100%;
   overflow-x: auto;
   border-radius: var(--radius-lg);
+  -webkit-overflow-scrolling: touch;
 }
 
 .glass-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+  white-space: nowrap;
 }
 
 .glass-table th,
@@ -98,6 +143,13 @@
   color: var(--ios-text-secondary);
   font-weight: 600;
   font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.glass-table tr:hover td {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .glass-table tr:last-child td {
