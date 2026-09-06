@@ -1,31 +1,40 @@
 @import url("app.css");
 
-/* Vô hiệu hóa cuộn ngoài toàn trang */
+/* Khóa cuộn trang chính */
 html, body {
   height: 100%;
   overflow: hidden;
 }
 
-.admin-layout {
+/* Khung toàn bộ ứng dụng */
+.admin-app {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
-  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Khung thân chứa Sidebar & Main Content dưới Navbar */
+.admin-body {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
   overflow: hidden;
   position: relative;
 }
 
-/* Sidebar Cố Định */
+/* Sidebar Cố Định Bên Trái */
 .admin-sidebar {
-  width: 280px;
-  min-width: 280px;
-  height: 100vh;
+  width: 260px;
+  min-width: 260px;
+  height: 100%;
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border-right: 1px solid var(--glass-border);
-  padding: 1.5rem 1rem;
+  padding: 1.25rem 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -107,17 +116,7 @@ html, body {
   pointer-events: auto;
 }
 
-/* Vùng Khung Nội Dung Chính */
-.admin-main-wrapper {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  min-width: 0;
-  overflow: hidden;
-}
-
-/* Vùng Cuộn Nội Dung Duy Nhất */
+/* Vùng Cuộn Nội Dung Chính */
 .admin-main {
   padding: 1.5rem;
   display: flex;
@@ -141,7 +140,12 @@ html, body {
   }
 }
 
-/* Stats Grid & Glass Table */
+/* Profile Menu Dropdown Display */
+.profile-menu.show {
+  display: flex !important;
+}
+
+/* Grid Thống Kê & Bảng Glassmorphism */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
