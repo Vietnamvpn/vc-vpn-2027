@@ -61,7 +61,7 @@ html, body {
   overflow: hidden;
 }
 
-/* Sidebar Bên Trái */
+/* Sidebar Bên Trái (z-index 1010 nổi trên cả Navbar khi mở mobile) */
 .admin-sidebar {
   width: 260px;
   min-width: 260px;
@@ -75,7 +75,7 @@ html, body {
   flex-direction: column;
   gap: 0.35rem;
   box-shadow: var(--glass-shadow);
-  z-index: 1000;
+  z-index: 1010;
   transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   overflow-y: auto;
   flex-shrink: 0;
@@ -172,12 +172,13 @@ html, body {
   }
 }
 
+/* Lớp phủ Mobile Backdrop (z-index 999 che nội dung chính) */
 .sidebar-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   z-index: 999;
   opacity: 0;
   pointer-events: none;
@@ -243,7 +244,7 @@ html, body {
   transform: translateY(-1px);
 }
 
-/* Profile Menu Dropdown */
+/* Profile Menu Dropdown (z-index 1005 nổi trên nền mờ) */
 .profile-menu {
   position: absolute;
   top: calc(100% + 0.5rem);
@@ -254,7 +255,11 @@ html, body {
   flex-direction: column;
   gap: 0.75rem;
   border-radius: var(--radius-md);
-  box-shadow: var(--glass-shadow);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   z-index: 1005;
 }
 

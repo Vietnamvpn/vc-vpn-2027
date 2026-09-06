@@ -1,4 +1,4 @@
-<nav class="glass-card navbar-container" style="margin: 0; padding: 0.875rem 1.5rem; border-radius: 0; border-top: none; border-left: none; border-right: none; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; width: 100%; z-index: 100;">
+<nav class="glass-card navbar-container" style="margin: 0; padding: 0.875rem 1.5rem; border-radius: 0; border-top: none; border-left: none; border-right: none; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; width: 100%; position: relative; z-index: 1000;">
     <div style="display: flex; align-items: center; gap: 0.75rem;">
         <!-- Nút Toggle Sidebar (Hiện trên Mobile/Tablet < 992px) -->
         <button id="sidebar-toggle" type="button" aria-label="Toggle Sidebar" style="background: transparent; border: none; font-size: 1.3rem; color: var(--ios-text); cursor: pointer; padding: 0.25rem 0.5rem; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm);" class="mobile-only-btn">
@@ -11,7 +11,7 @@
 
     <div style="display: flex; align-items: center; gap: 0.75rem;">
         <?php if (isset($_SESSION['user_id'])): ?>
-            <div class="profile-dropdown-wrapper" style="position: relative;">
+            <div class="profile-dropdown-wrapper" style="position: relative; z-index: 1001;">
                 <button type="button" id="profile-dropdown-btn" class="profile-trigger" style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.25); border: 1px solid var(--glass-border); padding: 0.4rem 0.8rem; border-radius: 9999px; cursor: pointer; color: var(--ios-text); font-weight: 600; font-size: 0.85rem;">
                     <span style="width: 24px; height: 24px; border-radius: 50%; background: var(--ios-blue); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">
                         <?= strtoupper(substr($_SESSION['username'] ?? 'U', 0, 1)) ?>
