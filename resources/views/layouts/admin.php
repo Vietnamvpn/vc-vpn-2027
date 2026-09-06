@@ -16,13 +16,7 @@ require_once __DIR__ . '/header.php';
         <main class="admin-main">
             <?= $content ?? '' ?>
         </main>
-        
-        <?php require_once __DIR__ . '/footer.php'; ?>
     </div>
 </div>
 
-<?php if (isset($extraJs)): ?>
-    <script src="/assets/js/<?= $extraJs ?>.js"></script>
-<?php endif; ?>
-</body>
-</html>
+<?php require_once __DIR__ . '/footer.php'; ?>
