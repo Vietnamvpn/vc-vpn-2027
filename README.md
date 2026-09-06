@@ -67,6 +67,7 @@ vc-vpn-2027/
 │   │       └── PaymentController.php
 │   │
 │   ├── Models/
+│   │   ├── BaseModel.php
 │   │   ├── Setting.php
 │   │   ├── User.php
 │   │   ├── AccessLog.php
