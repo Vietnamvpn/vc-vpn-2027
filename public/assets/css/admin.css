@@ -34,6 +34,12 @@
   -webkit-overflow-scrolling: touch;
 }
 
+/* Cho phép Menu Ba Chấm đè lên trên bảng không bị xén viền */
+.table-responsive:has(.action-menu.show),
+.glass-card:has(.action-menu.show) {
+  overflow: visible !important;
+}
+
 .glass-table {
   width: 100%;
   border-collapse: collapse;
@@ -103,7 +109,7 @@
   border-radius: var(--radius-md);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   min-width: 160px;
-  z-index: 100;
+  z-index: 999;
   overflow: hidden;
 }
 

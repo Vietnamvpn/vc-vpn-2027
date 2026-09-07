@@ -50,7 +50,7 @@ ob_start();
 </div>
 
 <!-- Bảng Người Dùng -->
-<div class="glass-card" style="padding: 1.25rem; width: 100%; box-sizing: border-box; overflow: hidden;">
+<div class="glass-card" style="padding: 1.25rem; width: 100%; box-sizing: border-box;">
     <div class="table-responsive">
         <table class="glass-table">
             <thead>
