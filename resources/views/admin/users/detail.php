@@ -7,7 +7,6 @@ ob_start();
 
 <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
     <div>
-        <a href="/admin/users" style="color: var(--ios-blue); text-decoration: none; font-weight: 600;">&larr; Quay lại danh sách</a>
         <h1 style="font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem;">Hồ Sơ: <?= htmlspecialchars($user['username']) ?></h1>
     </div>
     <a href="/admin/users/edit?id=<?= $user['id'] ?>" class="glass-btn" style="text-decoration: none;">✏️ Chỉnh Sửa</a>

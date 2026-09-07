@@ -5,49 +5,52 @@ $activeMenu = "users";
 ob_start();
 ?>
 
-<div style="margin-bottom: 1rem;">
-    <a href="/admin/users" style="color: var(--ios-blue); text-decoration: none; font-weight: 600;">&larr; Quay lại danh sách</a>
-    <h1 style="font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem;">Chỉnh Sửa: #<?= htmlspecialchars($user['username']) ?></h1>
+<div style="margin-bottom: 1.25rem; max-width: 800px; margin-left: auto; margin-right: auto;">
+    <h1 style="font-size: 1.6rem; font-weight: 700; margin-top: 0.5rem; letter-spacing: -0.5px;">Chỉnh Sửa: #<?= htmlspecialchars($user['username']) ?></h1>
 </div>
 
 <?php if (!empty($_SESSION['flash_message'])): ?>
-    <div class="glass-card" style="padding: 1rem 1.25rem; margin-bottom: 1rem; border-left: 4px solid var(--ios-danger);">
+    <div class="glass-card" style="padding: 1rem 1.25rem; margin-bottom: 1.25rem; max-width: 800px; margin-left: auto; margin-right: auto; border-left: 4px solid var(--ios-danger);">
         <span style="font-weight: 500; font-size: 0.9rem;"><?= htmlspecialchars($_SESSION['flash_message']) ?></span>
         <?php unset($_SESSION['flash_message'], $_SESSION['flash_type']); ?>
     </div>
 <?php endif; ?>
 
-<div class="glass-card" style="padding: 1.5rem; max-width: 600px;">
-    <form method="POST" action="/admin/users/edit?id=<?= $user['id'] ?>" style="display: flex; flex-direction: column; gap: 1rem;">
-        <div>
-            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Tên Đăng Nhập</label>
-            <input type="text" class="glass-input" value="<?= htmlspecialchars($user['username']) ?>" disabled style="opacity: 0.7;">
-        </div>
-
-        <div>
-            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Email</label>
-            <input type="email" class="glass-input" value="<?= htmlspecialchars($user['email']) ?>" disabled style="opacity: 0.7;">
-        </div>
-
-        <div>
-            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Mật Khẩu Mới (Để trống nếu không đổi)</label>
-            <input type="password" name="new_password" class="glass-input" placeholder="Nhập mật khẩu mới...">
-        </div>
-
-        <div>
-            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Họ Và Tên</label>
-            <input type="text" name="full_name" class="glass-input" value="<?= htmlspecialchars($user['full_name'] ?? '') ?>">
-        </div>
-
-        <div>
-            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Số Điện Thoại</label>
-            <input type="text" name="phone" class="glass-input" value="<?= htmlspecialchars($user['phone'] ?? '') ?>">
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+<div class="glass-card" style="padding: 1.75rem; max-width: 800px; margin: 0 auto;">
+    <form method="POST" action="/admin/users/edit?id=<?= $user['id'] ?>" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
             <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Vai Trò</label>
-                <select name="role" class="glass-input">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Đăng Nhập</label>
+                <input type="text" class="glass-input" value="<?= htmlspecialchars($user['username']) ?>" disabled style="opacity: 0.7; width: 100%;">
+            </div>
+
+            <div>
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Email</label>
+                <input type="email" class="glass-input" value="<?= htmlspecialchars($user['email']) ?>" disabled style="opacity: 0.7; width: 100%;">
+            </div>
+        </div>
+
+        <div>
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mật Khẩu Mới (Để trống nếu không đổi)</label>
+            <input type="password" name="new_password" class="glass-input" placeholder="Nhập mật khẩu mới..." style="width: 100%;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+            <div>
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Họ Và Tên</label>
+                <input type="text" name="full_name" class="glass-input" value="<?= htmlspecialchars($user['full_name'] ?? '') ?>" style="width: 100%;">
+            </div>
+
+            <div>
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Điện Thoại</label>
+                <input type="text" name="phone" class="glass-input" value="<?= htmlspecialchars($user['phone'] ?? '') ?>" style="width: 100%;">
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
+            <div>
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Vai Trò</label>
+                <select name="role" class="glass-input" style="width: 100%; cursor: pointer;">
                     <option value="user" <?= $user['role'] === 'user' ? 'selected' : '' ?>>User</option>
                     <option value="staff" <?= $user['role'] === 'staff' ? 'selected' : '' ?>>Staff</option>
                     <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : '' ?>>Admin</option>
@@ -55,8 +58,8 @@ ob_start();
             </div>
 
             <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Trạng Thái</label>
-                <select name="status" class="glass-input">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Trạng Thái</label>
+                <select name="status" class="glass-input" style="width: 100%; cursor: pointer;">
                     <option value="active" <?= $user['status'] === 'active' ? 'selected' : '' ?>>Active</option>
                     <option value="inactive" <?= $user['status'] === 'inactive' ? 'selected' : '' ?>>Inactive</option>
                     <option value="banned" <?= $user['status'] === 'banned' ? 'selected' : '' ?>>Banned</option>
@@ -64,19 +67,19 @@ ob_start();
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
             <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Số Dư Chính (VNĐ)</label>
-                <input type="number" name="balance" class="glass-input" value="<?= (float)$user['balance'] ?>" step="1000">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Dư Chính (VNĐ)</label>
+                <input type="number" name="balance" class="glass-input" value="<?= (float)$user['balance'] ?>" step="1000" style="width: 100%;">
             </div>
 
             <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Số Dư Hoa Hồng (VNĐ)</label>
-                <input type="number" name="commission_balance" class="glass-input" value="<?= (float)$user['commission_balance'] ?>" step="1000">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Dư Hoa Hồng (VNĐ)</label>
+                <input type="number" name="commission_balance" class="glass-input" value="<?= (float)$user['commission_balance'] ?>" step="1000" style="width: 100%;">
             </div>
         </div>
 
-        <button type="submit" class="glass-btn" style="margin-top: 0.5rem; justify-content: center;">💾 Cập Nhật Thông Tin</button>
+        <button type="submit" class="glass-btn" style="margin-top: 0.75rem; justify-content: center; width: 100%; padding: 0.75rem; font-size: 0.95rem;">💾 Cập Nhật Thông Tin</button>
     </form>
 </div>
 
