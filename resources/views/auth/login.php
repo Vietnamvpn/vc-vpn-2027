@@ -6,7 +6,7 @@ ob_start();
 
 <form action="/login" method="POST" class="auth-form">
     <?php if (isset($error)): ?>
-        <div style="background: rgba(255, 59, 48, 0.15); color: #ff4d4d; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid rgba(255, 59, 48, 0.3); margin-bottom: 1.5rem;">
+        <div style="background: rgba(255, 59, 48, 0.12); color: #dc2626; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid rgba(220, 38, 38, 0.2); margin-bottom: 1.5rem; text-align: center;">
             <?= htmlspecialchars($error) ?>
         </div>
     <?php endif; ?>
@@ -23,7 +23,7 @@ ob_start();
         <label for="password">Mật khẩu</label>
         <div class="input-group-custom">
             <span class="input-group-text-custom">🔒</span>
-            <input type="password" id="password" name="password" class="form-control-custom" placeholder="Password" required>
+            <input type="password" id="password" name="password" class="form-control-custom" placeholder="••••••••" required>
             <button type="button" class="btn-toggle-pw toggle-password" data-target="password" title="Bật/Tắt hiển thị mật khẩu">👁️</button>
         </div>
     </div>
