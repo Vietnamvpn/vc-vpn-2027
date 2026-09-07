@@ -30,4 +30,24 @@ class User extends BaseModel
         $result = $stmt->fetch();
         return $result ?: null;
     }
+
+    /**
+     * Đếm tổng số tất cả tài khoản trong hệ thống
+     */
+    public function countAll(): int
+    {
+        $stmt = self::$db->query("SELECT COUNT(*) as total FROM `{$this->table}`");
+        $result = $stmt->fetch();
+        return (int)($result['total'] ?? 0);
+    }
+
+    /**
+     * Đếm số tài khoản mới đăng ký trong ngày hôm nay
+     */
+    public function countToday(): int
+    {
+        $stmt = self::$db->query("SELECT COUNT(*) as total FROM `{$this->table}` WHERE DATE(`created_at`) = CURDATE()");
+        $result = $stmt->fetch();
+        return (int)($result['total'] ?? 0);
+    }
 }
