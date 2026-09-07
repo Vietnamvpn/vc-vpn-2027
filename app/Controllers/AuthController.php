@@ -6,6 +6,18 @@ use App\Models\User;
 
 class AuthController extends BaseController
 {
+    private function getClientIp(): string
+    {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            return $_SERVER['HTTP_CLIENT_IP'];
+        }
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            return trim($ips[0]);
+        }
+        return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+    }
+
     public function showLogin(): void
     {
         if (isset($_SESSION['user_id'])) {
@@ -34,12 +46,18 @@ class AuthController extends BaseController
             $userModel = new User();
             $user = $userModel->findByUsernameOrEmail($username);
 
-            // Sửa $user['password'] thành $user['password_hash']
             if ($user && password_verify($password, $user['password_hash'])) {
                 if (($user['status'] ?? 'active') !== 'active') {
                     $_SESSION['error'] = 'Tài khoản của bạn đã bị khóa hoặc chưa kích hoạt.';
                     $this->redirect('/login');
                 }
+
+                // Cập nhật IP và Thời gian đăng nhập cuối vào SQL
+                $clientIp = $this->getClientIp();
+                $userModel->update($user['id'], [
+                    'last_login_ip' => $clientIp,
+                    'last_login_time' => date('Y-m-d H:i:s')
+                ]);
 
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
@@ -77,7 +95,7 @@ class AuthController extends BaseController
         $email = trim($_POST['email'] ?? '');
         $password = trim($_POST['password'] ?? '');
         $passwordConfirm = trim($_POST['password_confirm'] ?? '');
-        $refCode = trim($_POST['ref_code'] ?? '');
+        $refCodeInput = trim($_POST['ref_code'] ?? '');
 
         if (empty($username) || empty($email) || empty($password)) {
             $_SESSION['error'] = 'Vui lòng điền đầy đủ thông tin.';
@@ -103,13 +121,25 @@ class AuthController extends BaseController
             }
 
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-            
-            // Sửa 'password' thành 'password_hash' và xử lý ref_code rỗng thành null
+            $clientIp = $this->getClientIp();
+            $myRefCode = strtoupper(substr(md5(uniqid($username, true)), 0, 8));
+
+            // Kiểm tra mã giới thiệu người mời (nếu có)
+            $referredBy = null;
+            if (!empty($refCodeInput)) {
+                $referrer = $userModel->findByRefCode($refCodeInput);
+                if ($referrer) {
+                    $referredBy = $referrer['id'];
+                }
+            }
+
             $created = $userModel->create([
                 'username' => $username,
                 'email' => $email,
                 'password_hash' => $hashedPassword,
-                'ref_code' => !empty($refCode) ? $refCode : null
+                'ref_code' => $myRefCode,
+                'referred_by' => $referredBy,
+                'register_ip' => $clientIp
             ]);
 
             if ($created) {

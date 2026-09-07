@@ -25,6 +25,14 @@ class User extends BaseModel
         return $result ?: null;
     }
 
+    public function findByRefCode(string $refCode): ?array
+    {
+        $stmt = self::$db->prepare("SELECT * FROM `{$this->table}` WHERE `ref_code` = :ref_code LIMIT 1");
+        $stmt->execute(['ref_code' => $refCode]);
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
+
     public function countAll(): int
     {
         $stmt = self::$db->query("SELECT COUNT(*) as total FROM `{$this->table}`");
@@ -69,8 +77,8 @@ class User extends BaseModel
     public function create(array $data): bool
     {
         $stmt = self::$db->prepare("
-            INSERT INTO `{$this->table}` (`username`, `email`, `password_hash`, `full_name`, `phone`, `role`, `status`, `balance`, `commission_balance`, `ref_code`, `created_by`, `created_at`)
-            VALUES (:username, :email, :password_hash, :full_name, :phone, :role, :status, :balance, :commission_balance, :ref_code, :created_by, NOW())
+            INSERT INTO `{$this->table}` (`username`, `email`, `password_hash`, `full_name`, `phone`, `role`, `status`, `balance`, `commission_balance`, `ref_code`, `referred_by`, `created_by`, `register_ip`, `created_at`)
+            VALUES (:username, :email, :password_hash, :full_name, :phone, :role, :status, :balance, :commission_balance, :ref_code, :referred_by, :created_by, :register_ip, NOW())
         ");
         return $stmt->execute([
             'username'           => $data['username'],
@@ -83,7 +91,9 @@ class User extends BaseModel
             'balance'            => $data['balance'] ?? 0.00,
             'commission_balance' => $data['commission_balance'] ?? 0.00,
             'ref_code'           => $data['ref_code'] ?? null,
+            'referred_by'        => $data['referred_by'] ?? null,
             'created_by'         => $data['created_by'] ?? null,
+            'register_ip'        => $data['register_ip'] ?? null,
         ]);
     }
 
