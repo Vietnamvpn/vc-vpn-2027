@@ -13,22 +13,28 @@ ob_start();
 
     <div class="form-group">
         <label for="username">Tên đăng nhập hoặc Email</label>
-        <input type="text" id="username" name="username" class="glass-input" placeholder="nhap_tai_khoan" required autofocus>
+        <div class="input-icon-wrapper">
+            <span class="field-icon">👤</span>
+            <input type="text" id="username" name="username" class="glass-input" placeholder="nhap_tai_khoan" required autofocus>
+        </div>
     </div>
 
     <div class="form-group">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <label for="password">Mật khẩu</label>
-            <a href="/forgot-password" style="font-size: 0.75rem; color: var(--ios-blue); text-decoration: none;">Quên mật khẩu?</a>
+        <label for="password">Mật khẩu</label>
+        <div class="input-icon-wrapper">
+            <span class="field-icon">🔒</span>
+            <input type="password" id="password" name="password" class="glass-input" placeholder="••••••••" required>
+            <span class="toggle-password" data-target="password" title="Bật/Tắt hiển thị mật khẩu">👁️</span>
         </div>
-        <input type="password" id="password" name="password" class="glass-input" placeholder="••••••••" required>
     </div>
 
     <button type="submit" class="glass-btn" style="width: 100%; margin-top: 0.5rem;">Đăng Nhập</button>
 </form>
 
-<div class="auth-footer" style="margin-top: 1rem;">
-    Chưa có tài khoản? <a href="/register">Đăng ký ngay</a>
+<div class="auth-footer">
+    <a href="/forgot-password">Quên mật khẩu?</a>
+    <span class="divider">|</span>
+    <span>Chưa có tài khoản? <a href="/register">Đăng ký ngay</a></span>
 </div>
 
 <?php

@@ -5,12 +5,12 @@ document.addEventListener('DOMContentLoaded', function () {
     togglePasswordBtns.forEach(function (btn) {
         btn.addEventListener('click', function () {
             const targetId = this.getAttribute('data-target');
-            const passwordInput = document.getElementById(targetId) || this.previousElementSibling;
+            const passwordInput = targetId ? document.getElementById(targetId) : this.previousElementSibling;
             
             if (passwordInput && (passwordInput.type === 'password' || passwordInput.type === 'text')) {
                 if (passwordInput.type === 'password') {
                     passwordInput.type = 'text';
-                    this.textContent = '👁️‍🗨️';
+                    this.textContent = '🙈';
                 } else {
                     passwordInput.type = 'password';
                     this.textContent = '👁️';
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
     authForms.forEach(function (form) {
         form.addEventListener('submit', function (e) {
             const password = form.querySelector('input[name="password"]');
-            const confirmPassword = form.querySelector('input[name="confirm_password"]');
+            const confirmPassword = form.querySelector('input[name="password_confirm"], input[name="confirm_password"]');
             const submitBtn = form.querySelector('button[type="submit"]');
 
             // Kiểm tra mật khẩu khớp nhau

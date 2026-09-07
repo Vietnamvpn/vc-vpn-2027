@@ -1,17 +1,48 @@
 @import url("app.css");
 
-.auth-wrapper {
+/* Dynamic Animated Background */
+body, .auth-wrapper {
   min-height: 100vh;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  background: radial-gradient(circle at 0% 0%, rgba(0, 122, 255, 0.15), transparent 50%),
-              radial-gradient(circle at 100% 100%, rgba(52, 199, 89, 0.12), transparent 50%),
-              radial-gradient(circle at 50% 50%, rgba(255, 149, 0, 0.08), transparent 50%),
-              var(--ios-bg);
-  background-attachment: fixed;
+  background: linear-gradient(-45deg, #0f172a, #1e1b4b, #0f2a4a, #172554, #0284c7);
+  background-size: 400% 400%;
+  animation: dynamicBg 15s ease infinite;
+}
+
+@keyframes dynamicBg {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Assemble In Animation */
+@keyframes assembleIn {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.85) rotateX(-20deg);
+    filter: blur(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+    filter: blur(0);
+  }
+}
+
+/* Levitating Float Animation */
+@keyframes levitate {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25), 0 0 25px rgba(0, 122, 255, 0.2);
+  }
+  50% {
+    transform: translateY(-10px) rotate(0.4deg);
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.35), 0 0 35px rgba(0, 122, 255, 0.35);
+  }
 }
 
 .auth-card {
@@ -26,9 +57,9 @@
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--glass-shadow);
   padding: 2.25rem 2rem;
   transition: var(--transition);
+  animation: assembleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards, levitate 6s ease-in-out infinite 0.8s;
 }
 
 .auth-card:hover {
@@ -77,10 +108,59 @@
   margin-left: 0.2rem;
 }
 
+/* Input Icon Wrapper */
+.input-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-icon-wrapper .field-icon {
+  position: absolute;
+  left: 0.85rem;
+  font-size: 1rem;
+  pointer-events: none;
+  opacity: 0.7;
+  z-index: 2;
+}
+
+.input-icon-wrapper .toggle-password {
+  position: absolute;
+  right: 0.85rem;
+  cursor: pointer;
+  font-size: 1rem;
+  user-select: none;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 2;
+}
+
+.input-icon-wrapper .toggle-password:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.input-icon-wrapper .glass-input {
+  padding-left: 2.5rem !important;
+  padding-right: 2.5rem !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .auth-footer {
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   color: var(--ios-text-secondary);
   margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.auth-footer .divider {
+  opacity: 0.4;
 }
 
 .auth-footer a {
