@@ -69,8 +69,8 @@ class User extends BaseModel
     public function create(array $data): bool
     {
         $stmt = self::$db->prepare("
-            INSERT INTO `{$this->table}` (`username`, `email`, `password_hash`, `full_name`, `phone`, `role`, `status`, `balance`, `commission_balance`, `ref_code`, `created_at`)
-            VALUES (:username, :email, :password_hash, :full_name, :phone, :role, :status, :balance, :commission_balance, :ref_code, NOW())
+            INSERT INTO `{$this->table}` (`username`, `email`, `password_hash`, `full_name`, `phone`, `role`, `status`, `balance`, `commission_balance`, `ref_code`, `created_by`, `created_at`)
+            VALUES (:username, :email, :password_hash, :full_name, :phone, :role, :status, :balance, :commission_balance, :ref_code, :created_by, NOW())
         ");
         return $stmt->execute([
             'username'           => $data['username'],
@@ -83,6 +83,7 @@ class User extends BaseModel
             'balance'            => $data['balance'] ?? 0.00,
             'commission_balance' => $data['commission_balance'] ?? 0.00,
             'ref_code'           => $data['ref_code'] ?? null,
+            'created_by'         => $data['created_by'] ?? null,
         ]);
     }
 
