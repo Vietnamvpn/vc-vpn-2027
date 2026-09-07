@@ -63,4 +63,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-<?php require_once __DIR__ . '/footer.php'; ?>
+<?php 
+// Đã loại bỏ footer.php ở đây để tránh lỗi dính giao diện bên dưới
+?>
