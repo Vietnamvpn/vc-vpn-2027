@@ -5,18 +5,19 @@ $activeMenu = "users";
 ob_start();
 ?>
 
-<div style="margin-bottom: 1.25rem; max-width: 800px; margin-left: auto; margin-right: auto;">
+<div style="margin-bottom: 1.25rem;">
+    <a href="/admin/users" style="color: var(--ios-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem;">&larr; Quay lại danh sách</a>
     <h1 style="font-size: 1.6rem; font-weight: 700; margin-top: 0.5rem; letter-spacing: -0.5px;">Chỉnh Sửa: #<?= htmlspecialchars($user['username']) ?></h1>
 </div>
 
 <?php if (!empty($_SESSION['flash_message'])): ?>
-    <div class="glass-card" style="padding: 1rem 1.25rem; margin-bottom: 1.25rem; max-width: 800px; margin-left: auto; margin-right: auto; border-left: 4px solid var(--ios-danger);">
+    <div class="glass-card" style="padding: 1rem 1.25rem; margin-bottom: 1.25rem; border-left: 4px solid var(--ios-danger);">
         <span style="font-weight: 500; font-size: 0.9rem;"><?= htmlspecialchars($_SESSION['flash_message']) ?></span>
         <?php unset($_SESSION['flash_message'], $_SESSION['flash_type']); ?>
     </div>
 <?php endif; ?>
 
-<div class="glass-card" style="padding: 1.75rem; max-width: 800px; margin: 0 auto;">
+<div class="glass-card" style="padding: 1.75rem; width: 100%;">
     <form method="POST" action="/admin/users/edit?id=<?= $user['id'] ?>" style="display: flex; flex-direction: column; gap: 1.25rem;">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
             <div>
