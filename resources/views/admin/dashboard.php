@@ -39,7 +39,7 @@ ob_start();
 
     <div class="glass-card stat-card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span class="title">Doanh Thu Tháng</span>
+            <span class="title">Doanh Thu Tháng <?= htmlspecialchars($selectedMonth ?? date('n')) ?></span>
             <span style="font-size: 1.25rem;">💵</span>
         </div>
         <div class="value" style="color: var(--ios-success);"><?= number_format($stats['monthly_revenue'] ?? 0, 0, ',', '.') ?> đ</div>
@@ -56,14 +56,32 @@ ob_start();
     </div>
 </div>
 
-<!-- Biểu Đồ So Sánh Doanh Thu Tháng Hiện Tại & Tháng Trước -->
+<!-- Biểu Đồ So Sánh Doanh Thu Cùng Form Chọn Tháng / Năm -->
 <div class="glass-card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
         <div>
             <h2 style="font-size: 1.1rem; font-weight: 700;">So Sánh Doanh Thu</h2>
-            <p style="font-size: 0.8rem; color: var(--ios-text-secondary);">Đối soát tăng trưởng doanh thu theo từng ngày giữa tháng này và tháng trước</p>
+            <p style="font-size: 0.8rem; color: var(--ios-text-secondary);">Đối soát tăng trưởng doanh thu theo từng ngày giữa tháng đã chọn và tháng liền trước</p>
         </div>
+
+        <!-- Dropdown Bộ Lọc Thời Gian -->
+        <form method="GET" action="/admin" style="display: flex; gap: 0.5rem; align-items: center;">
+            <select name="month" onchange="this.form.submit()" style="padding: 0.45rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.4); color: var(--ios-text); font-weight: 600; font-size: 0.85rem; outline: none; cursor: pointer;">
+                <?php for ($m = 1; $m <= 12; $m++): ?>
+                    <option value="<?= $m ?>" <?= ($m == ($selectedMonth ?? date('n'))) ? 'selected' : '' ?>>Tháng <?= $m ?></option>
+                <?php endfor; ?>
+            </select>
+
+            <select name="year" onchange="this.form.submit()" style="padding: 0.45rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.4); color: var(--ios-text); font-weight: 600; font-size: 0.85rem; outline: none; cursor: pointer;">
+                <?php
+                $currentY = (int)date('Y');
+                for ($y = $currentY; $y >= $currentY - 3; $y--): ?>
+                    <option value="<?= $y ?>" <?= ($y == ($selectedYear ?? $currentY)) ? 'selected' : '' ?>>Năm <?= $y ?></option>
+                <?php endfor; ?>
+            </select>
+        </form>
     </div>
+
     <div style="position: relative; height: 300px; width: 100%;">
         <canvas id="revenueComparisonChart"></canvas>
     </div>
@@ -157,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
             labels: daysLabels,
             datasets: [
                 {
-                    label: 'Tháng Hiện Tại',
+                    label: 'Tháng <?= (int)($selectedMonth ?? date('n')) ?>/<?= (int)($selectedYear ?? date('Y')) ?>',
                     data: currentMonthData,
                     borderColor: '#007aff',
                     backgroundColor: 'rgba(0, 122, 255, 0.12)',
@@ -167,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     pointRadius: 3
                 },
                 {
-                    label: 'Tháng Trước',
+                    label: 'Tháng Liền Trước',
                     data: lastMonthData,
                     borderColor: '#8e8e93',
                     backgroundColor: 'rgba(142, 142, 147, 0.08)',
