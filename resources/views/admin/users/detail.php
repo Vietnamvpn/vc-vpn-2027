@@ -1,57 +1,207 @@
 <?php
-$pageTitle = "Chi Tiết Người Dùng - Quản Trị Hệ Thống";
-$activeMenu = "users";
 
-ob_start();
-?>
+namespace App\Controllers\Admin;
 
-<div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-    <div>
-        <a href="/admin/users" style="color: var(--ios-blue); text-decoration: none; font-weight: 600;">&larr; Quay lại danh sách</a>
-        <h1 style="font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem;">Hồ Sơ: <?= htmlspecialchars($user['username']) ?></h1>
-    </div>
-    <a href="/admin/users/edit?id=<?= $user['id'] ?>" class="glass-btn" style="text-decoration: none;">✏️ Chỉnh Sửa</a>
-</div>
+use App\Controllers\BaseController;
+use App\Models\User;
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
-    <!-- Thẻ Thông Tin Cá Nhân -->
-    <div class="glass-card" style="padding: 1.25rem;">
-        <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">Thông Tin Tài Khoản</h2>
-        
-        <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.9rem;">
-            <div><strong>ID:</strong> #<?= $user['id'] ?></div>
-            <div><strong>Username:</strong> <?= htmlspecialchars($user['username']) ?></div>
-            <div><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></div>
-            <div><strong>Họ và tên:</strong> <?= htmlspecialchars($user['full_name'] ?? 'Chưa cập nhật') ?></div>
-            <div><strong>Số điện thoại:</strong> <?= htmlspecialchars($user['phone'] ?? 'Chưa cập nhật') ?></div>
-            <div>
-                <strong>Vai trò:</strong> 
-                <span style="font-weight: 700; text-transform: uppercase;"><?= htmlspecialchars($user['role']) ?></span>
-            </div>
-            <div>
-                <strong>Trạng thái:</strong> 
-                <span style="font-weight: 700; text-transform: uppercase;"><?= htmlspecialchars($user['status']) ?></span>
-            </div>
-        </div>
-    </div>
+class UserController extends BaseController
+{
+    private User $userModel;
 
-    <!-- Thẻ Tài Chính & Giới Thiệu -->
-    <div class="glass-card" style="padding: 1.25rem;">
-        <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">Ví & Hoa Hồng</h2>
-        
-        <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.9rem;">
-            <div><strong>Số dư tài khoản:</strong> <span style="color: var(--ios-success); font-weight: 700; font-size: 1.1rem;"><?= number_format($user['balance'], 0, ',', '.') ?> đ</span></div>
-            <div><strong>Số dư hoa hồng:</strong> <span style="color: var(--ios-warning); font-weight: 700;"><?= number_format($user['commission_balance'], 0, ',', '.') ?> đ</span></div>
-            <div><strong>Mã giới thiệu (Ref Code):</strong> <code style="background: rgba(0,122,255,0.1); padding: 0.2rem 0.4rem; border-radius: var(--radius-sm); font-weight: 700;"><?= htmlspecialchars($user['ref_code'] ?? 'N/A') ?></code></div>
-            <div><strong>Đăng ký IP:</strong> <?= htmlspecialchars($user['register_ip'] ?? 'N/A') ?></div>
-            <div><strong>Đăng nhập cuối IP:</strong> <?= htmlspecialchars($user['last_login_ip'] ?? 'N/A') ?></div>
-            <div><strong>Đăng nhập cuối lúc:</strong> <?= !empty($user['last_login_time']) ? date('d/m/Y H:i:s', strtotime($user['last_login_time'])) : 'Chưa ghi nhận' ?></div>
-            <div><strong>Ngày tạo tài khoản:</strong> <?= date('d/m/Y H:i:s', strtotime($user['created_at'])) ?></div>
-        </div>
-    </div>
-</div>
+    public function __construct()
+    {
+        if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
+            $this->redirect('/auth/login');
+        }
+        $this->userModel = new User();
+    }
 
-<?php
-$content = ob_get_clean();
-require BASE_PATH . '/resources/views/layouts/admin.php';
-?>
+    public function index(): void
+    {
+        $search = trim($_GET['search'] ?? '');
+        $role = trim($_GET['role'] ?? '');
+        $status = trim($_GET['status'] ?? '');
+
+        $users = $this->userModel->getAll($search, $role, $status);
+
+        $this->render('admin.users.index', [
+            'users' => $users,
+            'search' => $search,
+            'role' => $role,
+            'status' => $status,
+            'activeMenu' => 'users'
+        ]);
+    }
+
+    public function create(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $username = trim($_POST['username'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $fullName = trim($_POST['full_name'] ?? '');
+            $phone = trim($_POST['phone'] ?? '');
+            $role = $_POST['role'] ?? 'user';
+            $status = $_POST['status'] ?? 'active';
+            $balance = (float)($_POST['balance'] ?? 0);
+
+            if (empty($username) || empty($email) || empty($password)) {
+                $_SESSION['flash_message'] = 'Vui lòng điền đầy đủ Tên đăng nhập, Email và Mật khẩu!';
+                $_SESSION['flash_type'] = 'danger';
+                $this->redirect('/admin/users/create');
+            }
+
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $_SESSION['flash_message'] = 'Định dạng Email không hợp lệ!';
+                $_SESSION['flash_type'] = 'danger';
+                $this->redirect('/admin/users/create');
+            }
+
+            if ($this->userModel->findByUsernameOrEmail($username) || $this->userModel->findByUsernameOrEmail($email)) {
+                $_SESSION['flash_message'] = 'Tên đăng nhập hoặc Email đã tồn tại trên hệ thống!';
+                $_SESSION['flash_type'] = 'danger';
+                $this->redirect('/admin/users/create');
+            }
+
+            $refCode = strtoupper(substr(md5(uniqid($username, true)), 0, 8));
+            $data = [
+                'username' => $username,
+                'email' => $email,
+                'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+                'full_name' => $fullName,
+                'phone' => $phone,
+                'role' => $role,
+                'status' => $status,
+                'balance' => $balance,
+                'commission_balance' => 0.00,
+                'ref_code' => $refCode
+            ];
+
+            if ($this->userModel->create($data)) {
+                $_SESSION['flash_message'] = 'Thêm thành viên mới thành công!';
+                $_SESSION['flash_type'] = 'success';
+                $this->redirect('/admin/users');
+            } else {
+                $_SESSION['flash_message'] = 'Lỗi hệ thống, không thể thêm thành viên!';
+                $_SESSION['flash_type'] = 'danger';
+                $this->redirect('/admin/users/create');
+            }
+        }
+
+        $this->render('admin.users.create', ['activeMenu' => 'users']);
+    }
+
+    public function edit(): void
+    {
+        $id = (int)($_GET['id'] ?? 0);
+        $user = $this->userModel->findById($id);
+
+        if (!$user) {
+            $_SESSION['flash_message'] = 'Không tìm thấy thành viên!';
+            $_SESSION['flash_type'] = 'danger';
+            $this->redirect('/admin/users');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $fullName = trim($_POST['full_name'] ?? '');
+            $phone = trim($_POST['phone'] ?? '');
+            $role = $_POST['role'] ?? $user['role'];
+            $status = $_POST['status'] ?? $user['status'];
+            $balance = (float)($_POST['balance'] ?? $user['balance']);
+            $commissionBalance = (float)($_POST['commission_balance'] ?? $user['commission_balance']);
+            $newPassword = $_POST['new_password'] ?? '';
+
+            // Bảo mật: Nếu tài khoản đang sửa là admin duy nhất hoặc chính mình, kiểm tra việc hạ vai trò
+            if ($id === (int)$_SESSION['user_id'] && $role !== 'admin') {
+                $_SESSION['flash_message'] = 'Bảo mật: Bạn không thể tự hạ vai trò Admin của chính mình!';
+                $_SESSION['flash_type'] = 'danger';
+                $this->redirect('/admin/users/edit?id=' . $id);
+            }
+
+            $updateData = [
+                'full_name' => $fullName,
+                'phone' => $phone,
+                'role' => $role,
+                'status' => $status,
+                'balance' => $balance,
+                'commission_balance' => $commissionBalance
+            ];
+
+            if (!empty($newPassword)) {
+                if (strlen($newPassword) < 6) {
+                    $_SESSION['flash_message'] = 'Mật khẩu mới phải có tối thiểu 6 ký tự!';
+                    $_SESSION['flash_type'] = 'danger';
+                    $this->redirect('/admin/users/edit?id=' . $id);
+                }
+                $updateData['password_hash'] = password_hash($newPassword, PASSWORD_BCRYPT);
+            }
+
+            if ($this->userModel->update($id, $updateData)) {
+                $_SESSION['flash_message'] = 'Cập nhật thông tin người dùng thành công!';
+                $_SESSION['flash_type'] = 'success';
+                $this->redirect('/admin/users');
+            } else {
+                $_SESSION['flash_message'] = 'Không thể cập nhật thông tin!';
+                $_SESSION['flash_type'] = 'danger';
+            }
+        }
+
+        $this->render('admin.users.edit', [
+            'user' => $user,
+            'activeMenu' => 'users'
+        ]);
+    }
+
+    public function detail(): void
+    {
+        $id = (int)($_GET['id'] ?? 0);
+        $user = $this->userModel->findById($id);
+
+        if (!$user) {
+            $_SESSION['flash_message'] = 'Không tìm thấy thành viên!';
+            $_SESSION['flash_type'] = 'danger';
+            $this->redirect('/admin/users');
+        }
+
+        $this->render('admin.users.detail', [
+            'user' => $user,
+            'activeMenu' => 'users'
+        ]);
+    }
+
+    public function delete(): void
+    {
+        $id = (int)($_GET['id'] ?? 0);
+        $targetUser = $this->userModel->findById($id);
+
+        if (!$targetUser) {
+            $_SESSION['flash_message'] = 'Không tìm thấy tài khoản cần xóa!';
+            $_SESSION['flash_type'] = 'danger';
+            $this->redirect('/admin/users');
+        }
+
+        // BẢO MẬT TUYỆT ĐỐI: Không cho phép xóa bất kỳ tài khoản nào có vai trò Admin
+        if ($targetUser['role'] === 'admin') {
+            $_SESSION['flash_message'] = 'Cảnh báo bảo mật: Tất cả tài khoản Quản trị viên (Admin) không thể xóa!';
+            $_SESSION['flash_type'] = 'danger';
+            $this->redirect('/admin/users');
+        }
+
+        // BẢO MẬT BỔ SUNG: Không cho phép tự xóa chính tài khoản đang đăng nhập
+        if ($id === (int)$_SESSION['user_id']) {
+            $_SESSION['flash_message'] = 'Cảnh báo bảo mật: Bạn không thể tự xóa tài khoản của chính mình!';
+            $_SESSION['flash_type'] = 'danger';
+            $this->redirect('/admin/users');
+        }
+
+        if ($this->userModel->delete($id)) {
+            $_SESSION['flash_message'] = 'Đã xóa người dùng thành công!';
+            $_SESSION['flash_type'] = 'success';
+        } else {
+            $_SESSION['flash_message'] = 'Lỗi hệ thống, không thể xóa người dùng!';
+            $_SESSION['flash_type'] = 'danger';
+        }
+        $this->redirect('/admin/users');
+    }
+}
