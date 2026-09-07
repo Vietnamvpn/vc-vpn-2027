@@ -34,7 +34,7 @@ ob_start();
 <div class="auth-footer">
     <a href="/forgot-password">Quên mật khẩu?</a>
     <span class="divider">|</span>
-    <span>Chưa có tài khoản? <a href="/register">Đăng ký ngay</a></span>
+    <a href="/register">Đăng ký ngay</a>
 </div>
 
 <?php

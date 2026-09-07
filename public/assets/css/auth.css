@@ -1,16 +1,19 @@
 @import url("app.css");
 
-/* Dynamic Animated Background */
-body, .auth-wrapper {
-  min-height: 100vh;
+/* 1. Nền chuyển động đổi màu liên tục (Dynamic Animated Background) */
+html, body {
+  margin: 0;
+  padding: 0;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  background: linear-gradient(-45deg, #0f172a, #1e1b4b, #0f2a4a, #172554, #0284c7);
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  background: linear-gradient(-45deg, #0f172a, #1e1b4b, #0f2a4a, #172554, #0284c7, #311042);
   background-size: 400% 400%;
-  animation: dynamicBg 15s ease infinite;
+  animation: dynamicBg 12s ease infinite;
+  background-attachment: fixed;
 }
 
 @keyframes dynamicBg {
@@ -19,12 +22,24 @@ body, .auth-wrapper {
   100% { background-position: 0% 50%; }
 }
 
-/* Assemble In Animation */
+/* 2. Cấu trúc khung Auth chống dính Footer */
+.auth-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}
+
+/* 3. Hiệu ứng lắp ráp 3D & Bay lơ lửng */
 @keyframes assembleIn {
   0% {
     opacity: 0;
-    transform: translateY(50px) scale(0.85) rotateX(-20deg);
-    filter: blur(12px);
+    transform: translateY(40px) scale(0.88) rotateX(-15deg);
+    filter: blur(10px);
   }
   100% {
     opacity: 1;
@@ -33,15 +48,14 @@ body, .auth-wrapper {
   }
 }
 
-/* Levitating Float Animation */
 @keyframes levitate {
   0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25), 0 0 25px rgba(0, 122, 255, 0.2);
+    transform: translateY(0px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 0 25px rgba(0, 122, 255, 0.2);
   }
   50% {
-    transform: translateY(-10px) rotate(0.4deg);
-    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.35), 0 0 35px rgba(0, 122, 255, 0.35);
+    transform: translateY(-8px);
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4), 0 0 35px rgba(0, 122, 255, 0.35);
   }
 }
 
@@ -58,12 +72,8 @@ body, .auth-wrapper {
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   padding: 2.25rem 2rem;
-  transition: var(--transition);
+  box-sizing: border-box;
   animation: assembleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards, levitate 6s ease-in-out infinite 0.8s;
-}
-
-.auth-card:hover {
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.12);
 }
 
 .auth-header .logo {
@@ -80,12 +90,14 @@ body, .auth-wrapper {
   font-weight: 700;
   letter-spacing: -0.5px;
   color: var(--ios-text);
+  margin: 0;
 }
 
 .auth-header p {
   color: var(--ios-text-secondary);
   font-size: 0.875rem;
   margin-top: 0.25rem;
+  margin-bottom: 0;
 }
 
 .auth-form {
@@ -155,7 +167,7 @@ body, .auth-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
@@ -177,7 +189,7 @@ body, .auth-wrapper {
 
 @media (max-width: 480px) {
   .auth-wrapper {
-    padding: 1rem;
+    padding: 1.5rem 1rem;
   }
   
   .auth-card {
