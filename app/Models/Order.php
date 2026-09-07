@@ -29,7 +29,7 @@ class Order extends BaseModel
         $stmt->execute(['year' => $year, 'month' => $month]);
         $results = $stmt->fetchAll() ?: [];
 
-        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        $daysInMonth = (int)date('t', mktime(0, 0, 0, $month, 1, $year));
         $dailyData = array_fill(1, $daysInMonth, 0.0);
 
         foreach ($results as $row) {
