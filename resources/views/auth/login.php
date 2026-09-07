@@ -6,7 +6,7 @@ ob_start();
 
 <form action="/login" method="POST" class="auth-form">
     <?php if (isset($error)): ?>
-        <div style="background: rgba(255, 59, 48, 0.12); color: #dc2626; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid rgba(220, 38, 38, 0.2); margin-bottom: 1.5rem; text-align: center;">
+        <div style="background: rgba(255, 59, 48, 0.12); color: #dc2626; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid rgba(220, 38, 38, 0.3); margin-bottom: 1.5rem; text-align: center;">
             <?= htmlspecialchars($error) ?>
         </div>
     <?php endif; ?>

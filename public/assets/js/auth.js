@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // 1. Logic Toggle Mật Khẩu (Khắc phục lỗi không phản hồi)
+    // 1. Logic Toggle Ẩn/Hiện Mật Khẩu (Bắt sự kiện chính xác)
     const toggleBtns = document.querySelectorAll('.toggle-password, .btn-toggle-pw');
 
     toggleBtns.forEach(function (btn) {
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // 2. Validation Form
+    // 2. Validation Form & Loading Indicator
     const authForms = document.querySelectorAll('.auth-form');
     authForms.forEach(function (form) {
         form.addEventListener('submit', function (e) {

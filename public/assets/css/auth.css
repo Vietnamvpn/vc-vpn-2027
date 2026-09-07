@@ -1,6 +1,6 @@
 @import url("app.css");
 
-/* --- SETUP CHUNG --- */
+/* --- SETUP CĂN GIỮA TOÀN TRANG --- */
 * {
   font-family: 'Inter', -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -9,87 +9,266 @@
 
 html, body {
   height: 100%;
+  width: 100%;
   margin: 0;
+  padding: 0;
   overflow-x: hidden;
-}
-
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #1e293b, #0f172a, #1e1b4b, #2563eb);
-  background-size: 300% 300%;
-  animation: dynamicBg 12s ease infinite;
+  position: relative;
+  background-color: #0f172a;
   color: #1e293b;
 }
 
-@keyframes dynamicBg {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+body {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 100vh;
 }
 
-/* --- KHUNG THẺ KÍNH (BRIGHT GLASSMORPHISM) --- */
+/* --- LỚP ẢNH SLIDESHOW NỀN --- */
+.bg-slideshow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -3;
+}
+
+.slide-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+}
+
+.slide-item.active {
+  opacity: 1;
+}
+
+/* --- LỚP PHỦ NỀN CHỐNG TỐI --- */
+.bg-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  background-color: rgba(15, 23, 42, 0.65);
+  background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+}
+
+/* --- HIỆU ỨNG HÀO QUANG VÀNG ĐỒNG --- */
+.corner-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.45;
+  filter: blur(20px);
+}
+
+.glow-left {
+  top: -15%;
+  left: -20%;
+  width: 55vw;
+  height: 55vw;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.5) 0%, transparent 70%);
+}
+
+.glow-right {
+  top: -15%;
+  right: -20%;
+  width: 55vw;
+  height: 55vw;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.35) 0%, transparent 70%);
+}
+
+.glow::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(#d4af37 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.25;
+  animation: star-sparkle 10s linear infinite;
+}
+
+@keyframes star-sparkle {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* --- KHUNG THẺ KÍNH SÁNG (BRIGHT GLASS CARD) --- */
 .auth-wrapper {
   min-height: 100vh;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   padding: 2rem 1rem;
   box-sizing: border-box;
+  position: relative;
+  z-index: 10;
 }
 
 .auth-card {
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25), 0 0 30px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 35px rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border: 1.5px solid rgba(212, 175, 55, 0.5);
+  border-top: 2px solid rgba(252, 246, 186, 0.9);
   width: 100%;
   max-width: 440px;
-  padding: 2.75rem 2.25rem;
+  padding: 2.5rem 2.25rem;
+  z-index: 10;
+  position: relative;
   box-sizing: border-box;
-  animation: assembleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  margin: 0 auto;
+  animation: fadeInCard 0.6s ease-out forwards;
 }
 
-@keyframes assembleIn {
-  0% {
-    opacity: 0;
-    transform: translateY(40px) scale(0.9);
-    filter: blur(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
-  }
+/* VIỀN QUÉT SÁNG VÀNG ĐỒNG 2 BÊN (SWEEP EFFECT) */
+.auth-card::before, .auth-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 25px;
+  border: 0 solid transparent;
+  border-top: 4px solid transparent;
+  background-origin: border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  pointer-events: none;
+  background-repeat: no-repeat;
 }
 
-/* --- TIÊU ĐỀ CĂN GIỮA --- */
-.assemble-top {
+.auth-card::before {
+  background-image: linear-gradient(270deg, transparent 0%, rgba(212, 175, 55, 0.7) 60%, #b8860b 95%, transparent 100%);
+  background-size: 50% 100%;
+  animation: sweepLeft 3.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+.auth-card::after {
+  background-image: linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.7) 60%, #b8860b 95%, transparent 100%);
+  background-size: 50% 100%;
+  animation: sweepRight 3.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes sweepLeft {
+  0% { background-position: 100% 0; opacity: 0; }
+  15% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { background-position: -20% 0; opacity: 0; }
+}
+
+@keyframes sweepRight {
+  0% { background-position: 0% 0; opacity: 0; }
+  15% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { background-position: 120% 0; opacity: 0; }
+}
+
+@keyframes fadeInCard {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* HIỆU ỨNG LẮP RÁP CÁC THÀNH PHẦN */
+.assemble-top { 
+  opacity: 0; 
+  animation: slideInTop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s; 
   text-align: center !important;
   margin-bottom: 2rem;
-  width: 100%;
 }
 
+.assemble-left { 
+  opacity: 0; 
+  animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s; 
+}
+
+.assemble-right { 
+  opacity: 0; 
+  animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.6s; 
+}
+
+.assemble-bottom-1 { 
+  opacity: 0; 
+  animation: slideInBottom 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.8s; 
+}
+
+.assemble-bottom-2 { 
+  opacity: 0; 
+  animation: slideInBottom 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 1s; 
+}
+
+@keyframes slideInTop { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideInBottom { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+/* TIÊU ĐỀ LẤP LÁNH CĂN GIỮA TRÊN KÍNH SÁNG */
 .royal-title {
-  color: #0f172a;
+  color: #9a7b1c;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  letter-spacing: 1.5px;
   font-weight: 800;
-  font-size: 1.75rem;
+  font-size: 1.8rem;
   margin: 0 0 0.4rem 0;
   text-align: center !important;
 }
 
 .royal-subtitle {
-  color: #64748b;
+  color: #78521a;
   font-size: 0.9rem;
   margin: 0;
   text-align: center !important;
 }
 
-/* --- FORM & INPUT --- */
+@keyframes neonColorChange {
+  0% {
+    color: #9a7b1c;
+    text-shadow: 0 0 6px rgba(212, 175, 55, 0.6);
+  }
+  33% {
+    color: #b8860b;
+    text-shadow: 0 0 10px rgba(184, 134, 11, 0.5);
+  }
+  66% {
+    color: #d4af37;
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.7);
+  }
+  100% {
+    color: #9a7b1c;
+    text-shadow: 0 0 6px rgba(212, 175, 55, 0.6);
+  }
+}
+
+.text-sparkle {
+  animation: neonColorChange 4s infinite ease-in-out;
+  display: inline-block;
+}
+
+/* INPUT FORM SÁNG RÕ CÓ VIỀN VÀNG */
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -105,46 +284,48 @@ body {
 .form-group label {
   font-weight: 700;
   font-size: 0.85rem;
-  color: #334155;
+  color: #78521a;
   margin-left: 4px;
 }
 
 .input-group-custom {
-  background: #f8fafc;
-  border: 1.5px solid #cbd5e1;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1.5px solid rgba(212, 175, 55, 0.5);
   border-radius: 12px;
   display: flex;
   align-items: center;
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
   overflow: hidden;
+  position: relative;
   width: 100%;
 }
 
 .input-group-custom:focus-within {
-  border-color: #2563eb;
+  border-color: #b8860b;
   background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25), 0 4px 12px rgba(212, 175, 55, 0.15);
 }
 
 .input-group-text-custom {
   background: transparent;
   border: none;
-  padding-left: 14px;
-  color: #64748b;
+  padding-left: 16px;
+  color: #9a7b1c;
   display: flex;
   align-items: center;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 .form-control-custom {
   background: transparent;
   border: none;
   padding: 14px 12px;
+  box-shadow: none !important;
   width: 100%;
   outline: none;
   color: #0f172a;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .form-control-custom::placeholder {
@@ -154,10 +335,11 @@ body {
 .btn-toggle-pw {
   background: transparent;
   border: none;
-  padding-right: 14px;
-  color: #64748b;
+  padding-right: 16px;
+  color: #9a7b1c;
+  transition: 0.2s;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   user-select: none;
   display: flex;
   align-items: center;
@@ -165,32 +347,47 @@ body {
 }
 
 .btn-toggle-pw:hover {
-  color: #2563eb;
+  color: #b8860b;
+  transform: scale(1.15);
 }
 
-/* --- NÚT ĐĂNG NHẬP & FOOTER --- */
+/* AUTOFILL FIX */
+.form-control-custom:-webkit-autofill,
+.form-control-custom:-webkit-autofill:hover,
+.form-control-custom:-webkit-autofill:focus,
+.form-control-custom:-webkit-autofill:active {
+  transition: background-color 9999s ease-in-out 0s, color 9999s ease-in-out 0s !important;
+  -webkit-text-fill-color: #0f172a !important;
+  caret-color: #0f172a !important;
+  background-color: transparent !important;
+}
+
+/* NÚT ĐĂNG NHẬP VÀNG ĐỒNG SÁNG NỔI BẬT */
 .btn-login {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  background: linear-gradient(135deg, #d4af37, #b8860b);
   color: #ffffff;
-  border: none;
+  border: 1px solid #9a7b1c;
   border-radius: 12px;
   padding: 14px;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 1rem;
-  letter-spacing: 0.5px;
-  transition: all 0.25s ease;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  transition: all 0.3s;
   cursor: pointer;
   width: 100%;
   margin-top: 0.5rem;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 15px rgba(184, 134, 11, 0.35);
 }
 
 .btn-login:hover {
-  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  background: linear-gradient(135deg, #b8860b, #9a7b1c);
+  color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 8px 22px rgba(184, 134, 11, 0.5);
 }
 
+/* FOOTER LINKS */
 .auth-footer {
   font-size: 0.88rem;
   display: flex;
@@ -203,23 +400,23 @@ body {
 
 .auth-footer a {
   text-decoration: none;
-  color: #2563eb;
-  font-weight: 600;
-  transition: color 0.2s;
+  color: #9a7b1c;
+  font-weight: 700;
+  transition: 0.2s;
 }
 
 .auth-footer a:hover {
-  color: #1d4ed8;
+  color: #b8860b;
   text-decoration: underline;
 }
 
 .auth-footer .divider {
-  color: #cbd5e1;
+  color: rgba(212, 175, 55, 0.5);
 }
 
 @media (max-width: 480px) {
   .auth-card {
-    padding: 2rem 1.25rem;
+    padding: 2.25rem 1.5rem;
     border-radius: 20px;
   }
 }
