@@ -37,7 +37,17 @@ return [
 
     // Quản trị viên (Admin Panel)
     'GET /admin'                 => ['Admin\DashboardController', 'index'],
+    
+    // Quản lý người dùng (Users)
     'GET /admin/users'           => ['Admin\UserController', 'index'],
+    'GET /admin/users/create'    => ['Admin\UserController', 'create'],
+    'POST /admin/users/create'   => ['Admin\UserController', 'create'],
+    'GET /admin/users/edit'      => ['Admin\UserController', 'edit'],
+    'POST /admin/users/edit'     => ['Admin\UserController', 'edit'],
+    'GET /admin/users/detail'    => ['Admin\UserController', 'detail'],
+    'GET /admin/users/delete'    => ['Admin\UserController', 'delete'],
+
+    // Các module quản trị khác
     'GET /admin/server-groups'   => ['Admin\ServerGroupController', 'index'],
     'GET /admin/servers'         => ['Admin\ServerController', 'index'],
     'GET /admin/nodes'           => ['Admin\NodeController', 'index'],

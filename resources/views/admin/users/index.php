@@ -5,82 +5,6 @@ $activeMenu = "users";
 ob_start();
 ?>
 
-<style>
-.action-dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.action-btn {
-    background: rgba(255, 255, 255, 0.25);
-    border: 1px solid var(--glass-border);
-    color: var(--ios-text);
-    border-radius: var(--radius-sm);
-    padding: 0.25rem 0.6rem;
-    cursor: pointer;
-    font-size: 1.1rem;
-    font-weight: bold;
-    line-height: 1;
-    transition: var(--transition);
-}
-
-.action-btn:hover {
-    background: rgba(0, 122, 255, 0.15);
-    color: var(--ios-blue);
-}
-
-.action-menu {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 100%;
-    margin-top: 0.35rem;
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-md);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    min-width: 150px;
-    z-index: 100;
-    overflow: hidden;
-}
-
-@media (prefers-color-scheme: dark) {
-    .action-menu {
-        background: rgba(28, 28, 30, 0.96);
-    }
-}
-
-.action-dropdown:focus-within .action-menu,
-.action-dropdown:hover .action-menu {
-    display: flex;
-    flex-direction: column;
-}
-
-.action-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.65rem 1rem;
-    color: var(--ios-text);
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: var(--transition);
-}
-
-.action-item:hover {
-    background: rgba(0, 122, 255, 0.12);
-    color: var(--ios-blue);
-}
-
-.action-item.delete:hover {
-    background: rgba(255, 59, 48, 0.12);
-    color: var(--ios-danger);
-}
-</style>
-
 <?php if (!empty($_SESSION['flash_message'])): ?>
     <div class="glass-card" style="padding: 1rem 1.25rem; margin-bottom: 1rem; border-left: 4px solid <?= ($_SESSION['flash_type'] ?? '') === 'success' ? 'var(--ios-success)' : 'var(--ios-danger)' ?>;">
         <span style="font-weight: 500; font-size: 0.9rem;"><?= htmlspecialchars($_SESSION['flash_message']) ?></span>
@@ -125,34 +49,35 @@ ob_start();
 <!-- Bảng Người Dùng -->
 <div class="glass-card" style="padding: 1.25rem;">
     <div class="table-responsive">
-        <table class="glass-table" style="width: 100%; border-collapse: collapse;">
+        <table class="glass-table">
             <thead>
-                <tr style="text-align: left; border-bottom: 1px solid var(--glass-border);">
-                    <th style="padding: 0.75rem;">ID</th>
-                    <th style="padding: 0.75rem;">Người Dùng</th>
-                    <th style="padding: 0.75rem;">IP Đăng Nhập</th>
-                    <th style="padding: 0.75rem;">Vai Trò</th>
-                    <th style="padding: 0.75rem;">Số Dư</th>
-                    <th style="padding: 0.75rem;">Trạng Thái</th>
-                    <th style="padding: 0.75rem;">Ngày Tạo</th>
-                    <th style="padding: 0.75rem; text-align: right;">Thao Tác</th>
+                <tr>
+                    <th>ID</th>
+                    <th>Người Dùng</th>
+                    <th>IP Đăng Nhập</th>
+                    <th>Vai Trò</th>
+                    <th>Số Dư</th>
+                    <th>Hoa Hồng</th>
+                    <th>Trạng Thái</th>
+                    <th>Ngày Tạo</th>
+                    <th style="text-align: right;">Thao Tác</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (!empty($users)): ?>
                     <?php foreach ($users as $u): ?>
-                        <tr style="border-bottom: 1px solid var(--glass-border);">
-                            <td style="padding: 0.75rem; font-weight: 700;">#<?= $u['id'] ?></td>
-                            <td style="padding: 0.75rem;">
+                        <tr>
+                            <td style="font-weight: 700;">#<?= $u['id'] ?></td>
+                            <td>
                                 <div style="font-weight: 700; font-size: 0.9rem;"><?= htmlspecialchars($u['username']) ?></div>
                                 <div style="font-size: 0.78rem; color: var(--ios-text-secondary);"><?= htmlspecialchars($u['email']) ?></div>
                             </td>
-                            <td style="padding: 0.75rem; font-size: 0.85rem;">
+                            <td style="font-size: 0.85rem;">
                                 <code style="background: rgba(0, 122, 255, 0.08); padding: 0.2rem 0.4rem; border-radius: var(--radius-sm); font-weight: 600; color: var(--ios-text);">
                                     <?= htmlspecialchars($u['last_login_ip'] ?? 'Chưa ghi nhận') ?>
                                 </code>
                             </td>
-                            <td style="padding: 0.75rem;">
+                            <td>
                                 <?php
                                 $roleBadge = [
                                     'admin' => 'background: rgba(255, 45, 85, 0.15); color: #ff2d55;',
@@ -164,10 +89,13 @@ ob_start();
                                     <?= strtoupper($u['role']) ?>
                                 </span>
                             </td>
-                            <td style="padding: 0.75rem; font-weight: 700; color: var(--ios-success);">
+                            <td style="font-weight: 700; color: var(--ios-success);">
                                 <?= number_format($u['balance'], 0, ',', '.') ?> đ
                             </td>
-                            <td style="padding: 0.75rem;">
+                            <td style="font-weight: 700; color: var(--ios-warning);">
+                                <?= number_format($u['commission_balance'], 0, ',', '.') ?> đ
+                            </td>
+                            <td>
                                 <?php
                                 $statusBadge = [
                                     'active'   => 'background: rgba(52, 199, 89, 0.15); color: var(--ios-success);',
@@ -179,12 +107,11 @@ ob_start();
                                     <?= strtoupper($u['status']) ?>
                                 </span>
                             </td>
-                            <td style="padding: 0.75rem; font-size: 0.8rem; color: var(--ios-text-secondary);">
+                            <td style="font-size: 0.8rem; color: var(--ios-text-secondary);">
                                 <?= date('d/m/Y H:i', strtotime($u['created_at'])) ?>
                             </td>
-                            <td style="padding: 0.75rem; text-align: right;">
-                                <!-- Menu Ba Chấm (Dropdown Thao Tác) -->
-                                <div class="action-dropdown" tabindex="0">
+                            <td style="text-align: right;">
+                                <div class="action-dropdown">
                                     <button type="button" class="action-btn" title="Thao tác">⋮</button>
                                     <div class="action-menu">
                                         <a href="/admin/users/detail?id=<?= $u['id'] ?>" class="action-item">
@@ -205,7 +132,7 @@ ob_start();
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="8" style="text-align: center; padding: 2rem; color: var(--ios-text-secondary);">Không tìm thấy thành viên nào.</td>
+                        <td colspan="9" style="text-align: center; padding: 2rem; color: var(--ios-text-secondary);">Không tìm thấy thành viên nào.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
