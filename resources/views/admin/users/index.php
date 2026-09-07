@@ -6,49 +6,49 @@ ob_start();
 ?>
 
 <?php if (!empty($_SESSION['flash_message'])): ?>
-    <div class="glass-card glass-alert" style="padding: 1rem 1.25rem; margin-bottom: 1rem; border-left: 4px solid <?= ($_SESSION['flash_type'] ?? '') === 'success' ? 'var(--ios-success)' : 'var(--ios-danger)' ?>; display: flex; justify-content: space-between; align-items: center;">
+    <div class="glass-card glass-alert" style="padding: 1rem 1.25rem; margin-bottom: 1rem; border-left: 4px solid <?= ($_SESSION['flash_type'] ?? '') === 'success' ? 'var(--ios-success)' : 'var(--ios-danger)' ?>; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
         <span style="font-weight: 500; font-size: 0.9rem;"><?= htmlspecialchars($_SESSION['flash_message']) ?></span>
         <button type="button" class="alert-close" style="background: none; border: none; color: var(--ios-text-secondary); font-size: 1.25rem; cursor: pointer; padding: 0 0.25rem; line-height: 1;" title="Đóng">&times;</button>
         <?php unset($_SESSION['flash_message'], $_SESSION['flash_type']); ?>
     </div>
 <?php endif; ?>
 
-<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
-    <div style="flex: 1 1 280px;">
-        <h1 style="font-size: 1.5rem; font-weight: 700;">Quản Lý Người Dùng</h1>
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem; width: 100%; box-sizing: border-box;">
+    <div style="flex: 1; min-width: 200px;">
+        <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Quản Lý Người Dùng</h1>
         <p style="color: var(--ios-text-secondary); font-size: 0.85rem;">Danh sách tất cả tài khoản thành viên trong hệ thống</p>
     </div>
-    <a href="/admin/users/create" class="glass-btn" style="text-decoration: none; white-space: nowrap; margin-left: auto;">+ Thêm Người Dùng</a>
+    <a href="/admin/users/create" class="glass-btn" style="text-decoration: none; white-space: nowrap; flex-shrink: 0; align-self: flex-start;">+ Thêm Người Dùng</a>
 </div>
 
 <!-- Bộ Lọc & Tìm Kiếm -->
-<div class="glass-card" style="padding: 1rem; margin-bottom: 1.25rem;">
-    <form method="GET" action="/admin/users" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
-        <input type="text" name="search" class="glass-input" placeholder="Tìm theo tên, email, SĐT..." value="<?= htmlspecialchars($search ?? '') ?>" style="flex: 1; min-width: 200px;">
+<div class="glass-card" style="padding: 1rem; margin-bottom: 1.25rem; width: 100%; box-sizing: border-box;">
+    <form method="GET" action="/admin/users" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; width: 100%;">
+        <input type="text" name="search" class="glass-input" placeholder="Tìm theo tên, email, SĐT..." value="<?= htmlspecialchars($search ?? '') ?>" style="flex: 1 1 180px; min-width: 0; max-width: 100%;">
         
-        <select name="role" class="glass-input" style="width: auto; min-width: 130px; cursor: pointer;">
+        <select name="role" class="glass-input" style="flex: 1 1 120px; min-width: 0; cursor: pointer;">
             <option value="">-- Vai trò --</option>
             <option value="admin" <?= ($role ?? '') === 'admin' ? 'selected' : '' ?>>Admin</option>
             <option value="staff" <?= ($role ?? '') === 'staff' ? 'selected' : '' ?>>Staff</option>
             <option value="user" <?= ($role ?? '') === 'user' ? 'selected' : '' ?>>User</option>
         </select>
 
-        <select name="status" class="glass-input" style="width: auto; min-width: 140px; cursor: pointer;">
+        <select name="status" class="glass-input" style="flex: 1 1 130px; min-width: 0; cursor: pointer;">
             <option value="">-- Trạng thái --</option>
             <option value="active" <?= ($status ?? '') === 'active' ? 'selected' : '' ?>>Hoạt động</option>
             <option value="inactive" <?= ($status ?? '') === 'inactive' ? 'selected' : '' ?>>Chưa kích hoạt</option>
             <option value="banned" <?= ($status ?? '') === 'banned' ? 'selected' : '' ?>>Khóa (Banned)</option>
         </select>
 
-        <button type="submit" class="glass-btn">🔍 Tìm kiếm</button>
+        <button type="submit" class="glass-btn" style="white-space: nowrap;">🔍 Tìm kiếm</button>
         <?php if (!empty($search) || !empty($role) || !empty($status)): ?>
-            <a href="/admin/users" style="color: var(--ios-danger); font-size: 0.85rem; text-decoration: none; font-weight: 600;">Xóa lọc</a>
+            <a href="/admin/users" style="color: var(--ios-danger); font-size: 0.85rem; text-decoration: none; font-weight: 600; white-space: nowrap;">Xóa lọc</a>
         <?php endif; ?>
     </form>
 </div>
 
 <!-- Bảng Người Dùng -->
-<div class="glass-card" style="padding: 1.25rem;">
+<div class="glass-card" style="padding: 1.25rem; width: 100%; box-sizing: border-box; overflow: hidden;">
     <div class="table-responsive">
         <table class="glass-table">
             <thead>

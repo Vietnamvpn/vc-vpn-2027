@@ -28,14 +28,10 @@
 /* Bảng Glassmorphism */
 .table-responsive {
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
   border-radius: var(--radius-lg);
   -webkit-overflow-scrolling: touch;
-}
-
-/* Cho phép hiển thị menu thả xuống không bị xén viền */
-.table-responsive:has(.action-menu.show) {
-  overflow: visible;
 }
 
 .glass-table {
