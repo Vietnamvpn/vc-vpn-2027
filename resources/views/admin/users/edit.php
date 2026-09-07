@@ -6,8 +6,7 @@ ob_start();
 ?>
 
 <div style="margin-bottom: 1.25rem;">
-    <a href="/admin/users" style="color: var(--ios-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem;">&larr; Quay lại danh sách</a>
-    <h1 style="font-size: 1.6rem; font-weight: 700; margin-top: 0.5rem; letter-spacing: -0.5px;">Chỉnh Sửa: #<?= htmlspecialchars($user['username']) ?></h1>
+    <h1 style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px;">Chỉnh Sửa: #<?= htmlspecialchars($user['username']) ?></h1>
 </div>
 
 <?php if (!empty($_SESSION['flash_message'])): ?>
@@ -80,7 +79,9 @@ ob_start();
             </div>
         </div>
 
-        <button type="submit" class="glass-btn" style="margin-top: 0.75rem; justify-content: center; width: 100%; padding: 0.75rem; font-size: 0.95rem;">💾 Cập Nhật Thông Tin</button>
+        <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+            <button type="submit" class="glass-btn" style="padding: 0.65rem 1.75rem; font-size: 0.9rem;">💾 Cập Nhật Thông Tin</button>
+        </div>
     </form>
 </div>
 
