@@ -5,4 +5,75 @@ namespace App\Models;
 class Server extends BaseModel
 {
     protected string $table = 'vc_servers';
+
+    public function findById(int $id): ?array
+    {
+        $sql = "
+            SELECT s.*, g.name as group_name 
+            FROM `{$this->table}` s 
+            LEFT JOIN `vc_server_groups` g ON s.group_id = g.id 
+            WHERE s.id = :id 
+            LIMIT 1
+        ";
+        $stmt = self::$db->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
+
+    public function getAll(): array
+    {
+        $sql = "
+            SELECT s.*, g.name as group_name 
+            FROM `{$this->table}` s 
+            LEFT JOIN `vc_server_groups` g ON s.group_id = g.id 
+            ORDER BY s.id DESC
+        ";
+        $stmt = self::$db->query($sql);
+        return $stmt->fetchAll() ?: [];
+    }
+
+    public function create(array $data): bool
+    {
+        $stmt = self::$db->prepare("
+            INSERT INTO `{$this->table}` 
+            (`group_id`, `name`, `country_code`, `location`, `ip_address`, `api_port`, `api_token`, `status`, `created_at`)
+            VALUES 
+            (:group_id, :name, :country_code, :location, :ip_address, :api_port, :api_token, :status, NOW())
+        ");
+        
+        return $stmt->execute([
+            'group_id'     => $data['group_id'],
+            'name'         => $data['name'],
+            'country_code' => $data['country_code'],
+            'location'     => $data['location'],
+            'ip_address'   => $data['ip_address'],
+            'api_port'     => $data['api_port'] ?? 80,
+            'api_token'    => $data['api_token'] ?? null,
+            'status'       => $data['status'] ?? 'active',
+        ]);
+    }
+
+    public function update(int $id, array $data): bool
+    {
+        $fields = [];
+        $params = ['id' => $id];
+
+        foreach ($data as $key => $value) {
+            $fields[] = "`{$key}` = :{$key}";
+            $params[$key] = $value;
+        }
+
+        if (empty($fields)) return false;
+
+        $sql = "UPDATE `{$this->table}` SET " . implode(', ', $fields) . ", `updated_at` = NOW() WHERE `id` = :id";
+        $stmt = self::$db->prepare($sql);
+        return $stmt->execute($params);
+    }
+
+    public function delete(int $id): bool
+    {
+        $stmt = self::$db->prepare("DELETE FROM `{$this->table}` WHERE `id` = :id");
+        return $stmt->execute(['id' => $id]);
+    }
 }

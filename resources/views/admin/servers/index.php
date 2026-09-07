@@ -8,7 +8,7 @@ ob_start();
 <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
     <div>
         <h1 style="font-size: 1.5rem; font-weight: 700; margin: 0;">Danh Sách Máy Chủ</h1>
-        <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.25rem 0 0 0;">Quản lý các máy chủ VPN và thông số kỹ thuật trong hệ thống</p>
+        <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.25rem 0 0 0;">Quản lý hạ tầng máy chủ và thông số API kết nối</p>
     </div>
     <a href="/admin/servers/create" class="glass-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
         ➕ Thêm Máy Chủ Mới
@@ -36,9 +36,10 @@ ob_start();
                 <th style="padding: 0.75rem 0.5rem; width: 60px;">ID</th>
                 <th style="padding: 0.75rem 0.5rem;">Tên Máy Chủ</th>
                 <th style="padding: 0.75rem 0.5rem;">Nhóm</th>
-                <th style="padding: 0.75rem 0.5rem;">IP / Domain</th>
-                <th style="padding: 0.75rem 0.5rem; text-align: center;">Cổng</th>
-                <th style="padding: 0.75rem 0.5rem; text-align: center;">Hệ Số</th>
+                <th style="padding: 0.75rem 0.5rem;">Quốc Gia</th>
+                <th style="padding: 0.75rem 0.5rem;">Vị Trí</th>
+                <th style="padding: 0.75rem 0.5rem;">IP Address</th>
+                <th style="padding: 0.75rem 0.5rem; text-align: center;">API Port</th>
                 <th style="padding: 0.75rem 0.5rem; text-align: center;">Trạng Thái</th>
                 <th style="padding: 0.75rem 0.5rem; text-align: right; width: 140px;">Thao Tác</th>
             </tr>
@@ -49,21 +50,22 @@ ob_start();
                     <tr style="border-bottom: 1px solid var(--glass-border);">
                         <td style="padding: 0.75rem 0.5rem; font-weight: 700;">#<?= $server['id'] ?></td>
                         <td style="padding: 0.75rem 0.5rem; font-weight: 600; color: var(--ios-text);"><?= htmlspecialchars($server['name']) ?></td>
-                        <td style="padding: 0.75rem 0.5rem; color: var(--ios-text-secondary);"><?= htmlspecialchars($server['group_name'] ?? 'Mặc định') ?></td>
-                        <td style="padding: 0.75rem 0.5rem; font-family: monospace; color: var(--ios-blue);"><?= htmlspecialchars($server['ip_address'] ?? 'N/A') ?></td>
-                        <td style="padding: 0.75rem 0.5rem; text-align: center; font-weight: 600;"><?= htmlspecialchars($server['port'] ?? '443') ?></td>
-                        <td style="padding: 0.75rem 0.5rem; text-align: center;">
-                            <span style="background: rgba(0, 122, 255, 0.1); color: var(--ios-blue); padding: 0.2rem 0.5rem; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.8rem;">
-                                x<?= htmlspecialchars($server['rate'] ?? '1.0') ?>
+                        <td style="padding: 0.75rem 0.5rem; color: var(--ios-text-secondary);"><?= htmlspecialchars($server['group_name'] ?? 'Chưa phân nhóm') ?></td>
+                        <td style="padding: 0.75rem 0.5rem;">
+                            <span style="font-weight: 700; text-transform: uppercase; background: rgba(0, 122, 255, 0.1); color: var(--ios-blue); padding: 0.2rem 0.4rem; border-radius: var(--radius-sm);">
+                                <?= htmlspecialchars($server['country_code']) ?>
                             </span>
                         </td>
+                        <td style="padding: 0.75rem 0.5rem; color: var(--ios-text);"><?= htmlspecialchars($server['location']) ?></td>
+                        <td style="padding: 0.75rem 0.5rem; font-family: monospace; color: var(--ios-blue);"><?= htmlspecialchars($server['ip_address']) ?></td>
+                        <td style="padding: 0.75rem 0.5rem; text-align: center; font-weight: 600;"><?= htmlspecialchars($server['api_port']) ?></td>
                         <td style="padding: 0.75rem 0.5rem; text-align: center;">
                             <?php if (($server['status'] ?? 'active') === 'active'): ?>
                                 <span style="background: rgba(52, 199, 89, 0.15); color: var(--ios-success); padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">ACTIVE</span>
                             <?php elseif (($server['status'] ?? '') === 'maintenance'): ?>
-                                <span style="background: rgba(255, 149, 0, 0.15); color: var(--ios-warning); padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">BAO TRI</span>
+                                <span style="background: rgba(255, 149, 0, 0.15); color: var(--ios-warning); padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">MAINTENANCE</span>
                             <?php else: ?>
-                                <span style="background: rgba(255, 59, 48, 0.15); color: var(--ios-danger); padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">INACTIVE</span>
+                                <span style="background: rgba(255, 59, 48, 0.15); color: var(--ios-danger); padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">OFFLINE</span>
                             <?php endif; ?>
                         </td>
                         <td style="padding: 0.75rem 0.5rem; text-align: right;">
@@ -75,7 +77,7 @@ ob_start();
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="8" style="padding: 2rem; text-align: center; color: var(--ios-text-secondary);">Chưa có máy chủ nào được khởi tạo.</td>
+                    <td colspan="9" style="padding: 2rem; text-align: center; color: var(--ios-text-secondary);">Chưa có máy chủ nào được khởi tạo.</td>
                 </tr>
             <?php endif; ?>
         </tbody>
