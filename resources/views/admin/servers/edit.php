@@ -5,21 +5,18 @@ $activeMenu = "servers";
 ob_start();
 ?>
 
-<div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
-    <div>
-        <h1 style="font-size: 1.5rem; font-weight: 700; margin: 0;">Chỉnh Sửa Máy Chủ: <?= htmlspecialchars($server['name'] ?? '') ?></h1>
-    </div>
-    <a href="/admin/servers" class="glass-btn" style="text-decoration: none; font-weight: 600;">⬅️ Quay Lại</a>
+<div style="margin-bottom: 1.5rem; text-align: center;">
+    <h1 style="font-size: 1.5rem; font-weight: 700; margin: 0;">Chỉnh Sửa Máy Chủ: <?= htmlspecialchars($server['name'] ?? '') ?></h1>
 </div>
 
 <?php if (isset($_SESSION['error'])): ?>
-    <div style="background: rgba(255, 59, 48, 0.15); color: var(--ios-danger); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.875rem; border: 1px solid rgba(255, 59, 48, 0.3); margin-bottom: 1.25rem;">
+    <div style="background: rgba(255, 59, 48, 0.15); color: var(--ios-danger); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.875rem; border: 1px solid rgba(255, 59, 48, 0.3); margin-bottom: 1.25rem; max-width: 700px; margin-left: auto; margin-right: auto;">
         <?= htmlspecialchars($_SESSION['error']) ?>
     </div>
     <?php unset($_SESSION['error']); ?>
 <?php endif; ?>
 
-<div class="glass-card" style="padding: 1.5rem; max-width: 700px;">
+<div class="glass-card" style="padding: 1.5rem; max-width: 700px; margin: 0 auto;">
     <form action="/admin/servers/edit?id=<?= $server['id'] ?>" method="POST" style="display: flex; flex-direction: column; gap: 1.25rem;">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
             <div class="form-group" style="display: flex; flex-direction: column; gap: 0.4rem;">
@@ -78,9 +75,8 @@ ob_start();
             <input type="text" id="api_token" name="api_token" class="glass-input" value="<?= htmlspecialchars($server['api_token'] ?? '') ?>" style="padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.05); color: var(--ios-text); font-family: monospace;">
         </div>
 
-        <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-            <button type="submit" class="glass-btn" style="padding: 0.75rem 1.5rem; font-weight: 600; background: var(--ios-blue); color: #fff; border: none; cursor: pointer;">Cập Nhật</button>
-            <a href="/admin/servers" class="glass-btn" style="padding: 0.75rem 1.5rem; font-weight: 600; text-decoration: none; text-align: center;">Hủy</a>
+        <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+            <button type="submit" class="glass-btn" style="padding: 0.75rem 1.5rem; font-weight: 600; background: var(--ios-blue); color: #fff; border: none; cursor: pointer; border-radius: var(--radius-md);">Cập Nhật</button>
         </div>
     </form>
 </div>
