@@ -52,6 +52,12 @@ class UserController extends BaseController
                 $this->redirect('/admin/users/create');
             }
 
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $_SESSION['flash_message'] = 'Định dạng Email không hợp lệ!';
+                $_SESSION['flash_type'] = 'danger';
+                $this->redirect('/admin/users/create');
+            }
+
             if ($this->userModel->findByUsernameOrEmail($username) || $this->userModel->findByUsernameOrEmail($email)) {
                 $_SESSION['flash_message'] = 'Tên đăng nhập hoặc Email đã tồn tại trên hệ thống!';
                 $_SESSION['flash_type'] = 'danger';
@@ -69,7 +75,8 @@ class UserController extends BaseController
                 'status' => $status,
                 'balance' => $balance,
                 'commission_balance' => 0.00,
-                'ref_code' => $refCode
+                'ref_code' => $refCode,
+                'created_by' => $_SESSION['user_id'] // Ghi nhận ID Admin tạo người dùng này
             ];
 
             if ($this->userModel->create($data)) {
@@ -106,6 +113,13 @@ class UserController extends BaseController
             $commissionBalance = (float)($_POST['commission_balance'] ?? $user['commission_balance']);
             $newPassword = $_POST['new_password'] ?? '';
 
+            // Bảo mật: Không cho phép tự hạ vai trò Admin của chính mình
+            if ($id === (int)$_SESSION['user_id'] && $role !== 'admin') {
+                $_SESSION['flash_message'] = 'Bảo mật: Bạn không thể tự hạ vai trò Admin của chính mình!';
+                $_SESSION['flash_type'] = 'danger';
+                $this->redirect('/admin/users/edit?id=' . $id);
+            }
+
             $updateData = [
                 'full_name' => $fullName,
                 'phone' => $phone,
@@ -116,6 +130,11 @@ class UserController extends BaseController
             ];
 
             if (!empty($newPassword)) {
+                if (strlen($newPassword) < 6) {
+                    $_SESSION['flash_message'] = 'Mật khẩu mới phải có tối thiểu 6 ký tự!';
+                    $_SESSION['flash_type'] = 'danger';
+                    $this->redirect('/admin/users/edit?id=' . $id);
+                }
                 $updateData['password_hash'] = password_hash($newPassword, PASSWORD_BCRYPT);
             }
 
@@ -155,8 +174,24 @@ class UserController extends BaseController
     public function delete(): void
     {
         $id = (int)($_GET['id'] ?? 0);
+        $targetUser = $this->userModel->findById($id);
+
+        if (!$targetUser) {
+            $_SESSION['flash_message'] = 'Không tìm thấy tài khoản cần xóa!';
+            $_SESSION['flash_type'] = 'danger';
+            $this->redirect('/admin/users');
+        }
+
+        // BẢO MẬT TUYỆT ĐỐI: Không cho phép xóa bất kỳ tài khoản nào có vai trò Admin
+        if ($targetUser['role'] === 'admin') {
+            $_SESSION['flash_message'] = 'Cảnh báo bảo mật: Tất cả tài khoản Quản trị viên (Admin) không thể xóa!';
+            $_SESSION['flash_type'] = 'danger';
+            $this->redirect('/admin/users');
+        }
+
+        // BẢO MẬT BỔ SUNG: Không cho phép tự xóa chính tài khoản đang đăng nhập
         if ($id === (int)$_SESSION['user_id']) {
-            $_SESSION['flash_message'] = 'Bạn không thể tự xóa chính tài khoản admin của mình!';
+            $_SESSION['flash_message'] = 'Cảnh báo bảo mật: Bạn không thể tự xóa tài khoản của chính mình!';
             $_SESSION['flash_type'] = 'danger';
             $this->redirect('/admin/users');
         }
@@ -165,7 +200,7 @@ class UserController extends BaseController
             $_SESSION['flash_message'] = 'Đã xóa người dùng thành công!';
             $_SESSION['flash_type'] = 'success';
         } else {
-            $_SESSION['flash_message'] = 'Lỗi hệ thống, không thể xóa!';
+            $_SESSION['flash_message'] = 'Lỗi hệ thống, không thể xóa người dùng!';
             $_SESSION['flash_type'] = 'danger';
         }
         $this->redirect('/admin/users');

@@ -20,12 +20,14 @@ CREATE TABLE `vc_users` (
     `commission_balance` DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
     `ref_code` VARCHAR(20) NULL UNIQUE,
     `referred_by` BIGINT UNSIGNED NULL,
+    `created_by` BIGINT UNSIGNED NULL,
     `register_ip` VARCHAR(45) NULL,
     `last_login_ip` VARCHAR(45) NULL,
     `last_login_time` TIMESTAMP NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (`referred_by`) REFERENCES `vc_users`(`id`) ON DELETE SET NULL
+    FOREIGN KEY (`referred_by`) REFERENCES `vc_users`(`id`) ON DELETE SET NULL,
+    FOREIGN KEY (`created_by`) REFERENCES `vc_users`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `vc_access_logs` (

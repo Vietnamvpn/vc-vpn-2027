@@ -5,11 +5,11 @@ $activeMenu = "users";
 ob_start();
 ?>
 
-<div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+<div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;">
     <div>
-        <h1 style="font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem;">Hồ Sơ: <?= htmlspecialchars($user['username']) ?></h1>
+        <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Hồ Sơ: <?= htmlspecialchars($user['username']) ?></h1>
     </div>
-    <a href="/admin/users/edit?id=<?= $user['id'] ?>" class="glass-btn" style="text-decoration: none;">✏️ Chỉnh Sửa</a>
+    <a href="/admin/users/edit?id=<?= $user['id'] ?>" class="glass-btn" style="text-decoration: none; white-space: nowrap; flex-shrink: 0;">✏️ Chỉnh Sửa</a>
 </div>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
@@ -23,6 +23,12 @@ ob_start();
             <div><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></div>
             <div><strong>Họ và tên:</strong> <?= htmlspecialchars($user['full_name'] ?? 'Chưa cập nhật') ?></div>
             <div><strong>Số điện thoại:</strong> <?= htmlspecialchars($user['phone'] ?? 'Chưa cập nhật') ?></div>
+            <div>
+                <strong>Nguồn tạo:</strong> 
+                <span style="font-weight: 700; color: <?= !empty($user['created_by']) ? 'var(--ios-blue)' : 'var(--ios-success)' ?>;">
+                    <?= !empty($user['created_by']) ? 'Quản trị viên (ID #' . htmlspecialchars($user['created_by']) . ')' : 'Tự đăng ký' ?>
+                </span>
+            </div>
             <div>
                 <strong>Vai trò:</strong> 
                 <span style="font-weight: 700; text-transform: uppercase;"><?= htmlspecialchars($user['role']) ?></span>
