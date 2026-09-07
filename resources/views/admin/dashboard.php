@@ -56,39 +56,8 @@ ob_start();
     </div>
 </div>
 
-<!-- Biểu Đồ So Sánh Doanh Thu Cùng Form Chọn Tháng / Năm -->
-<div class="glass-card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
-        <div>
-            <h2 style="font-size: 1.1rem; font-weight: 700;">So Sánh Doanh Thu</h2>
-            <p style="font-size: 0.8rem; color: var(--ios-text-secondary);">Đối soát tăng trưởng doanh thu theo từng ngày giữa tháng đã chọn và tháng liền trước</p>
-        </div>
-
-        <!-- Dropdown Bộ Lọc Thời Gian -->
-        <form method="GET" action="/admin" style="display: flex; gap: 0.5rem; align-items: center;">
-            <select name="month" onchange="this.form.submit()" style="padding: 0.45rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.4); color: var(--ios-text); font-weight: 600; font-size: 0.85rem; outline: none; cursor: pointer;">
-                <?php for ($m = 1; $m <= 12; $m++): ?>
-                    <option value="<?= $m ?>" <?= ($m == ($selectedMonth ?? date('n'))) ? 'selected' : '' ?>>Tháng <?= $m ?></option>
-                <?php endfor; ?>
-            </select>
-
-            <select name="year" onchange="this.form.submit()" style="padding: 0.45rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.4); color: var(--ios-text); font-weight: 600; font-size: 0.85rem; outline: none; cursor: pointer;">
-                <?php
-                $currentY = (int)date('Y');
-                for ($y = $currentY; $y >= $currentY - 3; $y--): ?>
-                    <option value="<?= $y ?>" <?= ($y == ($selectedYear ?? $currentY)) ? 'selected' : '' ?>>Năm <?= $y ?></option>
-                <?php endfor; ?>
-            </select>
-        </form>
-    </div>
-
-    <div style="position: relative; height: 300px; width: 100%;">
-        <canvas id="revenueComparisonChart"></canvas>
-    </div>
-</div>
-
 <!-- Layout 2 Cột Responsive -->
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; align-items: start;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; align-items: start; margin-bottom: 1.5rem;">
     <!-- Đơn Hàng Mới -->
     <div class="glass-card" style="padding: 1.25rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -156,6 +125,37 @@ ob_start();
                 <div style="text-align: center; color: var(--ios-text-secondary); padding: 1rem;">Chưa có máy chủ nào</div>
             <?php endif; ?>
         </div>
+    </div>
+</div>
+
+<!-- Biểu Đồ So Sánh Doanh Thu Cùng Form Chọn Tháng / Năm (Ở Dưới Cùng) -->
+<div class="glass-card" style="padding: 1.25rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+        <div>
+            <h2 style="font-size: 1.1rem; font-weight: 700;">So Sánh Doanh Thu</h2>
+            <p style="font-size: 0.8rem; color: var(--ios-text-secondary);">Đối soát tăng trưởng doanh thu theo từng ngày giữa tháng đã chọn và tháng liền trước</p>
+        </div>
+
+        <!-- Dropdown Bộ Lọc Thời Gian -->
+        <form method="GET" action="/admin" style="display: flex; gap: 0.5rem; align-items: center;">
+            <select name="month" onchange="this.form.submit()" style="padding: 0.45rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.4); color: var(--ios-text); font-weight: 600; font-size: 0.85rem; outline: none; cursor: pointer;">
+                <?php for ($m = 1; $m <= 12; $m++): ?>
+                    <option value="<?= $m ?>" <?= ($m == ($selectedMonth ?? date('n'))) ? 'selected' : '' ?>>Tháng <?= $m ?></option>
+                <?php endfor; ?>
+            </select>
+
+            <select name="year" onchange="this.form.submit()" style="padding: 0.45rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.4); color: var(--ios-text); font-weight: 600; font-size: 0.85rem; outline: none; cursor: pointer;">
+                <?php
+                $currentY = (int)date('Y');
+                for ($y = $currentY; $y >= $currentY - 3; $y--): ?>
+                    <option value="<?= $y ?>" <?= ($y == ($selectedYear ?? $currentY)) ? 'selected' : '' ?>>Năm <?= $y ?></option>
+                <?php endfor; ?>
+            </select>
+        </form>
+    </div>
+
+    <div style="position: relative; height: 300px; width: 100%;">
+        <canvas id="revenueComparisonChart"></canvas>
     </div>
 </div>
 
