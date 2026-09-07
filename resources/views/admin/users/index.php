@@ -13,12 +13,12 @@ ob_start();
     </div>
 <?php endif; ?>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 0.75rem;">
     <div>
         <h1 style="font-size: 1.5rem; font-weight: 700;">Quản Lý Người Dùng</h1>
         <p style="color: var(--ios-text-secondary); font-size: 0.85rem;">Danh sách tất cả tài khoản thành viên trong hệ thống</p>
     </div>
-    <a href="/admin/users/create" class="glass-btn" style="text-decoration: none;">+ Thêm Người Dùng</a>
+    <a href="/admin/users/create" class="glass-btn" style="text-decoration: none; white-space: nowrap; flex-shrink: 0;">+ Thêm Người Dùng</a>
 </div>
 
 <!-- Bộ Lọc & Tìm Kiếm -->
