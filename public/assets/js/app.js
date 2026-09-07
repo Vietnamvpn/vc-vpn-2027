@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const profileMenu = document.getElementById('profile-dropdown-menu');
     const guestBtn = document.getElementById('guest-menu-btn');
     const guestMenu = document.getElementById('guest-dropdown-menu');
+    const preloader = document.getElementById('page-preloader');
 
     function closeAll() {
         if (sidebar) sidebar.classList.remove('active');
@@ -63,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 3. Toggle Guest Menu Mobile (Bật kèm màn đen phủ bên dưới và khóa cuộn)
+    // 3. Toggle Guest Menu Mobile
     if (guestBtn && guestMenu) {
         guestBtn.addEventListener('click', function (e) {
             e.preventDefault();
@@ -110,6 +111,59 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('resize', function () {
         if (window.innerWidth >= 992) {
             closeAll();
+        }
+    });
+
+    // 6. Quản lý Preloader (Đang tải...)
+    function hidePreloader() {
+        if (preloader) {
+            preloader.classList.add('preloader-hidden');
+        }
+    }
+
+    function showPreloader() {
+        if (preloader) {
+            preloader.classList.remove('preloader-hidden');
+        }
+    }
+
+    // Ẩn preloader khi toàn bộ tài nguyên trang đã tải hoàn tất
+    window.addEventListener('load', hidePreloader);
+
+    // Đảm bảo ẩn preloader khi dùng nút Back/Forward của trình duyệt (bfcache)
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) {
+            hidePreloader();
+        }
+    });
+
+    // Kích hoạt Preloader khi bấm vào bất kỳ liên kết chuyển trang nội bộ nào
+    document.addEventListener('click', function (e) {
+        const link = e.target.closest('a');
+        if (!link) return;
+
+        const href = link.getAttribute('href');
+        const target = link.getAttribute('target');
+
+        if (
+            href &&
+            !href.startsWith('#') &&
+            !href.startsWith('javascript:') &&
+            !href.startsWith('mailto:') &&
+            !href.startsWith('tel:') &&
+            target !== '_blank' &&
+            !e.ctrlKey &&
+            !e.metaKey
+        ) {
+            showPreloader();
+        }
+    });
+
+    // Kích hoạt Preloader khi submit Form
+    document.addEventListener('submit', function (e) {
+        const form = e.target;
+        if (form && !form.hasAttribute('data-no-loader')) {
+            showPreloader();
         }
     });
 });

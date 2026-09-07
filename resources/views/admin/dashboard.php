@@ -56,6 +56,19 @@ ob_start();
     </div>
 </div>
 
+<!-- Biểu Đồ So Sánh Doanh Thu Tháng Hiện Tại & Tháng Trước -->
+<div class="glass-card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+            <h2 style="font-size: 1.1rem; font-weight: 700;">So Sánh Doanh Thu</h2>
+            <p style="font-size: 0.8rem; color: var(--ios-text-secondary);">Đối soát tăng trưởng doanh thu theo từng ngày giữa tháng này và tháng trước</p>
+        </div>
+    </div>
+    <div style="position: relative; height: 300px; width: 100%;">
+        <canvas id="revenueComparisonChart"></canvas>
+    </div>
+</div>
+
 <!-- Layout 2 Cột Responsive -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; align-items: start;">
     <!-- Đơn Hàng Mới -->
@@ -127,6 +140,88 @@ ob_start();
         </div>
     </div>
 </div>
+
+<!-- Script vẽ biểu đồ Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const ctx = document.getElementById('revenueComparisonChart').getContext('2d');
+    
+    const currentMonthData = <?= json_encode($monthlyChart['current_month'] ?? array_fill(0, 31, 0)) ?>;
+    const lastMonthData = <?= json_encode($monthlyChart['last_month'] ?? array_fill(0, 31, 0)) ?>;
+    const daysLabels = Array.from({length: 31}, (_, i) => 'Ngày ' + (i + 1));
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: daysLabels,
+            datasets: [
+                {
+                    label: 'Tháng Hiện Tại',
+                    data: currentMonthData,
+                    borderColor: '#007aff',
+                    backgroundColor: 'rgba(0, 122, 255, 0.12)',
+                    fill: true,
+                    tension: 0.35,
+                    borderWidth: 2.5,
+                    pointRadius: 3
+                },
+                {
+                    label: 'Tháng Trước',
+                    data: lastMonthData,
+                    borderColor: '#8e8e93',
+                    backgroundColor: 'rgba(142, 142, 147, 0.08)',
+                    fill: true,
+                    tension: 0.35,
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--ios-text').trim() || '#1c1c1e',
+                        font: { weight: '600' }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) { label += ': '; }
+                            if (context.parsed.y !== null) {
+                                label += new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(context.parsed.y);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                    ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--ios-text-secondary').trim() || '#8e8e93' }
+                },
+                y: {
+                    grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                    ticks: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--ios-text-secondary').trim() || '#8e8e93',
+                        callback: function(value) {
+                            return new Intl.NumberFormat('vi-VN', { notation: 'compact' }).format(value) + ' đ';
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
 
 <?php
 $content = ob_get_clean();
