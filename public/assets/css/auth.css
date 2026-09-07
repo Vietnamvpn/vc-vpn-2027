@@ -4,6 +4,7 @@
 * {
   font-family: 'Inter', -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
 }
 
 html, body {
@@ -166,7 +167,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 2rem 1rem;
   box-sizing: border-box;
   position: relative;
   z-index: 10;
@@ -182,7 +183,7 @@ body {
   border-top: 1px solid rgba(212, 175, 55, 0.4);
   width: 100%;
   max-width: 440px;
-  padding: 40px;
+  padding: 2.75rem 2.25rem;
   z-index: 10;
   position: relative;
   box-sizing: border-box;
@@ -237,11 +238,31 @@ body {
 }
 
 /* HIỆU ỨNG LẮP RÁP CÁC THÀNH PHẦN */
-.assemble-top { opacity: 0; animation: slideInTop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s; }
-.assemble-left { opacity: 0; animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s; }
-.assemble-right { opacity: 0; animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.6s; }
-.assemble-bottom-1 { opacity: 0; animation: slideInBottom 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.8s; }
-.assemble-bottom-2 { opacity: 0; animation: slideInBottom 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 1s; }
+.assemble-top { 
+  opacity: 0; 
+  animation: slideInTop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s; 
+  margin-bottom: 2rem;
+}
+
+.assemble-left { 
+  opacity: 0; 
+  animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s; 
+}
+
+.assemble-right { 
+  opacity: 0; 
+  animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.6s; 
+}
+
+.assemble-bottom-1 { 
+  opacity: 0; 
+  animation: slideInBottom 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.8s; 
+}
+
+.assemble-bottom-2 { 
+  opacity: 0; 
+  animation: slideInBottom 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 1s; 
+}
 
 @keyframes slideInTop { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideInLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
@@ -254,6 +275,14 @@ body {
   text-shadow: 0 2px 4px rgba(0,0,0,0.8);
   letter-spacing: 1px;
   font-weight: 700;
+  font-size: 1.75rem;
+  margin: 0 0 0.4rem 0;
+}
+
+.royal-subtitle {
+  color: #8a6a4b;
+  font-size: 0.9rem;
+  margin: 0;
 }
 
 @keyframes neonColorChange {
@@ -278,6 +307,26 @@ body {
 .text-sparkle {
   animation: neonColorChange 4s infinite ease-in-out;
   display: inline-block;
+}
+
+/* FORM LAYOUT */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #d4af37;
+  margin-left: 4px;
 }
 
 /* INPUT STYLES */
@@ -309,6 +358,7 @@ body {
   transition: 0.3s;
   display: flex;
   align-items: center;
+  font-size: 1.1rem;
 }
 
 .input-group-custom:focus-within .input-group-text-custom {
@@ -323,7 +373,7 @@ body {
   width: 100%;
   outline: none;
   color: #fcf6ba;
-  font-size: 15px;
+  font-size: 0.95rem;
   border-radius: inherit;
 }
 
@@ -338,6 +388,7 @@ body {
   color: #8a6a4b;
   transition: 0.3s;
   cursor: pointer;
+  font-size: 1.1rem;
 }
 
 .btn-toggle-pw:hover {
@@ -365,12 +416,13 @@ body {
   border-radius: 12px;
   padding: 14px;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 1px;
   transition: all 0.3s;
   cursor: pointer;
   width: 100%;
+  margin-top: 0.5rem;
 }
 
 .btn-login:hover {
@@ -383,19 +435,19 @@ body {
 
 /* FOOTER LINKS */
 .auth-footer {
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  margin-top: 15px;
+  gap: 12px;
+  margin-top: 1.75rem;
   color: #8a6a4b;
 }
 
 .auth-footer a {
   text-decoration: none;
   color: #d4af37;
-  font-weight: 500;
+  font-weight: 600;
   transition: 0.2s;
 }
 
@@ -405,12 +457,12 @@ body {
 }
 
 .auth-footer .divider {
-  color: rgba(212, 175, 55, 0.3);
+  color: rgba(212, 175, 55, 0.35);
 }
 
 @media (max-width: 480px) {
   .auth-card {
-    padding: 30px 20px;
+    padding: 2.25rem 1.5rem;
     border-radius: 20px;
   }
 }
