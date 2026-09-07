@@ -107,7 +107,7 @@ html, body {
   100% { transform: scale(1); }
 }
 
-/* --- BẮT BUỘC KHUNG TOÀN MÀN HÌNH ĐỂ CĂN GIỮA TUYỆT ĐỐI --- */
+/* --- KHUNG THẺ KÍNH SÁNG CĂN GIỮA TUYỆT ĐỐI --- */
 .auth-wrapper {
   position: fixed !important;
   top: 0 !important;
@@ -140,7 +140,7 @@ html, body {
   animation: fadeInCard 0.6s ease-out forwards;
 }
 
-/* VIỀN QUÉT SÁNG VÀNG ĐỒNG 2 BÊN (SWEEP EFFECT) */
+/* VIỀN QUÉT SÁNG VÀNG ĐỒNG 2 BÊN */
 .auth-card::before, .auth-card::after {
   content: '';
   position: absolute;
@@ -292,6 +292,7 @@ html, body {
   overflow: hidden;
   position: relative;
   width: 100%;
+  z-index: 5;
 }
 
 .input-group-custom:focus-within {
@@ -308,6 +309,7 @@ html, body {
   display: flex;
   align-items: center;
   font-size: 1.15rem;
+  flex-shrink: 0;
 }
 
 .form-control-custom {
@@ -315,7 +317,8 @@ html, body {
   border: none;
   padding: 14px 12px;
   box-shadow: none !important;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   outline: none;
   color: #0f172a;
   font-size: 0.95rem;
@@ -329,15 +332,19 @@ html, body {
 .btn-toggle-pw {
   background: transparent;
   border: none;
-  padding-right: 16px;
+  padding: 0 16px;
   color: #9a7b1c;
   transition: 0.2s;
-  cursor: pointer;
+  cursor: pointer !important;
   font-size: 1.15rem;
   user-select: none;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 20 !important;
+  pointer-events: auto !important;
 }
 
 .btn-toggle-pw:hover {

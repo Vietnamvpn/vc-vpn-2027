@@ -24,7 +24,7 @@ ob_start();
         <div class="input-group-custom">
             <span class="input-group-text-custom">🔒</span>
             <input type="password" id="password" name="password" class="form-control-custom" placeholder="••••••••" required>
-            <button type="button" class="btn-toggle-pw toggle-password" data-target="password" title="Bật/Tắt hiển thị mật khẩu">👁️</button>
+            <button type="button" class="btn-toggle-pw toggle-password" data-target="password" onclick="togglePasswordVisibility(this)" title="Bật/Tắt hiển thị mật khẩu">👁️</button>
         </div>
     </div>
 
@@ -38,6 +38,22 @@ ob_start();
     <span class="divider">|</span>
     <a href="/register">Đăng ký ngay</a>
 </div>
+
+<script>
+function togglePasswordVisibility(btn) {
+    const targetId = btn.getAttribute('data-target');
+    const input = targetId ? document.getElementById(targetId) : btn.parentElement.querySelector('input');
+    if (input) {
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            btn.textContent = '👁️';
+        }
+    }
+}
+</script>
 
 <?php
 $content = ob_get_clean();

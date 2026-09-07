@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // 1. Logic Toggle Ẩn/Hiện Mật Khẩu (Bắt sự kiện chính xác)
+    // 1. Logic Toggle Ẩn/Hiện Mật Khẩu
     const toggleBtns = document.querySelectorAll('.toggle-password, .btn-toggle-pw');
 
     toggleBtns.forEach(function (btn) {
         btn.addEventListener('click', function (e) {
             e.preventDefault();
+            e.stopPropagation();
+            
             const targetId = this.getAttribute('data-target');
             let passwordInput = null;
 
