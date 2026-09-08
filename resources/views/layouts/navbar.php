@@ -37,7 +37,7 @@
                 <div id="profile-dropdown-menu" class="profile-menu glass-card">
                     <div style="border-bottom: 1px solid var(--glass-border); padding-bottom: 0.75rem;">
                         <div style="font-weight: 700; font-size: 0.95rem; color: var(--ios-text);">
-                            <?= htmlspecialchars($_SESSION['full_name'] ?? $_SESSION['username'] ?? 'N/A') ?>
+                            <?= htmlspecialchars($_SESSION['username'] ?? 'N/A') ?>
                         </div>
                         <div style="font-size: 0.75rem; color: var(--ios-text-secondary); margin-top: 0.15rem; word-break: break-all;">
                             Email: <?= htmlspecialchars($_SESSION['email'] ?? 'Chưa cập nhật email') ?>
@@ -64,10 +64,10 @@
             </div>
         <?php else: ?>
             <!-- Desktop view -->
-<div class="guest-desktop-actions">
-    <a href="/login" style="color: #007aff; text-decoration: none; font-size: 0.85rem; font-weight: 600;">Đăng nhập</a>
-    <a href="/register" style="color: var(--ios-warning); text-decoration: none; font-size: 0.85rem; font-weight: 600;">Đăng ký</a>
-</div>
+            <div class="guest-desktop-actions">
+                <a href="/login" style="color: #007aff; text-decoration: none; font-size: 0.85rem; font-weight: 600;">Đăng nhập</a>
+                <a href="/register" style="color: var(--ios-warning); text-decoration: none; font-size: 0.85rem; font-weight: 600;">Đăng ký</a>
+            </div>
 
             <!-- Mobile view: Nút Toggle Menu Khách -->
             <div class="guest-mobile-wrapper">
