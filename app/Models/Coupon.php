@@ -6,6 +6,13 @@ class Coupon extends BaseModel
 {
     protected string $table = 'vc_coupons';
 
+    public function all(): array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM {$this->table} ORDER BY id DESC");
+        $stmt->execute();
+        return $stmt->fetchAll() ?: [];
+    }
+
     public function findByCode(string $code): ?array
     {
         $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE code = ? LIMIT 1");
