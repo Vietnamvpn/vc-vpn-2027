@@ -11,7 +11,6 @@ ob_start();
     </div>
     <div style="display: flex; gap: 0.5rem;">
         <a href="/admin/servers/edit?id=<?= $server['id'] ?>" class="glass-btn" style="text-decoration: none; font-weight: 600;">✏️ Chỉnh Sửa</a>
-        <a href="/admin/servers" class="glass-btn" style="text-decoration: none; font-weight: 600;">⬅️ Quay Lại</a>
     </div>
 </div>
 

@@ -5,28 +5,31 @@ $activeMenu = "server-groups";
 ob_start();
 ?>
 
-<div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
-    <div>
-        <h1 style="font-size: 1.5rem; font-weight: 700; margin: 0;">Nhóm Máy Chủ</h1>
-        <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.25rem 0 0 0;">Quản lý và phân loại các cụm server cho người dùng</p>
-    </div>
-    <a href="/admin/server-groups/create" class="glass-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
+<div style="margin-bottom: 0.75rem;">
+    <h1 style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; margin: 0;">Nhóm Máy Chủ</h1>
+    <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.25rem 0 0 0;">Quản lý và phân loại các cụm server cho người dùng</p>
+</div>
+
+<div style="margin-bottom: 1.25rem;">
+    <a href="/admin/server-groups/create" class="glass-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; padding: 0.65rem 1.25rem; font-size: 0.9rem;">
         ➕ Thêm Nhóm Mới
     </a>
 </div>
 
 <?php if (isset($_SESSION['success'])): ?>
-    <div style="background: rgba(52, 199, 89, 0.15); color: var(--ios-success); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.875rem; border: 1px solid rgba(52, 199, 89, 0.3); margin-bottom: 1.25rem;">
-        <?= htmlspecialchars($_SESSION['success']) ?>
+    <div class="glass-card glass-alert" style="padding: 1rem 1.25rem; margin-bottom: 1.25rem; border-left: 4px solid var(--ios-success); display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 500; font-size: 0.9rem; color: var(--ios-success);"><?= htmlspecialchars($_SESSION['success']) ?></span>
+        <button type="button" class="alert-close" style="background: none; border: none; color: var(--ios-text-secondary); font-size: 1.25rem; cursor: pointer; padding: 0 0.25rem; line-height: 1;" title="Đóng">&times;</button>
+        <?php unset($_SESSION['success']); ?>
     </div>
-    <?php unset($_SESSION['success']); ?>
 <?php endif; ?>
 
 <?php if (isset($_SESSION['error'])): ?>
-    <div style="background: rgba(255, 59, 48, 0.15); color: var(--ios-danger); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.875rem; border: 1px solid rgba(255, 59, 48, 0.3); margin-bottom: 1.25rem;">
-        <?= htmlspecialchars($_SESSION['error']) ?>
+    <div class="glass-card glass-alert" style="padding: 1rem 1.25rem; margin-bottom: 1.25rem; border-left: 4px solid var(--ios-danger); display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 500; font-size: 0.9rem; color: var(--ios-danger);"><?= htmlspecialchars($_SESSION['error']) ?></span>
+        <button type="button" class="alert-close" style="background: none; border: none; color: var(--ios-text-secondary); font-size: 1.25rem; cursor: pointer; padding: 0 0.25rem; line-height: 1;" title="Đóng">&times;</button>
+        <?php unset($_SESSION['error']); ?>
     </div>
-    <?php unset($_SESSION['error']); ?>
 <?php endif; ?>
 
 <div class="glass-card" style="padding: 1.25rem; overflow-x: auto;">
