@@ -49,7 +49,6 @@ ob_start();
                     <th>Mã Code</th>
                     <th>Loại Giảm Giá</th>
                     <th>Giá Trị Giảm</th>
-                    <th>Đơn Tối Thiểu</th>
                     <th style="text-align: center;">Lượt Sử Dụng</th>
                     <th>Ngày Hết Hạn</th>
                     <th style="text-align: center;">Trạng Thái</th>
@@ -78,15 +77,12 @@ ob_start();
                                     <?= number_format($coupon['discount_value'], 0, ',', '.') ?> đ
                                 <?php endif; ?>
                             </td>
-                            <td style="font-weight: 600; font-size: 0.85rem;">
-                                <?= !empty($coupon['min_order_value']) ? number_format($coupon['min_order_value'], 0, ',', '.') . ' đ' : 'Không có' ?>
-                            </td>
                             <td style="text-align: center; font-size: 0.85rem;">
                                 <span style="font-weight: 700; color: var(--ios-text);"><?= (int)($coupon['used_count'] ?? 0) ?></span>
-                                <span style="color: var(--ios-text-secondary);">/ <?= !empty($coupon['usage_limit']) ? (int)$coupon['usage_limit'] : '∞' ?></span>
+                                <span style="color: var(--ios-text-secondary);">/ <?= !empty($coupon['max_uses']) ? (int)$coupon['max_uses'] : '∞' ?></span>
                             </td>
                             <td style="font-size: 0.8rem; color: var(--ios-text-secondary);">
-                                <?= !empty($coupon['expired_at']) ? date('d/m/Y H:i', strtotime($coupon['expired_at'])) : 'Vĩnh viễn' ?>
+                                <?= !empty($coupon['expires_at']) ? date('d/m/Y H:i', strtotime($coupon['expires_at'])) : 'Vĩnh viễn' ?>
                             </td>
                             <td style="text-align: center;">
                                 <?php
@@ -116,7 +112,7 @@ ob_start();
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="9" style="text-align: center; padding: 2rem; color: var(--ios-text-secondary);">Chưa có mã giảm giá nào được tạo.</td>
+                        <td colspan="8" style="text-align: center; padding: 2rem; color: var(--ios-text-secondary);">Chưa có mã giảm giá nào được tạo.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>

@@ -49,20 +49,15 @@ ob_start();
             </div>
 
             <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Giá Trị Đơn Tối Thiểu (VNĐ)</label>
-                <input type="number" name="min_order_value" class="glass-input" value="0" min="0" step="1000" placeholder="0 = Không yêu cầu" style="width: 100%;">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Giới Hạn Lượt Dùng (Tối Đa)</label>
+                <input type="number" name="max_uses" class="glass-input" value="0" min="0" placeholder="0 = Không giới hạn" style="width: 100%;">
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
-            <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Giới Hạn Lượt Dùng</label>
-                <input type="number" name="usage_limit" class="glass-input" value="0" min="0" placeholder="0 = Không giới hạn" style="width: 100%;">
-            </div>
-
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
             <div>
                 <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Ngày Hết Hạn</label>
-                <input type="datetime-local" name="expired_at" class="glass-input" style="width: 100%;">
+                <input type="datetime-local" name="expires_at" class="glass-input" style="width: 100%;">
             </div>
 
             <div>

@@ -41,9 +41,8 @@ class CouponController extends BaseController
         $code          = strtoupper(trim($_POST['code'] ?? ''));
         $discountType  = $_POST['discount_type'] ?? 'percent';
         $discountValue = (float)($_POST['discount_value'] ?? 0);
-        $minOrderValue = (float)($_POST['min_order_value'] ?? 0);
-        $usageLimit    = (int)($_POST['usage_limit'] ?? 0);
-        $expiredAt     = !empty($_POST['expired_at']) ? $_POST['expired_at'] : null;
+        $maxUses       = (int)($_POST['max_uses'] ?? 0);
+        $expiresAt     = !empty($_POST['expires_at']) ? $_POST['expires_at'] : null;
         $status        = $_POST['status'] ?? 'active';
 
         if (empty($code) || $discountValue <= 0) {
@@ -53,14 +52,13 @@ class CouponController extends BaseController
         }
 
         $data = [
-            'code'            => $code,
-            'discount_type'   => $discountType,
-            'discount_value'  => $discountValue,
-            'min_order_value' => $minOrderValue,
-            'usage_limit'     => $usageLimit,
-            'expired_at'      => $expiredAt,
-            'status'          => $status,
-            'created_at'      => date('Y-m-d H:i:s')
+            'code'           => $code,
+            'discount_type'  => $discountType,
+            'discount_value' => $discountValue,
+            'max_uses'       => $maxUses,
+            'expires_at'     => $expiresAt,
+            'status'         => $status,
+            'created_at'     => date('Y-m-d H:i:s')
         ];
 
         if ($this->couponModel->create($data)) {
@@ -106,9 +104,8 @@ class CouponController extends BaseController
         $code          = strtoupper(trim($_POST['code'] ?? ''));
         $discountType  = $_POST['discount_type'] ?? 'percent';
         $discountValue = (float)($_POST['discount_value'] ?? 0);
-        $minOrderValue = (float)($_POST['min_order_value'] ?? 0);
-        $usageLimit    = (int)($_POST['usage_limit'] ?? 0);
-        $expiredAt     = !empty($_POST['expired_at']) ? $_POST['expired_at'] : null;
+        $maxUses       = (int)($_POST['max_uses'] ?? 0);
+        $expiresAt     = !empty($_POST['expires_at']) ? $_POST['expires_at'] : null;
         $status        = $_POST['status'] ?? 'active';
 
         if (empty($code) || $discountValue <= 0) {
@@ -118,13 +115,12 @@ class CouponController extends BaseController
         }
 
         $data = [
-            'code'            => $code,
-            'discount_type'   => $discountType,
-            'discount_value'  => $discountValue,
-            'min_order_value' => $minOrderValue,
-            'usage_limit'     => $usageLimit,
-            'expired_at'      => $expiredAt,
-            'status'          => $status
+            'code'           => $code,
+            'discount_type'  => $discountType,
+            'discount_value' => $discountValue,
+            'max_uses'       => $maxUses,
+            'expires_at'     => $expiresAt,
+            'status'         => $status
         ];
 
         if ($this->couponModel->update($id, $data)) {
