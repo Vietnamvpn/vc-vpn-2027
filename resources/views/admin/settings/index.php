@@ -187,12 +187,24 @@ ob_start();
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thời Gian Dùng Thử (Ngày)</label>
-                    <input type="number" name="settings[trial_duration_days]" class="glass-input" value="<?= htmlspecialchars($settings['trial_duration_days'] ?? '3') ?>" min="1" step="1" style="width: 100%;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Gói Cước Dùng Thử (Plan)</label>
+                    <select name="settings[trial_plan_id]" class="glass-input" style="width: 100%; cursor: pointer;">
+                        <option value="">-- Chọn Gói Cước --</option>
+                        <?php foreach (($plans ?? []) as $plan): ?>
+                            <option value="<?= $plan['id'] ?>" <?= ($settings['trial_plan_id'] ?? '') == $plan['id'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($plan['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+                <div>
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thời Gian Dùng Thử (Ngày)</label>
+                    <input type="number" name="settings[trial_duration_days]" class="glass-input" value="<?= htmlspecialchars($settings['trial_duration_days'] ?? '3') ?>" min="1" step="1" style="width: 100%;">
+                </div>
+
                 <div>
                     <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Lưu Lượng Cho Phép (GB)</label>
                     <input type="number" name="settings[trial_bandwidth_gb]" class="glass-input" value="<?= htmlspecialchars($settings['trial_bandwidth_gb'] ?? '10') ?>" min="1" step="1" style="width: 100%;">

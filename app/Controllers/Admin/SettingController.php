@@ -4,10 +4,12 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 use App\Models\Setting;
+use App\Models\VpnPlan;
 
 class SettingController extends BaseController
 {
     private Setting $settingModel;
+    private VpnPlan $planModel;
 
     public function __construct()
     {
@@ -15,15 +17,18 @@ class SettingController extends BaseController
             $this->redirect('/auth/login');
         }
         $this->settingModel = new Setting();
+        $this->planModel = new VpnPlan();
     }
 
     public function index(): void
     {
         $settings = $this->settingModel->getAllAsKeyValue();
+        $plans    = $this->planModel->getAllActive();
 
         $this->render('admin.settings.index', [
             'activeMenu' => 'settings',
-            'settings'   => $settings
+            'settings'   => $settings,
+            'plans'      => $plans
         ]);
     }
 
