@@ -100,3 +100,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 400);
     }
 });
+
+/* Script xử lý chuyển Tab & Lưu trạng thái cho trang Settings */
+document.addEventListener('DOMContentLoaded', function() {
+    const tabBtns = document.querySelectorAll('.settings-tab-btn');
+    const tabPanes = document.querySelectorAll('.settings-tab-pane');
+    
+    // Chỉ chạy script nếu đang ở trang có chứa settings-tabs
+    if (tabBtns.length > 0 && tabPanes.length > 0) {
+        const activeTabId = localStorage.getItem('vc_active_settings_tab') || 'tab-general';
+        
+        function activateTab(tabId) {
+            tabBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.target === tabId);
+            });
+            tabPanes.forEach(pane => {
+                pane.classList.toggle('active', pane.id === tabId);
+            });
+            localStorage.setItem('vc_active_settings_tab', tabId);
+        }
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                activateTab(this.dataset.target);
+            });
+        });
+
+        activateTab(activeTabId);
+    }
+});

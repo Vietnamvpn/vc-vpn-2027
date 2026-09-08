@@ -249,3 +249,44 @@
 .font-semibold { font-weight: 600; }
 .text-muted { color: var(--ios-text-secondary); }
 .text-success { color: var(--ios-success); }
+
+/* CSS cho hệ thống Tab Settings */
+.settings-tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--glass-border);
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+.settings-tab-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 0.6rem 1.25rem;
+    font-weight: 600;
+    color: var(--ios-text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+.settings-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.settings-tab-btn.active {
+    background: var(--ios-blue);
+    color: #fff;
+    border-color: var(--ios-blue);
+}
+.settings-tab-pane {
+    display: none;
+    animation: fadeInTab 0.3s ease;
+}
+.settings-tab-pane.active {
+    display: block;
+}
+@keyframes fadeInTab {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

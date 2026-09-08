@@ -5,49 +5,6 @@ $activeMenu = "settings";
 ob_start();
 ?>
 
-<style>
-    /* CSS cho hệ thống Tab */
-    .settings-tabs {
-        display: flex;
-        gap: 0.5rem;
-        border-bottom: 1px solid var(--glass-border);
-        margin-bottom: 1.5rem;
-        overflow-x: auto;
-        padding-bottom: 0.5rem;
-    }
-    .settings-tab-btn {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--glass-border);
-        border-radius: 8px;
-        padding: 0.6rem 1.25rem;
-        font-weight: 600;
-        color: var(--ios-text-secondary);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        white-space: nowrap;
-        font-size: 0.9rem;
-    }
-    .settings-tab-btn:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
-    .settings-tab-btn.active {
-        background: var(--ios-blue);
-        color: #fff;
-        border-color: var(--ios-blue);
-    }
-    .settings-tab-pane {
-        display: none;
-        animation: fadeInTab 0.3s ease;
-    }
-    .settings-tab-pane.active {
-        display: block;
-    }
-    @keyframes fadeInTab {
-        from { opacity: 0; transform: translateY(5px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-</style>
-
 <?php if (!empty($_SESSION['flash_message'])): ?>
     <div class="glass-card glass-alert" style="padding: 1rem 1.25rem; margin-bottom: 1rem; border-left: 4px solid <?= ($_SESSION['flash_type'] ?? '') === 'success' ? 'var(--ios-success)' : 'var(--ios-danger)' ?>; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
         <span style="font-weight: 500; font-size: 0.9rem;"><?= htmlspecialchars($_SESSION['flash_message']) ?></span>
@@ -103,8 +60,8 @@ ob_start();
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Kênh Telegram Hỗ Trợ</label>
-                    <input type="text" name="settings[telegram_channel]" class="glass-input" value="<?= htmlspecialchars($settings['telegram_channel'] ?? '') ?>" placeholder="https://t.me/..." style="width: 100%;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Kênh Fanpage Hỗ Trợ</label>
+                    <input type="text" name="settings[fanpage_url]" class="glass-input" value="<?= htmlspecialchars($settings['fanpage_url'] ?? '') ?>" placeholder="https://facebook.com/..." style="width: 100%;">
                 </div>
 
                 <div>
@@ -371,39 +328,6 @@ ob_start();
     </div>
 
 </div>
-
-<!-- Script xử lý chuyển Tab & Lưu trạng thái -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const tabBtns = document.querySelectorAll('.settings-tab-btn');
-        const tabPanes = document.querySelectorAll('.settings-tab-pane');
-        
-        // Kiểm tra xem có tab nào đang được lưu trong localStorage không
-        const activeTabId = localStorage.getItem('vc_active_settings_tab') || 'tab-general';
-        
-        function activateTab(tabId) {
-            tabBtns.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.target === tabId);
-            });
-            tabPanes.forEach(pane => {
-                pane.classList.toggle('active', pane.id === tabId);
-            });
-            // Lưu lại trạng thái tab
-            localStorage.setItem('vc_active_settings_tab', tabId);
-        }
-
-        // Gắn sự kiện click cho các nút
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                activateTab(this.dataset.target);
-            });
-        });
-
-        // Kích hoạt tab ban đầu
-        activateTab(activeTabId);
-    });
-</script>
 
 <?php
 $content = ob_get_clean();
