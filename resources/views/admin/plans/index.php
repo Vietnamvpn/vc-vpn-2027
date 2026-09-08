@@ -25,12 +25,12 @@ ob_start();
     </div>
 <?php endif; ?>
 
-<div style="margin-bottom: 0.35rem;">
+<div style="margin-bottom: 0.2rem;">
     <h1 style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; margin: 0; color: var(--ios-text);">Danh Sách Gói Cước VPN</h1>
-    <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.25rem 0 0 0;">Quản lý các gói dịch vụ, giá bán, thời hạn và giới hạn lưu lượng tài khoản</p>
+    <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.2rem 0 0 0;">Quản lý các gói dịch vụ, giá bán, thời hạn và giới hạn lưu lượng tài khoản</p>
 </div>
 
-<hr style="border: none; border-top: 1px solid var(--glass-border); margin: 0.4rem 0 0.85rem 0;">
+<hr style="border: none; border-top: 1px solid var(--glass-border); margin: 0.15rem 0 1.25rem 0;">
 
 <div style="margin-bottom: 1rem; display: flex; justify-content: flex-end;">
     <a href="/admin/plans/create" class="glass-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; padding: 0.65rem 1.25rem; font-size: 0.9rem; background: var(--ios-blue); color: #fff; border-radius: var(--radius-md); transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
