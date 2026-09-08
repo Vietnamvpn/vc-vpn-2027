@@ -75,6 +75,7 @@ ob_start();
 <div class="settings-tabs">
     <button class="settings-tab-btn active" data-target="tab-general">⚙️ Cấu Hình Chung</button>
     <button class="settings-tab-btn" data-target="tab-finance">💰 Tài Chính & Ưu Đãi</button>
+    <button class="settings-tab-btn" data-target="tab-trial">🎁 Dùng Thử</button>
     <button class="settings-tab-btn" data-target="tab-bank">🏦 Đa Cổng Thanh Toán</button>
     <button class="settings-tab-btn" data-target="tab-email">📧 Cấu Hình Email</button>
 </div>
@@ -136,7 +137,6 @@ ob_start();
                 <div>
                     <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tỷ Giá (VNĐ / 1 Đơn vị hệ thống)</label>
                     <input type="number" name="settings[exchange_rate]" class="glass-input" value="<?= htmlspecialchars($settings['exchange_rate'] ?? '1') ?>" min="1" step="1" style="width: 100%;">
-                    <small style="color: var(--ios-text-secondary); font-size: 0.75rem;">VD: Điền 1 nếu hệ thống tính thuần theo VNĐ.</small>
                 </div>
 
                 <div>
@@ -149,7 +149,6 @@ ob_start();
                 <div>
                     <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thưởng Khi Đăng Ký Có Mã Giới Thiệu (VNĐ)</label>
                     <input type="number" name="settings[referral_bonus]" class="glass-input" value="<?= htmlspecialchars($settings['referral_bonus'] ?? '0') ?>" min="0" step="1000" style="width: 100%;">
-                    <small style="color: var(--ios-text-secondary); font-size: 0.75rem;">Số tiền cộng vào tài khoản người dùng mới khi nhập mã mời.</small>
                 </div>
                 
                 <div>
@@ -171,36 +170,67 @@ ob_start();
         </form>
     </div>
 
-    <!-- TAB 3: THÔNG TIN NGÂN HÀNG & ĐA CỔNG (QR) -->
-    <div id="tab-bank" class="settings-tab-pane">
-        <form method="POST" action="/admin/settings/save" class="glass-card" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.5rem;">
-            <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; color: #ff9500;">
-                🏦 Cấu Hình Đa Cổng Thanh Toán (Ngân Hàng, WeChat, Alipay)
+    <!-- TAB 3: DÙNG THỬ -->
+    <div id="tab-trial" class="settings-tab-pane">
+        <form method="POST" action="/admin/settings/save" class="glass-card" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.25rem;">
+            <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; color: #af52de;">
+                🎁 Cấu Hình Gói Dùng Thử Cho Tài Khoản Mới
             </h2>
 
-            <!-- 1. Cú Pháp Nội Dung Thanh Toán -->
-            <div style="background: rgba(255,255,255,0.02); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--glass-border);">
-                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; color: var(--ios-text);">1. Cú Pháp Nội Dung Thanh Toán</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
-                    <div>
-                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Cú Pháp Nạp Tiền (Prefix)</label>
-                        <input type="text" name="settings[bank_transfer_syntax]" class="glass-input" value="<?= htmlspecialchars($settings['bank_transfer_syntax'] ?? 'NAPTIEN') ?>" placeholder="VD: NAPTIEN" style="width: 100%;">
-                        <small style="color: var(--ios-text-secondary); font-size: 0.75rem;">Sử dụng cho nạp số dư: NAPTIEN {ID User} (VD: NAPTIEN 1)</small>
-                    </div>
-                    <div>
-                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Cú Pháp Thanh Toán Đơn (Prefix)</label>
-                        <input type="text" name="settings[order_transfer_syntax]" class="glass-input" value="<?= htmlspecialchars($settings['order_transfer_syntax'] ?? 'THANHTOAN') ?>" placeholder="VD: THANHTOAN" style="width: 100%;">
-                        <small style="color: var(--ios-text-secondary); font-size: 0.75rem;">Sử dụng mua đơn trực tiếp: THANHTOAN {Mã Đơn} (VD: THANHTOAN ORD123)</small>
-                    </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+                <div>
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Trạng Thái Dùng Thử</label>
+                    <select name="settings[trial_enabled]" class="glass-input" style="width: 100%; cursor: pointer;">
+                        <option value="1" <?= ($settings['trial_enabled'] ?? '0') == '1' ? 'selected' : '' ?>>Bật</option>
+                        <option value="0" <?= ($settings['trial_enabled'] ?? '0') == '0' ? 'selected' : '' ?>>Tắt</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thời Gian Dùng Thử (Ngày)</label>
+                    <input type="number" name="settings[trial_duration_days]" class="glass-input" value="<?= htmlspecialchars($settings['trial_duration_days'] ?? '3') ?>" min="1" step="1" style="width: 100%;">
                 </div>
             </div>
 
-            <!-- 2. Ngân Hàng VN (VietQR) -->
-            <div style="background: rgba(255,255,255,0.02); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--glass-border);">
-                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; color: var(--ios-blue);">2. Ngân Hàng Việt Nam (Tự Động Tạo VietQR)</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+                <div>
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Lưu Lượng Cho Phép (GB)</label>
+                    <input type="number" name="settings[trial_bandwidth_gb]" class="glass-input" value="<?= htmlspecialchars($settings['trial_bandwidth_gb'] ?? '10') ?>" min="1" step="1" style="width: 100%;">
+                </div>
+
+                <div>
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Giới Hạn Thiết Bị</label>
+                    <input type="number" name="settings[trial_max_devices]" class="glass-input" value="<?= htmlspecialchars($settings['trial_max_devices'] ?? '1') ?>" min="1" step="1" style="width: 100%;">
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+                <button type="submit" class="glass-btn" style="padding: 0.75rem 2rem; background: #af52de; color: #fff; border: none; font-weight: 600; cursor: pointer;">
+                    💾 Lưu Cấu Hình Dùng Thử
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TAB 4: THÔNG TIN NGÂN HÀNG & ĐA CỔNG (QR) -->
+    <div id="tab-bank" class="settings-tab-pane">
+        <form method="POST" action="/admin/settings/save" class="glass-card" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.5rem;">
+            <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; color: #ff9500;">
+                🏦 Cấu Hình Đa Cổng Thanh Toán
+            </h2>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%; overflow-x: auto;">
+                <!-- Dòng 1: Ngân Hàng VN -->
+                <div style="display: grid; grid-template-columns: 120px 1fr 1fr 1fr; gap: 1rem; align-items: end; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); min-width: 800px;">
                     <div>
-                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mã Ngân Hàng (Bin / Tên tắt)</label>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Trạng Thái</label>
+                        <select name="settings[enable_vietqr]" class="glass-input" style="width: 100%; cursor: pointer;">
+                            <option value="1" <?= ($settings['enable_vietqr'] ?? '1') == '1' ? 'selected' : '' ?>>Bật</option>
+                            <option value="0" <?= ($settings['enable_vietqr'] ?? '1') == '0' ? 'selected' : '' ?>>Tắt</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Ngân Hàng (Mã BIN)</label>
                         <input type="text" name="settings[bank_name]" class="glass-input" value="<?= htmlspecialchars($settings['bank_name'] ?? '') ?>" placeholder="VD: MB, VCB..." style="width: 100%;">
                     </div>
                     <div>
@@ -212,40 +242,62 @@ ob_start();
                         <input type="text" name="settings[bank_account_name]" class="glass-input" value="<?= htmlspecialchars($settings['bank_account_name'] ?? '') ?>" placeholder="VD: NGUYEN VAN A" style="width: 100%; text-transform: uppercase;">
                     </div>
                 </div>
-            </div>
 
-            <!-- 3. Cổng Quốc Tế (WeChat & Alipay) -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
-                
-                <!-- WeChat -->
-                <div style="background: rgba(255,255,255,0.02); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--glass-border);">
-                    <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; color: #07c160;">3. Cổng WeChat Pay</h3>
-                    <div style="display: flex; flex-direction: column; gap: 1rem;">
-                        <div>
-                            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Link Ảnh QR WeChat (Thay cho Số TK)</label>
-                            <input type="text" name="settings[wechat_qr_image]" class="glass-input" value="<?= htmlspecialchars($settings['wechat_qr_image'] ?? '') ?>" placeholder="https://domain.com/wechat-qr.jpg" style="width: 100%;">
-                            <small style="color: var(--ios-text-secondary); font-size: 0.75rem;">Nhập URL ảnh mã QR nhận tiền WeChat của bạn.</small>
-                        </div>
-                        <div>
-                            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Chủ Tài Khoản WeChat</label>
-                            <input type="text" name="settings[wechat_account_name]" class="glass-input" value="<?= htmlspecialchars($settings['wechat_account_name'] ?? '') ?>" placeholder="Tên hiển thị WeChat" style="width: 100%;">
-                        </div>
+                <!-- Dòng 2: WeChat -->
+                <div style="display: grid; grid-template-columns: 120px 1fr 1fr 1fr; gap: 1rem; align-items: end; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); min-width: 800px;">
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Trạng Thái</label>
+                        <select name="settings[enable_wechat]" class="glass-input" style="width: 100%; cursor: pointer;">
+                            <option value="1" <?= ($settings['enable_wechat'] ?? '0') == '1' ? 'selected' : '' ?>>Bật</option>
+                            <option value="0" <?= ($settings['enable_wechat'] ?? '0') == '0' ? 'selected' : '' ?>>Tắt</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Ngân Hàng / Cổng</label>
+                        <input type="text" class="glass-input" value="WeChat Pay" readonly style="width: 100%; background: rgba(0,0,0,0.1); color: var(--ios-text-secondary); cursor: not-allowed;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Link Ảnh QR WeChat</label>
+                        <input type="text" name="settings[wechat_qr_image]" class="glass-input" value="<?= htmlspecialchars($settings['wechat_qr_image'] ?? '') ?>" placeholder="https://..." style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Chủ Tài Khoản</label>
+                        <input type="text" name="settings[wechat_account_name]" class="glass-input" value="<?= htmlspecialchars($settings['wechat_account_name'] ?? '') ?>" placeholder="Tên hiển thị WeChat" style="width: 100%;">
                     </div>
                 </div>
 
-                <!-- Alipay -->
-                <div style="background: rgba(255,255,255,0.02); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--glass-border);">
-                    <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; color: #1677ff;">4. Cổng Alipay</h3>
-                    <div style="display: flex; flex-direction: column; gap: 1rem;">
-                        <div>
-                            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Link Ảnh QR Alipay (Thay cho Số TK)</label>
-                            <input type="text" name="settings[alipay_qr_image]" class="glass-input" value="<?= htmlspecialchars($settings['alipay_qr_image'] ?? '') ?>" placeholder="https://domain.com/alipay-qr.jpg" style="width: 100%;">
-                            <small style="color: var(--ios-text-secondary); font-size: 0.75rem;">Nhập URL ảnh mã QR nhận tiền Alipay của bạn.</small>
-                        </div>
-                        <div>
-                            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Chủ Tài Khoản Alipay</label>
-                            <input type="text" name="settings[alipay_account_name]" class="glass-input" value="<?= htmlspecialchars($settings['alipay_account_name'] ?? '') ?>" placeholder="Tên hiển thị Alipay" style="width: 100%;">
-                        </div>
+                <!-- Dòng 3: Alipay -->
+                <div style="display: grid; grid-template-columns: 120px 1fr 1fr 1fr; gap: 1rem; align-items: end; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); min-width: 800px;">
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Trạng Thái</label>
+                        <select name="settings[enable_alipay]" class="glass-input" style="width: 100%; cursor: pointer;">
+                            <option value="1" <?= ($settings['enable_alipay'] ?? '0') == '1' ? 'selected' : '' ?>>Bật</option>
+                            <option value="0" <?= ($settings['enable_alipay'] ?? '0') == '0' ? 'selected' : '' ?>>Tắt</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Ngân Hàng / Cổng</label>
+                        <input type="text" class="glass-input" value="Alipay" readonly style="width: 100%; background: rgba(0,0,0,0.1); color: var(--ios-text-secondary); cursor: not-allowed;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Link Ảnh QR Alipay</label>
+                        <input type="text" name="settings[alipay_qr_image]" class="glass-input" value="<?= htmlspecialchars($settings['alipay_qr_image'] ?? '') ?>" placeholder="https://..." style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Chủ Tài Khoản</label>
+                        <input type="text" name="settings[alipay_account_name]" class="glass-input" value="<?= htmlspecialchars($settings['alipay_account_name'] ?? '') ?>" placeholder="Tên hiển thị Alipay" style="width: 100%;">
+                    </div>
+                </div>
+
+                <!-- Dòng cuối: Cú Pháp Nạp / Thanh Toán -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: end; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Cú Pháp Nạp Tiền</label>
+                        <input type="text" name="settings[bank_transfer_syntax]" class="glass-input" value="<?= htmlspecialchars($settings['bank_transfer_syntax'] ?? 'NAPTIEN') ?>" placeholder="VD: NAPTIEN" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Cú Pháp Thanh Toán Đơn</label>
+                        <input type="text" name="settings[order_transfer_syntax]" class="glass-input" value="<?= htmlspecialchars($settings['order_transfer_syntax'] ?? 'THANHTOAN') ?>" placeholder="VD: THANHTOAN" style="width: 100%;">
                     </div>
                 </div>
             </div>
@@ -258,7 +310,7 @@ ob_start();
         </form>
     </div>
 
-    <!-- TAB 4: CẤU HÌNH EMAIL -->
+    <!-- TAB 5: CẤU HÌNH EMAIL -->
     <div id="tab-email" class="settings-tab-pane">
         <form method="POST" action="/admin/settings/save" class="glass-card" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.25rem;">
             <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; color: var(--ios-danger);">
