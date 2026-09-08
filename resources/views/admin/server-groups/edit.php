@@ -5,39 +5,40 @@ $activeMenu = "server-groups";
 ob_start();
 ?>
 
-<div style="margin-bottom: 1.5rem; text-align: center;">
-    <h1 style="font-size: 1.5rem; font-weight: 700; margin: 0;">Chỉnh Sửa Nhóm: <?= htmlspecialchars($group['name'] ?? '') ?></h1>
+<div style="margin-bottom: 1.25rem;">
+    <h1 style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px;">Chỉnh Sửa Nhóm: <?= htmlspecialchars($group['name'] ?? '') ?></h1>
 </div>
 
-<?php if (isset($_SESSION['error'])): ?>
-    <div style="background: rgba(255, 59, 48, 0.15); color: var(--ios-danger); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.875rem; border: 1px solid rgba(255, 59, 48, 0.3); margin-bottom: 1.25rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-        <?= htmlspecialchars($_SESSION['error']) ?>
+<?php if (!empty($_SESSION['error'])): ?>
+    <div class="glass-card glass-alert" style="padding: 1rem 1.25rem; margin-bottom: 1.25rem; border-left: 4px solid var(--ios-danger); display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 500; font-size: 0.9rem;"><?= htmlspecialchars($_SESSION['error']) ?></span>
+        <button type="button" class="alert-close" style="background: none; border: none; color: var(--ios-text-secondary); font-size: 1.25rem; cursor: pointer; padding: 0 0.25rem; line-height: 1;" title="Đóng">&times;</button>
+        <?php unset($_SESSION['error']); ?>
     </div>
-    <?php unset($_SESSION['error']); ?>
 <?php endif; ?>
 
-<div class="glass-card" style="padding: 1.5rem; max-width: 600px; margin: 0 auto;">
+<div class="glass-card" style="padding: 1.75rem; width: 100%;">
     <form action="/admin/server-groups/edit?id=<?= $group['id'] ?>" method="POST" style="display: flex; flex-direction: column; gap: 1.25rem;">
-        <div class="form-group" style="display: flex; flex-direction: column; gap: 0.4rem;">
-            <label for="name" style="font-weight: 600; font-size: 0.875rem; color: var(--ios-text-secondary);">Tên Nhóm Máy Chủ <span style="color: var(--ios-danger);">*</span></label>
-            <input type="text" id="name" name="name" class="glass-input" value="<?= htmlspecialchars($group['name'] ?? '') ?>" required autofocus style="padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.05); color: var(--ios-text);">
+        <div>
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Nhóm Máy Chủ (*)</label>
+            <input type="text" id="name" name="name" class="glass-input" value="<?= htmlspecialchars($group['name'] ?? '') ?>" required autofocus style="width: 100%;">
         </div>
 
-        <div class="form-group" style="display: flex; flex-direction: column; gap: 0.4rem;">
-            <label for="description" style="font-weight: 600; font-size: 0.875rem; color: var(--ios-text-secondary);">Mô Tả</label>
-            <textarea id="description" name="description" rows="4" class="glass-input" style="padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.05); color: var(--ios-text); resize: vertical;"><?= htmlspecialchars($group['description'] ?? '') ?></textarea>
+        <div>
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mô Tả</label>
+            <textarea id="description" name="description" rows="4" class="glass-input" style="width: 100%; resize: vertical;"><?= htmlspecialchars($group['description'] ?? '') ?></textarea>
         </div>
 
-        <div class="form-group" style="display: flex; flex-direction: column; gap: 0.4rem;">
-            <label for="status" style="font-weight: 600; font-size: 0.875rem; color: var(--ios-text-secondary);">Trạng Thái</label>
-            <select id="status" name="status" class="glass-input" style="padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.05); color: var(--ios-text);">
-                <option value="active" <?= ($group['status'] ?? '') === 'active' ? 'selected' : '' ?> style="background: #1e293b; color: #fff;">Hoạt động (Active)</option>
-                <option value="inactive" <?= ($group['status'] ?? '') === 'inactive' ? 'selected' : '' ?> style="background: #1e293b; color: #fff;">Khóa (Inactive)</option>
+        <div>
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Trạng Thái</label>
+            <select id="status" name="status" class="glass-input" style="width: 100%; cursor: pointer;">
+                <option value="active" <?= ($group['status'] ?? '') === 'active' ? 'selected' : '' ?>>Hoạt động (Active)</option>
+                <option value="inactive" <?= ($group['status'] ?? '') === 'inactive' ? 'selected' : '' ?>>Khóa (Inactive)</option>
             </select>
         </div>
 
         <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
-            <button type="submit" class="glass-btn" style="padding: 0.75rem 1.5rem; font-weight: 600; background: var(--ios-blue); color: #fff; border: none; cursor: pointer; border-radius: var(--radius-md);">Cập Nhật</button>
+            <button type="submit" class="glass-btn" style="padding: 0.65rem 1.75rem; font-size: 0.9rem;">💾 Cập Nhật Nhóm</button>
         </div>
     </form>
 </div>
