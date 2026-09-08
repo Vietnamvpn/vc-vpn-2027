@@ -116,24 +116,24 @@ ob_start();
                             <td style="text-align: right;">
                                 <div class="action-dropdown">
                                     <button type="button" class="action-btn" title="Thao tác">⋮</button>
-                                    <div class="action-menu">
-                                        <a href="/admin/users/detail?id=<?= $u['id'] ?>" class="action-item">
+                                    <div class="action-menu" style="min-width: 175px; white-space: nowrap;">
+                                        <a href="/admin/users/detail?id=<?= $u['id'] ?>" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                             <span>👁️</span> Xem chi tiết
                                         </a>
-                                        <a href="/admin/users/edit?id=<?= $u['id'] ?>" class="action-item">
+                                        <a href="/admin/users/edit?id=<?= $u['id'] ?>" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                             <span>✏️</span> Chỉnh sửa
                                         </a>
-                                        <a href="/admin/orders/create?user_id=<?= $u['id'] ?>" class="action-item">
+                                        <a href="/admin/orders/create?user_id=<?= $u['id'] ?>" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                             <span>🛒</span> Tạo đơn hàng
                                         </a>
-                                        <a href="/admin/orders?user_id=<?= $u['id'] ?>" class="action-item">
+                                        <a href="/admin/orders?user_id=<?= $u['id'] ?>" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                             <span>📦</span> Xem đơn hàng
                                         </a>
-                                        <a href="/admin/subscriptions?user_id=<?= $u['id'] ?>" class="action-item">
+                                        <a href="/admin/subscriptions?user_id=<?= $u['id'] ?>" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                             <span>🔑</span> Xem gói đăng ký
                                         </a>
                                         <?php if ($u['role'] !== 'admin'): ?>
-                                            <a href="/admin/users/delete?id=<?= $u['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa thành viên này?');" class="action-item delete" style="color: var(--ios-danger);">
+                                            <a href="/admin/users/delete?id=<?= $u['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa thành viên này?');" class="action-item delete" style="color: var(--ios-danger); white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                                 <span>🗑️</span> Xóa tài khoản
                                             </a>
                                         <?php endif; ?>
