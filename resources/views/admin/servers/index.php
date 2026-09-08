@@ -10,7 +10,7 @@ ob_start();
     <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.25rem 0 0 0;">Quản lý hạ tầng máy chủ và thông số API kết nối</p>
 </div>
 
-<div style="margin-bottom: 1.25rem;">
+<div style="margin-bottom: 1.25rem; display: flex; justify-content: flex-end;">
     <a href="/admin/servers/create" class="glass-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; padding: 0.65rem 1.25rem; font-size: 0.9rem;">
         ➕ Thêm Máy Chủ Mới
     </a>
