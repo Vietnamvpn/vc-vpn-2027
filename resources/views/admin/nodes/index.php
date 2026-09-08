@@ -5,15 +5,9 @@ $activeMenu = "nodes";
 ob_start();
 ?>
 
-<div style="margin-bottom: 0.75rem;">
+<div style="margin-bottom: 1.25rem;">
     <h1 style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; margin: 0;">Danh Sách Nút Kết Nối (Inbounds)</h1>
-    <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.25rem 0 0 0;">Quản lý cổng, giao thức truyền tải và thông số cấu hình kết nối VPN</p>
-</div>
-
-<div style="margin-bottom: 1.25rem; display: flex; justify-content: flex-end;">
-    <a href="/admin/nodes/create" class="glass-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; padding: 0.65rem 1.25rem; font-size: 0.9rem;">
-        ➕ Thêm Nút Kết Nối Mới
-    </a>
+    <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.25rem 0 0 0;">Danh sách cổng kết nối và giao thức được đẩy tự động từ các máy chủ VPS</p>
 </div>
 
 <?php if (isset($_SESSION['success']) || !empty($_SESSION['flash_message'])): ?>
@@ -44,7 +38,7 @@ ob_start();
                 <th style="padding: 0.75rem 0.5rem; text-align: center;">TLS</th>
                 <th style="padding: 0.75rem 0.5rem;">SNI / Host</th>
                 <th style="padding: 0.75rem 0.5rem; text-align: center;">Trạng Thái</th>
-                <th style="padding: 0.75rem 0.5rem; text-align: right; width: 140px;">Thao Tác</th>
+                <th style="padding: 0.75rem 0.5rem; text-align: right; width: 100px;">Thao Tác</th>
             </tr>
         </thead>
         <tbody>
@@ -84,15 +78,14 @@ ob_start();
                             <?php endif; ?>
                         </td>
                         <td style="padding: 0.75rem 0.5rem; text-align: right;">
-                            <a href="/admin/nodes/detail?id=<?= $node['id'] ?>" style="text-decoration: none; margin-right: 0.4rem;" title="Xem Chi Tiết">🔍</a>
-                            <a href="/admin/nodes/edit?id=<?= $node['id'] ?>" style="text-decoration: none; margin-right: 0.4rem;" title="Chỉnh Sửa">✏️</a>
-                            <a href="/admin/nodes/delete?id=<?= $node['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa nút kết nối này?');" style="text-decoration: none;" title="Xóa">🗑️</a>
+                            <a href="/admin/nodes/detail?id=<?= $node['id'] ?>" style="text-decoration: none; margin-right: 0.5rem;" title="Xem Chi Tiết">🔍</a>
+                            <a href="/admin/nodes/delete?id=<?= $node['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa dữ liệu nút kết nối này khỏi hệ thống?');" style="text-decoration: none;" title="Xóa">🗑️</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="9" style="padding: 2rem; text-align: center; color: var(--ios-text-secondary);">Chưa có nút kết nối nào được khởi tạo.</td>
+                    <td colspan="9" style="padding: 2rem; text-align: center; color: var(--ios-text-secondary);">Chưa có nút kết nối nào được đồng bộ từ VPS.</td>
                 </tr>
             <?php endif; ?>
         </tbody>

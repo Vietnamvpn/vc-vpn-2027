@@ -327,8 +327,6 @@ vc-vpn-2027/
 │           │   └── detail.php
 │           ├── nodes/
 │           │   ├── index.php
-│           │   ├── create.php
-│           │   ├── edit.php
 │           │   └── detail.php
 │           ├── plans/
 │           │   ├── index.php

@@ -100,10 +100,6 @@ return [
 
     // Quản lý nút kết nối (Nodes)
     'GET /admin/nodes'            => ['Admin\NodeController', 'index'],
-    'GET /admin/nodes/create'     => ['Admin\NodeController', 'showCreate'],
-    'POST /admin/nodes/create'    => ['Admin\NodeController', 'create'],
-    'GET /admin/nodes/edit'       => ['Admin\NodeController', 'showEdit'],
-    'POST /admin/nodes/edit'      => ['Admin\NodeController', 'edit'],
     'GET /admin/nodes/detail'     => ['Admin\NodeController', 'detail'],
     'GET /admin/nodes/delete'     => ['Admin\NodeController', 'delete'],
 

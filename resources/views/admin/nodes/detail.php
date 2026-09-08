@@ -8,25 +8,24 @@ ob_start();
 <div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
     <div>
         <h1 style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; margin: 0;">Nút Kết Nối #<?= $node['id'] ?></h1>
-        <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.25rem 0 0 0;">Thông tin chi tiết cấu hình Inbound</p>
+        <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.25rem 0 0 0;">Cấu hình chi tiết được gửi lên từ máy chủ VPS</p>
     </div>
-    <div style="display: flex; gap: 0.5rem;">
-        <a href="/admin/nodes/edit?id=<?= $node['id'] ?>" class="glass-btn" style="text-decoration: none; padding: 0.6rem 1.2rem; font-size: 0.875rem; font-weight: 600;">✏️ Chỉnh Sửa</a>
-        <a href="/admin/nodes" class="glass-btn" style="text-decoration: none; padding: 0.6rem 1.2rem; font-size: 0.875rem; font-weight: 600; background: rgba(255, 255, 255, 0.1);">⬅️ Quay Lại</a>
+    <div>
+        <a href="/admin/nodes" class="glass-btn" style="text-decoration: none; padding: 0.65rem 1.25rem; font-size: 0.9rem; font-weight: 600;">⬅️ Quay Lại</a>
     </div>
 </div>
 
 <div class="glass-card" style="padding: 1.75rem; width: 100%;">
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
         <div>
-            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">Thông Tin Máy Chủ</h3>
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">Thông Tin Máy Chủ VPS</h3>
             <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
                 <tr>
                     <td style="padding: 0.5rem 0; color: var(--ios-text-secondary); width: 120px;">Máy Chủ:</td>
                     <td style="padding: 0.5rem 0; font-weight: 600;"><?= htmlspecialchars($node['server_name'] ?? ('Server #' . $node['server_id'])) ?></td>
                 </tr>
                 <tr>
-                    <td style="padding: 0.5rem 0; color: var(--ios-text-secondary);">IP Address:</td>
+                    <td style="padding: 0.5rem 0; color: var(--ios-text-secondary);">Địa Chỉ IP:</td>
                     <td style="padding: 0.5rem 0; font-family: monospace; color: var(--ios-blue);"><?= htmlspecialchars($node['server_ip'] ?? 'N/A') ?></td>
                 </tr>
                 <tr>
@@ -37,7 +36,7 @@ ob_start();
         </div>
 
         <div>
-            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">Cấu Hình Nút (Inbound)</h3>
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">Cấu Hình Giao Thức (Inbound)</h3>
             <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
                 <tr>
                     <td style="padding: 0.5rem 0; color: var(--ios-text-secondary); width: 120px;">Cổng (Port):</td>
