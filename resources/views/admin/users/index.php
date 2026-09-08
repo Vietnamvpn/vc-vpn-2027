@@ -126,6 +126,12 @@ ob_start();
                                         <a href="/admin/orders/create?user_id=<?= $u['id'] ?>" class="action-item">
                                             <span>🛒</span> Tạo đơn hàng
                                         </a>
+                                        <a href="/admin/orders?user_id=<?= $u['id'] ?>" class="action-item">
+                                            <span>📦</span> Xem đơn hàng
+                                        </a>
+                                        <a href="/admin/subscriptions?user_id=<?= $u['id'] ?>" class="action-item">
+                                            <span>🔑</span> Xem gói đăng ký
+                                        </a>
                                         <?php if ($u['role'] !== 'admin'): ?>
                                             <a href="/admin/users/delete?id=<?= $u['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa thành viên này?');" class="action-item delete" style="color: var(--ios-danger);">
                                                 <span>🗑️</span> Xóa tài khoản
