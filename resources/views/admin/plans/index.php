@@ -6,92 +6,80 @@ ob_start();
 ?>
 
 <?php if (isset($_SESSION['success']) || !empty($_SESSION['flash_message'])): ?>
-    <div class="glass-card glass-alert" style="padding: 1rem 1.25rem; margin-bottom: 1rem; border-left: 4px solid var(--ios-success); display: flex; justify-content: space-between; align-items: center; background: rgba(52, 199, 89, 0.1); border-radius: var(--radius-md);">
-        <span style="font-weight: 500; font-size: 0.9rem; color: var(--ios-success); display: flex; align-items: center; gap: 0.5rem;">
-            ✓ <?= htmlspecialchars($_SESSION['success'] ?? $_SESSION['flash_message']) ?>
-        </span>
-        <button type="button" class="alert-close" style="background: none; border: none; color: var(--ios-text-secondary); font-size: 1.25rem; cursor: pointer; padding: 0 0.25rem; line-height: 1;" title="Đóng">&times;</button>
+    <div class="glass-card glass-alert alert-success">
+        <span class="font-semibold">✓ <?= htmlspecialchars($_SESSION['success'] ?? $_SESSION['flash_message']) ?></span>
+        <button type="button" class="alert-close" title="Đóng">&times;</button>
         <?php unset($_SESSION['success'], $_SESSION['flash_message']); ?>
     </div>
 <?php endif; ?>
 
 <?php if (isset($_SESSION['error'])): ?>
-    <div class="glass-card glass-alert" style="padding: 1rem 1.25rem; margin-bottom: 1rem; border-left: 4px solid var(--ios-danger); display: flex; justify-content: space-between; align-items: center; background: rgba(255, 59, 48, 0.1); border-radius: var(--radius-md);">
-        <span style="font-weight: 500; font-size: 0.9rem; color: var(--ios-danger); display: flex; align-items: center; gap: 0.5rem;">
-            ✕ <?= htmlspecialchars($_SESSION['error']) ?>
-        </span>
-        <button type="button" class="alert-close" style="background: none; border: none; color: var(--ios-text-secondary); font-size: 1.25rem; cursor: pointer; padding: 0 0.25rem; line-height: 1;" title="Đóng">&times;</button>
+    <div class="glass-card glass-alert alert-danger">
+        <span class="font-semibold">✕ <?= htmlspecialchars($_SESSION['error']) ?></span>
+        <button type="button" class="alert-close" title="Đóng">&times;</button>
         <?php unset($_SESSION['error']); ?>
     </div>
 <?php endif; ?>
 
-<!-- Khối tiêu đề -->
-<div style="margin-bottom: 0.2rem;">
-    <h1 style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; margin: 0; color: var(--ios-text);">Danh Sách Gói Cước VPN</h1>
-    <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.2rem 0 0 0;">Quản lý các gói dịch vụ, giá bán, thời hạn và giới hạn lưu lượng tài khoản</p>
+<div class="page-header">
+    <h1 class="page-title">Danh Sách Gói Cước VPN</h1>
+    <p class="page-subtitle">Quản lý các gói dịch vụ, giá bán, thời hạn và giới hạn lưu lượng tài khoản</p>
 </div>
 
-<!-- Đường gạch xám sát ngay dưới mô tả -->
-<div style="width: 100%; height: 1px; background: rgba(0, 0, 0, 0.08); margin: 0.4rem 0 1rem 0;"></div>
+<div class="divider-line"></div>
 
-<!-- Nút thêm góc phải -->
-<div style="margin-bottom: 1rem; display: flex; justify-content: flex-end;">
-    <a href="/admin/plans/create" class="glass-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; padding: 0.65rem 1.25rem; font-size: 0.9rem; background: var(--ios-blue); color: #fff; border-radius: var(--radius-md); border: none; box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);">
+<div class="action-bar">
+    <a href="/admin/plans/create" class="glass-btn" style="background: var(--ios-blue); color: #fff; border: none; box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);">
         ➕ Thêm Gói Cước Mới
     </a>
 </div>
 
-<!-- Bảng dữ liệu vừa khung -->
-<div class="glass-card" style="padding: 1rem; width: 100%; overflow-x: auto; border-radius: var(--radius-lg);">
-    <table class="glass-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem; min-width: 900px;">
+<div class="glass-card table-responsive">
+    <table class="glass-table">
         <thead>
-            <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.06); color: var(--ios-text-secondary); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px;">
-                <th style="padding: 0.75rem 0.5rem; width: 50px;">ID</th>
-                <th style="padding: 0.75rem 0.5rem;">Tên Gói Cước</th>
-                <th style="padding: 0.75rem 0.5rem;">Mã Code</th>
-                <th style="padding: 0.75rem 0.5rem;">Nhóm Server</th>
-                <th style="padding: 0.75rem 0.5rem;">Giá Bán</th>
-                <th style="padding: 0.75rem 0.5rem; text-align: center;">Thời Hạn</th>
-                <th style="padding: 0.75rem 0.5rem; text-align: center;">Dung Lượng</th>
-                <th style="padding: 0.75rem 0.5rem; text-align: center;">Thiết Bị</th>
-                <th style="padding: 0.75rem 0.5rem; text-align: center;">Trạng Thái</th>
-                <th style="padding: 0.75rem 0.5rem; text-align: right; width: 100px;">Thao Tác</th>
+            <tr>
+                <th style="width: 50px;">ID</th>
+                <th>Tên Gói Cước</th>
+                <th>Mã Code</th>
+                <th>Nhóm Server</th>
+                <th>Giá Bán</th>
+                <th class="text-center">Thời Hạn</th>
+                <th class="text-center">Dung Lượng</th>
+                <th class="text-center">Thiết Bị</th>
+                <th class="text-center">Trạng Thái</th>
+                <th class="text-right" style="width: 100px;">Thao Tác</th>
             </tr>
         </thead>
         <tbody>
             <?php if (!empty($plans)): ?>
                 <?php foreach ($plans as $plan): ?>
-                    <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
-                        <td style="padding: 0.75rem 0.5rem; font-weight: 700; color: var(--ios-text-secondary);">#<?= $plan['id'] ?></td>
-                        <td style="padding: 0.75rem 0.5rem; font-weight: 600; color: var(--ios-text);"><?= htmlspecialchars($plan['name']) ?></td>
-                        <td style="padding: 0.75rem 0.5rem;">
-                            <span style="font-family: monospace; font-size: 0.8rem; background: rgba(0, 122, 255, 0.1); color: var(--ios-blue); padding: 0.2rem 0.45rem; border-radius: var(--radius-sm); font-weight: 600;">
-                                <?= htmlspecialchars($plan['code']) ?>
-                            </span>
+                    <tr>
+                        <td class="font-bold text-muted">#<?= $plan['id'] ?></td>
+                        <td class="font-semibold"><?= htmlspecialchars($plan['name']) ?></td>
+                        <td><span class="badge-code"><?= htmlspecialchars($plan['code']) ?></span></td>
+                        <td class="text-muted"><?= htmlspecialchars($plan['group_name'] ?? 'Chưa phân nhóm') ?></td>
+                        <td class="font-bold text-success"><?= number_format($plan['price'], 0, ',', '.') ?>đ</td>
+                        <td class="text-center font-semibold"><?= htmlspecialchars($plan['duration_days']) ?> Ngày</td>
+                        <td class="text-center font-semibold">
+                            <?= ($plan['bandwidth_limit_gb'] > 0) ? htmlspecialchars($plan['bandwidth_limit_gb']) . ' GB' : '<span class="badge-unlimited">Vô hạn</span>' ?>
                         </td>
-                        <td style="padding: 0.75rem 0.5rem; color: var(--ios-text-secondary);"><?= htmlspecialchars($plan['group_name'] ?? 'Chưa phân nhóm') ?></td>
-                        <td style="padding: 0.75rem 0.5rem; font-weight: 700; color: var(--ios-success);"><?= number_format($plan['price'], 0, ',', '.') ?>đ</td>
-                        <td style="padding: 0.75rem 0.5rem; text-align: center; font-weight: 600; color: var(--ios-text);"><?= htmlspecialchars($plan['duration_days']) ?> Ngày</td>
-                        <td style="padding: 0.75rem 0.5rem; text-align: center; font-weight: 600;">
-                            <?= ($plan['bandwidth_limit_gb'] > 0) ? htmlspecialchars($plan['bandwidth_limit_gb']) . ' GB' : '<span style="color: var(--ios-success); font-size: 0.8rem; background: rgba(52, 199, 89, 0.12); padding: 0.2rem 0.5rem; border-radius: 10px;">Vô hạn</span>' ?>
-                        </td>
-                        <td style="padding: 0.75rem 0.5rem; text-align: center; font-weight: 600; color: var(--ios-text);"><?= htmlspecialchars($plan['max_devices']) ?> Thiết bị</td>
-                        <td style="padding: 0.75rem 0.5rem; text-align: center;">
+                        <td class="text-center font-semibold"><?= htmlspecialchars($plan['max_devices']) ?> Thiết bị</td>
+                        <td class="text-center">
                             <?php if (($plan['status'] ?? 'active') === 'active'): ?>
-                                <span style="background: rgba(52, 199, 89, 0.15); color: var(--ios-success); padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">HOẠT ĐỘNG</span>
+                                <span class="badge-status active">HOẠT ĐỘNG</span>
                             <?php else: ?>
-                                <span style="background: rgba(255, 59, 48, 0.15); color: var(--ios-danger); padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">TẮT</span>
+                                <span class="badge-status inactive">TẮT</span>
                             <?php endif; ?>
                         </td>
-                        <td style="padding: 0.75rem 0.5rem; text-align: right; white-space: nowrap;">
-                            <a href="/admin/plans/edit?id=<?= $plan['id'] ?>" style="text-decoration: none; margin-right: 0.3rem; display: inline-block; padding: 0.25rem 0.4rem; border-radius: var(--radius-sm); background: rgba(0, 0, 0, 0.04);" title="Chỉnh Sửa">✏️</a>
-                            <a href="/admin/plans/delete?id=<?= $plan['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa gói cước này?');" style="text-decoration: none; display: inline-block; padding: 0.25rem 0.4rem; border-radius: var(--radius-sm); background: rgba(255, 59, 48, 0.1);" title="Xóa">🗑️</a>
+                        <td class="text-right nowrap">
+                            <a href="/admin/plans/edit?id=<?= $plan['id'] ?>" class="btn-icon" title="Chỉnh Sửa">✏️</a>
+                            <a href="/admin/plans/delete?id=<?= $plan['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa gói cước này?');" class="btn-icon btn-delete" title="Xóa">🗑️</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="10" style="padding: 2.5rem; text-align: center; color: var(--ios-text-secondary);">Chưa có gói cước nào được tạo trong hệ thống.</td>
+                    <td colspan="10" class="text-center text-muted" style="padding: 2.5rem;">Chưa có gói cước nào được tạo trong hệ thống.</td>
                 </tr>
             <?php endif; ?>
         </tbody>
