@@ -75,7 +75,7 @@ ob_start();
 <div class="settings-tabs">
     <button class="settings-tab-btn active" data-target="tab-general">⚙️ Cấu Hình Chung</button>
     <button class="settings-tab-btn" data-target="tab-finance">💰 Tài Chính & Ưu Đãi</button>
-    <button class="settings-tab-btn" data-target="tab-bank">🏦 Ngân Hàng (QR)</button>
+    <button class="settings-tab-btn" data-target="tab-bank">🏦 Đa Cổng Thanh Toán</button>
     <button class="settings-tab-btn" data-target="tab-email">📧 Cấu Hình Email</button>
 </div>
 
@@ -171,40 +171,88 @@ ob_start();
         </form>
     </div>
 
-    <!-- TAB 3: THÔNG TIN NGÂN HÀNG (QR) -->
+    <!-- TAB 3: THÔNG TIN NGÂN HÀNG & ĐA CỔNG (QR) -->
     <div id="tab-bank" class="settings-tab-pane">
-        <form method="POST" action="/admin/settings/save" class="glass-card" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.25rem;">
-            <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; color: #ff9500;">
-                Thông Tin Ngân Hàng (Hiển thị mã QR)
+        <form method="POST" action="/admin/settings/save" class="glass-card" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.5rem;">
+            <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; color: #ff9500;">
+                🏦 Cấu Hình Đa Cổng Thanh Toán (Ngân Hàng, WeChat, Alipay)
             </h2>
 
+            <!-- 1. Cú Pháp Nội Dung Thanh Toán -->
+            <div style="background: rgba(255,255,255,0.02); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--glass-border);">
+                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; color: var(--ios-text);">1. Cú Pháp Nội Dung Thanh Toán</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Cú Pháp Nạp Tiền (Prefix)</label>
+                        <input type="text" name="settings[bank_transfer_syntax]" class="glass-input" value="<?= htmlspecialchars($settings['bank_transfer_syntax'] ?? 'NAPTIEN') ?>" placeholder="VD: NAPTIEN" style="width: 100%;">
+                        <small style="color: var(--ios-text-secondary); font-size: 0.75rem;">Sử dụng cho nạp số dư: NAPTIEN {ID User} (VD: NAPTIEN 1)</small>
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Cú Pháp Thanh Toán Đơn (Prefix)</label>
+                        <input type="text" name="settings[order_transfer_syntax]" class="glass-input" value="<?= htmlspecialchars($settings['order_transfer_syntax'] ?? 'THANHTOAN') ?>" placeholder="VD: THANHTOAN" style="width: 100%;">
+                        <small style="color: var(--ios-text-secondary); font-size: 0.75rem;">Sử dụng mua đơn trực tiếp: THANHTOAN {Mã Đơn} (VD: THANHTOAN ORD123)</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Ngân Hàng VN (VietQR) -->
+            <div style="background: rgba(255,255,255,0.02); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--glass-border);">
+                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; color: var(--ios-blue);">2. Ngân Hàng Việt Nam (Tự Động Tạo VietQR)</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mã Ngân Hàng (Bin / Tên tắt)</label>
+                        <input type="text" name="settings[bank_name]" class="glass-input" value="<?= htmlspecialchars($settings['bank_name'] ?? '') ?>" placeholder="VD: MB, VCB..." style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tài Khoản</label>
+                        <input type="text" name="settings[bank_account_number]" class="glass-input" value="<?= htmlspecialchars($settings['bank_account_number'] ?? '') ?>" placeholder="Nhập số tài khoản" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Chủ Tài Khoản</label>
+                        <input type="text" name="settings[bank_account_name]" class="glass-input" value="<?= htmlspecialchars($settings['bank_account_name'] ?? '') ?>" placeholder="VD: NGUYEN VAN A" style="width: 100%; text-transform: uppercase;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Cổng Quốc Tế (WeChat & Alipay) -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
-                <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mã Ngân Hàng (Bin / Tên viết tắt)</label>
-                    <input type="text" name="settings[bank_name]" class="glass-input" value="<?= htmlspecialchars($settings['bank_name'] ?? '') ?>" placeholder="VD: MB, VCB, Vietinbank, Momo..." style="width: 100%;">
-                    <small style="color: var(--ios-text-secondary); font-size: 0.75rem;">Dùng để API tạo mã QR tự động nhận diện hệ thống ngân hàng.</small>
+                
+                <!-- WeChat -->
+                <div style="background: rgba(255,255,255,0.02); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--glass-border);">
+                    <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; color: #07c160;">3. Cổng WeChat Pay</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div>
+                            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Link Ảnh QR WeChat (Thay cho Số TK)</label>
+                            <input type="text" name="settings[wechat_qr_image]" class="glass-input" value="<?= htmlspecialchars($settings['wechat_qr_image'] ?? '') ?>" placeholder="https://domain.com/wechat-qr.jpg" style="width: 100%;">
+                            <small style="color: var(--ios-text-secondary); font-size: 0.75rem;">Nhập URL ảnh mã QR nhận tiền WeChat của bạn.</small>
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Chủ Tài Khoản WeChat</label>
+                            <input type="text" name="settings[wechat_account_name]" class="glass-input" value="<?= htmlspecialchars($settings['wechat_account_name'] ?? '') ?>" placeholder="Tên hiển thị WeChat" style="width: 100%;">
+                        </div>
+                    </div>
                 </div>
 
-                <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tài Khoản</label>
-                    <input type="text" name="settings[bank_account_number]" class="glass-input" value="<?= htmlspecialchars($settings['bank_account_number'] ?? '') ?>" placeholder="Nhập số tài khoản" style="width: 100%;">
-                </div>
-
-                <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Chủ Tài Khoản</label>
-                    <input type="text" name="settings[bank_account_name]" class="glass-input" value="<?= htmlspecialchars($settings['bank_account_name'] ?? '') ?>" placeholder="VD: NGUYEN VAN A" style="width: 100%; text-transform: uppercase;">
-                </div>
-
-                <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Cú Pháp Nạp Tiền (Prefix)</label>
-                    <input type="text" name="settings[bank_transfer_syntax]" class="glass-input" value="<?= htmlspecialchars($settings['bank_transfer_syntax'] ?? 'NAPTIEN') ?>" placeholder="VD: NAPTIEN" style="width: 100%;">
-                    <small style="color: var(--ios-text-secondary); font-size: 0.75rem;">Ví dụ cú pháp "NAPTIEN", hệ thống sẽ tạo nội dung là "NAPTIEN {ID}".</small>
+                <!-- Alipay -->
+                <div style="background: rgba(255,255,255,0.02); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--glass-border);">
+                    <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; color: #1677ff;">4. Cổng Alipay</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div>
+                            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Link Ảnh QR Alipay (Thay cho Số TK)</label>
+                            <input type="text" name="settings[alipay_qr_image]" class="glass-input" value="<?= htmlspecialchars($settings['alipay_qr_image'] ?? '') ?>" placeholder="https://domain.com/alipay-qr.jpg" style="width: 100%;">
+                            <small style="color: var(--ios-text-secondary); font-size: 0.75rem;">Nhập URL ảnh mã QR nhận tiền Alipay của bạn.</small>
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Chủ Tài Khoản Alipay</label>
+                            <input type="text" name="settings[alipay_account_name]" class="glass-input" value="<?= htmlspecialchars($settings['alipay_account_name'] ?? '') ?>" placeholder="Tên hiển thị Alipay" style="width: 100%;">
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
                 <button type="submit" class="glass-btn" style="padding: 0.75rem 2rem; background: #ff9500; color: #fff; border: none; font-weight: 600; cursor: pointer;">
-                    💾 Lưu Cấu Hình Ngân Hàng
+                    💾 Lưu Cấu Hình Đa Cổng
                 </button>
             </div>
         </form>
@@ -278,7 +326,7 @@ ob_start();
         const tabBtns = document.querySelectorAll('.settings-tab-btn');
         const tabPanes = document.querySelectorAll('.settings-tab-pane');
         
-        // Kiểm tra xem có tab nào đang được lưu trong localStorage không (để giữ tab sau khi submit form)
+        // Kiểm tra xem có tab nào đang được lưu trong localStorage không
         const activeTabId = localStorage.getItem('vc_active_settings_tab') || 'tab-general';
         
         function activateTab(tabId) {
