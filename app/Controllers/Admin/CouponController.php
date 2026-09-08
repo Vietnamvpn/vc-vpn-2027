@@ -62,6 +62,7 @@ class CouponController extends BaseController
         ];
 
         if ($this->couponModel->create($data)) {
+            $this->logActivity('CREATE_COUPON', 'Tạo mã giảm giá mới: ' . $code);
             $_SESSION['flash_message'] = 'Tạo mã giảm giá thành công!';
             $_SESSION['flash_type']    = 'success';
             $this->redirect('/admin/coupons');
@@ -124,6 +125,7 @@ class CouponController extends BaseController
         ];
 
         if ($this->couponModel->update($id, $data)) {
+            $this->logActivity('UPDATE_COUPON', 'Cập nhật mã giảm giá ID #' . $id . ' (' . $code . ')');
             $_SESSION['flash_message'] = 'Cập nhật mã giảm giá thành công!';
             $_SESSION['flash_type']    = 'success';
             $this->redirect('/admin/coupons');
@@ -139,6 +141,7 @@ class CouponController extends BaseController
 
         if ($id > 0) {
             if ($this->couponModel->delete($id)) {
+                $this->logActivity('DELETE_COUPON', 'Xóa mã giảm giá ID #' . $id);
                 $_SESSION['flash_message'] = 'Đã xóa mã giảm giá thành công!';
                 $_SESSION['flash_type']    = 'success';
             } else {

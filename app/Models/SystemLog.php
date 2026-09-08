@@ -7,6 +7,18 @@ class SystemLog extends BaseModel
     protected string $table = 'vc_system_logs';
 
     /**
+     * Ghi mới một dòng nhật ký vào CSDL
+     */
+    public function create(array $data): bool
+    {
+        $fields = implode(', ', array_keys($data));
+        $placeholders = implode(', ', array_fill(0, count($data), '?'));
+
+        $stmt = self::$db->prepare("INSERT INTO `{$this->table}` ({$fields}) VALUES ({$placeholders})");
+        return $stmt->execute(array_values($data));
+    }
+
+    /**
      * Lấy toàn bộ nhật ký hệ thống kèm thông tin người thực hiện
      */
     public function allWithUser(): array
