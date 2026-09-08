@@ -15,12 +15,12 @@ ob_start();
     </div>
 <?php endif; ?>
 
-<div style="margin-bottom: 0.75rem;">
+<div style="margin-bottom: 0.35rem;">
     <h1 style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; margin: 0; color: var(--ios-text);">Thêm Gói Cước Mới</h1>
-    <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.35rem 0 0 0;">Thiết lập thông số kỹ thuật, nhóm máy chủ và giá bán dịch vụ</p>
+    <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.25rem 0 0 0;">Thiết lập thông số kỹ thuật, nhóm máy chủ và giá bán dịch vụ</p>
 </div>
 
-<hr style="border: none; border-top: 1px solid var(--glass-border); margin: 0 0 1.25rem 0;">
+<hr style="border: none; border-top: 1px solid var(--glass-border); margin: 0.4rem 0 1.25rem 0;">
 
 <div class="glass-card" style="padding: 1.75rem; width: 100%; border-radius: var(--radius-lg);">
     <form action="/admin/plans/create" method="POST" style="display: flex; flex-direction: column; gap: 1.25rem;">
