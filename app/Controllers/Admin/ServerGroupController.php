@@ -19,7 +19,7 @@ class ServerGroupController extends BaseController
 
     public function index(): void
     {
-        $groups = $this->serverGroupModel->all();
+        $groups = $this->serverGroupModel->getAll();
         $this->render('admin.server-groups.index', [
             'activeMenu' => 'server-groups',
             'groups'     => $groups
@@ -57,7 +57,7 @@ class ServerGroupController extends BaseController
 
     public function showEdit(): void
     {
-        $id = $_GET['id'] ?? null;
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : null;
         $group = $id ? $this->serverGroupModel->find($id) : null;
 
         if (!$group) {
@@ -74,7 +74,7 @@ class ServerGroupController extends BaseController
 
     public function edit(): void
     {
-        $id = $_GET['id'] ?? null;
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : null;
         $name = trim($_POST['name'] ?? '');
         $description = trim($_POST['description'] ?? '');
         $status = $_POST['status'] ?? 'active';
@@ -97,7 +97,7 @@ class ServerGroupController extends BaseController
 
     public function delete(): void
     {
-        $id = $_GET['id'] ?? null;
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : null;
         if ($id) {
             $this->serverGroupModel->delete($id);
             $_SESSION['flash_message'] = 'Đã xóa nhóm máy chủ thành công!';
