@@ -338,6 +338,7 @@ vc-vpn-2027/
 │           │   └── edit.php
 │           ├── orders/
 │           │   ├── index.php
+│           │   ├── create.php
 │           │   └── detail.php
 │           ├── payments/
 │           │   ├── index.php

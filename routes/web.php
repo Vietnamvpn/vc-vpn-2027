@@ -121,6 +121,8 @@ return [
 
     // Quản lý đơn hàng (Orders)
     'GET /admin/orders'           => ['Admin\OrderController', 'index'],
+    'GET /admin/orders/create'    => ['Admin\OrderController', 'create'],
+    'POST /admin/orders/create'   => ['Admin\OrderController', 'create'],
     'GET /admin/orders/detail'    => ['Admin\OrderController', 'detail'],
 
     // Quản lý thanh toán (Payments)
