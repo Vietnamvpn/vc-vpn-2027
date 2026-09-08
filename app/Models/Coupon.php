@@ -8,14 +8,14 @@ class Coupon extends BaseModel
 
     public function all(): array
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} ORDER BY id DESC");
+        $stmt = self::$db->prepare("SELECT * FROM {$this->table} ORDER BY id DESC");
         $stmt->execute();
         return $stmt->fetchAll() ?: [];
     }
 
     public function findByCode(string $code): ?array
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE code = ? LIMIT 1");
+        $stmt = self::$db->prepare("SELECT * FROM {$this->table} WHERE code = ? LIMIT 1");
         $stmt->execute([$code]);
         $result = $stmt->fetch();
 
