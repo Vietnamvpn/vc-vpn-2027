@@ -5,18 +5,18 @@ $activeMenu = "servers";
 ob_start();
 ?>
 
-<div style="margin-bottom: 1.5rem; text-align: center;">
+<div style="margin-bottom: 1.5rem; text-align: left;">
     <h1 style="font-size: 1.5rem; font-weight: 700; margin: 0;">Thêm Máy Chủ Mới</h1>
 </div>
 
 <?php if (isset($_SESSION['error'])): ?>
-    <div style="background: rgba(255, 59, 48, 0.15); color: var(--ios-danger); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.875rem; border: 1px solid rgba(255, 59, 48, 0.3); margin-bottom: 1.25rem; max-width: 700px; margin-left: auto; margin-right: auto;">
+    <div style="background: rgba(255, 59, 48, 0.15); color: var(--ios-danger); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.875rem; border: 1px solid rgba(255, 59, 48, 0.3); margin-bottom: 1.25rem; width: 100%;">
         <?= htmlspecialchars($_SESSION['error']) ?>
     </div>
     <?php unset($_SESSION['error']); ?>
 <?php endif; ?>
 
-<div class="glass-card" style="padding: 1.5rem; max-width: 700px; margin: 0 auto;">
+<div class="glass-card" style="padding: 1.5rem; width: 100%;">
     <form action="/admin/servers/create" method="POST" style="display: flex; flex-direction: column; gap: 1.25rem;">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
             <div class="form-group" style="display: flex; flex-direction: column; gap: 0.4rem;">
