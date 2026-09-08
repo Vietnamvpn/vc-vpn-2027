@@ -197,22 +197,10 @@ ob_start();
                         <?php endforeach; ?>
                     </select>
                 </div>
-            </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
                 <div>
                     <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thời Gian Dùng Thử (Ngày)</label>
                     <input type="number" name="settings[trial_duration_days]" class="glass-input" value="<?= htmlspecialchars($settings['trial_duration_days'] ?? '3') ?>" min="1" step="1" style="width: 100%;">
-                </div>
-
-                <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Lưu Lượng Cho Phép (GB)</label>
-                    <input type="number" name="settings[trial_bandwidth_gb]" class="glass-input" value="<?= htmlspecialchars($settings['trial_bandwidth_gb'] ?? '10') ?>" min="1" step="1" style="width: 100%;">
-                </div>
-
-                <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Giới Hạn Thiết Bị</label>
-                    <input type="number" name="settings[trial_max_devices]" class="glass-input" value="<?= htmlspecialchars($settings['trial_max_devices'] ?? '1') ?>" min="1" step="1" style="width: 100%;">
                 </div>
             </div>
 
