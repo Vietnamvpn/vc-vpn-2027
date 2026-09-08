@@ -73,7 +73,15 @@ ob_start();
 
         <div>
             <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">API Token Kết Nối (Nếu có)</label>
-            <input type="text" id="api_token" name="api_token" class="glass-input" placeholder="Nhập token bảo mật kết nối với Node API..." style="width: 100%; font-family: monospace;">
+            <div style="position: relative; display: flex; align-items: center;">
+                <input type="text" id="api_token" name="api_token" class="glass-input" placeholder="Nhập token bảo mật kết nối với Node API..." style="width: 100%; font-family: monospace; padding-right: 2.75rem;">
+                <button type="button" onclick="generateApiToken()" title="Tạo token ngẫu nhiên" style="position: absolute; right: 0.5rem; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.1); color: var(--ios-text); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
 
         <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
@@ -81,6 +89,15 @@ ob_start();
         </div>
     </form>
 </div>
+
+<script>
+function generateApiToken() {
+    const array = new Uint8Array(32);
+    window.crypto.getRandomValues(array);
+    const token = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    document.getElementById('api_token').value = token;
+}
+</script>
 
 <?php
 $content = ob_get_clean();
