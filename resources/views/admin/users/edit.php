@@ -36,18 +36,6 @@ ob_start();
             <input type="password" name="new_password" class="glass-input" placeholder="Nhập mật khẩu mới..." style="width: 100%;">
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
-            <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Họ Và Tên</label>
-                <input type="text" name="full_name" class="glass-input" value="<?= htmlspecialchars($user['full_name'] ?? '') ?>" style="width: 100%;">
-            </div>
-
-            <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Điện Thoại</label>
-                <input type="text" name="phone" class="glass-input" value="<?= htmlspecialchars($user['phone'] ?? '') ?>" style="width: 100%;">
-            </div>
-        </div>
-
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
             <div>
                 <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Vai Trò</label>

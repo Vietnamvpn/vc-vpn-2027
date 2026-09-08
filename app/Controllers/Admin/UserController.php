@@ -40,8 +40,6 @@ class UserController extends BaseController
             $username = trim($_POST['username'] ?? '');
             $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
-            $fullName = trim($_POST['full_name'] ?? '');
-            $phone = trim($_POST['phone'] ?? '');
             $role = $_POST['role'] ?? 'user';
             $status = $_POST['status'] ?? 'active';
             $balance = (float)($_POST['balance'] ?? 0);
@@ -69,14 +67,12 @@ class UserController extends BaseController
                 'username' => $username,
                 'email' => $email,
                 'password_hash' => password_hash($password, PASSWORD_BCRYPT),
-                'full_name' => $fullName,
-                'phone' => $phone,
                 'role' => $role,
                 'status' => $status,
                 'balance' => $balance,
                 'commission_balance' => 0.00,
                 'ref_code' => $refCode,
-                'created_by' => $_SESSION['user_id'] // Ghi nhận ID Admin tạo người dùng này
+                'created_by' => $_SESSION['user_id']
             ];
 
             if ($this->userModel->create($data)) {
@@ -105,15 +101,12 @@ class UserController extends BaseController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $fullName = trim($_POST['full_name'] ?? '');
-            $phone = trim($_POST['phone'] ?? '');
             $role = $_POST['role'] ?? $user['role'];
             $status = $_POST['status'] ?? $user['status'];
             $balance = (float)($_POST['balance'] ?? $user['balance']);
             $commissionBalance = (float)($_POST['commission_balance'] ?? $user['commission_balance']);
             $newPassword = $_POST['new_password'] ?? '';
 
-            // Bảo mật: Không cho phép tự hạ vai trò Admin của chính mình
             if ($id === (int)$_SESSION['user_id'] && $role !== 'admin') {
                 $_SESSION['flash_message'] = 'Bảo mật: Bạn không thể tự hạ vai trò Admin của chính mình!';
                 $_SESSION['flash_type'] = 'danger';
@@ -121,8 +114,6 @@ class UserController extends BaseController
             }
 
             $updateData = [
-                'full_name' => $fullName,
-                'phone' => $phone,
                 'role' => $role,
                 'status' => $status,
                 'balance' => $balance,
@@ -182,14 +173,12 @@ class UserController extends BaseController
             $this->redirect('/admin/users');
         }
 
-        // BẢO MẬT TUYỆT ĐỐI: Không cho phép xóa bất kỳ tài khoản nào có vai trò Admin
         if ($targetUser['role'] === 'admin') {
             $_SESSION['flash_message'] = 'Cảnh báo bảo mật: Tất cả tài khoản Quản trị viên (Admin) không thể xóa!';
             $_SESSION['flash_type'] = 'danger';
             $this->redirect('/admin/users');
         }
 
-        // BẢO MẬT BỔ SUNG: Không cho phép tự xóa chính tài khoản đang đăng nhập
         if ($id === (int)$_SESSION['user_id']) {
             $_SESSION['flash_message'] = 'Cảnh báo bảo mật: Bạn không thể tự xóa tài khoản của chính mình!';
             $_SESSION['flash_type'] = 'danger';

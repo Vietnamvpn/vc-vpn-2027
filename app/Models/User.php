@@ -53,7 +53,7 @@ class User extends BaseModel
         $params = [];
 
         if (!empty($search)) {
-            $sql .= " AND (`username` LIKE :search OR `email` LIKE :search OR `full_name` LIKE :search OR `phone` LIKE :search)";
+            $sql .= " AND (`username` LIKE :search OR `email` LIKE :search)";
             $params['search'] = "%{$search}%";
         }
 
@@ -77,15 +77,13 @@ class User extends BaseModel
     public function create(array $data): bool
     {
         $stmt = self::$db->prepare("
-            INSERT INTO `{$this->table}` (`username`, `email`, `password_hash`, `full_name`, `phone`, `role`, `status`, `balance`, `commission_balance`, `ref_code`, `referred_by`, `created_by`, `register_ip`, `created_at`)
-            VALUES (:username, :email, :password_hash, :full_name, :phone, :role, :status, :balance, :commission_balance, :ref_code, :referred_by, :created_by, :register_ip, NOW())
+            INSERT INTO `{$this->table}` (`username`, `email`, `password_hash`, `role`, `status`, `balance`, `commission_balance`, `ref_code`, `referred_by`, `created_by`, `register_ip`, `created_at`)
+            VALUES (:username, :email, :password_hash, :role, :status, :balance, :commission_balance, :ref_code, :referred_by, :created_by, :register_ip, NOW())
         ");
         return $stmt->execute([
             'username'           => $data['username'],
             'email'              => $data['email'],
             'password_hash'      => $data['password_hash'],
-            'full_name'          => $data['full_name'] ?? null,
-            'phone'              => $data['phone'] ?? null,
             'role'               => $data['role'] ?? 'user',
             'status'             => $data['status'] ?? 'active',
             'balance'            => $data['balance'] ?? 0.00,

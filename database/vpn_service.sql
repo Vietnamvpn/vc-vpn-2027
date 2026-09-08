@@ -12,8 +12,6 @@ CREATE TABLE `vc_users` (
     `username` VARCHAR(50) NOT NULL UNIQUE,
     `email` VARCHAR(100) NOT NULL UNIQUE,
     `password_hash` VARCHAR(255) NOT NULL,
-    `full_name` VARCHAR(100) NULL,
-    `phone` VARCHAR(20) NULL,
     `role` ENUM('admin', 'staff', 'user') NOT NULL DEFAULT 'user',
     `status` ENUM('active', 'inactive', 'banned') NOT NULL DEFAULT 'active',
     `balance` DECIMAL(15, 2) NOT NULL DEFAULT 0.00,

@@ -26,7 +26,7 @@ ob_start();
 <!-- Bộ Lọc & Tìm Kiếm -->
 <div class="glass-card" style="padding: 1rem; margin-bottom: 1.25rem; width: 100%; box-sizing: border-box;">
     <form method="GET" action="/admin/users" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; width: 100%;">
-        <input type="text" name="search" class="glass-input" placeholder="Tìm theo tên, email, SĐT..." value="<?= htmlspecialchars($search ?? '') ?>" style="flex: 1 1 180px; min-width: 0; max-width: 100%;">
+        <input type="text" name="search" class="glass-input" placeholder="Tìm theo username, email..." value="<?= htmlspecialchars($search ?? '') ?>" style="flex: 1 1 180px; min-width: 0; max-width: 100%;">
         
         <select name="role" class="glass-input" style="flex: 1 1 120px; min-width: 0; cursor: pointer;">
             <option value="">-- Vai trò --</option>

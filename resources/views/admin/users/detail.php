@@ -41,8 +41,6 @@ ob_start();
             <div><strong>ID:</strong> #<?= $user['id'] ?></div>
             <div><strong>Username:</strong> <?= htmlspecialchars($user['username']) ?></div>
             <div><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></div>
-            <div><strong>Họ và tên:</strong> <?= htmlspecialchars($user['full_name'] ?? 'Chưa cập nhật') ?></div>
-            <div><strong>Số điện thoại:</strong> <?= htmlspecialchars($user['phone'] ?? 'Chưa cập nhật') ?></div>
             <div>
                 <strong>Nguồn tạo:</strong> 
                 <span style="font-weight: 700; color: <?= !empty($user['created_by']) ? 'var(--ios-blue)' : 'var(--ios-success)' ?>;">

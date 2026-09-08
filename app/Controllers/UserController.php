@@ -26,7 +26,7 @@ class UserController extends BaseController
 
         if (class_exists('App\Models\User')) {
             $userModel = new User();
-            $user = $userModel->find($userId);
+            $user = $userModel->findById($userId);
         }
 
         if (class_exists('App\Models\Subscription')) {
@@ -144,7 +144,7 @@ class UserController extends BaseController
 
         if (class_exists('App\Models\User')) {
             $userModel = new User();
-            $user = $userModel->find($userId);
+            $user = $userModel->findById($userId);
         }
 
         $this->render('user.wallet.index', [
@@ -173,7 +173,7 @@ class UserController extends BaseController
 
         if (class_exists('App\Models\User')) {
             $userModel = new User();
-            $user = $userModel->find($userId);
+            $user = $userModel->findById($userId);
         }
 
         $this->render('user.referrals.index', [
@@ -219,7 +219,7 @@ class UserController extends BaseController
 
         if (class_exists('App\Models\User')) {
             $userModel = new User();
-            $user = $userModel->find($userId);
+            $user = $userModel->findById($userId);
         }
 
         $this->render('user.profile.index', [
@@ -230,10 +230,14 @@ class UserController extends BaseController
 
     public function updateProfile(): void
     {
+        $userId = $_SESSION['user_id'];
         $newPassword = trim($_POST['new_password'] ?? '');
 
-        if (!empty($newPassword)) {
-            // Cập nhật mật khẩu mới nếu có truyền vào
+        if (!empty($newPassword) && class_exists('App\Models\User')) {
+            $userModel = new User();
+            $userModel->update($userId, [
+                'password_hash' => password_hash($newPassword, PASSWORD_BCRYPT)
+            ]);
         }
 
         $_SESSION['success'] = 'Cập nhật thông tin cá nhân thành công.';

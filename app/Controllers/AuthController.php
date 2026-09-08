@@ -52,7 +52,6 @@ class AuthController extends BaseController
                     $this->redirect('/login');
                 }
 
-                // Cập nhật IP và Thời gian đăng nhập cuối vào SQL
                 $clientIp = $this->getClientIp();
                 $userModel->update($user['id'], [
                     'last_login_ip' => $clientIp,
@@ -124,7 +123,6 @@ class AuthController extends BaseController
             $clientIp = $this->getClientIp();
             $myRefCode = strtoupper(substr(md5(uniqid($username, true)), 0, 8));
 
-            // Kiểm tra mã giới thiệu người mời (nếu có)
             $referredBy = null;
             if (!empty($refCodeInput)) {
                 $referrer = $userModel->findByRefCode($refCodeInput);
