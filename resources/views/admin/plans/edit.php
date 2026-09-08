@@ -5,10 +5,6 @@ $activeMenu = "plans";
 ob_start();
 ?>
 
-<div style="margin-bottom: 1.25rem;">
-    <h1 style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px;">Chỉnh Sửa Gói Cước: <?= htmlspecialchars($plan['name'] ?? '') ?></h1>
-</div>
-
 <?php if (!empty($_SESSION['error'])): ?>
     <div class="glass-card glass-alert" style="padding: 1rem 1.25rem; margin-bottom: 1.25rem; border-left: 4px solid var(--ios-danger); display: flex; justify-content: space-between; align-items: center;">
         <span style="font-weight: 500; font-size: 0.9rem; color: var(--ios-danger);"><?= htmlspecialchars($_SESSION['error']) ?></span>
@@ -16,6 +12,13 @@ ob_start();
         <?php unset($_SESSION['error']); ?>
     </div>
 <?php endif; ?>
+
+<div style="margin-bottom: 0.75rem;">
+    <h1 style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; margin: 0;">Chỉnh Sửa Gói Cước: <?= htmlspecialchars($plan['name'] ?? '') ?></h1>
+    <p style="font-size: 0.875rem; color: var(--ios-text-secondary); margin: 0.25rem 0 0 0;">Cập nhật lại các thông số cấu hình của gói dịch vụ</p>
+</div>
+
+<hr style="border: none; border-top: 1px solid var(--glass-border); margin: 0 0 1.25rem 0;">
 
 <div class="glass-card" style="padding: 1.75rem; width: 100%;">
     <form action="/admin/plans/edit?id=<?= $plan['id'] ?>" method="POST" style="display: flex; flex-direction: column; gap: 1.25rem;">
