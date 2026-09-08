@@ -76,7 +76,7 @@ ob_start();
                             <td style="text-align: center; font-weight: 600; font-size: 0.85rem;">
                                 <?= ($plan['bandwidth_limit_gb'] > 0) ? htmlspecialchars($plan['bandwidth_limit_gb']) . ' GB' : '<span style="color: var(--ios-success); font-weight: 700;">Không giới hạn</span>' ?>
                             </td>
-                            <td style="text-align: center; font-weight: 600; font-size: 0.85rem;"><?= htmlspecialchars($plan['max_devices']) ?> MB</td>
+                            <td style="text-align: center; font-weight: 600; font-size: 0.85rem;"><?= htmlspecialchars($plan['max_devices']) ?> 📱</td>
                             <td style="text-align: center;">
                                 <?php
                                 $statusBadge = [
