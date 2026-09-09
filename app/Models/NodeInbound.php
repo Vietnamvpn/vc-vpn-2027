@@ -16,7 +16,7 @@ class NodeInbound extends BaseModel
                 INNER JOIN vc_servers s ON i.server_id = s.id
                 WHERE i.status = 'active' AND s.status = 'active'";
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = self::$db->prepare($sql);
         $stmt->execute();
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
