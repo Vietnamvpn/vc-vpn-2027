@@ -75,4 +75,12 @@ abstract class BaseModel
         $stmt = self::$db->prepare("DELETE FROM `{$this->table}` WHERE `id` = :id");
         return $stmt->execute(['id' => $id]);
     }
+
+    /**
+     * Lấy ID của bản ghi vừa được chèn vào cơ sở dữ liệu
+     */
+    public function lastInsertId(): int
+    {
+        return (int)self::$db->lastInsertId();
+    }
 }

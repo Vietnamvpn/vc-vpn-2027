@@ -47,7 +47,6 @@ class OrderController extends BaseController
                 $this->redirect('/admin/orders/create' . ($userId > 0 ? '?user_id=' . $userId : ''));
             }
 
-            // Lấy thông tin gói cước
             $plan = $planModel ? $planModel->find($planId) : null;
             if (!$plan) {
                 $_SESSION['flash_message'] = 'Gói cước không tồn tại!';
@@ -58,7 +57,6 @@ class OrderController extends BaseController
             $totalAmount = $customAmount !== null ? $customAmount : (float)$plan['price'];
             $orderCode   = 'ORD' . date('YmdHis') . rand(100, 999);
 
-            // Tạo Đơn Hàng
             $orderData = [
                 'order_code'     => $orderCode,
                 'user_id'        => $userId,
@@ -69,9 +67,8 @@ class OrderController extends BaseController
             ];
 
             if ($this->orderModel->create($orderData)) {
-                $orderId = $this->orderModel->lastInsertId() ?? 0;
+                $orderId = method_exists($this->orderModel, 'lastInsertId') ? $this->orderModel->lastInsertId() : 0;
 
-                // Nếu đơn hàng Hoàn tất (completed) -> Tự động kích hoạt Gói Đăng Ký (Subscription)
                 if ($paymentStatus === 'completed' && class_exists('App\Models\Subscription')) {
                     $subModel       = new Subscription();
                     $durationDays   = (int)($plan['duration_days'] ?? 30);
@@ -112,7 +109,6 @@ class OrderController extends BaseController
             }
         }
 
-        // GET Request: Chuẩn bị dữ liệu hiển thị form
         $selectedUserId = (int)($_GET['user_id'] ?? 0);
         $users          = $userModel->getAll();
         $plans          = $planModel ? ($planModel->getAllActive() ?? $planModel->getAll()) : [];
