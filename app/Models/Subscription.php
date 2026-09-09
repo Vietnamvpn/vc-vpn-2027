@@ -72,4 +72,37 @@ class Subscription extends BaseModel
         $result = $stmt->fetch();
         return $result ?: null;
     }
+
+    /**
+     * Lấy danh sách tài khoản đang kích hoạt để gửi về cho Node VPS đồng bộ
+     */
+    public function getAllActiveUsers(): array
+    {
+        $stmt = self::$db->prepare("
+            SELECT id, uuid, upload, download, transfer_enable 
+            FROM `{$this->table}` 
+            WHERE `status` = 'active' AND `end_date` > NOW()
+        ");
+        $stmt->execute();
+        return $stmt->fetchAll() ?: [];
+    }
+
+    /**
+     * Cộng dồn dung lượng Upload và Download từ Node VPS báo về theo UUID
+     */
+    public function addTraffic(string $uuid, int $u, int $d): bool
+    {
+        $stmt = self::$db->prepare("
+            UPDATE `{$this->table}` 
+            SET `upload` = `upload` + :u, 
+                `download` = `download` + :d, 
+                `updated_at` = NOW() 
+            WHERE `uuid` = :uuid
+        ");
+        return $stmt->execute([
+            'u'    => $u,
+            'd'    => $d,
+            'uuid' => $uuid
+        ]);
+    }
 }

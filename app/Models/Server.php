@@ -71,6 +71,16 @@ class Server extends BaseModel
         return $stmt->execute($params);
     }
 
+    /**
+     * Cập nhật thời điểm checkin gần nhất của máy chủ VPS
+     */
+    public function updateLastCheckin(int $id): bool
+    {
+        $sql = "UPDATE `{$this->table}` SET `last_check_in` = NOW(), `updated_at` = NOW() WHERE `id` = :id";
+        $stmt = self::$db->prepare($sql);
+        return $stmt->execute(['id' => $id]);
+    }
+
     public function delete(int $id): bool
     {
         $stmt = self::$db->prepare("DELETE FROM `{$this->table}` WHERE `id` = :id");
