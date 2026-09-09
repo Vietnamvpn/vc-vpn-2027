@@ -23,7 +23,11 @@ echo -e "${CYAN}[1/5] Nhập thông tin cấu hình hệ thống:${NC}"
 read -r -p " ├── Tên miền (Domain - ví dụ: vpn.domain.com): " DOMAIN
 read -r -p " ├── Tên Database (MySQL): " DB_NAME
 read -r -p " ├── User Database: " DB_USER
-read -r -s -p " └── Mật khẩu Database: " DB_PASS
+read -r -s -p " ├── Mật khẩu Database: " DB_PASS
+printf '\n'
+read -r -p " ├── Tên đăng nhập Admin: " ADMIN_USER
+read -r -p " ├── Email Admin: " ADMIN_EMAIL
+read -r -s -p " └── Mật khẩu Admin: " ADMIN_PASS
 printf '\n\n'
 
 # Kiểm tra tính hợp lệ dữ liệu đầu vào
@@ -39,6 +43,11 @@ fi
 
 if [[ -z "$DB_PASS" ]]; then
     echo -e "${RED}Lỗi: Mật khẩu database không được để trống.${NC}"
+    exit 1
+fi
+
+if [[ -z "$ADMIN_USER" || -z "$ADMIN_EMAIL" || -z "$ADMIN_PASS" ]]; then
+    echo -e "${RED}Lỗi: Thông tin tài khoản Admin không được để trống.${NC}"
     exit 1
 fi
 
@@ -76,7 +85,7 @@ if [[ "$(id -u)" -ne 0 ]]; then
     exit 1
 fi
 
-# 3. Import cấu trúc cơ sở dữ liệu
+# 3. Import cấu trúc cơ sở dữ liệu & Tạo tài khoản Admin
 echo -e "${CYAN}[2/5] Khởi tạo cơ sở dữ liệu MySQL...${NC}"
 export MYSQL_PWD="$DB_PASS"
 SCHEMA_EXISTS="$(mysql -N -s -h 127.0.0.1 -u "$DB_USER" "$DB_NAME" -e "SELECT 1 FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'vc_users'")"
@@ -86,6 +95,11 @@ else
     mysql --force=false -h 127.0.0.1 -u "$DB_USER" "$DB_NAME" < "$APP_PATH/database/vpn_service.sql"
     echo -e " ${GREEN}✔ Import cơ sở dữ liệu thành công.${NC}"
 fi
+
+# Tạo hoặc cập nhật tài khoản Admin bằng PHP Bcrypt hash
+ADMIN_HASH=$(php -r "echo password_hash('$ADMIN_PASS', PASSWORD_DEFAULT);")
+mysql -h 127.0.0.1 -u "$DB_USER" "$DB_NAME" -e "INSERT INTO vc_users (username, email, password_hash, role, status, created_at, updated_at) VALUES ('$ADMIN_USER', '$ADMIN_EMAIL', '$ADMIN_HASH', 'admin', 'active', NOW(), NOW()) ON DUPLICATE KEY UPDATE password_hash='$ADMIN_HASH', role='admin', status='active';"
+echo -e " ${GREEN}✔ Khởi tạo tài khoản Admin ($ADMIN_USER) thành công.${NC}"
 unset MYSQL_PWD
 
 # 4. Cấu hình file .env
