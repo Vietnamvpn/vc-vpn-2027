@@ -135,9 +135,6 @@ return [
     'GET /admin/subscriptions'        => ['Admin\SubscriptionController', 'index'],
     'GET /admin/subscriptions/detail' => ['Admin\SubscriptionController', 'detail'],
 
-    // Link đăng ký VPN rút gọn cho App Client
-    'GET /sub'                   => ['Api\ClientController', 'subscribe'],
-
     // Quản lý hoa hồng & giới thiệu (Referrals)
     'GET /admin/referrals'        => ['Admin\ReferralController', 'index'],
 

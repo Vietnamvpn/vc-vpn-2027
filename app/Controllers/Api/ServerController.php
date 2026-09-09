@@ -3,6 +3,8 @@
 namespace App\Controllers\Api;
 
 use App\Controllers\BaseController;
+use App\Models\Subscription;
+use App\Models\Server;
 
 class ServerController extends BaseController
 {
@@ -13,6 +15,7 @@ class ServerController extends BaseController
 
         if (empty($nodeKey) || $nodeKey !== $serverKey) {
             $this->json(['status' => false, 'message' => 'Xác thực Node thất bại.'], 401);
+            exit;
         }
     }
 
@@ -21,15 +24,15 @@ class ServerController extends BaseController
         $this->verifyNodeKey();
 
         $nodeId = $_POST['node_id'] ?? null;
-        $status = $_POST['status'] ?? 'online';
+        if ($nodeId) {
+            $serverModel = new Server();
+            $serverModel->updateLastCheckin($nodeId);
+        }
 
         $this->json([
             'status' => true,
             'message' => 'Node checkin thành công.',
-            'data' => [
-                'node_id' => $nodeId,
-                'server_time' => time()
-            ]
+            'data' => ['server_time' => time()]
         ]);
     }
 
@@ -37,15 +40,18 @@ class ServerController extends BaseController
     {
         $this->verifyNodeKey();
 
-        // Trả về danh sách tài khoản active để Node đồng bộ
-        $users = [
-            [
-                'id' => 1,
-                'uuid' => '11111111-2222-3333-4444-555555555555',
-                'speed_limit' => 0,
-                'device_limit' => 5
-            ]
-        ];
+        $subModel = new Subscription();
+        $activeSubs = $subModel->getAllActiveUsers();
+
+        $users = array_map(function($sub) {
+            return [
+                'id' => $sub['id'],
+                'uuid' => $sub['uuid'],
+                'u' => $sub['upload'],
+                'd' => $sub['download'],
+                'transfer_enable' => $sub['transfer_enable']
+            ];
+        }, $activeSubs);
 
         $this->json([
             'status' => true,
@@ -60,9 +66,20 @@ class ServerController extends BaseController
         $rawInput = file_get_contents('php://input');
         $trafficData = json_decode($rawInput, true);
 
+        if (is_array($trafficData)) {
+            $subModel = new Subscription();
+            foreach ($trafficData as $item) {
+                if (!empty($item['uuid'])) {
+                    $u = (int)($item['u'] ?? 0);
+                    $d = (int)($item['d'] ?? 0);
+                    $subModel->addTraffic($item['uuid'], $u, $d);
+                }
+            }
+        }
+
         $this->json([
             'status' => true,
-            'message' => 'Báo cáo dung lượng thành công.'
+            'message' => 'Cập nhật dung lượng thành công.'
         ]);
     }
 }
