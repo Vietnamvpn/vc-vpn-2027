@@ -41,6 +41,13 @@ class ClientController extends BaseController
             }
         }
 
+        // Nếu chưa có giao thức nào trong database hoặc không có node active
+        if (empty($links)) {
+            header('Content-Type: text/plain; charset=utf-8');
+            echo "Chưa có giao thức nào được cấp.";
+            exit;
+        }
+
         // Trả về Header thông tin dung lượng cho App Client
         $upload = $subscription['upload'] ?? 0;
         $download = $subscription['download'] ?? 0;
