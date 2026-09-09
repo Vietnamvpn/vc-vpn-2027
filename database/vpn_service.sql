@@ -65,13 +65,18 @@ CREATE TABLE `vc_servers` (
 CREATE TABLE `vc_node_inbounds` (
     `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `server_id` INT UNSIGNED NOT NULL,
+    `tag` VARCHAR(100) NULL,
     `port` INT NOT NULL,
     `protocol` ENUM('vmess', 'vless', 'trojan', 'shadowsocks', 'wireguard', 'hy2', 'tuic') NOT NULL,
     `network` ENUM('tcp', 'ws', 'grpc', 'udp', 'quic') NOT NULL DEFAULT 'tcp',
     `tls` TINYINT(1) NOT NULL DEFAULT 1,
     `sni` VARCHAR(255) NULL,
     `host` VARCHAR(255) NULL,
-    `path` VARCHAR(100) NULL,
+    `path` VARCHAR(255) NULL,
+    `public_key` VARCHAR(255) NULL,
+    `short_id` VARCHAR(100) NULL,
+    `service_name` VARCHAR(100) NULL,
+    `password` VARCHAR(255) NULL,
     `status` ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
     FOREIGN KEY (`server_id`) REFERENCES `vc_servers`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -79,7 +84,7 @@ CREATE TABLE `vc_node_inbounds` (
 CREATE TABLE `vc_node_tasks` (
     `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `server_id` INT UNSIGNED NOT NULL,
-    `action` ENUM('add_user', 'update_user', 'delete_user', 'sync_all') NOT NULL,
+    `action` VARCHAR(50) NOT NULL,
     `payload` JSON NOT NULL,
     `status` ENUM('pending', 'completed', 'failed') NOT NULL DEFAULT 'pending',
     `attempts` INT NOT NULL DEFAULT 0,

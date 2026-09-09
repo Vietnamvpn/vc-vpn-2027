@@ -88,21 +88,68 @@ class Subscription extends BaseModel
     }
 
     /**
-     * Cộng dồn dung lượng Upload và Download từ Node VPS báo về theo UUID
+     * Cộng dồn dung lượng Upload/Download và cập nhật IP sử dụng theo ID gói cước (sub_X)
      */
-    public function addTraffic(string $uuid, int $u, int $d): bool
+    public function addTrafficById(int $id, int $u, int $d, ?string $lastIp = null): bool
     {
-        $stmt = self::$db->prepare("
+        $ipSql = $lastIp ? ", `last_used_ip` = :last_ip" : "";
+        $sql = "
             UPDATE `{$this->table}` 
             SET `upload` = `upload` + :u, 
-                `download` = `download` + :d, 
+                `download` = `download` + :d 
+                {$ipSql},
+                `updated_at` = NOW() 
+            WHERE `id` = :id
+        ";
+
+        $stmt = self::$db->prepare($sql);
+        $params = [
+            'u'  => $u,
+            'd'  => $d,
+            'id' => $id
+        ];
+
+        if ($lastIp) {
+            $params['last_ip'] = $lastIp;
+        }
+
+        return $stmt->execute($params);
+    }
+
+    /**
+     * Cộng dồn dung lượng Upload/Download và cập nhật IP sử dụng theo UUID
+     */
+    public function addTrafficByUuid(string $uuid, int $u, int $d, ?string $lastIp = null): bool
+    {
+        $ipSql = $lastIp ? ", `last_used_ip` = :last_ip" : "";
+        $sql = "
+            UPDATE `{$this->table}` 
+            SET `upload` = `upload` + :u, 
+                `download` = `download` + :d 
+                {$ipSql},
                 `updated_at` = NOW() 
             WHERE `uuid` = :uuid
-        ");
-        return $stmt->execute([
+        ";
+
+        $stmt = self::$db->prepare($sql);
+        $params = [
             'u'    => $u,
             'd'    => $d,
             'uuid' => $uuid
-        ]);
+        ];
+
+        if ($lastIp) {
+            $params['last_ip'] = $lastIp;
+        }
+
+        return $stmt->execute($params);
+    }
+
+    /**
+     * Giữ hàm cũ để đảm bảo tính tương thích
+     */
+    public function addTraffic(string $uuid, int $u, int $d): bool
+    {
+        return $this->addTrafficByUuid($uuid, $u, $d);
     }
 }

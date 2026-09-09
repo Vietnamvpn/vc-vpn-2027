@@ -21,6 +21,22 @@ class Server extends BaseModel
         return $result ?: null;
     }
 
+    /**
+     * Tìm máy chủ VPS bằng API Token gửi từ Node
+     */
+    public function findByToken(string $token): ?array
+    {
+        $sql = "
+            SELECT * FROM `{$this->table}` 
+            WHERE `api_token` = :token 
+            LIMIT 1
+        ";
+        $stmt = self::$db->prepare($sql);
+        $stmt->execute(['token' => $token]);
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
+
     public function getAll(): array
     {
         $sql = "
