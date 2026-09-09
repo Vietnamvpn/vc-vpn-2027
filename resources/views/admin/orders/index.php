@@ -21,10 +21,18 @@ ob_start();
     </div>
 <?php endif; ?>
 
-<div style="margin-bottom: 1rem; width: 100%; box-sizing: border-box;">
+<div style="margin-bottom: 1rem; width: 100%; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
     <div>
         <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Quản Lý Đơn Hàng</h1>
-        <p style="color: var(--ios-text-secondary); font-size: 0.85rem;">Danh sách tất cả đơn hàng giao dịch trong hệ thống</p>
+        <p style="color: var(--ios-text-secondary); font-size: 0.85rem;">
+            <?= !empty($filterUser) ? 'Danh sách đơn hàng của người dùng: <strong>' . htmlspecialchars($filterUser['username']) . '</strong> (ID #' . $filterUser['id'] . ')' : 'Danh sách tất cả đơn hàng giao dịch trong hệ thống' ?>
+        </p>
+    </div>
+    <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <?php if (!empty($userId)): ?>
+            <a href="/admin/orders" class="glass-btn" style="text-decoration: none; white-space: nowrap; background: rgba(255, 59, 48, 0.1); color: var(--ios-danger);">✕ Xóa lọc tài khoản</a>
+        <?php endif; ?>
+        <a href="/admin/orders/create<?= !empty($userId) ? '?user_id=' . $userId : '' ?>" class="glass-btn" style="text-decoration: none; white-space: nowrap;">+ Tạo Đơn Hàng</a>
     </div>
 </div>
 
@@ -93,9 +101,25 @@ ob_start();
                             <td style="text-align: right;">
                                 <div class="action-dropdown">
                                     <button type="button" class="action-btn" title="Thao tác">⋮</button>
-                                    <div class="action-menu">
-                                        <a href="/admin/orders/detail?id=<?= $order['id'] ?>" class="action-item">
+                                    <div class="action-menu" style="min-width: 175px; white-space: nowrap;">
+                                        <a href="/admin/orders/detail?id=<?= $order['id'] ?>" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                             <span>👁️</span> Xem chi tiết
+                                        </a>
+
+                                        <?php if (($order['payment_status'] ?? '') !== 'completed'): ?>
+                                            <a href="/admin/orders/update-status?id=<?= $order['id'] ?>&status=completed<?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Duyệt thành công đơn hàng này và cấp gói dịch vụ cho người dùng?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-success);">
+                                                <span>✅</span> Duyệt (Hoàn tất)
+                                            </a>
+                                        <?php endif; ?>
+
+                                        <?php if (($order['payment_status'] ?? '') !== 'cancelled'): ?>
+                                            <a href="/admin/orders/update-status?id=<?= $order['id'] ?>&status=cancelled<?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Hủy đơn hàng này?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-warning);">
+                                                <span>❌</span> Hủy đơn hàng
+                                            </a>
+                                        <?php endif; ?>
+
+                                        <a href="/admin/orders/delete?id=<?= $order['id'] ?><?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn đơn hàng này?');" class="action-item delete" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-danger);">
+                                            <span>🗑️</span> Xóa đơn hàng
                                         </a>
                                     </div>
                                 </div>
@@ -104,7 +128,7 @@ ob_start();
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="9" style="text-align: center; padding: 2rem; color: var(--ios-text-secondary);">Chưa có đơn hàng nào trong hệ thống.</td>
+                        <td colspan="9" style="text-align: center; padding: 2rem; color: var(--ios-text-secondary);">Chưa có đơn hàng nào.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>

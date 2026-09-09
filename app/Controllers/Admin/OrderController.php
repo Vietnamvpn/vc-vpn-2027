@@ -22,12 +22,108 @@ class OrderController extends BaseController
 
     public function index(): void
     {
-        $orders = $this->orderModel->allWithDetails();
+        $userId = isset($_GET['user_id']) ? (int)$_GET['user_id'] : null;
+        $orders = $this->orderModel->allWithDetails($userId);
+
+        $filterUser = null;
+        if ($userId && class_exists('App\Models\User')) {
+            $userModel = new User();
+            $filterUser = $userModel->findById($userId);
+        }
 
         $this->render('admin.orders.index', [
             'activeMenu' => 'orders',
-            'orders'     => $orders
+            'orders'     => $orders,
+            'filterUser' => $filterUser,
+            'userId'     => $userId
         ]);
+    }
+
+    public function updateStatus(): void
+    {
+        $id     = (int)($_GET['id'] ?? 0);
+        $status = $_GET['status'] ?? '';
+        $userId = (int)($_GET['user_id'] ?? 0);
+
+        $validStatuses = ['completed', 'pending', 'failed', 'cancelled'];
+
+        if ($id <= 0 || !in_array($status, $validStatuses, true)) {
+            $_SESSION['flash_message'] = 'Yêu cầu không hợp lệ!';
+            $_SESSION['flash_type']    = 'danger';
+            $this->redirect('/admin/orders' . ($userId > 0 ? '?user_id=' . $userId : ''));
+        }
+
+        $order = $this->orderModel->find($id);
+        if (!$order) {
+            $_SESSION['flash_message'] = 'Đơn hàng không tồn tại!';
+            $_SESSION['flash_type']    = 'danger';
+            $this->redirect('/admin/orders' . ($userId > 0 ? '?user_id=' . $userId : ''));
+        }
+
+        if ($this->orderModel->update($id, ['payment_status' => $status])) {
+            // Nếu duyệt đơn thành công (completed) -> Kích hoạt Gói Đăng Ký (Subscription) nếu chưa từng cấp
+            if ($status === 'completed' && $order['payment_status'] !== 'completed' && class_exists('App\Models\Subscription') && class_exists('App\Models\VpnPlan')) {
+                $planModel = new VpnPlan();
+                $plan      = $planModel->find((int)$order['plan_id']);
+
+                if ($plan) {
+                    $subModel       = new Subscription();
+                    $durationDays   = (int)($plan['duration_days'] ?? 30);
+                    $bandwidthLimit = (int)($plan['bandwidth_limit_gb'] ?? 0);
+                    $bytesTotal     = $bandwidthLimit > 0 ? ($bandwidthLimit * 1073741824) : 0;
+                    $uuid           = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', 
+                                        mt_rand(0, 0xffff), mt_rand(0, 0xffff), 
+                                        mt_rand(0, 0xffff), 
+                                        mt_rand(0, 0x0fff) | 0x4000, 
+                                        mt_rand(0, 0x3fff) | 0x8000, 
+                                        mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+                    $subToken       = bin2hex(random_bytes(16));
+
+                    $subModel->create([
+                        'user_id'         => $order['user_id'],
+                        'plan_id'         => $order['plan_id'],
+                        'order_id'        => $id,
+                        'uuid'            => $uuid,
+                        'sub_token'       => $subToken,
+                        'transfer_enable' => $bytesTotal,
+                        'start_date'      => date('Y-m-d H:i:s'),
+                        'end_date'        => date('Y-m-d H:i:s', strtotime("+{$durationDays} days")),
+                        'status'          => 'active'
+                    ]);
+                }
+            }
+
+            $_SESSION['flash_message'] = 'Cập nhật trạng thái đơn hàng thành công!';
+            $_SESSION['flash_type']    = 'success';
+        } else {
+            $_SESSION['flash_message'] = 'Không thể cập nhật trạng thái đơn hàng!';
+            $_SESSION['flash_type']    = 'danger';
+        }
+
+        $this->redirect('/admin/orders' . ($userId > 0 ? '?user_id=' . $userId : ''));
+    }
+
+    public function delete(): void
+    {
+        $id     = (int)($_GET['id'] ?? 0);
+        $userId = (int)($_GET['user_id'] ?? 0);
+
+        $order = $this->orderModel->find($id);
+
+        if (!$order) {
+            $_SESSION['flash_message'] = 'Không tìm thấy đơn hàng cần xóa!';
+            $_SESSION['flash_type']    = 'danger';
+        } else {
+            if ($this->orderModel->delete($id)) {
+                $_SESSION['flash_message'] = 'Xóa đơn hàng thành công!';
+                $_SESSION['flash_type']    = 'success';
+            } else {
+                $_SESSION['flash_message'] = 'Không thể xóa đơn hàng!';
+                $_SESSION['flash_type']    = 'danger';
+            }
+        }
+
+        $this->redirect('/admin/orders' . ($userId > 0 ? '?user_id=' . $userId : ''));
     }
 
     public function create(): void

@@ -7,11 +7,11 @@ class Order extends BaseModel
     protected string $table = 'vc_orders';
 
     /**
-     * Lấy toàn bộ danh sách đơn hàng kèm thông tin user, gói cước và mã giảm giá
+     * Lấy toàn bộ danh sách đơn hàng kèm thông tin user, gói cước và mã giảm giá (có hỗ trợ lọc theo user_id)
      */
-    public function allWithDetails(): array
+    public function allWithDetails(?int $userId = null): array
     {
-        $stmt = self::$db->prepare("
+        $sql = "
             SELECT o.*, 
                    u.username, u.email, 
                    p.name AS plan_name, p.code AS plan_code, 
@@ -20,9 +20,18 @@ class Order extends BaseModel
             LEFT JOIN `vc_users` u ON o.user_id = u.id
             LEFT JOIN `vc_vpn_plans` p ON o.plan_id = p.id
             LEFT JOIN `vc_coupons` c ON o.coupon_id = c.id
-            ORDER BY o.id DESC
-        ");
-        $stmt->execute();
+        ";
+
+        $params = [];
+        if ($userId !== null && $userId > 0) {
+            $sql .= " WHERE o.user_id = :user_id";
+            $params['user_id'] = $userId;
+        }
+
+        $sql .= " ORDER BY o.id DESC";
+
+        $stmt = self::$db->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetchAll() ?: [];
     }
 
