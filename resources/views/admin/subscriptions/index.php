@@ -107,6 +107,12 @@ ob_start();
                                         <a href="/admin/users/detail?id=<?= $sub['user_id'] ?>" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                             <span>👤</span> Xem người dùng
                                         </a>
+                                        <a href="javascript:void(0)" onclick="copySubLink('<?= htmlspecialchars($sub['uuid']) ?>')" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
+                                            <span>📋</span> Sao chép Link
+                                        </a>
+                                        <a href="javascript:void(0)" onclick="openQrModal('<?= htmlspecialchars($sub['uuid']) ?>')" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
+                                            <span>📱</span> Mã QR
+                                        </a>
                                     </div>
                                 </div>
                             </td>
@@ -121,6 +127,67 @@ ob_start();
         </table>
     </div>
 </div>
+
+<!-- Modal Hiển Thị Mã QR -->
+<div id="qrModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 9999; align-items: center; justify-content: center;">
+    <div class="glass-card" style="padding: 1.5rem; max-width: 320px; width: 90%; text-align: center; position: relative; background: rgba(255, 255, 255, 0.95);">
+        <h3 style="margin-top: 0; font-size: 1.1rem; font-weight: 700;">Quét Mã QR Đăng Ký</h3>
+        <div style="margin: 1rem 0; padding: 0.75rem; background: #fff; border-radius: var(--radius-sm); display: inline-block;">
+            <img id="qrCodeImg" src="" alt="QR Code" style="width: 200px; height: 200px; display: block;">
+        </div>
+        <div>
+            <button type="button" onclick="closeQrModal()" class="glass-btn" style="width: 100%; padding: 0.5rem; font-weight: 600;">Đóng</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function getSubUrl(uuid) {
+    return window.location.origin + '/sub?token=' + uuid;
+}
+
+function copySubLink(uuid) {
+    const url = getSubUrl(uuid);
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(url).then(() => {
+            alert('Đã sao chép liên kết đăng ký vào bộ nhớ tạm!');
+        }).catch(() => {
+            fallbackCopyText(url);
+        });
+    } else {
+        fallbackCopyText(url);
+    }
+}
+
+function fallbackCopyText(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        alert('Đã sao chép liên kết đăng ký vào bộ nhớ tạm!');
+    } catch (err) {
+        alert('Không thể tự động sao chép. Vui lòng thử lại!');
+    }
+    document.body.removeChild(textArea);
+}
+
+function openQrModal(uuid) {
+    const url = getSubUrl(uuid);
+    const qrImg = document.getElementById('qrCodeImg');
+    qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(url);
+    const modal = document.getElementById('qrModal');
+    modal.style.display = 'flex';
+}
+
+function closeQrModal() {
+    const modal = document.getElementById('qrModal');
+    modal.style.display = 'none';
+}
+</script>
 
 <?php
 $content = ob_get_clean();
