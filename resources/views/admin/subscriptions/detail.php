@@ -14,7 +14,6 @@ $limitGB = round(($subscription['transfer_enable'] ?? 0) / (1024 * 1024 * 1024),
     <div>
         <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Gói Đăng Ký: #<?= $subscription['id'] ?></h1>
     </div>
-    <a href="/admin/subscriptions" class="glass-btn" style="text-decoration: none; white-space: nowrap; flex-shrink: 0;">⬅️ Quay Lại</a>
 </div>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
@@ -65,12 +64,6 @@ $limitGB = round(($subscription['transfer_enable'] ?? 0) / (1024 * 1024 * 1024),
                 <strong>Mã Khách Hàng (UUID):</strong>
                 <p style="margin: 0.25rem 0 0 0; background: rgba(0,0,0,0.2); padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); font-family: monospace; word-break: break-all; color: var(--ios-blue); font-weight: 600;">
                     <?= htmlspecialchars($subscription['uuid']) ?>
-                </p>
-            </div>
-            <div>
-                <strong>Mã Đăng Ký (Sub Token):</strong>
-                <p style="margin: 0.25rem 0 0 0; background: rgba(0,0,0,0.2); padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); font-family: monospace; word-break: break-all;">
-                    <?= htmlspecialchars($subscription['sub_token']) ?>
                 </p>
             </div>
             <div><strong>Tải Lên (Upload):</strong> <span style="font-weight: 600;"><?= $uploadGB ?> GB</span></div>

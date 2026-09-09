@@ -77,14 +77,12 @@ class OrderController extends BaseController
                                         mt_rand(0, 0x0fff) | 0x4000, 
                                         mt_rand(0, 0x3fff) | 0x8000, 
                                         mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
-                    $subToken       = bin2hex(random_bytes(16));
 
                     $subModel->create([
                         'user_id'         => $order['user_id'],
                         'plan_id'         => $order['plan_id'],
                         'order_id'        => $id,
                         'uuid'            => $uuid,
-                        'sub_token'       => $subToken,
                         'transfer_enable' => $bytesTotal,
                         'start_date'      => date('Y-m-d H:i:s'),
                         'end_date'        => date('Y-m-d H:i:s', strtotime("+{$durationDays} days")),
@@ -177,7 +175,6 @@ class OrderController extends BaseController
                                     mt_rand(0, 0x0fff) | 0x4000, 
                                     mt_rand(0, 0x3fff) | 0x8000, 
                                     mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
-                    $subToken   = bin2hex(random_bytes(16));
 
                     $startDate  = date('Y-m-d H:i:s');
                     $endDate    = date('Y-m-d H:i:s', strtotime("+{$durationDays} days"));
@@ -187,7 +184,6 @@ class OrderController extends BaseController
                         'plan_id'         => $planId,
                         'order_id'        => $orderId ?: null,
                         'uuid'            => $uuid,
-                        'sub_token'       => $subToken,
                         'transfer_enable' => $bytesTotal,
                         'start_date'      => $startDate,
                         'end_date'        => $endDate,

@@ -7,20 +7,29 @@ class Subscription extends BaseModel
     protected string $table = 'vc_subscriptions';
 
     /**
-     * Lấy danh sách toàn bộ đăng ký kèm thông tin user và gói cước
+     * Lấy danh sách toàn bộ đăng ký kèm thông tin user và gói cước (có hỗ trợ lọc theo user_id)
      */
-    public function allWithDetails(): array
+    public function allWithDetails(?int $userId = null): array
     {
-        $stmt = self::$db->prepare("
+        $sql = "
             SELECT s.*, 
                    u.username, u.email, 
                    p.name AS plan_name, p.code AS plan_code
             FROM `{$this->table}` s
             LEFT JOIN `vc_users` u ON s.user_id = u.id
             LEFT JOIN `vc_vpn_plans` p ON s.plan_id = p.id
-            ORDER BY s.id DESC
-        ");
-        $stmt->execute();
+        ";
+
+        $params = [];
+        if ($userId !== null && $userId > 0) {
+            $sql .= " WHERE s.user_id = :user_id";
+            $params['user_id'] = $userId;
+        }
+
+        $sql .= " ORDER BY s.id DESC";
+
+        $stmt = self::$db->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetchAll() ?: [];
     }
 
@@ -51,5 +60,16 @@ class Subscription extends BaseModel
         $stmt = self::$db->prepare("SELECT * FROM `{$this->table}` WHERE `user_id` = :user_id ORDER BY `id` DESC");
         $stmt->execute(['user_id' => $userId]);
         return $stmt->fetchAll() ?: [];
+    }
+
+    /**
+     * Tìm kiếm gói đăng ký bằng UUID duy nhất
+     */
+    public function findByUuid(string $uuid): ?array
+    {
+        $stmt = self::$db->prepare("SELECT * FROM `{$this->table}` WHERE `uuid` = :uuid LIMIT 1");
+        $stmt->execute(['uuid' => $uuid]);
+        $result = $stmt->fetch();
+        return $result ?: null;
     }
 }

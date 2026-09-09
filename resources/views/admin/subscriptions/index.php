@@ -21,11 +21,18 @@ ob_start();
     </div>
 <?php endif; ?>
 
-<div style="margin-bottom: 1rem; width: 100%; box-sizing: border-box;">
+<div style="margin-bottom: 1rem; width: 100%; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
     <div>
         <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Quản Lý Gói Đăng Ký VPN</h1>
-        <p style="color: var(--ios-text-secondary); font-size: 0.85rem;">Danh sách tài khoản VPN đang kích hoạt và theo dõi lưu lượng kết nối</p>
+        <p style="color: var(--ios-text-secondary); font-size: 0.85rem;">
+            <?= !empty($filterUser) ? 'Danh sách gói đăng ký của người dùng: <strong>' . htmlspecialchars($filterUser['username']) . '</strong> (ID #' . $filterUser['id'] . ')' : 'Danh sách tài khoản VPN đang kích hoạt và theo dõi lưu lượng kết nối' ?>
+        </p>
     </div>
+    <?php if (!empty($userId)): ?>
+        <div>
+            <a href="/admin/subscriptions" class="glass-btn" style="text-decoration: none; white-space: nowrap; background: rgba(255, 59, 48, 0.1); color: var(--ios-danger);">✕ Xóa lọc tài khoản</a>
+        </div>
+    <?php endif; ?>
 </div>
 
 <!-- Bảng Đăng Ký VPN -->
@@ -37,7 +44,7 @@ ob_start();
                     <th>ID</th>
                     <th>Khách Hàng</th>
                     <th>Gói Cước</th>
-                    <th>UUID / Token</th>
+                    <th>Mã UUID</th>
                     <th>Lưu Lượng Dùng</th>
                     <th>Ngày Bắt Đầu</th>
                     <th>Ngày Hết Hạn</th>
@@ -63,7 +70,7 @@ ob_start();
                                 <?= htmlspecialchars($sub['plan_name'] ?? ('Gói #' . $sub['plan_id'])) ?>
                             </td>
                             <td>
-                                <code style="background: rgba(0, 122, 255, 0.08); padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-size: 0.78rem; font-family: monospace; color: var(--ios-blue);">
+                                <code title="<?= htmlspecialchars($sub['uuid']) ?>" style="background: rgba(0, 122, 255, 0.08); padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-size: 0.78rem; font-family: monospace; color: var(--ios-blue); cursor: pointer;">
                                     <?= htmlspecialchars(substr($sub['uuid'], 0, 13)) ?>...
                                 </code>
                             </td>
@@ -93,9 +100,12 @@ ob_start();
                             <td style="text-align: right;">
                                 <div class="action-dropdown">
                                     <button type="button" class="action-btn" title="Thao tác">⋮</button>
-                                    <div class="action-menu">
-                                        <a href="/admin/subscriptions/detail?id=<?= $sub['id'] ?>" class="action-item">
+                                    <div class="action-menu" style="min-width: 175px; white-space: nowrap;">
+                                        <a href="/admin/subscriptions/detail?id=<?= $sub['id'] ?>" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                             <span>👁️</span> Xem chi tiết
+                                        </a>
+                                        <a href="/admin/users/detail?id=<?= $sub['user_id'] ?>" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
+                                            <span>👤</span> Xem người dùng
                                         </a>
                                     </div>
                                 </div>

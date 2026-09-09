@@ -4,6 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 use App\Models\Subscription;
+use App\Models\User;
 
 class SubscriptionController extends BaseController
 {
@@ -19,11 +20,20 @@ class SubscriptionController extends BaseController
 
     public function index(): void
     {
-        $subscriptions = $this->subscriptionModel->allWithDetails();
+        $userId = isset($_GET['user_id']) ? (int)$_GET['user_id'] : null;
+        $subscriptions = $this->subscriptionModel->allWithDetails($userId);
+
+        $filterUser = null;
+        if ($userId && class_exists('App\Models\User')) {
+            $userModel = new User();
+            $filterUser = $userModel->findById($userId);
+        }
 
         $this->render('admin.subscriptions.index', [
             'activeMenu'    => 'subscriptions',
-            'subscriptions' => $subscriptions
+            'subscriptions' => $subscriptions,
+            'filterUser'    => $filterUser,
+            'userId'        => $userId
         ]);
     }
 
