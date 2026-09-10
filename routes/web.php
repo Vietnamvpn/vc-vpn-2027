@@ -97,6 +97,7 @@ return [
     'POST /admin/servers/edit'    => ['Admin\ServerController', 'edit'],
     'GET /admin/servers/detail'   => ['Admin\ServerController', 'detail'],
     'GET /admin/servers/delete'   => ['Admin\ServerController', 'delete'],
+    'GET /admin/servers/sync' => ['Admin\ServerController', 'sync'],
 
     // Quản lý nút kết nối (Nodes)
     'GET /admin/nodes'            => ['Admin\NodeController', 'index'],

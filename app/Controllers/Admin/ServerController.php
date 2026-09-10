@@ -153,4 +153,68 @@ class ServerController extends BaseController
         
         $this->redirect('/admin/servers');
     }
+
+    public function sync(): void
+    {
+        $id = (int)($_GET['id'] ?? 0);
+        $serverModel = new Server();
+        $server = $serverModel->findById($id);
+
+        if (!$server) {
+            $_SESSION['flash_message'] = 'Máy chủ không tồn tại!';
+            $_SESSION['flash_type']    = 'danger';
+            $this->redirect('/admin/servers');
+            return;
+        }
+
+        $groupId = (int)($server['group_id'] ?? 0);
+        if ($groupId <= 0) {
+            $_SESSION['flash_message'] = 'Máy chủ chưa thuộc Nhóm nào!';
+            $_SESSION['flash_type']    = 'warning';
+            $this->redirect('/admin/servers');
+            return;
+        }
+
+        if (class_exists('App\Models\NodeTask') && class_exists('App\Models\Subscription')) {
+            $subModel  = new \App\Models\Subscription();
+            $taskModel = new \App\Models\NodeTask();
+
+            // Lấy tất cả gói đăng ký active thuộc đúng Nhóm máy chủ này
+            $sql = "
+                SELECT s.id, s.uuid, s.transfer_enable, s.end_date 
+                FROM `vc_subscriptions` s
+                INNER JOIN `vc_vpn_plans` p ON s.plan_id = p.id
+                WHERE p.group_id = :group_id 
+                  AND s.status = 'active' 
+                  AND s.end_date > NOW()
+            ";
+            
+            $stmt = \App\Models\BaseModel::$db->prepare($sql);
+            $stmt->execute(['group_id' => $groupId]);
+            $activeSubs = $stmt->fetchAll() ?: [];
+
+            $count = 0;
+            foreach ($activeSubs as $sub) {
+                $taskModel->create([
+                    'server_id' => $id,
+                    'action'    => 'add_user',
+                    'payload'   => [
+                        'username'        => 'sub_' . $sub['id'],
+                        'uuid'            => $sub['uuid'],
+                        'transfer_enable' => (int)$sub['transfer_enable'],
+                        'end_date'        => $sub['end_date']
+                    ]
+                ]);
+                $count++;
+            }
+
+            $_SESSION['flash_message'] = "Đã gửi {$count} task đồng bộ tài khoản xuống máy chủ thành công!";
+            $_SESSION['flash_type']    = 'success';
+        } else {
+            $_SESSION['flash_message'] = 'Không thể khởi tạo mô hình đồng bộ task!';
+            $_SESSION['flash_type']    = 'danger';
+        }
+
+        $this->redirect('/admin/servers');
+    }
 }
