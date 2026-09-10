@@ -182,3 +182,13 @@ function closeQrModal() {
         modal.style.display = 'none';
     }
 }
+
+function updatePriceHint(selectEl) {
+    if (!selectEl) return;
+    const selectedOption = selectEl.options[selectEl.selectedIndex];
+    const price = selectedOption ? selectedOption.getAttribute('data-price') : null;
+    const amountInput = document.getElementById('amount_input');
+    if (price !== null && amountInput) {
+        amountInput.value = price;
+    }
+}
