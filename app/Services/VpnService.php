@@ -37,46 +37,85 @@ class VpnService
      */
     public function buildLink(array $inbound, string $uuid): ?string
     {
-        $protocol = strtolower($inbound['protocol'] ?? '');
-        $ip       = $inbound['ip_address'] ?? '127.0.0.1';
-        $port     = (int)($inbound['port'] ?? 443);
-        $name     = $inbound['server_name'] ?? $inbound['name'] ?? 'VC-VPN Node';
-        $network  = $inbound['network'] ?? 'tcp';
-        $tls      = !empty($inbound['tls']) ? 'tls' : 'none';
-        $sni      = $inbound['sni'] ?? '';
-        $host     = $inbound['host'] ?? '';
-        $path     = $inbound['path'] ?? '';
+        $protocol    = strtolower($inbound['protocol'] ?? '');
+        $ip          = $inbound['ip_address'] ?? '127.0.0.1';
+        $port        = (int)($inbound['port'] ?? 443);
+        $serverName  = $inbound['server_name'] ?? $inbound['name'] ?? 'VC-VPN';
+        $network     = strtolower($inbound['network'] ?? 'tcp');
+        $tls         = !empty($inbound['tls']) ? 'tls' : 'none';
+        $sni         = $inbound['sni'] ?? '';
+        $host        = $inbound['host'] ?? '';
+        $path        = $inbound['path'] ?? '';
+        $publicKey   = $inbound['public_key'] ?? '';
+        $shortId     = $inbound['short_id'] ?? '';
+        $serviceName = $inbound['service_name'] ?? '';
+        $password    = $inbound['password'] ?? '';
+        $tag         = $inbound['tag'] ?? '';
+
+        // Tên hiển thị cuối link (#Tag hoặc #ServerName-Port)
+        $displayName = !empty($tag) ? $tag : "{$serverName}-{$port}";
 
         switch ($protocol) {
             case 'vless':
-                return $this->buildVless($uuid, $ip, $port, $name, $network, $tls, $sni, $host, $path);
+                return $this->buildVless($uuid, $ip, $port, $displayName, $network, $tls, $sni, $host, $path, $publicKey, $shortId, $serviceName);
             case 'vmess':
-                return $this->buildVmess($uuid, $ip, $port, $name, $network, $tls, $sni, $host, $path);
+                return $this->buildVmess($uuid, $ip, $port, $displayName, $network, $tls, $sni, $host, $path);
             case 'trojan':
-                return $this->buildTrojan($uuid, $ip, $port, $name, $network, $tls, $sni, $host, $path);
+                return $this->buildTrojan($uuid, $ip, $port, $displayName, $network, $tls, $sni, $host, $path);
             case 'shadowsocks':
-                return $this->buildShadowsocks($uuid, $ip, $port, $name);
+            case 'ss':
+                return $this->buildShadowsocks($password ?: $uuid, $ip, $port, $displayName);
             case 'hy2':
             case 'hysteria2':
-                return $this->buildHysteria2($uuid, $ip, $port, $name, $sni);
+                return $this->buildHysteria2($uuid, $ip, $port, $displayName, $sni ?: $ip);
             case 'tuic':
-                return $this->buildTuic($uuid, $ip, $port, $name, $sni);
+                return $this->buildTuic($uuid, $password ?: $uuid, $ip, $port, $displayName, $sni ?: $ip);
             default:
                 return null;
         }
     }
 
-    private function buildVless(string $uuid, string $ip, int $port, string $name, string $network, string $tls, string $sni, string $host, string $path): string
-    {
-        $params = [];
-        if ($network !== 'tcp') $params['type'] = $network;
-        if ($tls !== 'none') $params['security'] = $tls;
-        if (!empty($sni)) $params['sni'] = $sni;
-        if (!empty($host)) $params['host'] = $host;
-        if (!empty($path)) $params['path'] = $path;
+    private function buildVless(
+        string $uuid, string $ip, int $port, string $name, string $network, 
+        string $tls, string $sni, string $host, string $path, 
+        string $pbk, string $sid, string $serviceName
+    ): string {
+        $params = [
+            'encryption' => 'none'
+        ];
+
+        // 1. Phân loại Reality vs TLS
+        if (!empty($pbk)) {
+            $params['security'] = 'reality';
+            if ($network === 'tcp') {
+                $params['flow'] = 'xtls-rprx-vision';
+            }
+            $params['sni'] = !empty($sni) ? $sni : $ip;
+            $params['fp']  = 'chrome';
+            $params['pbk'] = $pbk;
+            if (!empty($sid)) {
+                $params['sid'] = $sid;
+            }
+        } else {
+            if ($tls !== 'none') {
+                $params['security'] = 'tls';
+                $params['sni']      = !empty($sni) ? $sni : ($host ?: $ip);
+            }
+        }
+
+        // 2. Phân loại Mạng truyền tải (tcp, ws, grpc)
+        $params['type'] = $network;
+
+        if ($network === 'ws') {
+            if (!empty($path)) $params['path'] = $path;
+            if (!empty($host)) $params['host'] = $host;
+            $params['allowInsecure'] = '1';
+        } elseif ($network === 'grpc') {
+            if (!empty($serviceName)) $params['serviceName'] = $serviceName;
+        }
 
         $query = http_build_query($params);
-        return "vless://{$uuid}@{$ip}:{$port}" . ($query ? "?{$query}" : "") . "#" . rawurlencode($name);
+        return "vless://{$uuid}@{$ip}:{$port}?" . $query . "#" . rawurlencode($name);
     }
 
     private function buildVmess(string $uuid, string $ip, int $port, string $name, string $network, string $tls, string $sni, string $host, string $path): string
@@ -112,25 +151,31 @@ class VpnService
         return "trojan://{$uuid}@{$ip}:{$port}" . ($query ? "?{$query}" : "") . "#" . rawurlencode($name);
     }
 
-    private function buildShadowsocks(string $uuid, string $ip, int $port, string $name): string
+    private function buildShadowsocks(string $pass, string $ip, int $port, string $name): string
     {
-        $userinfo = base64_encode("2022-blake3-aes-128-gcm:{$uuid}");
+        $userinfo = base64_encode("2022-blake3-aes-128-gcm:{$pass}");
         return "ss://{$userinfo}@{$ip}:{$port}#" . rawurlencode($name);
     }
 
     private function buildHysteria2(string $uuid, string $ip, int $port, string $name, string $sni): string
     {
-        $params = [];
-        if (!empty($sni)) $params['sni'] = $sni;
+        $params = [
+            'sni'      => $sni,
+            'insecure' => '1'
+        ];
         $query = http_build_query($params);
-        return "hysteria2://{$uuid}@{$ip}:{$port}" . ($query ? "?{$query}" : "") . "#" . rawurlencode($name);
+        return "hysteria2://{$uuid}@{$ip}:{$port}?" . $query . "#" . rawurlencode($name);
     }
 
-    private function buildTuic(string $uuid, string $ip, int $port, string $name, string $sni): string
+    private function buildTuic(string $uuid, string $pass, string $ip, int $port, string $name, string $sni): string
     {
-        $params = ['alpn' => 'h3'];
-        if (!empty($sni)) $params['sni'] = $sni;
+        $params = [
+            'congestion_control' => 'bbr',
+            'sni'                => $sni,
+            'alpn'               => 'h3',
+            'insecure'           => '1'
+        ];
         $query = http_build_query($params);
-        return "tuic://{$uuid}:{$uuid}@{$ip}:{$port}" . ($query ? "?{$query}" : "") . "#" . rawurlencode($name);
+        return "tuic://{$uuid}:{$pass}@{$ip}:{$port}?" . $query . "#" . rawurlencode($name);
     }
 }
