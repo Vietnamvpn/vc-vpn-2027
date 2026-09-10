@@ -45,7 +45,11 @@ class OrderController extends BaseController
         foreach ($servers as $server) {
             // Lọc đúng máy chủ đang hoạt động và thuộc cùng group_id với gói cước
             if (($server['status'] ?? 'active') === 'active' && (int)($server['group_id'] ?? 0) === $groupId) {
-                $taskModel->create((int)$server['id'], 'add_user', $payload);
+                $taskModel->create([
+                    'server_id' => (int)$server['id'],
+                    'action'    => 'add_user',
+                    'payload'   => $payload
+                ]);
             }
         }
     }

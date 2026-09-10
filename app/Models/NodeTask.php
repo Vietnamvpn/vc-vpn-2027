@@ -42,10 +42,14 @@ class NodeTask extends BaseModel
     }
 
     /**
-     * Khởi tạo task mới để gửi xuống máy chủ VPS
+     * Khởi tạo task mới để gửi xuống máy chủ VPS (Chuẩn hóa tham số mảng $data)
      */
-    public function create(int $serverId, string $action, array $payload): bool
+    public function create(array $data): bool
     {
+        $serverId = $data['server_id'] ?? 0;
+        $action   = $data['action'] ?? '';
+        $payload  = $data['payload'] ?? [];
+
         $sql = "
             INSERT INTO `{$this->table}` (`server_id`, `action`, `payload`, `status`, `created_at`) 
             VALUES (:server_id, :action, :payload, 'pending', NOW())
@@ -54,7 +58,7 @@ class NodeTask extends BaseModel
         return $stmt->execute([
             'server_id' => $serverId,
             'action'    => $action,
-            'payload'   => json_encode($payload, JSON_UNESCAPED_UNICODE)
+            'payload'   => is_array($payload) ? json_encode($payload, JSON_UNESCAPED_UNICODE) : $payload
         ]);
     }
 }
