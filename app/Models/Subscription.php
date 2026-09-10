@@ -152,4 +152,15 @@ class Subscription extends BaseModel
     {
         return $this->addTrafficByUuid($uuid, $u, $d);
     }
+
+    /**
+     * Tìm kiếm gói đăng ký theo ID đơn hàng (order_id)
+     */
+    public function findByOrderId(int $orderId): ?array
+    {
+        $stmt = self::$db->prepare("SELECT * FROM `{$this->table}` WHERE `order_id` = :order_id LIMIT 1");
+        $stmt->execute(['order_id' => $orderId]);
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
 }

@@ -43,11 +43,38 @@ class OrderController extends BaseController
         ];
 
         foreach ($servers as $server) {
-            // Lọc đúng máy chủ đang hoạt động và thuộc cùng group_id với gói cước
             if (($server['status'] ?? 'active') === 'active' && (int)($server['group_id'] ?? 0) === $groupId) {
                 $taskModel->create([
                     'server_id' => (int)$server['id'],
                     'action'    => 'add_user',
+                    'payload'   => $payload
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Hàm phụ trợ: Tự động tạo task 'del_user' cho các VPS thuộc đúng Nhóm Máy Chủ (group_id) khi hủy đơn
+     */
+    private function dispatchDelUserTask(int $subId, int $groupId): void
+    {
+        $serverModel = new Server();
+        $servers = $serverModel->getAll();
+
+        if (empty($servers)) {
+            return;
+        }
+
+        $taskModel = new NodeTask();
+        $payload = [
+            'username' => 'sub_' . $subId
+        ];
+
+        foreach ($servers as $server) {
+            if (($server['status'] ?? 'active') === 'active' && (int)($server['group_id'] ?? 0) === $groupId) {
+                $taskModel->create([
+                    'server_id' => (int)$server['id'],
+                    'action'    => 'del_user',
                     'payload'   => $payload
                 ]);
             }
@@ -95,7 +122,7 @@ class OrderController extends BaseController
         }
 
         if ($this->orderModel->update($id, ['payment_status' => $status])) {
-            // Nếu duyệt đơn thành công (completed) -> Kích hoạt Gói Đăng Ký & Phát task xuống đúng nhóm VPS
+            // 1. Nếu duyệt đơn thành công (completed) -> Kích hoạt Gói Đăng Ký & Phát task add_user
             if ($status === 'completed' && $order['payment_status'] !== 'completed' && class_exists('App\Models\Subscription') && class_exists('App\Models\VpnPlan')) {
                 $planModel = new VpnPlan();
                 $plan      = $planModel->find((int)$order['plan_id']);
@@ -131,6 +158,26 @@ class OrderController extends BaseController
                         $subId = method_exists($subModel, 'lastInsertId') ? $subModel->lastInsertId() : 0;
                         if ($subId > 0 && $groupId > 0) {
                             $this->dispatchAddUserTask($subId, $uuid, $bytesTotal, $endDate, $groupId);
+                        }
+                    }
+                }
+            }
+
+            // 2. Nếu hủy đơn hàng (cancelled) -> Chuyển trạng thái Subscription sang cancelled & Phát task del_user
+            if ($status === 'cancelled' && $order['payment_status'] !== 'cancelled' && class_exists('App\Models\Subscription')) {
+                $subModel = new Subscription();
+                $sub      = $subModel->findByOrderId($id);
+
+                if ($sub) {
+                    $subModel->update((int)$sub['id'], ['status' => 'cancelled']);
+
+                    if (class_exists('App\Models\VpnPlan')) {
+                        $planModel = new VpnPlan();
+                        $plan      = $planModel->find((int)$order['plan_id']);
+                        $groupId   = (int)($plan['group_id'] ?? 0);
+
+                        if ($groupId > 0) {
+                            $this->dispatchDelUserTask((int)$sub['id'], $groupId);
                         }
                     }
                 }
