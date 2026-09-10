@@ -102,6 +102,7 @@ CREATE TABLE `vc_vpn_plans` (
     `duration_days` INT NOT NULL,
     `bandwidth_limit_gb` INT NOT NULL DEFAULT 0,
     `max_devices` INT NOT NULL DEFAULT 1,
+    `description` TEXT NULL,
     `status` ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

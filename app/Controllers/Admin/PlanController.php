@@ -50,6 +50,7 @@ class PlanController extends BaseController
         $durationDays     = (int)($_POST['duration_days'] ?? 0);
         $bandwidthLimitGb = (int)($_POST['bandwidth_limit_gb'] ?? 0);
         $maxDevices       = (int)($_POST['max_devices'] ?? 1);
+        $description      = trim($_POST['description'] ?? '');
         $status           = trim($_POST['status'] ?? 'active');
 
         if (!$groupId || empty($name) || empty($code) || $price < 0 || $durationDays <= 0) {
@@ -66,6 +67,7 @@ class PlanController extends BaseController
             'duration_days'      => $durationDays,
             'bandwidth_limit_gb' => $bandwidthLimitGb,
             'max_devices'        => $maxDevices,
+            'description'        => $description,
             'status'             => $status
         ]);
 
@@ -102,6 +104,7 @@ class PlanController extends BaseController
         $durationDays     = (int)($_POST['duration_days'] ?? 0);
         $bandwidthLimitGb = (int)($_POST['bandwidth_limit_gb'] ?? 0);
         $maxDevices       = (int)($_POST['max_devices'] ?? 1);
+        $description      = trim($_POST['description'] ?? '');
         $status           = trim($_POST['status'] ?? 'active');
 
         if (!$id || !$groupId || empty($name) || empty($code) || $price < 0 || $durationDays <= 0) {
@@ -118,6 +121,7 @@ class PlanController extends BaseController
             'duration_days'      => $durationDays,
             'bandwidth_limit_gb' => $bandwidthLimitGb,
             'max_devices'        => $maxDevices,
+            'description'        => $description,
             'status'             => $status
         ]);
 
