@@ -12,8 +12,8 @@ class PaymentService
      */
     public function createDepositTransaction(int $userId, float $amount, string $paymentMethod): array
     {
-        if ($amount < 10000) {
-            return ['status' => false, 'message' => 'Số tiền nạp tối thiểu là 10.000 VNĐ.'];
+        if ($amount < 10) {
+            return ['status' => false, 'message' => 'Số tiền nạp tối thiểu là 10.00 CNY (¥).'];
         }
 
         $transCode = 'DEP' . date('YmdHis') . rand(100, 999);

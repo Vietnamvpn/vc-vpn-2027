@@ -56,8 +56,8 @@ ob_start();
             </div>
 
             <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Giá Bán (VNĐ) (*)</label>
-                <input type="number" id="price" name="price" class="glass-input" placeholder="50000" min="0" step="1000" required style="width: 100%;">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Giá Bán (CNY - ¥) (*)</label>
+                <input type="number" id="price" name="price" class="glass-input" placeholder="10.00" min="0" step="0.01" required style="width: 100%;">
             </div>
         </div>
 

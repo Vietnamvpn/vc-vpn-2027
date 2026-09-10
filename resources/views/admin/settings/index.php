@@ -92,8 +92,18 @@ ob_start();
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tỷ Giá (VNĐ / 1 Đơn vị hệ thống)</label>
-                    <input type="number" name="settings[exchange_rate]" class="glass-input" value="<?= htmlspecialchars($settings['exchange_rate'] ?? '1') ?>" min="1" step="1" style="width: 100%;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mã Tiền Tệ Mặc Định</label>
+                    <input type="text" name="settings[currency]" class="glass-input" value="<?= htmlspecialchars($settings['currency'] ?? 'CNY') ?>" placeholder="CNY" style="width: 100%;">
+                </div>
+
+                <div>
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Ký Hiệu Tiền Tệ</label>
+                    <input type="text" name="settings[currency_symbol]" class="glass-input" value="<?= htmlspecialchars($settings['currency_symbol'] ?? '¥') ?>" placeholder="¥" style="width: 100%;">
+                </div>
+
+                <div>
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tỷ Giá (CNY / 1 Đơn vị hệ thống)</label>
+                    <input type="number" name="settings[exchange_rate]" class="glass-input" value="<?= htmlspecialchars($settings['exchange_rate'] ?? '1') ?>" min="0.01" step="0.01" style="width: 100%;">
                 </div>
 
                 <div>
@@ -104,18 +114,18 @@ ob_start();
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thưởng Khi Đăng Ký Có Mã Giới Thiệu (VNĐ)</label>
-                    <input type="number" name="settings[referral_bonus]" class="glass-input" value="<?= htmlspecialchars($settings['referral_bonus'] ?? '0') ?>" min="0" step="1000" style="width: 100%;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thưởng Khi Đăng Ký Có Mã Giới Thiệu (CNY)</label>
+                    <input type="number" name="settings[referral_bonus]" class="glass-input" value="<?= htmlspecialchars($settings['referral_bonus'] ?? '0') ?>" min="0" step="0.1" style="width: 100%;">
                 </div>
                 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền Nạp Tối Thiểu (VNĐ)</label>
-                    <input type="number" name="settings[min_deposit]" class="glass-input" value="<?= htmlspecialchars($settings['min_deposit'] ?? '10000') ?>" min="0" step="1000" style="width: 100%;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền Nạp Tối Thiểu (CNY)</label>
+                    <input type="number" name="settings[min_deposit]" class="glass-input" value="<?= htmlspecialchars($settings['min_deposit'] ?? '10') ?>" min="0" step="0.1" style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền Rút Tối Thiểu (VNĐ)</label>
-                    <input type="number" name="settings[min_withdrawal]" class="glass-input" value="<?= htmlspecialchars($settings['min_withdrawal'] ?? '50000') ?>" min="0" step="1000" style="width: 100%;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền Rút Tối Thiểu (CNY)</label>
+                    <input type="number" name="settings[min_withdrawal]" class="glass-input" value="<?= htmlspecialchars($settings['min_withdrawal'] ?? '50') ?>" min="0" step="0.1" style="width: 100%;">
                 </div>
             </div>
 

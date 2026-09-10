@@ -258,3 +258,14 @@ CREATE TABLE `vc_expenses` (
     `expense_date` DATE NOT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Cấu hình đơn vị tiền tệ mặc định sang CNY (¥)
+INSERT INTO `vc_settings` (`setting_key`, `setting_value`, `description`) 
+VALUES 
+    ('currency', 'CNY', 'Mã đơn vị tiền tệ hệ thống'),
+    ('currency_symbol', '¥', 'Ký hiệu tiền tệ hệ thống'),
+    ('min_deposit_amount', '10.00', 'Số tiền nạp tối thiểu (CNY)'),
+    ('referral_commission_rate', '10.00', 'Tỷ lệ hoa hồng giới thiệu (%)')
+ON DUPLICATE KEY UPDATE 
+    `setting_value` = VALUES(`setting_value`),
+    `description` = VALUES(`description`);

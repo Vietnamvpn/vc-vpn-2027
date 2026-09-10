@@ -25,6 +25,10 @@ class SettingController extends BaseController
         $settings = $this->settingModel->getAllAsKeyValue();
         $plans    = $this->planModel->getAllActive();
 
+        // Gán giá trị mặc định đơn vị tiền tệ CNY nếu chưa có trong cấu hình DB
+        $settings['currency']        = $settings['currency'] ?? 'CNY';
+        $settings['currency_symbol'] = $settings['currency_symbol'] ?? '¥';
+
         $this->render('admin.settings.index', [
             'activeMenu' => 'settings',
             'settings'   => $settings,

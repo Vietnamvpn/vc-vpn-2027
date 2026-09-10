@@ -74,7 +74,7 @@ ob_start();
                                 <?php if (($coupon['discount_type'] ?? 'percent') === 'percent'): ?>
                                     <?= (float)$coupon['discount_value'] ?>%
                                 <?php else: ?>
-                                    <?= number_format($coupon['discount_value'], 0, ',', '.') ?> đ
+                                    ¥<?= number_format($coupon['discount_value'], 2, '.', ',') ?>
                                 <?php endif; ?>
                             </td>
                             <td style="text-align: center; font-size: 0.85rem;">

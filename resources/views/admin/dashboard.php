@@ -40,9 +40,9 @@ ob_start();
     <div class="glass-card stat-card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <span class="title">Doanh Thu Tháng <?= htmlspecialchars($selectedMonth ?? date('n')) ?></span>
-            <span style="font-size: 1.25rem;">💵</span>
+            <span style="font-size: 1.25rem;">💴</span>
         </div>
-        <div class="value" style="color: var(--ios-success);"><?= number_format($stats['monthly_revenue'] ?? 0, 0, ',', '.') ?> đ</div>
+        <div class="value" style="color: var(--ios-success);">¥<?= number_format($stats['monthly_revenue'] ?? 0, 2, '.', ',') ?></div>
         <div style="font-size: 0.8rem; color: var(--ios-text-secondary);">Tổng đơn đã thanh toán</div>
     </div>
 
@@ -80,7 +80,7 @@ ob_start();
                             <tr>
                                 <td style="font-weight: 600;">#<?= htmlspecialchars($order['order_code']) ?></td>
                                 <td><?= htmlspecialchars($order['username'] ?? 'N/A') ?></td>
-                                <td style="font-weight: 600;"><?= number_format($order['total_amount'], 0, ',', '.') ?> đ</td>
+                                <td style="font-weight: 600; color: var(--ios-success);">¥<?= number_format($order['total_amount'], 2, '.', ',') ?></td>
                                 <td>
                                     <?php
                                     $statusStyle = [
@@ -132,7 +132,7 @@ ob_start();
 <div class="glass-card" style="padding: 1.25rem;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
         <div>
-            <h2 style="font-size: 1.1rem; font-weight: 700;">So Sánh Doanh Thu</h2>
+            <h2 style="font-size: 1.1rem; font-weight: 700;">So Sánh Doanh Thu (CNY)</h2>
             <p style="font-size: 0.8rem; color: var(--ios-text-secondary);">Đối soát tăng trưởng doanh thu theo từng ngày giữa tháng đã chọn và tháng liền trước</p>
         </div>
 
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             let label = context.dataset.label || '';
                             if (label) { label += ': '; }
                             if (context.parsed.y !== null) {
-                                label += new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(context.parsed.y);
+                                label += '¥' + new Intl.NumberFormat('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(context.parsed.y);
                             }
                             return label;
                         }
@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     ticks: {
                         color: getComputedStyle(document.documentElement).getPropertyValue('--ios-text-secondary').trim() || '#8e8e93',
                         callback: function(value) {
-                            return new Intl.NumberFormat('vi-VN', { notation: 'compact' }).format(value) + ' đ';
+                            return '¥' + new Intl.NumberFormat('zh-CN', { notation: 'compact' }).format(value);
                         }
                     }
                 }

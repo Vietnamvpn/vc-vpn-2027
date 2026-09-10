@@ -37,7 +37,7 @@ ob_start();
                 <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Loại Giảm Giá (*)</label>
                 <select name="discount_type" class="glass-input" required style="width: 100%; cursor: pointer;">
                     <option value="percent">Giảm theo phần trăm (%)</option>
-                    <option value="fixed">Giảm số tiền cố định (VNĐ)</option>
+                    <option value="fixed">Giảm số tiền cố định (CNY - ¥)</option>
                 </select>
             </div>
         </div>

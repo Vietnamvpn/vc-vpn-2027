@@ -50,7 +50,7 @@ ob_start();
                     <?php if (!empty($plans)): ?>
                         <?php foreach ($plans as $p): ?>
                             <option value="<?= $p['id'] ?>" data-price="<?= (float)$p['price'] ?>">
-                                <?= htmlspecialchars($p['name']) ?> (<?= number_format($p['price'], 0, ',', '.') ?> đ / <?= $p['duration_days'] ?> ngày)
+                                <?= htmlspecialchars($p['name']) ?> (¥<?= number_format($p['price'], 2, '.', ',') ?> / <?= $p['duration_days'] ?> ngày)
                             </option>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -61,8 +61,8 @@ ob_start();
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
             <!-- Số Tiền -->
             <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền Thanh Toán (VNĐ)</label>
-                <input type="number" name="amount" id="amount_input" class="glass-input" placeholder="Để trống để dùng giá mặc định của gói" step="1000" min="0" style="width: 100%;">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền Thanh Toán (CNY - ¥)</label>
+                <input type="number" name="amount" id="amount_input" class="glass-input" placeholder="Để trống để dùng giá mặc định của gói" step="0.01" min="0" style="width: 100%;">
             </div>
 
             <!-- Trạng Thái Thanh Toán -->

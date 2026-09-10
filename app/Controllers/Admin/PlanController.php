@@ -15,7 +15,7 @@ class PlanController extends BaseController
     public function __construct()
     {
         if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
-            $this->redirect('/login');
+            $this->redirect('/auth/login');
         }
         $this->planModel = new VpnPlan();
         $this->serverGroupModel = new ServerGroup();
@@ -54,7 +54,6 @@ class PlanController extends BaseController
         $description      = trim($_POST['description'] ?? '');
         $status           = trim($_POST['status'] ?? 'active');
 
-        // Nếu mã gói để trống, tự động sinh mã ngẫu nhiên dạng LS + 6 chữ số
         if (empty($code)) {
             $code = 'LS' . rand(100000, 999999);
         }

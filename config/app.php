@@ -7,4 +7,15 @@ return [
     'url' => getenv('APP_URL') ?: 'http://localhost',
     'timezone' => 'Asia/Ho_Chi_Minh',
     'locale' => 'vi',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cấu hình tiền tệ mặc định (Currency Settings)
+    |--------------------------------------------------------------------------
+    | Chuyển đổi đơn vị tiền tệ mặc định sang Nhân dân tệ (CNY)
+    |
+    */
+    'currency' => getenv('APP_CURRENCY') ?: 'CNY',
+    'currency_symbol' => getenv('APP_CURRENCY_SYMBOL') ?: '¥',
+    'currency_position' => getenv('APP_CURRENCY_POSITION') ?: 'left', // 'left' (¥100) hoặc 'right' (100¥)
 ];

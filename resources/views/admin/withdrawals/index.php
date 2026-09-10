@@ -55,7 +55,7 @@ ob_start();
                                 <div style="font-size: 0.78rem; color: var(--ios-text-secondary);"><?= htmlspecialchars($w['email'] ?? '') ?></div>
                             </td>
                             <td style="font-weight: 700; color: var(--ios-success);">
-                                <?= number_format($w['amount'], 0, ',', '.') ?> đ
+                                ¥<?= number_format($w['amount'], 2, '.', ',') ?>
                             </td>
                             <td style="font-weight: 600; font-size: 0.85rem; color: var(--ios-text);">
                                 <?= htmlspecialchars($w['bank_name']) ?>

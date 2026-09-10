@@ -57,8 +57,8 @@ ob_start();
         </div>
 
         <div>
-            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Dư Ban Đầu (VNĐ)</label>
-            <input type="number" name="balance" class="glass-input" value="0" min="0" step="1000" style="width: 100%;">
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Dư Ban Đầu (CNY - ¥)</label>
+            <input type="number" name="balance" class="glass-input" value="0" min="0" step="0.01" style="width: 100%;">
         </div>
 
         <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">

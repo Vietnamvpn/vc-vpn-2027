@@ -34,8 +34,8 @@ ob_start();
             </div>
 
             <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền (VNĐ) (*)</label>
-                <input type="number" name="amount" class="glass-input" required placeholder="1000000" min="0" step="1000" style="width: 100%;">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền (CNY - ¥) (*)</label>
+                <input type="number" name="amount" class="glass-input" required placeholder="100.00" min="0" step="0.01" style="width: 100%;">
             </div>
         </div>
 

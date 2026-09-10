@@ -57,7 +57,7 @@ ob_start();
             <div>
                 <strong>Tổng Tiền Thanh Toán:</strong> 
                 <span style="color: var(--ios-success); font-weight: 700; font-size: 1.1rem;">
-                    <?= number_format($order['total_amount'], 0, ',', '.') ?> đ
+                    ¥<?= number_format($order['total_amount'], 2, '.', ',') ?>
                 </span>
             </div>
             <div>

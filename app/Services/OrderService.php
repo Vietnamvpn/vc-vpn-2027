@@ -22,25 +22,47 @@ class OrderService
         }
 
         $originalPrice = (float)($plan['price'] ?? 0);
-        $discountAmount = 0;
+        $discountAmount = 0.0;
 
         if (!empty($couponCode)) {
             $couponModel = new Coupon();
-            // Xử lý tính toán giảm giá dựa trên mã coupon tại đây
+            $coupon = method_exists($couponModel, 'findByCode') 
+                ? $couponModel->findByCode($couponCode) 
+                : null;
+
+            if ($coupon && ($coupon['status'] ?? '') === 'active') {
+                $isExpired = !empty($coupon['expires_at']) && strtotime($coupon['expires_at']) < time();
+                $isMaxUsed = !empty($coupon['max_uses']) && ((int)($coupon['used_count'] ?? 0) >= (int)$coupon['max_uses']);
+
+                if (!$isExpired && !$isMaxUsed) {
+                    $discountType = $coupon['discount_type'] ?? 'percent';
+                    $discountVal  = (float)($coupon['discount_value'] ?? 0);
+
+                    if ($discountType === 'percent') {
+                        $discountAmount = ($originalPrice * $discountVal) / 100;
+                    } else {
+                        $discountAmount = $discountVal;
+                    }
+
+                    if ($discountAmount > $originalPrice) {
+                        $discountAmount = $originalPrice;
+                    }
+                }
+            }
         }
 
-        $finalPrice = max(0, $originalPrice - $discountAmount);
-        $orderCode = 'ORD' . date('YmdHis') . rand(100, 999);
+        $finalPrice = max(0.0, $originalPrice - $discountAmount);
+        $orderCode  = 'LS' . date('YmdHis') . rand(100, 999);
 
         $orderData = [
-            'order_code' => $orderCode,
-            'user_id' => $userId,
-            'plan_id' => $planId,
-            'price' => $originalPrice,
-            'discount' => $discountAmount,
+            'order_code'   => $orderCode,
+            'user_id'      => $userId,
+            'plan_id'      => $planId,
+            'price'        => $originalPrice,
+            'discount'     => $discountAmount,
             'final_amount' => $finalPrice,
-            'status' => 'pending',
-            'created_at' => date('Y-m-d H:i:s')
+            'status'       => 'pending',
+            'created_at'   => date('Y-m-d H:i:s')
         ];
 
         $orderModel = new Order();
@@ -48,10 +70,10 @@ class OrderService
 
         if ($created) {
             return [
-                'status' => true,
-                'message' => 'Tạo đơn hàng thành công.',
+                'status'     => true,
+                'message'    => 'Tạo đơn hàng thành công.',
                 'order_code' => $orderCode,
-                'amount' => $finalPrice
+                'amount'     => $finalPrice
             ];
         }
 

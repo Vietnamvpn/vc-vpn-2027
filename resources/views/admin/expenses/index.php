@@ -30,7 +30,7 @@ $totalExpenseAmount = array_sum(array_column($expenses ?? [], 'amount'));
     </div>
     <div style="display: flex; gap: 0.75rem; align-items: center;">
         <div class="glass-card" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
-            Tổng chi: <strong style="color: var(--ios-danger); font-size: 1rem;"><?= number_format($totalExpenseAmount, 0, ',', '.') ?> đ</strong>
+            Tổng chi: <strong style="color: var(--ios-danger); font-size: 1rem;">¥<?= number_format($totalExpenseAmount, 2, '.', ',') ?></strong>
         </div>
         <a href="/admin/expenses/create" class="glass-btn" style="text-decoration: none; white-space: nowrap;">+ Thêm Khoản Chi</a>
     </div>
@@ -66,7 +66,7 @@ $totalExpenseAmount = array_sum(array_column($expenses ?? [], 'amount'));
                                 </span>
                             </td>
                             <td style="font-weight: 700; color: var(--ios-danger);">
-                                <?= number_format($expense['amount'], 0, ',', '.') ?> đ
+                                ¥<?= number_format($expense['amount'], 2, '.', ',') ?>
                             </td>
                             <td style="font-weight: 600; font-size: 0.85rem;">
                                 <?= date('d/m/Y', strtotime($expense['expense_date'])) ?>
