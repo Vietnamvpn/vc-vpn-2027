@@ -95,7 +95,7 @@ ob_start();
                                             <span>👁️</span> Xem chi tiết
                                         </a>
                                         <a href="/admin/servers/sync?id=<?= $server['id'] ?>" onclick="return confirm('Xác nhận tạo task đồng bộ tất cả gói active thuộc nhóm này sang máy chủ?');" class="action-item" style="color: var(--ios-blue);">
-                                            <span>🔄</span> Đồng bộ máy chủ
+                                            <span>🔄</span> Đồng bộ
                                         </a>
                                         <a href="/admin/servers/edit?id=<?= $server['id'] ?>" class="action-item">
                                             <span>✏️</span> Chỉnh sửa
