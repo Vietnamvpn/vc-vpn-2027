@@ -104,9 +104,6 @@ ob_start();
                                         <a href="/admin/subscriptions/detail?id=<?= $sub['id'] ?>" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                             <span>👁️</span> Xem chi tiết
                                         </a>
-                                        <a href="/admin/users/detail?id=<?= $sub['user_id'] ?>" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
-                                            <span>👤</span> Xem người dùng
-                                        </a>
                                         <a href="javascript:void(0)" onclick="copySubLink('<?= htmlspecialchars($sub['uuid']) ?>')" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                             <span>📋</span> Sao chép Link
                                         </a>
@@ -115,6 +112,11 @@ ob_start();
                                         </a>
 
                                         <div style="border-top: 1px solid rgba(0, 0, 0, 0.08); margin: 0.25rem 0;"></div>
+
+                                        <!-- Reset Token (UUID) -->
+                                        <a href="/admin/subscriptions/reset-token?id=<?= $sub['id'] ?><?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Xác nhận đổi mã Token (UUID) mới cho gói này? Liên kết đăng ký cũ sẽ ngắt kết nối!');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: #FF9500;">
+                                            <span>🔑</span> Reset Token
+                                        </a>
 
                                         <!-- Gia hạn gói -->
                                         <a href="/admin/subscriptions/renew?id=<?= $sub['id'] ?><?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Xác nhận gia hạn thêm thời hạn sử dụng cho gói đăng ký này?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-blue);">
