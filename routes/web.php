@@ -137,8 +137,9 @@ return [
     'GET /admin/subscriptions/update-status' => ['Admin\SubscriptionController', 'updateStatus'],
     'GET /admin/subscriptions/renew'         => ['Admin\SubscriptionController', 'renew'],
     'GET /admin/subscriptions/reset-traffic'  => ['Admin\SubscriptionController', 'resetTraffic'],
+    'GET /admin/subscriptions/reset-token'    => ['Admin\SubscriptionController', 'resetToken'],
     'GET /admin/subscriptions/delete'        => ['Admin\SubscriptionController', 'delete'],
-    
+
     // Quản lý hoa hồng & giới thiệu (Referrals)
     'GET /admin/referrals'        => ['Admin\ReferralController', 'index'],
 

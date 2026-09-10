@@ -291,6 +291,48 @@ class SubscriptionController extends BaseController
         $this->redirect('/admin/subscriptions' . ($userId > 0 ? '?user_id=' . $userId : ''));
     }
 
+    public function resetToken(): void
+    {
+        $id     = (int)($_GET['id'] ?? 0);
+        $userId = (int)($_GET['user_id'] ?? 0);
+
+        $sub = $this->subscriptionModel->find($id);
+        if (!$sub) {
+            $_SESSION['flash_message'] = 'Gói đăng ký không tồn tại!';
+            $_SESSION['flash_type']    = 'danger';
+            $this->redirect('/admin/subscriptions' . ($userId > 0 ? '?user_id=' . $userId : ''));
+        }
+
+        $newUuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        );
+
+        if ($this->subscriptionModel->update($id, ['uuid' => $newUuid])) {
+            $groupId = 0;
+            if (class_exists('App\Models\VpnPlan') && !empty($sub['plan_id'])) {
+                $planModel = new VpnPlan();
+                $plan      = $planModel->find((int)$sub['plan_id']);
+                $groupId   = (int)($plan['group_id'] ?? 0);
+            }
+
+            if ($groupId > 0) {
+                $this->dispatchAddUserTask($id, $newUuid, (int)$sub['transfer_enable'], $sub['end_date'], $groupId);
+            }
+
+            $_SESSION['flash_message'] = 'Đặt lại mã Token (UUID) mới thành công!';
+            $_SESSION['flash_type']    = 'success';
+        } else {
+            $_SESSION['flash_message'] = 'Không thể đổi mã Token!';
+            $_SESSION['flash_type']    = 'danger';
+        }
+
+        $this->redirect('/admin/subscriptions' . ($userId > 0 ? '?user_id=' . $userId : ''));
+    }
+
     public function delete(): void
     {
         $id     = (int)($_GET['id'] ?? 0);
