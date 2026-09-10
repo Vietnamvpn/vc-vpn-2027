@@ -9,10 +9,9 @@ ob_start();
     <div>
         <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Nút Kết Nối: #<?= $node['id'] ?></h1>
     </div>
-    <a href="/admin/nodes" class="glass-btn" style="text-decoration: none; white-space: nowrap; flex-shrink: 0;">⬅️ Quay Lại</a>
 </div>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem;">
     <!-- Thẻ Máy Chủ VPS -->
     <div class="glass-card" style="padding: 1.25rem;">
         <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">Thông Tin Máy Chủ VPS</h2>
@@ -29,11 +28,15 @@ ob_start();
         </div>
     </div>
 
-    <!-- Thẻ Cấu Hình Giao Thức -->
+    <!-- Thẻ Cấu Hình Giao Thức (Đầy đủ thuộc tính) -->
     <div class="glass-card" style="padding: 1.25rem;">
         <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">Cấu Hình Giao Thức (Inbound)</h2>
         
         <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.9rem;">
+            <div>
+                <strong>Inbound Tag:</strong> 
+                <span style="font-weight: 700; color: var(--ios-blue);"><?= htmlspecialchars($node['tag'] ?: '-') ?></span>
+            </div>
             <div>
                 <strong>Cổng (Port):</strong> 
                 <code style="background: rgba(0, 122, 255, 0.08); color: var(--ios-blue); padding: 0.2rem 0.4rem; border-radius: var(--radius-sm); font-weight: 700;">
@@ -54,6 +57,10 @@ ob_start();
             <div><strong>SNI:</strong> <code style="background: rgba(0,0,0,0.15); padding: 0.15rem 0.35rem; border-radius: var(--radius-sm);"><?= htmlspecialchars($node['sni'] ?: '-') ?></code></div>
             <div><strong>Host:</strong> <code style="background: rgba(0,0,0,0.15); padding: 0.15rem 0.35rem; border-radius: var(--radius-sm);"><?= htmlspecialchars($node['host'] ?: '-') ?></code></div>
             <div><strong>Path:</strong> <code style="background: rgba(0,0,0,0.15); padding: 0.15rem 0.35rem; border-radius: var(--radius-sm);"><?= htmlspecialchars($node['path'] ?: '-') ?></code></div>
+            <div><strong>Service Name (gRPC):</strong> <code style="background: rgba(0,0,0,0.15); padding: 0.15rem 0.35rem; border-radius: var(--radius-sm);"><?= htmlspecialchars($node['service_name'] ?: '-') ?></code></div>
+            <div><strong>Public Key (Reality/WG):</strong> <code style="background: rgba(0,0,0,0.15); padding: 0.15rem 0.35rem; border-radius: var(--radius-sm); word-break: break-all; font-size: 0.8rem;"><?= htmlspecialchars($node['public_key'] ?: '-') ?></code></div>
+            <div><strong>Short ID (Reality):</strong> <code style="background: rgba(0,0,0,0.15); padding: 0.15rem 0.35rem; border-radius: var(--radius-sm);"><?= htmlspecialchars($node['short_id'] ?: '-') ?></code></div>
+            <div><strong>Password / Key:</strong> <code style="background: rgba(0,0,0,0.15); padding: 0.15rem 0.35rem; border-radius: var(--radius-sm); word-break: break-all;"><?= htmlspecialchars($node['password'] ?: '-') ?></code></div>
             <div>
                 <strong>Trạng Thái:</strong> 
                 <?php

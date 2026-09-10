@@ -103,6 +103,7 @@ return [
     'GET /admin/nodes'            => ['Admin\NodeController', 'index'],
     'GET /admin/nodes/detail'     => ['Admin\NodeController', 'detail'],
     'GET /admin/nodes/delete'     => ['Admin\NodeController', 'delete'],
+    'POST /admin/nodes/bulk-delete' => ['Admin\NodeController', 'bulkDelete'],
 
     // Quản lý gói cước (Plans)
     'GET /admin/plans'            => ['Admin\PlanController', 'index'],

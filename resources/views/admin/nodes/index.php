@@ -29,96 +29,109 @@ ob_start();
     </div>
 <?php endif; ?>
 
-<div style="margin-bottom: 1rem; width: 100%; box-sizing: border-box;">
-    <div>
-        <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Quản Lý Nút Kết Nối (Inbounds)</h1>
-        <p style="color: var(--ios-text-secondary); font-size: 0.85rem;">Danh sách cổng kết nối và giao thức được đẩy tự động từ các máy chủ VPS</p>
+<form id="bulkDeleteForm" method="POST" action="/admin/nodes/bulk-delete">
+    <div style="margin-bottom: 1rem; width: 100%; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+        <div>
+            <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Quản Lý Nút Kết Nối (Inbounds)</h1>
+            <p style="color: var(--ios-text-secondary); font-size: 0.85rem;">Danh sách cổng kết nối và giao thức được đẩy tự động từ các máy chủ VPS</p>
+        </div>
+        <div>
+            <button type="button" onclick="confirmBulkDeleteNodes()" class="glass-btn" style="background: rgba(255, 59, 48, 0.12); color: var(--ios-danger); border-color: rgba(255, 59, 48, 0.2); white-space: nowrap;">
+                🗑️ Xóa các mục đã chọn
+            </button>
+        </div>
     </div>
-</div>
 
-<!-- Bảng Nút Kết Nối -->
-<div class="glass-card" style="padding: 1.25rem; width: 100%; box-sizing: border-box;">
-    <div class="table-responsive">
-        <table class="glass-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Máy Chủ</th>
-                    <th style="text-align: center;">Cổng (Port)</th>
-                    <th>Giao Thức</th>
-                    <th>Mạng (Network)</th>
-                    <th style="text-align: center;">TLS</th>
-                    <th>SNI / Host</th>
-                    <th style="text-align: center;">Trạng Thái</th>
-                    <th style="text-align: right;">Thao Tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($nodes)): ?>
-                    <?php foreach ($nodes as $node): ?>
-                        <tr>
-                            <td style="font-weight: 700;">#<?= $node['id'] ?></td>
-                            <td style="font-weight: 700; font-size: 0.9rem; color: var(--ios-text);">
-                                <?= htmlspecialchars($node['server_name'] ?? ('Server #' . $node['server_id'])) ?>
-                            </td>
-                            <td style="text-align: center;">
-                                <code style="background: rgba(0, 122, 255, 0.08); padding: 0.2rem 0.4rem; border-radius: var(--radius-sm); font-weight: 700; color: var(--ios-blue);">
-                                    <?= htmlspecialchars($node['port']) ?>
-                                </code>
-                            </td>
-                            <td>
-                                <span style="padding: 0.2rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 700; background: rgba(0, 122, 255, 0.15); color: var(--ios-blue); text-transform: uppercase;">
-                                    <?= htmlspecialchars($node['protocol']) ?>
-                                </span>
-                            </td>
-                            <td style="font-weight: 600; text-transform: uppercase; color: var(--ios-text-secondary); font-size: 0.85rem;">
-                                <?= htmlspecialchars($node['network']) ?>
-                            </td>
-                            <td style="text-align: center;">
-                                <?php if (!empty($node['tls'])): ?>
-                                    <span style="color: var(--ios-success); font-weight: 700; font-size: 0.85rem;">✓ Bật</span>
-                                <?php else: ?>
-                                    <span style="color: var(--ios-text-secondary); font-size: 0.85rem;">✕ Tắt</span>
-                                <?php endif; ?>
-                            </td>
-                            <td style="font-size: 0.85rem; color: var(--ios-text-secondary);">
-                                <code style="font-size: 0.8rem;"><?= htmlspecialchars($node['sni'] ?: ($node['host'] ?: '-')) ?></code>
-                            </td>
-                            <td style="text-align: center;">
-                                <?php
-                                $statusBadge = [
-                                    'active'   => 'background: rgba(52, 199, 89, 0.15); color: var(--ios-success);',
-                                    'inactive' => 'background: rgba(255, 59, 48, 0.15); color: var(--ios-danger);'
-                                ];
-                                ?>
-                                <span style="padding: 0.2rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 700; <?= $statusBadge[$node['status'] ?? 'active'] ?? '' ?>">
-                                    <?= strtoupper($node['status'] ?? 'active') ?>
-                                </span>
-                            </td>
-                            <td style="text-align: right;">
-                                <div class="action-dropdown">
-                                    <button type="button" class="action-btn" title="Thao tác">⋮</button>
-                                    <div class="action-menu">
-                                        <a href="/admin/nodes/detail?id=<?= $node['id'] ?>" class="action-item">
-                                            <span>👁️</span> Xem chi tiết
-                                        </a>
-                                        <a href="/admin/nodes/delete?id=<?= $node['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa dữ liệu nút kết nối này khỏi hệ thống?');" class="action-item delete" style="color: var(--ios-danger);">
-                                            <span>🗑️</span> Xóa nút kết nối
-                                        </a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
+    <!-- Bảng Nút Kết Nối -->
+    <div class="glass-card" style="padding: 1.25rem; width: 100%; box-sizing: border-box;">
+        <div class="table-responsive">
+            <table class="glass-table">
+                <thead>
                     <tr>
-                        <td colspan="9" style="text-align: center; padding: 2rem; color: var(--ios-text-secondary);">Chưa có nút kết nối nào được đồng bộ từ VPS.</td>
+                        <th style="width: 40px; text-align: center;">
+                            <input type="checkbox" id="selectAllNodes" onchange="toggleSelectAllNodes(this)" style="cursor: pointer;">
+                        </th>
+                        <th>ID</th>
+                        <th>Máy Chủ</th>
+                        <th style="text-align: center;">Cổng (Port)</th>
+                        <th>Giao Thức</th>
+                        <th>Mạng (Network)</th>
+                        <th style="text-align: center;">TLS</th>
+                        <th>SNI / Host</th>
+                        <th style="text-align: center;">Trạng Thái</th>
+                        <th style="text-align: right;">Thao Tác</th>
                     </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php if (!empty($nodes)): ?>
+                        <?php foreach ($nodes as $node): ?>
+                            <tr>
+                                <td style="text-align: center;">
+                                    <input type="checkbox" name="ids[]" value="<?= $node['id'] ?>" class="node-checkbox" style="cursor: pointer;">
+                                </td>
+                                <td style="font-weight: 700;">#<?= $node['id'] ?></td>
+                                <td style="font-weight: 700; font-size: 0.9rem; color: var(--ios-text);">
+                                    <?= htmlspecialchars($node['server_name'] ?? ('Server #' . $node['server_id'])) ?>
+                                </td>
+                                <td style="text-align: center;">
+                                    <code style="background: rgba(0, 122, 255, 0.08); padding: 0.2rem 0.4rem; border-radius: var(--radius-sm); font-weight: 700; color: var(--ios-blue);">
+                                        <?= htmlspecialchars($node['port']) ?>
+                                    </code>
+                                </td>
+                                <td>
+                                    <span style="padding: 0.2rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 700; background: rgba(0, 122, 255, 0.15); color: var(--ios-blue); text-transform: uppercase;">
+                                        <?= htmlspecialchars($node['protocol']) ?>
+                                    </span>
+                                </td>
+                                <td style="font-weight: 600; text-transform: uppercase; color: var(--ios-text-secondary); font-size: 0.85rem;">
+                                    <?= htmlspecialchars($node['network']) ?>
+                                </td>
+                                <td style="text-align: center;">
+                                    <?php if (!empty($node['tls'])): ?>
+                                        <span style="color: var(--ios-success); font-weight: 700; font-size: 0.85rem;">✓ Bật</span>
+                                    <?php else: ?>
+                                        <span style="color: var(--ios-text-secondary); font-size: 0.85rem;">✕ Tắt</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td style="font-size: 0.85rem; color: var(--ios-text-secondary);">
+                                    <code style="font-size: 0.8rem;"><?= htmlspecialchars($node['sni'] ?: ($node['host'] ?: '-')) ?></code>
+                                </td>
+                                <td style="text-align: center;">
+                                    <?php
+                                    $statusBadge = [
+                                        'active'   => 'background: rgba(52, 199, 89, 0.15); color: var(--ios-success);',
+                                        'inactive' => 'background: rgba(255, 59, 48, 0.15); color: var(--ios-danger);'
+                                    ];
+                                    ?>
+                                    <span style="padding: 0.2rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 700; <?= $statusBadge[$node['status'] ?? 'active'] ?? '' ?>">
+                                        <?= strtoupper($node['status'] ?? 'active') ?>
+                                    </span>
+                                </td>
+                                <td style="text-align: right;">
+                                    <div class="action-dropdown">
+                                        <button type="button" class="action-btn" title="Thao tác">⋮</button>
+                                        <div class="action-menu">
+                                            <a href="/admin/nodes/detail?id=<?= $node['id'] ?>" class="action-item">
+                                                <span>👁️</span> Xem chi tiết
+                                            </a>
+                                            <a href="/admin/nodes/delete?id=<?= $node['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa dữ liệu nút kết nối này khỏi hệ thống?');" class="action-item delete" style="color: var(--ios-danger);">
+                                                <span>🗑️</span> Xóa nút kết nối
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="10" style="text-align: center; padding: 2rem; color: var(--ios-text-secondary);">Chưa có nút kết nối nào được đồng bộ từ VPS.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
+</form>
 
 <?php
 $content = ob_get_clean();

@@ -74,4 +74,25 @@ class NodeController extends BaseController
         }
         $this->redirect('/admin/nodes');
     }
+
+    public function bulkDelete(): void
+{
+    $ids = $_POST['ids'] ?? [];
+    if (!empty($ids) && is_array($ids)) {
+        $nodeInboundModel = new \App\Models\NodeInbound();
+        $count = 0;
+        foreach ($ids as $id) {
+            if ($nodeInboundModel->delete((int)$id)) {
+                $count++;
+            }
+        }
+        $_SESSION['flash_message'] = "Đã xóa thành công {$count} nút kết nối!";
+        $_SESSION['flash_type']    = 'success';
+    } else {
+        $_SESSION['flash_message'] = 'Chưa chọn nút kết nối nào để xóa!';
+        $_SESSION['flash_type']    = 'warning';
+    }
+
+    $this->redirect('/admin/nodes');
+}
 }

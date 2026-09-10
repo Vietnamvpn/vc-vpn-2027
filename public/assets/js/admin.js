@@ -191,4 +191,20 @@ function updatePriceHint(selectEl) {
     if (price !== null && amountInput) {
         amountInput.value = price;
     }
+
+    function toggleSelectAllNodes(masterCheckbox) {
+    const checkboxes = document.querySelectorAll('.node-checkbox');
+    checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+}
+
+function confirmBulkDeleteNodes() {
+    const selected = document.querySelectorAll('.node-checkbox:checked');
+    if (selected.length === 0) {
+        alert('Vui lòng chọn ít nhất một nút kết nối để xóa!');
+        return;
+    }
+    if (confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn ${selected.length} nút kết nối đã chọn?`)) {
+        document.getElementById('bulkDeleteForm').submit();
+    }
+}
 }
