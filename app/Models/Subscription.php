@@ -14,7 +14,7 @@ class Subscription extends BaseModel
         $sql = "
             SELECT s.*, 
                    u.username, u.email, 
-                   p.name AS plan_name, p.code AS plan_code
+                   p.name AS plan_name, p.code AS plan_code, p.device_limit
             FROM `{$this->table}` s
             LEFT JOIN `vc_users` u ON s.user_id = u.id
             LEFT JOIN `vc_vpn_plans` p ON s.plan_id = p.id
@@ -34,14 +34,14 @@ class Subscription extends BaseModel
     }
 
     /**
-     * Lấy chi tiết gói đăng ký theo ID kèm thông tin liên quan
+     * Lấy chi tiết gói đăng ký theo ID kèm thông tin liên quan và giới hạn thiết bị (device_limit)
      */
     public function findWithDetails(int $id): ?array
     {
         $stmt = self::$db->prepare("
             SELECT s.*, 
                    u.username, u.email, 
-                   p.name AS plan_name, p.code AS plan_code,
+                   p.name AS plan_name, p.code AS plan_code, p.device_limit, p.group_id,
                    o.order_code
             FROM `{$this->table}` s
             LEFT JOIN `vc_users` u ON s.user_id = u.id
@@ -88,60 +88,72 @@ class Subscription extends BaseModel
     }
 
     /**
-     * Cộng dồn dung lượng Upload/Download và cập nhật IP sử dụng theo ID gói cước (sub_X)
+     * Cộng dồn dung lượng Upload/Download, cập nhật IP sử dụng và số lượng thiết bị theo ID gói cước (sub_X)
      */
-    public function addTrafficById(int $id, int $u, int $d, ?string $lastIp = null): bool
+    public function addTrafficById(int $id, int $u, int $d, ?string $lastIp = null, ?int $ipCount = null): bool
     {
-        $ipSql = $lastIp ? ", `last_used_ip` = :last_ip" : "";
-        $sql = "
-            UPDATE `{$this->table}` 
-            SET `upload` = `upload` + :u, 
-                `download` = `download` + :d 
-                {$ipSql},
-                `updated_at` = NOW() 
-            WHERE `id` = :id
-        ";
-
-        $stmt = self::$db->prepare($sql);
+        $extraSql = "";
         $params = [
             'u'  => $u,
             'd'  => $d,
             'id' => $id
         ];
 
-        if ($lastIp) {
+        if ($lastIp !== null) {
+            $extraSql .= ", `last_used_ip` = :last_ip";
             $params['last_ip'] = $lastIp;
         }
 
-        return $stmt->execute($params);
-    }
+        if ($ipCount !== null) {
+            $extraSql .= ", `online_devices` = :ip_count";
+            $params['ip_count'] = $ipCount;
+        }
 
-    /**
-     * Cộng dồn dung lượng Upload/Download và cập nhật IP sử dụng theo UUID
-     */
-    public function addTrafficByUuid(string $uuid, int $u, int $d, ?string $lastIp = null): bool
-    {
-        $ipSql = $lastIp ? ", `last_used_ip` = :last_ip" : "";
         $sql = "
             UPDATE `{$this->table}` 
             SET `upload` = `upload` + :u, 
                 `download` = `download` + :d 
-                {$ipSql},
+                {$extraSql},
                 `updated_at` = NOW() 
-            WHERE `uuid` = :uuid
+            WHERE `id` = :id
         ";
 
         $stmt = self::$db->prepare($sql);
+        return $stmt->execute($params);
+    }
+
+    /**
+     * Cộng dồn dung lượng Upload/Download, cập nhật IP sử dụng và số lượng thiết bị theo UUID
+     */
+    public function addTrafficByUuid(string $uuid, int $u, int $d, ?string $lastIp = null, ?int $ipCount = null): bool
+    {
+        $extraSql = "";
         $params = [
             'u'    => $u,
             'd'    => $d,
             'uuid' => $uuid
         ];
 
-        if ($lastIp) {
+        if ($lastIp !== null) {
+            $extraSql .= ", `last_used_ip` = :last_ip";
             $params['last_ip'] = $lastIp;
         }
 
+        if ($ipCount !== null) {
+            $extraSql .= ", `online_devices` = :ip_count";
+            $params['ip_count'] = $ipCount;
+        }
+
+        $sql = "
+            UPDATE `{$this->table}` 
+            SET `upload` = `upload` + :u, 
+                `download` = `download` + :d 
+                {$extraSql},
+                `updated_at` = NOW() 
+            WHERE `uuid` = :uuid
+        ";
+
+        $stmt = self::$db->prepare($sql);
         return $stmt->execute($params);
     }
 

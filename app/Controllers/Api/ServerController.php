@@ -120,7 +120,7 @@ class ServerController extends BaseController
     }
 
     /**
-     * 3. Xử lý lưu lượng và IP người dùng do VPS báo cáo về (report_traffic)
+     * 3. Xử lý lưu lượng, ghi nhận danh sách IP và số lượng thiết bị kết nối do VPS báo cáo về (report_traffic)
      */
     private function handleReportTraffic(array $payload): void
     {
@@ -134,7 +134,10 @@ class ServerController extends BaseController
                 $upload   = (int)($log['upload'] ?? 0);
                 $download = (int)($log['download'] ?? 0);
                 $ips      = $log['ips'] ?? [];
-                $lastIp   = !empty($ips) && is_array($ips) ? $ips[0] : null;
+                
+                // Thu thập số lượng thiết bị và danh sách IP kết nối đồng thời
+                $ipCount = (int)($log['ip_count'] ?? (is_array($ips) ? count($ips) : 0));
+                $allIps  = (!empty($ips) && is_array($ips)) ? implode(', ', array_unique($ips)) : null;
 
                 if (empty($username)) {
                     continue;
@@ -143,12 +146,12 @@ class ServerController extends BaseController
                 // Tách ID gói cước từ định dạng "sub_77"
                 if (strpos($username, 'sub_') === 0) {
                     $subId = (int)str_replace('sub_', '', $username);
-                    $subModel->addTrafficById($subId, $upload, $download, $lastIp);
+                    $subModel->addTrafficById($subId, $upload, $download, $allIps, $ipCount);
                 } elseif (is_numeric($username)) {
-                    $subModel->addTrafficById((int)$username, $upload, $download, $lastIp);
+                    $subModel->addTrafficById((int)$username, $upload, $download, $allIps, $ipCount);
                 } else {
                     // Trường hợp username truyền trực tiếp dạng UUID
-                    $subModel->addTrafficByUuid($username, $upload, $download, $lastIp);
+                    $subModel->addTrafficByUuid($username, $upload, $download, $allIps, $ipCount);
                 }
             }
         }
