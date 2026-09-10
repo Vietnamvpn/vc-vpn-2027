@@ -155,3 +155,4 @@ class PlanController extends BaseController
 
         $this->redirect('/admin/plans');
     }
+}
