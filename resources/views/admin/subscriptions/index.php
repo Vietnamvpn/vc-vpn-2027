@@ -100,7 +100,7 @@ ob_start();
                             <td style="text-align: right;">
                                 <div class="action-dropdown">
                                     <button type="button" class="action-btn" title="Thao tác">⋮</button>
-                                    <div class="action-menu" style="min-width: 175px; white-space: nowrap;">
+                                    <div class="action-menu" style="min-width: 185px; white-space: nowrap;">
                                         <a href="/admin/subscriptions/detail?id=<?= $sub['id'] ?>" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                             <span>👁️</span> Xem chi tiết
                                         </a>
@@ -112,6 +112,44 @@ ob_start();
                                         </a>
                                         <a href="javascript:void(0)" onclick="openQrModal('<?= htmlspecialchars($sub['uuid']) ?>')" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                             <span>📱</span> Mã QR
+                                        </a>
+
+                                        <div style="border-top: 1px solid rgba(0, 0, 0, 0.08); margin: 0.25rem 0;"></div>
+
+                                        <!-- Gia hạn gói -->
+                                        <a href="/admin/subscriptions/renew?id=<?= $sub['id'] ?><?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Xác nhận gia hạn thêm thời hạn sử dụng cho gói đăng ký này?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-blue);">
+                                            <span>🔄</span> Gia hạn gói
+                                        </a>
+
+                                        <!-- Reset lưu lượng -->
+                                        <a href="/admin/subscriptions/reset-traffic?id=<?= $sub['id'] ?><?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Xác nhận đặt lại dung lượng đã sử dụng (Upload & Download) về 0 GB?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: #5856D6;">
+                                            <span>⚡</span> Reset lưu lượng
+                                        </a>
+
+                                        <!-- Thay đổi trạng thái -->
+                                        <?php if (($sub['status'] ?? '') !== 'active'): ?>
+                                            <a href="/admin/subscriptions/update-status?id=<?= $sub['id'] ?>&status=active<?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Kích hoạt lại gói đăng ký này?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-success);">
+                                                <span>✅</span> Kích hoạt gói
+                                            </a>
+                                        <?php endif; ?>
+
+                                        <?php if (($sub['status'] ?? '') !== 'suspended'): ?>
+                                            <a href="/admin/subscriptions/update-status?id=<?= $sub['id'] ?>&status=suspended<?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Tạm dừng gói đăng ký này?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-warning);">
+                                                <span>⏸️</span> Tạm dừng gói
+                                            </a>
+                                        <?php endif; ?>
+
+                                        <?php if (($sub['status'] ?? '') !== 'cancelled'): ?>
+                                            <a href="/admin/subscriptions/update-status?id=<?= $sub['id'] ?>&status=cancelled<?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Hủy gói đăng ký này?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-danger);">
+                                                <span>❌</span> Hủy đăng ký
+                                            </a>
+                                        <?php endif; ?>
+
+                                        <div style="border-top: 1px solid rgba(0, 0, 0, 0.08); margin: 0.25rem 0;"></div>
+
+                                        <!-- Xóa gói đăng ký -->
+                                        <a href="/admin/subscriptions/delete?id=<?= $sub['id'] ?><?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn gói đăng ký này khỏi hệ thống?');" class="action-item delete" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-danger);">
+                                            <span>🗑️</span> Xóa gói
                                         </a>
                                     </div>
                                 </div>

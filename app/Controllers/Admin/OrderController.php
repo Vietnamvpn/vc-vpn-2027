@@ -54,7 +54,7 @@ class OrderController extends BaseController
     }
 
     /**
-     * Hàm phụ trợ: Tự động tạo task 'del_user' cho các VPS thuộc đúng Nhóm Máy Chủ (group_id) khi hủy đơn
+     * Hàm phụ trợ: Tự động tạo task 'delete_user' gửi xuống VPS khi hủy đơn hàng
      */
     private function dispatchDelUserTask(int $subId, int $groupId): void
     {
@@ -74,7 +74,7 @@ class OrderController extends BaseController
             if (($server['status'] ?? 'active') === 'active' && (int)($server['group_id'] ?? 0) === $groupId) {
                 $taskModel->create([
                     'server_id' => (int)$server['id'],
-                    'action'    => 'del_user',
+                    'action'    => 'delete_user',
                     'payload'   => $payload
                 ]);
             }

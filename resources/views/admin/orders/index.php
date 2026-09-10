@@ -106,7 +106,7 @@ ob_start();
                                             <span>👁️</span> Xem chi tiết
                                         </a>
 
-                                        <?php if (($order['payment_status'] ?? '') !== 'completed'): ?>
+                                        <?php if (($order['payment_status'] ?? '') === 'pending'): ?>
                                             <a href="/admin/orders/update-status?id=<?= $order['id'] ?>&status=completed<?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Duyệt thành công đơn hàng này và cấp gói dịch vụ cho người dùng?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-success);">
                                                 <span>✅</span> Duyệt (Hoàn tất)
                                             </a>
