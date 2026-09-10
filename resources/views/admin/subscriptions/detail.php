@@ -22,7 +22,6 @@ $limitGB = round(($subscription['transfer_enable'] ?? 0) / (1024 * 1024 * 1024),
         <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">Thông Tin Tài Khoản</h2>
         
         <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.9rem;">
-            <div><strong>ID Đăng Ký:</strong> #<?= $subscription['id'] ?></div>
             <div><strong>Khách Hàng:</strong> <?= htmlspecialchars($subscription['username'] ?? 'N/A') ?> (ID #<?= $subscription['user_id'] ?>)</div>
             <div><strong>Email:</strong> <?= htmlspecialchars($subscription['email'] ?? 'N/A') ?></div>
             <div><strong>Gói Cước:</strong> <span style="font-weight: 700;"><?= htmlspecialchars($subscription['plan_name'] ?? 'N/A') ?></span></div>
