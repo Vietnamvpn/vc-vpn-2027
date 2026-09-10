@@ -175,4 +175,22 @@ class Subscription extends BaseModel
         $result = $stmt->fetch();
         return $result ?: null;
     }
+
+    /**
+     * Lấy danh sách gói đăng ký đang active thuộc Nhóm máy chủ (group_id)
+     */
+    public function getActiveByGroupId(int $groupId): array
+    {
+        $sql = "
+            SELECT s.id, s.uuid, s.transfer_enable, s.end_date 
+            FROM `{$this->table}` s
+            INNER JOIN `vc_vpn_plans` p ON s.plan_id = p.id
+            WHERE p.group_id = :group_id 
+              AND s.status = 'active' 
+              AND s.end_date > NOW()
+        ";
+        $stmt = self::$db->prepare($sql);
+        $stmt->execute(['group_id' => $groupId]);
+        return $stmt->fetchAll() ?: [];
+    }
 }

@@ -179,19 +179,8 @@ class ServerController extends BaseController
             $subModel  = new \App\Models\Subscription();
             $taskModel = new \App\Models\NodeTask();
 
-            // Lấy tất cả gói đăng ký active thuộc đúng Nhóm máy chủ này
-            $sql = "
-                SELECT s.id, s.uuid, s.transfer_enable, s.end_date 
-                FROM `vc_subscriptions` s
-                INNER JOIN `vc_vpn_plans` p ON s.plan_id = p.id
-                WHERE p.group_id = :group_id 
-                  AND s.status = 'active' 
-                  AND s.end_date > NOW()
-            ";
-            
-            $stmt = \App\Models\BaseModel::$db->prepare($sql);
-            $stmt->execute(['group_id' => $groupId]);
-            $activeSubs = $stmt->fetchAll() ?: [];
+            // Gọi hàm lấy danh sách tài khoản active theo Nhóm máy chủ từ Model
+            $activeSubs = $subModel->getActiveByGroupId($groupId);
 
             $count = 0;
             foreach ($activeSubs as $sub) {
