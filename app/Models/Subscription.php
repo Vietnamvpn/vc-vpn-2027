@@ -14,7 +14,7 @@ class Subscription extends BaseModel
         $sql = "
             SELECT s.*, 
                    u.username, u.email, 
-                   p.name AS plan_name, p.code AS plan_code, p.device_limit
+                   p.name AS plan_name, p.code AS plan_code, p.max_devices AS device_limit
             FROM `{$this->table}` s
             LEFT JOIN `vc_users` u ON s.user_id = u.id
             LEFT JOIN `vc_vpn_plans` p ON s.plan_id = p.id
@@ -34,14 +34,14 @@ class Subscription extends BaseModel
     }
 
     /**
-     * Lấy chi tiết gói đăng ký theo ID kèm thông tin liên quan và giới hạn thiết bị (device_limit)
+     * Lấy chi tiết gói đăng ký theo ID kèm thông tin liên quan và giới hạn thiết bị
      */
     public function findWithDetails(int $id): ?array
     {
         $stmt = self::$db->prepare("
             SELECT s.*, 
                    u.username, u.email, 
-                   p.name AS plan_name, p.code AS plan_code, p.device_limit, p.group_id,
+                   p.name AS plan_name, p.code AS plan_code, p.max_devices AS device_limit, p.group_id,
                    o.order_code
             FROM `{$this->table}` s
             LEFT JOIN `vc_users` u ON s.user_id = u.id
