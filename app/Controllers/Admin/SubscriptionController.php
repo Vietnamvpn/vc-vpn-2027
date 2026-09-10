@@ -5,6 +5,9 @@ namespace App\Controllers\Admin;
 use App\Controllers\BaseController;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Models\VpnPlan;
+use App\Models\Server;
+use App\Models\NodeTask;
 
 class SubscriptionController extends BaseController
 {
@@ -18,6 +21,65 @@ class SubscriptionController extends BaseController
         $this->subscriptionModel = new Subscription();
     }
 
+    /**
+     * Hàm phụ trợ: Tự động tạo task 'add_user' cho các VPS thuộc đúng Nhóm Máy Chủ (group_id)
+     */
+    private function dispatchAddUserTask(int $subId, string $uuid, int $bytesTotal, string $endDate, int $groupId): void
+    {
+        if (class_exists('App\Models\Server') && class_exists('App\Models\NodeTask')) {
+            $serverModel = new Server();
+            $servers     = $serverModel->getAll();
+
+            if (empty($servers)) return;
+
+            $taskModel = new NodeTask();
+            $payload   = [
+                'username'        => 'sub_' . $subId,
+                'uuid'            => $uuid,
+                'transfer_enable' => $bytesTotal,
+                'end_date'        => $endDate
+            ];
+
+            foreach ($servers as $server) {
+                if (($server['status'] ?? 'active') === 'active' && (int)($server['group_id'] ?? 0) === $groupId) {
+                    $taskModel->create([
+                        'server_id' => (int)$server['id'],
+                        'action'    => 'add_user',
+                        'payload'   => $payload
+                    ]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Hàm phụ trợ: Tự động tạo task 'delete_user' gửi xuống VPS thuộc đúng Nhóm Máy Chủ (group_id)
+     */
+    private function dispatchDelUserTask(int $subId, int $groupId): void
+    {
+        if (class_exists('App\Models\Server') && class_exists('App\Models\NodeTask')) {
+            $serverModel = new Server();
+            $servers     = $serverModel->getAll();
+
+            if (empty($servers)) return;
+
+            $taskModel = new NodeTask();
+            $payload   = [
+                'username' => 'sub_' . $subId
+            ];
+
+            foreach ($servers as $server) {
+                if (($server['status'] ?? 'active') === 'active' && (int)($server['group_id'] ?? 0) === $groupId) {
+                    $taskModel->create([
+                        'server_id' => (int)$server['id'],
+                        'action'    => 'delete_user',
+                        'payload'   => $payload
+                    ]);
+                }
+            }
+        }
+    }
+
     public function index(): void
     {
         $userId = isset($_GET['user_id']) ? (int)$_GET['user_id'] : null;
@@ -25,7 +87,7 @@ class SubscriptionController extends BaseController
 
         $filterUser = null;
         if ($userId && class_exists('App\Models\User')) {
-            $userModel = new User();
+            $userModel  = new User();
             $filterUser = $userModel->findById($userId);
         }
 
@@ -52,5 +114,155 @@ class SubscriptionController extends BaseController
             'activeMenu'   => 'subscriptions',
             'subscription' => $subscription
         ]);
+    }
+
+    public function updateStatus(): void
+    {
+        $id     = (int)($_GET['id'] ?? 0);
+        $status = $_GET['status'] ?? '';
+        $userId = (int)($_GET['user_id'] ?? 0);
+
+        $validStatuses = ['active', 'suspended', 'cancelled', 'expired'];
+
+        if ($id <= 0 || !in_array($status, $validStatuses, true)) {
+            $_SESSION['flash_message'] = 'Yêu cầu không hợp lệ!';
+            $_SESSION['flash_type']    = 'danger';
+            $this->redirect('/admin/subscriptions' . ($userId > 0 ? '?user_id=' . $userId : ''));
+        }
+
+        $sub = $this->subscriptionModel->find($id);
+        if (!$sub) {
+            $_SESSION['flash_message'] = 'Gói đăng ký không tồn tại!';
+            $_SESSION['flash_type']    = 'danger';
+            $this->redirect('/admin/subscriptions' . ($userId > 0 ? '?user_id=' . $userId : ''));
+        }
+
+        if ($this->subscriptionModel->update($id, ['status' => $status])) {
+            $groupId = 0;
+            if (class_exists('App\Models\VpnPlan') && !empty($sub['plan_id'])) {
+                $planModel = new VpnPlan();
+                $plan      = $planModel->find((int)$sub['plan_id']);
+                $groupId   = (int)($plan['group_id'] ?? 0);
+            }
+
+            if ($groupId > 0) {
+                if ($status === 'active') {
+                    $this->dispatchAddUserTask($id, $sub['uuid'], (int)$sub['transfer_enable'], $sub['end_date'], $groupId);
+                } else {
+                    $this->dispatchDelUserTask($id, $groupId);
+                }
+            }
+
+            $_SESSION['flash_message'] = 'Cập nhật trạng thái gói đăng ký thành công!';
+            $_SESSION['flash_type']    = 'success';
+        } else {
+            $_SESSION['flash_message'] = 'Không thể cập nhật trạng thái gói!';
+            $_SESSION['flash_type']    = 'danger';
+        }
+
+        $this->redirect('/admin/subscriptions' . ($userId > 0 ? '?user_id=' . $userId : ''));
+    }
+
+    public function renew(): void
+    {
+        $id     = (int)($_GET['id'] ?? 0);
+        $userId = (int)($_GET['user_id'] ?? 0);
+
+        $sub = $this->subscriptionModel->find($id);
+        if (!$sub) {
+            $_SESSION['flash_message'] = 'Gói đăng ký không tồn tại!';
+            $_SESSION['flash_type']    = 'danger';
+            $this->redirect('/admin/subscriptions' . ($userId > 0 ? '?user_id=' . $userId : ''));
+        }
+
+        $planModel = class_exists('App\Models\VpnPlan') ? new VpnPlan() : null;
+        $plan      = $planModel ? $planModel->find((int)$sub['plan_id']) : null;
+
+        if (!$plan) {
+            $_SESSION['flash_message'] = 'Không tìm thấy thông tin gói cước tương ứng!';
+            $_SESSION['flash_type']    = 'danger';
+            $this->redirect('/admin/subscriptions' . ($userId > 0 ? '?user_id=' . $userId : ''));
+        }
+
+        $durationDays = (int)($plan['duration_days'] ?? 30);
+        $groupId      = (int)($plan['group_id'] ?? 0);
+
+        $currentEndDate = strtotime($sub['end_date']);
+        $baseTime       = ($currentEndDate > time()) ? $currentEndDate : time();
+        $newEndDate     = date('Y-m-d H:i:s', strtotime("+{$durationDays} days", $baseTime));
+
+        $updateData = [
+            'end_date' => $newEndDate,
+            'status'   => 'active'
+        ];
+
+        if ($this->subscriptionModel->update($id, $updateData)) {
+            if ($groupId > 0) {
+                $this->dispatchAddUserTask($id, $sub['uuid'], (int)$sub['transfer_enable'], $newEndDate, $groupId);
+            }
+
+            $_SESSION['flash_message'] = 'Gia hạn gói đăng ký thành công!';
+            $_SESSION['flash_type']    = 'success';
+        } else {
+            $_SESSION['flash_message'] = 'Không thể gia hạn gói đăng ký!';
+            $_SESSION['flash_type']    = 'danger';
+        }
+
+        $this->redirect('/admin/subscriptions' . ($userId > 0 ? '?user_id=' . $userId : ''));
+    }
+
+    public function resetTraffic(): void
+    {
+        $id     = (int)($_GET['id'] ?? 0);
+        $userId = (int)($_GET['user_id'] ?? 0);
+
+        $sub = $this->subscriptionModel->find($id);
+        if (!$sub) {
+            $_SESSION['flash_message'] = 'Gói đăng ký không tồn tại!';
+            $_SESSION['flash_type']    = 'danger';
+            $this->redirect('/admin/subscriptions' . ($userId > 0 ? '?user_id=' . $userId : ''));
+        }
+
+        if ($this->subscriptionModel->update($id, ['upload' => 0, 'download' => 0])) {
+            $_SESSION['flash_message'] = 'Reset lưu lượng gói đăng ký về 0 GB thành công!';
+            $_SESSION['flash_type']    = 'success';
+        } else {
+            $_SESSION['flash_message'] = 'Không thể reset lưu lượng!';
+            $_SESSION['flash_type']    = 'danger';
+        }
+
+        $this->redirect('/admin/subscriptions' . ($userId > 0 ? '?user_id=' . $userId : ''));
+    }
+
+    public function delete(): void
+    {
+        $id     = (int)($_GET['id'] ?? 0);
+        $userId = (int)($_GET['user_id'] ?? 0);
+
+        $sub = $this->subscriptionModel->find($id);
+        if (!$sub) {
+            $_SESSION['flash_message'] = 'Gói đăng ký không tồn tại!';
+            $_SESSION['flash_type']    = 'danger';
+        } else {
+            if (class_exists('App\Models\VpnPlan') && !empty($sub['plan_id'])) {
+                $planModel = new VpnPlan();
+                $plan      = $planModel->find((int)$sub['plan_id']);
+                $groupId   = (int)($plan['group_id'] ?? 0);
+
+                if ($groupId > 0) {
+                    $this->dispatchDelUserTask($id, $groupId);
+                }
+            }
+
+            if ($this->subscriptionModel->delete($id)) {
+                $_SESSION['flash_message'] = 'Xóa gói đăng ký thành công!';
+                $_SESSION['flash_type']    = 'success';
+            } else {
+                $_SESSION['flash_message'] = 'Không thể xóa gói đăng ký!';
+                $_SESSION['flash_type']    = 'danger';
+            }
+        }
+
+        $this->redirect('/admin/subscriptions' . ($userId > 0 ? '?user_id=' . $userId : ''));
     }
 }

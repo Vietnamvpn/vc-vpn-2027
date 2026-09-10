@@ -132,9 +132,13 @@ return [
     'GET /admin/payments/detail'  => ['Admin\PaymentController', 'detail'],
 
     // Quản lý gói đăng ký (Subscriptions)
-    'GET /admin/subscriptions'        => ['Admin\SubscriptionController', 'index'],
-    'GET /admin/subscriptions/detail' => ['Admin\SubscriptionController', 'detail'],
-
+    'GET /admin/subscriptions'               => ['Admin\SubscriptionController', 'index'],
+    'GET /admin/subscriptions/detail'        => ['Admin\SubscriptionController', 'detail'],
+    'GET /admin/subscriptions/update-status' => ['Admin\SubscriptionController', 'updateStatus'],
+    'GET /admin/subscriptions/renew'         => ['Admin\SubscriptionController', 'renew'],
+    'GET /admin/subscriptions/reset-traffic'  => ['Admin\SubscriptionController', 'resetTraffic'],
+    'GET /admin/subscriptions/delete'        => ['Admin\SubscriptionController', 'delete'],
+    
     // Quản lý hoa hồng & giới thiệu (Referrals)
     'GET /admin/referrals'        => ['Admin\ReferralController', 'index'],
 
