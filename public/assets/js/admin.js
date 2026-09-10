@@ -191,8 +191,9 @@ function updatePriceHint(selectEl) {
     if (price !== null && amountInput) {
         amountInput.value = price;
     }
+}
 
-    function toggleSelectAllNodes(masterCheckbox) {
+function toggleSelectAllNodes(masterCheckbox) {
     const checkboxes = document.querySelectorAll('.node-checkbox');
     checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
 }
@@ -206,5 +207,4 @@ function confirmBulkDeleteNodes() {
     if (confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn ${selected.length} nút kết nối đã chọn?`)) {
         document.getElementById('bulkDeleteForm').submit();
     }
-}
 }
