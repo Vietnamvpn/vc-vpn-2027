@@ -160,6 +160,7 @@ CREATE TABLE `vc_subscriptions` (
     `upload` BIGINT UNSIGNED NOT NULL DEFAULT 0,
     `download` BIGINT UNSIGNED NOT NULL DEFAULT 0,
     `last_used_ip` VARCHAR(45) NULL,
+    `online_devices` INT UNSIGNED NOT NULL DEFAULT 0,
     `start_date` TIMESTAMP NOT NULL,
     `end_date` TIMESTAMP NOT NULL,
     `status` ENUM('active', 'expired', 'suspended', 'cancelled') NOT NULL DEFAULT 'active',

@@ -44,7 +44,7 @@ ob_start();
                     <th>ID</th>
                     <th>Khách Hàng</th>
                     <th>Gói Cước</th>
-                    <th>Mã UUID</th>
+                    <th style="text-align: center;">Online</th>
                     <th>Lưu Lượng Dùng</th>
                     <th>Ngày Bắt Đầu</th>
                     <th>Ngày Hết Hạn</th>
@@ -59,6 +59,7 @@ ob_start();
                         $usedBytes = ($sub['upload'] ?? 0) + ($sub['download'] ?? 0);
                         $usedGB = round($usedBytes / (1024 * 1024 * 1024), 2);
                         $totalGB = round(($sub['transfer_enable'] ?? 0) / (1024 * 1024 * 1024), 2);
+                        $onlineDevices = (int)($sub['online_devices'] ?? 0);
                         ?>
                         <tr>
                             <td style="font-weight: 700;">#<?= $sub['id'] ?></td>
@@ -69,10 +70,10 @@ ob_start();
                             <td style="font-weight: 600; font-size: 0.85rem; color: var(--ios-text);">
                                 <?= htmlspecialchars($sub['plan_name'] ?? ('Gói #' . $sub['plan_id'])) ?>
                             </td>
-                            <td>
-                                <code title="<?= htmlspecialchars($sub['uuid']) ?>" style="background: rgba(0, 122, 255, 0.08); padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-size: 0.78rem; font-family: monospace; color: var(--ios-blue); cursor: pointer;">
-                                    <?= htmlspecialchars(substr($sub['uuid'], 0, 13)) ?>...
-                                </code>
+                            <td style="text-align: center;">
+                                <span style="padding: 0.15rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.78rem; font-weight: 700; <?= $onlineDevices > 0 ? 'background: rgba(52, 199, 89, 0.15); color: var(--ios-success);' : 'background: rgba(142, 142, 147, 0.12); color: var(--ios-text-secondary);' ?>">
+                                    📱 <?= $onlineDevices ?>
+                                </span>
                             </td>
                             <td style="font-size: 0.85rem;">
                                 <span style="font-weight: 700; color: var(--ios-blue);"><?= $usedGB ?> GB</span>
@@ -180,54 +181,6 @@ ob_start();
         </div>
     </div>
 </div>
-
-<script>
-function getSubUrl(uuid) {
-    return window.location.origin + '/sub?token=' + uuid;
-}
-
-function copySubLink(uuid) {
-    const url = getSubUrl(uuid);
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(url).then(() => {
-            alert('Đã sao chép liên kết đăng ký vào bộ nhớ tạm!');
-        }).catch(() => {
-            fallbackCopyText(url);
-        });
-    } else {
-        fallbackCopyText(url);
-    }
-}
-
-function fallbackCopyText(text) {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.style.position = "fixed";
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    try {
-        document.execCommand('copy');
-        alert('Đã sao chép liên kết đăng ký vào bộ nhớ tạm!');
-    } catch (err) {
-        alert('Không thể tự động sao chép. Vui lòng thử lại!');
-    }
-    document.body.removeChild(textArea);
-}
-
-function openQrModal(uuid) {
-    const url = getSubUrl(uuid);
-    const qrImg = document.getElementById('qrCodeImg');
-    qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(url);
-    const modal = document.getElementById('qrModal');
-    modal.style.display = 'flex';
-}
-
-function closeQrModal() {
-    const modal = document.getElementById('qrModal');
-    modal.style.display = 'none';
-}
-</script>
 
 <?php
 $content = ob_get_clean();

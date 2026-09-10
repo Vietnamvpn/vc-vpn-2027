@@ -130,3 +130,55 @@ document.addEventListener('DOMContentLoaded', function() {
         activateTab(activeTabId);
     }
 });
+
+function getSubUrl(uuid) {
+    return window.location.origin + '/sub?token=' + uuid;
+}
+
+function copySubLink(uuid) {
+    const url = getSubUrl(uuid);
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(url).then(() => {
+            alert('Đã sao chép liên kết đăng ký vào bộ nhớ tạm!');
+        }).catch(() => {
+            fallbackCopyText(url);
+        });
+    } else {
+        fallbackCopyText(url);
+    }
+}
+
+function fallbackCopyText(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        alert('Đã sao chép liên kết đăng ký vào bộ nhớ tạm!');
+    } catch (err) {
+        alert('Không thể tự động sao chép. Vui lòng thử lại!');
+    }
+    document.body.removeChild(textArea);
+}
+
+function openQrModal(uuid) {
+    const url = getSubUrl(uuid);
+    const qrImg = document.getElementById('qrCodeImg');
+    if (qrImg) {
+        qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(url);
+    }
+    const modal = document.getElementById('qrModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function closeQrModal() {
+    const modal = document.getElementById('qrModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
