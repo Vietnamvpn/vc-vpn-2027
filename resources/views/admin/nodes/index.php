@@ -30,12 +30,12 @@ ob_start();
 <?php endif; ?>
 
 <form id="bulkDeleteForm" method="POST" action="/admin/nodes/bulk-delete">
-    <div style="margin-bottom: 1rem; width: 100%; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+    <div style="margin-bottom: 1rem; width: 100%; box-sizing: border-box;">
         <div>
             <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Quản Lý Nút Kết Nối (Inbounds)</h1>
             <p style="color: var(--ios-text-secondary); font-size: 0.85rem;">Danh sách cổng kết nối và giao thức được đẩy tự động từ các máy chủ VPS</p>
         </div>
-        <div>
+        <div style="display: flex; justify-content: flex-end; margin-top: 0.75rem;">
             <button type="button" onclick="confirmBulkDeleteNodes()" class="glass-btn" style="background: rgba(255, 59, 48, 0.12); color: var(--ios-danger); border-color: rgba(255, 59, 48, 0.2); white-space: nowrap;">
                 🗑️ Xóa các mục đã chọn
             </button>
@@ -110,11 +110,11 @@ ob_start();
                                 <td style="text-align: right;">
                                     <div class="action-dropdown">
                                         <button type="button" class="action-btn" title="Thao tác">⋮</button>
-                                        <div class="action-menu">
-                                            <a href="/admin/nodes/detail?id=<?= $node['id'] ?>" class="action-item">
+                                        <div class="action-menu" style="min-width: 175px; white-space: nowrap;">
+                                            <a href="/admin/nodes/detail?id=<?= $node['id'] ?>" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                                 <span>👁️</span> Xem chi tiết
                                             </a>
-                                            <a href="/admin/nodes/delete?id=<?= $node['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa dữ liệu nút kết nối này khỏi hệ thống?');" class="action-item delete" style="color: var(--ios-danger);">
+                                            <a href="/admin/nodes/delete?id=<?= $node['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa dữ liệu nút kết nối này khỏi hệ thống?');" class="action-item delete" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-danger);">
                                                 <span>🗑️</span> Xóa nút kết nối
                                             </a>
                                         </div>
