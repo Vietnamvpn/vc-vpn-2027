@@ -137,10 +137,21 @@ class PlanController extends BaseController
     public function delete(): void
     {
         $id = isset($_GET['id']) ? (int)$_GET['id'] : null;
+
         if ($id) {
-            $this->planModel->delete($id);
-            $_SESSION['flash_message'] = 'Đã xóa gói cước thành công!';
+            // Kiểm tra xem gói cước này đã có người đăng ký chưa
+            $subModel = new \App\Models\Subscription();
+            $stmt = \App\Models\BaseModel::$db->prepare("SELECT COUNT(*) FROM `vc_subscriptions` WHERE `plan_id` = :plan_id");
+            $stmt->execute(['plan_id' => $id]);
+            $count = (int)$stmt->fetchColumn();
+
+            if ($count > 0) {
+                $_SESSION['error'] = "Không thể xóa gói cước này vì đang có {$count} tài khoản đăng ký sử dụng! Bạn nên đổi trạng thái gói sang Inactive (Tắt).";
+            } else {
+                $this->planModel->delete($id);
+                $_SESSION['flash_message'] = 'Đã xóa gói cước thành công!';
+            }
         }
+
         $this->redirect('/admin/plans');
     }
-}
