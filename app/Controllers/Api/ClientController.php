@@ -5,6 +5,7 @@ namespace App\Controllers\Api;
 use App\Controllers\BaseController;
 use App\Models\Subscription;
 use App\Models\NodeInbound;
+use App\Models\VpnPlan;
 use App\Services\VpnService;
 
 class ClientController extends BaseController
@@ -27,9 +28,19 @@ class ClientController extends BaseController
             exit;
         }
 
-        // Lấy danh sách Node Inbounds đang hoạt động
+        // Lấy group_id từ gói cước tương ứng với gói đăng ký
+        $groupId = null;
+        if (class_exists('App\Models\VpnPlan') && !empty($subscription['plan_id'])) {
+            $planModel = new VpnPlan();
+            $plan = $planModel->find((int)$subscription['plan_id']);
+            if ($plan) {
+                $groupId = (int)($plan['group_id'] ?? 0);
+            }
+        }
+
+        // Lấy danh sách Node Inbounds đang hoạt động thuộc đúng nhóm máy chủ của gói cước
         $nodeInboundModel = new NodeInbound();
-        $inbounds = $nodeInboundModel->getAllActiveWithServer();
+        $inbounds = $nodeInboundModel->getAllActiveWithServer($groupId);
 
         $vpnService = new VpnService();
         $links = [];
@@ -56,7 +67,7 @@ class ClientController extends BaseController
 
         header('Content-Type: text/plain; charset=utf-8');
         header("Subscription-Userinfo: upload={$upload}; download={$download}; total={$total}; expire={$expire}");
-        
+
         echo base64_encode(implode("\n", $links));
         exit;
     }

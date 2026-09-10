@@ -7,6 +7,8 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\VpnPlan;
 use App\Models\Subscription;
+use App\Models\Server;
+use App\Models\NodeTask;
 
 class OrderController extends BaseController
 {
@@ -18,6 +20,34 @@ class OrderController extends BaseController
             $this->redirect('/auth/login');
         }
         $this->orderModel = new Order();
+    }
+
+    /**
+     * Hàm phụ trợ: Tự động tạo task 'add_user' cho các VPS thuộc đúng Nhóm Máy Chủ (group_id) của gói cước
+     */
+    private function dispatchAddUserTask(int $subId, string $uuid, int $bytesTotal, string $endDate, int $groupId): void
+    {
+        $serverModel = new Server();
+        $servers = $serverModel->getAll();
+
+        if (empty($servers)) {
+            return;
+        }
+
+        $taskModel = new NodeTask();
+        $payload = [
+            'username'        => 'sub_' . $subId,
+            'uuid'            => $uuid,
+            'transfer_enable' => $bytesTotal,
+            'end_date'        => $endDate
+        ];
+
+        foreach ($servers as $server) {
+            // Lọc đúng máy chủ đang hoạt động và thuộc cùng group_id với gói cước
+            if (($server['status'] ?? 'active') === 'active' && (int)($server['group_id'] ?? 0) === $groupId) {
+                $taskModel->create((int)$server['id'], 'add_user', $payload);
+            }
+        }
     }
 
     public function index(): void
@@ -61,7 +91,7 @@ class OrderController extends BaseController
         }
 
         if ($this->orderModel->update($id, ['payment_status' => $status])) {
-            // Nếu duyệt đơn thành công (completed) -> Kích hoạt Gói Đăng Ký (Subscription) nếu chưa từng cấp
+            // Nếu duyệt đơn thành công (completed) -> Kích hoạt Gói Đăng Ký & Phát task xuống đúng nhóm VPS
             if ($status === 'completed' && $order['payment_status'] !== 'completed' && class_exists('App\Models\Subscription') && class_exists('App\Models\VpnPlan')) {
                 $planModel = new VpnPlan();
                 $plan      = $planModel->find((int)$order['plan_id']);
@@ -70,6 +100,7 @@ class OrderController extends BaseController
                     $subModel       = new Subscription();
                     $durationDays   = (int)($plan['duration_days'] ?? 30);
                     $bandwidthLimit = (int)($plan['bandwidth_limit_gb'] ?? 0);
+                    $groupId        = (int)($plan['group_id'] ?? 0);
                     $bytesTotal     = $bandwidthLimit > 0 ? ($bandwidthLimit * 1073741824) : 0;
                     $uuid           = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', 
                                         mt_rand(0, 0xffff), mt_rand(0, 0xffff), 
@@ -78,16 +109,26 @@ class OrderController extends BaseController
                                         mt_rand(0, 0x3fff) | 0x8000, 
                                         mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
 
-                    $subModel->create([
+                    $startDate = date('Y-m-d H:i:s');
+                    $endDate   = date('Y-m-d H:i:s', strtotime("+{$durationDays} days"));
+
+                    $created = $subModel->create([
                         'user_id'         => $order['user_id'],
                         'plan_id'         => $order['plan_id'],
                         'order_id'        => $id,
                         'uuid'            => $uuid,
                         'transfer_enable' => $bytesTotal,
-                        'start_date'      => date('Y-m-d H:i:s'),
-                        'end_date'        => date('Y-m-d H:i:s', strtotime("+{$durationDays} days")),
+                        'start_date'      => $startDate,
+                        'end_date'        => $endDate,
                         'status'          => 'active'
                     ]);
+
+                    if ($created) {
+                        $subId = method_exists($subModel, 'lastInsertId') ? $subModel->lastInsertId() : 0;
+                        if ($subId > 0 && $groupId > 0) {
+                            $this->dispatchAddUserTask($subId, $uuid, $bytesTotal, $endDate, $groupId);
+                        }
+                    }
                 }
             }
 
@@ -167,6 +208,7 @@ class OrderController extends BaseController
                     $subModel       = new Subscription();
                     $durationDays   = (int)($plan['duration_days'] ?? 30);
                     $bandwidthLimit = (int)($plan['bandwidth_limit_gb'] ?? 0);
+                    $groupId        = (int)($plan['group_id'] ?? 0);
                     
                     $bytesTotal = $bandwidthLimit > 0 ? ($bandwidthLimit * 1073741824) : 0;
                     $uuid       = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', 
@@ -179,7 +221,7 @@ class OrderController extends BaseController
                     $startDate  = date('Y-m-d H:i:s');
                     $endDate    = date('Y-m-d H:i:s', strtotime("+{$durationDays} days"));
 
-                    $subModel->create([
+                    $created = $subModel->create([
                         'user_id'         => $userId,
                         'plan_id'         => $planId,
                         'order_id'        => $orderId ?: null,
@@ -189,6 +231,13 @@ class OrderController extends BaseController
                         'end_date'        => $endDate,
                         'status'          => 'active'
                     ]);
+
+                    if ($created) {
+                        $subId = method_exists($subModel, 'lastInsertId') ? $subModel->lastInsertId() : 0;
+                        if ($subId > 0 && $groupId > 0) {
+                            $this->dispatchAddUserTask($subId, $uuid, $bytesTotal, $endDate, $groupId);
+                        }
+                    }
                 }
 
                 $_SESSION['flash_message'] = 'Tạo đơn hàng thủ công thành công!';

@@ -7,17 +7,23 @@ class NodeInbound extends BaseModel
     protected string $table = 'vc_node_inbounds';
 
     /**
-     * Lấy danh sách tất cả Node Inbound đang hoạt động kèm thông tin Máy chủ (Server)
+     * Lấy danh sách tất cả Node Inbound đang hoạt động kèm thông tin Máy chủ (Server), có hỗ trợ lọc theo group_id
      */
-    public function getAllActiveWithServer(): array
+    public function getAllActiveWithServer(?int $groupId = null): array
     {
-        $sql = "SELECT i.*, s.name AS server_name, s.ip_address 
+        $sql = "SELECT i.*, s.name AS server_name, s.ip_address, s.group_id 
                 FROM {$this->table} i
                 INNER JOIN vc_servers s ON i.server_id = s.id
                 WHERE i.status = 'active' AND s.status = 'active'";
 
+        $params = [];
+        if ($groupId !== null && $groupId > 0) {
+            $sql .= " AND s.group_id = :group_id";
+            $params['group_id'] = $groupId;
+        }
+
         $stmt = self::$db->prepare($sql);
-        $stmt->execute();
+        $stmt->execute($params);
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
     }
