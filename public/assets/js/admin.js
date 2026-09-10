@@ -208,3 +208,11 @@ function confirmBulkDeleteNodes() {
         document.getElementById('bulkDeleteForm').submit();
     }
 }
+
+function generatePlanCode(prefix = 'LS') {
+    const codeInput = document.getElementById('code');
+    if (codeInput) {
+        const randomNum = Math.floor(100000 + Math.random() * 900000);
+        codeInput.value = prefix + randomNum;
+    }
+}

@@ -34,8 +34,11 @@ ob_start();
             </div>
 
             <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mã Gói (Code) (*)</label>
-                <input type="text" id="code" name="code" class="glass-input" required placeholder="VIP1M, BASIC30..." style="width: 100%; text-transform: uppercase;">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mã Gói (Code)</label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="text" id="code" name="code" class="glass-input" placeholder="Để trống để tự tạo mã LS..." style="width: 100%; text-transform: uppercase;">
+                    <button type="button" onclick="generatePlanCode('LS')" class="glass-btn" style="white-space: nowrap; padding: 0.5rem 0.85rem; font-size: 0.8rem;">🎲 Tạo mã</button>
+                </div>
             </div>
         </div>
 

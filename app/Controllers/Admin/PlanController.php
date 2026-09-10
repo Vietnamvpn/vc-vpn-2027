@@ -53,7 +53,12 @@ class PlanController extends BaseController
         $description      = trim($_POST['description'] ?? '');
         $status           = trim($_POST['status'] ?? 'active');
 
-        if (!$groupId || empty($name) || empty($code) || $price < 0 || $durationDays <= 0) {
+        // Nếu mã gói để trống, tự động sinh mã ngẫu nhiên dạng LS + 6 chữ số
+        if (empty($code)) {
+            $code = 'LS' . rand(100000, 999999);
+        }
+
+        if (!$groupId || empty($name) || $price < 0 || $durationDays <= 0) {
             $_SESSION['error'] = 'Vui lòng nhập đầy đủ các thông tin bắt buộc!';
             $this->redirect('/admin/plans/create');
             return;
