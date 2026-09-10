@@ -76,6 +76,11 @@ ob_start();
         </div>
 
         <div>
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mô Tả / Nội Dung Gói Cước</label>
+            <textarea id="description" name="description" class="glass-input" rows="4" placeholder="Nhập nội dung chi tiết, tính năng nổi bật của gói cước..." style="width: 100%; resize: vertical;"><?= htmlspecialchars($plan['description'] ?? '') ?></textarea>
+        </div>
+
+        <div>
             <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Trạng Thái</label>
             <select id="status" name="status" class="glass-input" style="width: 100%; cursor: pointer;">
                 <option value="active" <?= ($plan['status'] ?? '') === 'active' ? 'selected' : '' ?>>Active (Hoạt động)</option>
