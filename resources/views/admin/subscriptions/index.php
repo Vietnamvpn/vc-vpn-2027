@@ -133,7 +133,7 @@ ob_start();
                                             </a>
                                         <?php endif; ?>
 
-                                        <?php if (($sub['status'] ?? '') !== 'suspended'): ?>
+                                        <?php if (($sub['status'] ?? '') === 'active'): ?>
                                             <a href="/admin/subscriptions/update-status?id=<?= $sub['id'] ?>&status=suspended<?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Tạm dừng gói đăng ký này?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-warning);">
                                                 <span>⏸️</span> Tạm dừng gói
                                             </a>
