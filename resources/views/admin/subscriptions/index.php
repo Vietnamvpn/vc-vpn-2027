@@ -72,7 +72,7 @@ ob_start();
                             </td>
                             <td style="text-align: center;">
                                 <span style="padding: 0.15rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.78rem; font-weight: 700; <?= $onlineDevices > 0 ? 'background: rgba(52, 199, 89, 0.15); color: var(--ios-success);' : 'background: rgba(142, 142, 147, 0.12); color: var(--ios-text-secondary);' ?>">
-                                    📱 <?= $onlineDevices ?>
+                                     <?= $onlineDevices ?> 📱
                                 </span>
                             </td>
                             <td style="font-size: 0.85rem;">
