@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\VpnPlan;
 use App\Models\Server;
 use App\Models\NodeTask;
+use App\Models\Order;
 
 class SubscriptionController extends BaseController
 {
@@ -184,27 +185,52 @@ class SubscriptionController extends BaseController
             $this->redirect('/admin/subscriptions' . ($userId > 0 ? '?user_id=' . $userId : ''));
         }
 
-        $durationDays = (int)($plan['duration_days'] ?? 30);
-        $groupId      = (int)($plan['group_id'] ?? 0);
+        // 1. Khởi tạo đơn hàng mới cho giao dịch gia hạn
+        $orderModel  = new Order();
+        $orderCode   = 'ORD' . date('YmdHis') . rand(100, 999);
+        $totalAmount = (float)($plan['price'] ?? 0);
 
-        $currentEndDate = strtotime($sub['end_date']);
-        $baseTime       = ($currentEndDate > time()) ? $currentEndDate : time();
-        $newEndDate     = date('Y-m-d H:i:s', strtotime("+{$durationDays} days", $baseTime));
+        $orderCreated = $orderModel->create([
+            'order_code'     => $orderCode,
+            'user_id'        => (int)$sub['user_id'],
+            'plan_id'        => (int)$sub['plan_id'],
+            'total_amount'   => $totalAmount,
+            'payment_status' => 'completed',
+            'purchase_ip'    => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
+        ]);
 
-        $updateData = [
-            'end_date' => $newEndDate,
-            'status'   => 'active'
-        ];
+        if ($orderCreated) {
+            $newOrderId   = method_exists($orderModel, 'lastInsertId') ? $orderModel->lastInsertId() : null;
+            $durationDays = (int)($plan['duration_days'] ?? 30);
+            $groupId      = (int)($plan['group_id'] ?? 0);
 
-        if ($this->subscriptionModel->update($id, $updateData)) {
-            if ($groupId > 0) {
-                $this->dispatchAddUserTask($id, $sub['uuid'], (int)$sub['transfer_enable'], $newEndDate, $groupId);
+            $currentEndDate = strtotime($sub['end_date']);
+            $baseTime       = ($currentEndDate > time()) ? $currentEndDate : time();
+            $newEndDate     = date('Y-m-d H:i:s', strtotime("+{$durationDays} days", $baseTime));
+
+            $updateData = [
+                'end_date' => $newEndDate,
+                'status'   => 'active'
+            ];
+
+            if ($newOrderId) {
+                $updateData['order_id'] = $newOrderId;
             }
 
-            $_SESSION['flash_message'] = 'Gia hạn gói đăng ký thành công!';
-            $_SESSION['flash_type']    = 'success';
+            // 2. Cập nhật thời hạn và liên kết đơn hàng mới vào gói đăng ký
+            if ($this->subscriptionModel->update($id, $updateData)) {
+                if ($groupId > 0) {
+                    $this->dispatchAddUserTask($id, $sub['uuid'], (int)$sub['transfer_enable'], $newEndDate, $groupId);
+                }
+
+                $_SESSION['flash_message'] = 'Gia hạn gói đăng ký và tạo đơn hàng mới thành công!';
+                $_SESSION['flash_type']    = 'success';
+            } else {
+                $_SESSION['flash_message'] = 'Tạo đơn hàng thành công nhưng không thể cập nhật gia hạn!';
+                $_SESSION['flash_type']    = 'warning';
+            }
         } else {
-            $_SESSION['flash_message'] = 'Không thể gia hạn gói đăng ký!';
+            $_SESSION['flash_message'] = 'Không thể khởi tạo đơn hàng mới cho lần gia hạn này!';
             $_SESSION['flash_type']    = 'danger';
         }
 
