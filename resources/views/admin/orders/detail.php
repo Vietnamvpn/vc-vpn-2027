@@ -7,7 +7,7 @@ ob_start();
 
 <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;">
     <div>
-        <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Chi Tiết Đơn Hàng: #<?= htmlspecialchars($order['order_code'] ?? $order['id']) ?></h1>
+        <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Chi Tiết Đơn Hàng:</h1>
     </div>
 </div>
 

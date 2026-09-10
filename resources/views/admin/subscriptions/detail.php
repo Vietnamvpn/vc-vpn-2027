@@ -26,10 +26,10 @@ $limitGB = round(($subscription['transfer_enable'] ?? 0) / (1024 * 1024 * 1024),
             <div><strong>Email:</strong> <?= htmlspecialchars($subscription['email'] ?? 'N/A') ?></div>
             <div><strong>Gói Cước:</strong> <span style="font-weight: 700;"><?= htmlspecialchars($subscription['plan_name'] ?? 'N/A') ?></span></div>
             <div>
-                <strong>Liên Kết Đơn Hàng:</strong> 
+                <strong>Mã Đơn Hàng:</strong> 
                 <?php if (!empty($subscription['order_code'])): ?>
                     <a href="/admin/orders/detail?id=<?= $subscription['order_id'] ?>" style="color: var(--ios-blue); text-decoration: none; font-weight: 700;">
-                        #<?= htmlspecialchars($subscription['order_code']) ?>
+                        <?= htmlspecialchars($subscription['order_code']) ?>
                     </a>
                 <?php else: ?>
                     <span style="color: var(--ios-text-secondary);">Cấp trực tiếp bởi Admin</span>

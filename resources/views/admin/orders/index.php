@@ -28,12 +28,11 @@ ob_start();
             <?= !empty($filterUser) ? 'Danh sách đơn hàng của người dùng: <strong>' . htmlspecialchars($filterUser['username']) . '</strong> (ID #' . $filterUser['id'] . ')' : 'Danh sách tất cả đơn hàng giao dịch trong hệ thống' ?>
         </p>
     </div>
-    <div style="display: flex; gap: 0.5rem; align-items: center;">
-        <?php if (!empty($userId)): ?>
+    <?php if (!empty($userId)): ?>
+        <div>
             <a href="/admin/orders" class="glass-btn" style="text-decoration: none; white-space: nowrap; background: rgba(255, 59, 48, 0.1); color: var(--ios-danger);">✕ Xóa lọc tài khoản</a>
-        <?php endif; ?>
-        <a href="/admin/orders/create<?= !empty($userId) ? '?user_id=' . $userId : '' ?>" class="glass-btn" style="text-decoration: none; white-space: nowrap;">+ Tạo Đơn Hàng</a>
-    </div>
+        </div>
+    <?php endif; ?>
 </div>
 
 <!-- Bảng Đơn Hàng -->

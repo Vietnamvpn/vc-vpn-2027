@@ -10,7 +10,6 @@ ob_start();
         <h1 style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px;">Tạo Đơn Hàng Thủ Công</h1>
         <p style="color: var(--ios-text-secondary); font-size: 0.85rem;">Khởi tạo đơn hàng và tự động cấp gói cước cho thành viên</p>
     </div>
-    <a href="/admin/users" class="glass-btn" style="text-decoration: none; white-space: nowrap;">← Quay lại</a>
 </div>
 
 <?php if (!empty($_SESSION['flash_message'])): ?>
@@ -25,19 +24,22 @@ ob_start();
     <form method="POST" action="/admin/orders/create" style="display: flex; flex-direction: column; gap: 1.25rem;">
         
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
-            <!-- Chọn Người Dùng -->
+            <!-- Người Dùng (Cố định theo ID truyền vào) -->
             <div>
                 <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Người Dùng (*)</label>
-                <select name="user_id" class="glass-input" required style="width: 100%; cursor: pointer;">
-                    <option value="">-- Chọn thành viên --</option>
-                    <?php if (!empty($users)): ?>
-                        <?php foreach ($users as $u): ?>
-                            <option value="<?= $u['id'] ?>" <?= $selectedUserId === (int)$u['id'] ? 'selected' : '' ?>>
-                                #<?= $u['id'] ?> - <?= htmlspecialchars($u['username']) ?> (<?= htmlspecialchars($u['email']) ?>)
-                            </option>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </select>
+                <?php 
+                    $selectedUserText = "ID #" . ($selectedUserId ?? '');
+                    if (!empty($users) && !empty($selectedUserId)) {
+                        foreach ($users as $u) {
+                            if ((int)$u['id'] === (int)$selectedUserId) {
+                                $selectedUserText = '#' . $u['id'] . ' - ' . $u['username'] . ' (' . $u['email'] . ')';
+                                break;
+                            }
+                        }
+                    }
+                ?>
+                <input type="text" class="glass-input" value="<?= htmlspecialchars($selectedUserText) ?>" readonly style="width: 100%; cursor: not-allowed; opacity: 0.8;">
+                <input type="hidden" name="user_id" value="<?= (int)($selectedUserId ?? 0) ?>">
             </div>
 
             <!-- Chọn Gói Cước -->
@@ -80,17 +82,6 @@ ob_start();
         </div>
     </form>
 </div>
-
-<script>
-function updatePriceHint(selectEl) {
-    const selectedOption = selectEl.options[selectEl.selectedIndex];
-    const price = selectedOption.getAttribute('data-price');
-    const amountInput = document.getElementById('amount_input');
-    if (price && amountInput) {
-        amountInput.value = price;
-    }
-}
-</script>
 
 <?php
 $content = ob_get_clean();
