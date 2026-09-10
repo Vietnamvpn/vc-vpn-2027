@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 use App\Controllers\BaseController;
 use App\Models\VpnPlan;
 use App\Models\ServerGroup;
+use App\Models\Subscription;
 
 class PlanController extends BaseController
 {
@@ -139,11 +140,8 @@ class PlanController extends BaseController
         $id = isset($_GET['id']) ? (int)$_GET['id'] : null;
 
         if ($id) {
-            // Kiểm tra xem gói cước này đã có người đăng ký chưa
-            $subModel = new \App\Models\Subscription();
-            $stmt = \App\Models\BaseModel::$db->prepare("SELECT COUNT(*) FROM `vc_subscriptions` WHERE `plan_id` = :plan_id");
-            $stmt->execute(['plan_id' => $id]);
-            $count = (int)$stmt->fetchColumn();
+            $subModel = new Subscription();
+            $count = $subModel->countByPlanId($id);
 
             if ($count > 0) {
                 $_SESSION['error'] = "Không thể xóa gói cước này vì đang có {$count} tài khoản đăng ký sử dụng! Bạn nên đổi trạng thái gói sang Inactive (Tắt).";

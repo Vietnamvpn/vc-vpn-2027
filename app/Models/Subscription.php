@@ -193,4 +193,14 @@ class Subscription extends BaseModel
         $stmt->execute(['group_id' => $groupId]);
         return $stmt->fetchAll() ?: [];
     }
+
+    /**
+     * Đếm số lượng gói đăng ký đang liên kết với một plan_id
+     */
+    public function countByPlanId(int $planId): int
+    {
+        $stmt = self::$db->prepare("SELECT COUNT(*) FROM `{$this->table}` WHERE `plan_id` = :plan_id");
+        $stmt->execute(['plan_id' => $planId]);
+        return (int)$stmt->fetchColumn();
+    }
 }
