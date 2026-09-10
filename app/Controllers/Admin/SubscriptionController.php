@@ -54,6 +54,35 @@ class SubscriptionController extends BaseController
     }
 
     /**
+     * Hàm phụ trợ: Tự động tạo task 'toggle_user' gửi xuống VPS khi tạm dừng hoặc đổi trạng thái gói
+     */
+    private function dispatchToggleUserTask(int $subId, string $status, int $groupId): void
+    {
+        if (class_exists('App\Models\Server') && class_exists('App\Models\NodeTask')) {
+            $serverModel = new Server();
+            $servers     = $serverModel->getAll();
+
+            if (empty($servers)) return;
+
+            $taskModel = new NodeTask();
+            $payload   = [
+                'username' => 'sub_' . $subId,
+                'status'   => $status
+            ];
+
+            foreach ($servers as $server) {
+                if (($server['status'] ?? 'active') === 'active' && (int)($server['group_id'] ?? 0) === $groupId) {
+                    $taskModel->create([
+                        'server_id' => (int)$server['id'],
+                        'action'    => 'toggle_user',
+                        'payload'   => $payload
+                    ]);
+                }
+            }
+        }
+    }
+
+    /**
      * Hàm phụ trợ: Tự động tạo task 'delete_user' gửi xuống VPS thuộc đúng Nhóm Máy Chủ (group_id)
      */
     private function dispatchDelUserTask(int $subId, int $groupId): void
@@ -149,6 +178,8 @@ class SubscriptionController extends BaseController
             if ($groupId > 0) {
                 if ($status === 'active') {
                     $this->dispatchAddUserTask($id, $sub['uuid'], (int)$sub['transfer_enable'], $sub['end_date'], $groupId);
+                } elseif ($status === 'suspended') {
+                    $this->dispatchToggleUserTask($id, 'inactive', $groupId);
                 } else {
                     $this->dispatchDelUserTask($id, $groupId);
                 }
