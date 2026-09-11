@@ -21,7 +21,6 @@ $siteTitle = $settings['site_title'] ?? 'VC VPN 2027';
             <a href="/" class="nav-public-link">Trang chủ</a>
             <a href="/plans" class="nav-public-link">Gói dịch vụ</a>
             <a href="/faq" class="nav-public-link">Hướng dẫn</a>
-            <a href="/contact" class="nav-public-link">Liên hệ</a>
         </div>
     <?php endif; ?>
 

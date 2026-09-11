@@ -5,8 +5,7 @@ return [
     'GET /'                      => ['HomeController', 'index'],
     'GET /plans'                 => ['HomeController', 'plans'],
     'GET /faq'                   => ['HomeController', 'faq'],
-    'GET /contact'               => ['HomeController', 'contact'],
-    'POST /contact'              => ['HomeController', 'sendContact'],
+    'GET /post'                  => ['HomeController', 'postDetail'],
 
     // Xác thực tài khoản (Auth)
     'GET /login'                 => ['AuthController', 'showLogin'],
