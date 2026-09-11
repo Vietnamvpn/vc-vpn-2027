@@ -2,6 +2,9 @@
 $pageTitle = "Thêm Khoản Chi Phí Mới - Quản Trị Hệ Thống";
 $activeMenu = "expenses";
 
+$currencySymbol = $settings['currency_symbol'] ?? 'đ';
+$currencyCode   = $settings['currency'] ?? 'VND';
+
 ob_start();
 ?>
 
@@ -34,8 +37,8 @@ ob_start();
             </div>
 
             <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền (CNY - ¥) (*)</label>
-                <input type="number" name="amount" class="glass-input" required placeholder="100.00" min="0" step="0.01" style="width: 100%;">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền (<?= htmlspecialchars($currencyCode) ?> - <?= htmlspecialchars($currencySymbol) ?>) (*)</label>
+                <input type="number" name="amount" class="glass-input" required placeholder="100000" min="0" step="any" style="width: 100%;">
             </div>
         </div>
 

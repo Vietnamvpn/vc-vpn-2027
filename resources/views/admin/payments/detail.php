@@ -62,7 +62,7 @@ ob_start();
             <div>
                 <strong>Số Tiền Giao Dịch:</strong> 
                 <span style="color: var(--ios-success); font-weight: 700; font-size: 1.1rem;">
-                    ¥<?= number_format($payment['amount'], 2, '.', ',') ?>
+                    <?= isset($formatMoney) ? $formatMoney($payment['amount']) : number_format($payment['amount'], 2) ?>
                 </span>
             </div>
             <div>

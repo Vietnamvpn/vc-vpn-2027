@@ -2,8 +2,8 @@
 $pageTitle = "Thêm Mã Giảm Giá Mới - Quản Trị Hệ Thống";
 $activeMenu = "coupons";
 
-$currencySymbol = $settings['currency_symbol'] ?? '¥';
-$currencyCode   = $settings['currency'] ?? 'CNY';
+$currencySymbol = $settings['currency_symbol'] ?? 'đ';
+$currencyCode   = $settings['currency'] ?? 'VND';
 
 ob_start();
 ?>

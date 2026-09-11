@@ -79,7 +79,7 @@ ob_start();
                                 <?php endif; ?>
                             </td>
                             <td style="font-weight: 700; color: var(--ios-success);">
-                                ¥<?= number_format($order['total_amount'], 2, '.', ',') ?>
+                                <?= isset($formatMoney) ? $formatMoney($order['total_amount']) : number_format($order['total_amount'], 2) ?>
                             </td>
                             <td style="text-align: center;">
                                 <?php
