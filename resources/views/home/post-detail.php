@@ -6,7 +6,7 @@ ob_start();
 <div style="max-width: 850px; margin: 0 auto;">
     <!-- Nút quay lại -->
     <div style="margin-bottom: 1.25rem;">
-        <a href="/home/faq" class="glass-btn" style="text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.4rem;">
+        <a href="/faq" class="glass-btn" style="text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.4rem;">
             ⬅️ Quay lại danh sách hướng dẫn
         </a>
     </div>
@@ -35,7 +35,7 @@ ob_start();
             <div style="font-size: 3rem; margin-bottom: 0.5rem;">⚠️</div>
             <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Không Tìm Thấy Bài Viết</h2>
             <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">Bài viết hướng dẫn này không tồn tại hoặc đã bị ẩn khỏi hệ thống.</p>
-            <a href="/home/faq" class="glass-btn" style="text-decoration: none;">Xem Các Hướng Dẫn Khác</a>
+            <a href="/faq" class="glass-btn" style="text-decoration: none;">Xem Các Hướng Dẫn Khác</a>
         </div>
     <?php endif; ?>
 </div>
