@@ -96,9 +96,12 @@ ob_start();
                                         <a href="/admin/posts/edit?id=<?= $post['id'] ?>" class="action-item">
                                             <span>✏️</span> Chỉnh sửa
                                         </a>
-                                        <a href="/admin/posts/delete?id=<?= $post['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');" class="action-item delete" style="color: var(--ios-danger);">
-                                            <span>🗑️</span> Xóa bài viết
-                                        </a>
+                                        <form method="POST" action="/admin/posts/delete" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');" style="margin: 0;">
+                                            <input type="hidden" name="id" value="<?= $post['id'] ?>">
+                                            <button type="submit" class="action-item delete" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-danger); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                                                <span>🗑️</span> Xóa bài viết
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </td>

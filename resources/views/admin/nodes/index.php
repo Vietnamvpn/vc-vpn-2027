@@ -114,9 +114,9 @@ ob_start();
                                             <a href="/admin/nodes/detail?id=<?= $node['id'] ?>" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
                                                 <span>👁️</span> Xem chi tiết
                                             </a>
-                                            <a href="/admin/nodes/delete?id=<?= $node['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa dữ liệu nút kết nối này khỏi hệ thống?');" class="action-item delete" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-danger);">
+                                            <button type="submit" form="delete-node-form-<?= $node['id'] ?>" class="action-item delete" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-danger); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
                                                 <span>🗑️</span> Xóa nút kết nối
-                                            </a>
+                                            </button>
                                         </div>
                                     </div>
                                 </td>
@@ -132,6 +132,15 @@ ob_start();
         </div>
     </div>
 </form>
+
+<!-- Các Form ẩn để xóa từng nút kết nối bằng POST -->
+<?php if (!empty($nodes)): ?>
+    <?php foreach ($nodes as $node): ?>
+        <form id="delete-node-form-<?= $node['id'] ?>" method="POST" action="/admin/nodes/delete" onsubmit="return confirm('Bạn có chắc chắn muốn xóa dữ liệu nút kết nối này khỏi hệ thống?');" style="display: none;">
+            <input type="hidden" name="id" value="<?= $node['id'] ?>">
+        </form>
+    <?php endforeach; ?>
+<?php endif; ?>
 
 <?php
 $content = ob_get_clean();

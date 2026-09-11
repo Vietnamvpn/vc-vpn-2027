@@ -133,9 +133,12 @@ ob_start();
                                             <span>🔑</span> Xem gói đăng ký
                                         </a>
                                         <?php if ($u['role'] !== 'admin'): ?>
-                                            <a href="/admin/users/delete?id=<?= $u['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa thành viên này?');" class="action-item delete" style="color: var(--ios-danger); white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
-                                                <span>🗑️</span> Xóa tài khoản
-                                            </a>
+                                            <form method="POST" action="/admin/users/delete" onsubmit="return confirm('Bạn có chắc chắn muốn xóa thành viên này?');" style="margin: 0;">
+                                                <input type="hidden" name="id" value="<?= $u['id'] ?>">
+                                                <button type="submit" class="action-item delete" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-danger); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
+                                                    <span>🗑️</span> Xóa tài khoản
+                                                </button>
+                                            </form>
                                         <?php endif; ?>
                                     </div>
                                 </div>

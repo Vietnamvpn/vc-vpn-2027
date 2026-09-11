@@ -84,9 +84,12 @@ $totalExpenseAmount = array_sum(array_column($expenses ?? [], 'amount'));
                                         <a href="/admin/expenses/edit?id=<?= $expense['id'] ?>" class="action-item">
                                             <span>✏️</span> Chỉnh sửa
                                         </a>
-                                        <a href="/admin/expenses/delete?id=<?= $expense['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa khoản chi này?');" class="action-item delete" style="color: var(--ios-danger);">
-                                            <span>🗑️</span> Xóa khoản chi
-                                        </a>
+                                        <form method="POST" action="/admin/expenses/delete" onsubmit="return confirm('Bạn có chắc chắn muốn xóa khoản chi này?');" style="margin: 0;">
+                                            <input type="hidden" name="id" value="<?= $expense['id'] ?>">
+                                            <button type="submit" class="action-item delete" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-danger); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                                                <span>🗑️</span> Xóa khoản chi
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </td>

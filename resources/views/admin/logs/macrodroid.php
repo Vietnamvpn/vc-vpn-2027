@@ -18,9 +18,11 @@ ob_start();
         <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Nhật Ký MacroDroid Webhook</h1>
         <p style="color: var(--ios-text-secondary); font-size: 0.85rem;">Kiểm tra toàn bộ dữ liệu phản hồi từ thiết bị nạp tự động WeChat Pay</p>
     </div>
-    <div style="display: flex; gap: 0.5rem;">
+    <div style="display: flex; gap: 0.5rem; align-items: center;">
         <a href="/admin/logs/macrodroid" class="glass-btn" style="text-decoration: none; white-space: nowrap;">🔄 Tải lại Log</a>
-        <a href="/admin/logs/macrodroid/clear" onclick="return confirm('Bạn có chắc chắn muốn xóa toàn bộ nội dung nhật ký này?');" class="glass-btn" style="text-decoration: none; white-space: nowrap; background: rgba(255, 59, 48, 0.15); color: var(--ios-danger);">🗑️ Xóa Log</a>
+        <form method="POST" action="/admin/logs/macrodroid/clear" onsubmit="return confirm('Bạn có chắc chắn muốn xóa toàn bộ nội dung nhật ký này?');" style="margin: 0;">
+            <button type="submit" class="glass-btn" style="white-space: nowrap; background: rgba(255, 59, 48, 0.15); color: var(--ios-danger); border: none; cursor: pointer; padding: 0.5rem 1rem; font-size: 0.85rem;">🗑️ Xóa Log</button>
+        </form>
     </div>
 </div>
 

@@ -94,15 +94,21 @@ ob_start();
                                         <a href="/admin/servers/detail?id=<?= $server['id'] ?>" class="action-item">
                                             <span>👁️</span> Xem chi tiết
                                         </a>
-                                        <a href="/admin/servers/sync?id=<?= $server['id'] ?>" onclick="return confirm('Xác nhận tạo task đồng bộ tất cả gói active thuộc nhóm này sang máy chủ?');" class="action-item" style="color: var(--ios-blue);">
-                                            <span>🔄</span> Đồng bộ
-                                        </a>
+                                        <form method="POST" action="/admin/servers/sync" onsubmit="return confirm('Xác nhận tạo task đồng bộ tất cả gói active thuộc nhóm này sang máy chủ?');" style="margin: 0;">
+                                            <input type="hidden" name="id" value="<?= $server['id'] ?>">
+                                            <button type="submit" class="action-item" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-blue); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                                                <span>🔄</span> Đồng bộ
+                                            </button>
+                                        </form>
                                         <a href="/admin/servers/edit?id=<?= $server['id'] ?>" class="action-item">
                                             <span>✏️</span> Chỉnh sửa
                                         </a>
-                                        <a href="/admin/servers/delete?id=<?= $server['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa máy chủ này?');" class="action-item delete" style="color: var(--ios-danger);">
-                                            <span>🗑️</span> Xóa máy chủ
-                                        </a>
+                                        <form method="POST" action="/admin/servers/delete" onsubmit="return confirm('Bạn có chắc chắn muốn xóa máy chủ này?');" style="margin: 0;">
+                                            <input type="hidden" name="id" value="<?= $server['id'] ?>">
+                                            <button type="submit" class="action-item delete" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-danger); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                                                <span>🗑️</span> Xóa máy chủ
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </td>

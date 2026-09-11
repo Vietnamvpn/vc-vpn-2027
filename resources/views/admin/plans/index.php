@@ -98,9 +98,12 @@ ob_start();
                                         <a href="/admin/plans/edit?id=<?= $plan['id'] ?>" class="action-item">
                                             <span>✏️</span> Chỉnh sửa
                                         </a>
-                                        <a href="/admin/plans/delete?id=<?= $plan['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa gói cước này?');" class="action-item delete" style="color: var(--ios-danger);">
-                                            <span>🗑️</span> Xóa gói cước
-                                        </a>
+                                        <form method="POST" action="/admin/plans/delete" onsubmit="return confirm('Bạn có chắc chắn muốn xóa gói cước này?');" style="margin: 0;">
+                                            <input type="hidden" name="id" value="<?= $plan['id'] ?>">
+                                            <button type="submit" class="action-item delete" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-danger); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                                                <span>🗑️</span> Xóa gói cước
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </td>

@@ -130,45 +130,45 @@ ob_start();
                                         <div style="border-top: 1px solid rgba(0, 0, 0, 0.08); margin: 0.25rem 0;"></div>
 
                                         <!-- Reset Token (UUID) -->
-                                        <a href="/admin/subscriptions/reset-token?id=<?= $sub['id'] ?><?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Xác nhận đổi mã Token (UUID) mới cho gói này? Liên kết đăng ký cũ sẽ ngắt kết nối!');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: #FF9500;">
+                                        <button type="submit" form="reset-token-sub-form-<?= $sub['id'] ?>" class="action-item" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: #FF9500; padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
                                             <span>🔑</span> Reset Token
-                                        </a>
+                                        </button>
 
                                         <!-- Gia hạn gói -->
-                                        <a href="/admin/subscriptions/renew?id=<?= $sub['id'] ?><?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Xác nhận gia hạn thêm thời hạn sử dụng cho gói đăng ký này?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-blue);">
+                                        <button type="submit" form="renew-sub-form-<?= $sub['id'] ?>" class="action-item" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-blue); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
                                             <span>🔄</span> Gia hạn gói
-                                        </a>
+                                        </button>
 
                                         <!-- Reset lưu lượng -->
-                                        <a href="/admin/subscriptions/reset-traffic?id=<?= $sub['id'] ?><?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Xác nhận đặt lại dung lượng đã sử dụng (Upload & Download) về 0 GB?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: #5856D6;">
+                                        <button type="submit" form="reset-traffic-sub-form-<?= $sub['id'] ?>" class="action-item" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: #5856D6; padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
                                             <span>⚡</span> Reset lưu lượng
-                                        </a>
+                                        </button>
 
                                         <!-- Thay đổi trạng thái -->
                                         <?php if (($sub['status'] ?? '') !== 'active'): ?>
-                                            <a href="/admin/subscriptions/update-status?id=<?= $sub['id'] ?>&status=active<?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Kích hoạt lại gói đăng ký này?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-success);">
+                                            <button type="submit" form="status-active-sub-form-<?= $sub['id'] ?>" class="action-item" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-success); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
                                                 <span>✅</span> Kích hoạt gói
-                                            </a>
+                                            </button>
                                         <?php endif; ?>
 
                                         <?php if (($sub['status'] ?? '') === 'active'): ?>
-                                            <a href="/admin/subscriptions/update-status?id=<?= $sub['id'] ?>&status=suspended<?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Tạm dừng gói đăng ký này?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-warning);">
+                                            <button type="submit" form="status-suspended-sub-form-<?= $sub['id'] ?>" class="action-item" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-warning); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
                                                 <span>⏸️</span> Tạm dừng gói
-                                            </a>
+                                            </button>
                                         <?php endif; ?>
 
                                         <?php if (($sub['status'] ?? '') !== 'cancelled'): ?>
-                                            <a href="/admin/subscriptions/update-status?id=<?= $sub['id'] ?>&status=cancelled<?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Hủy gói đăng ký này?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-danger);">
+                                            <button type="submit" form="status-cancelled-sub-form-<?= $sub['id'] ?>" class="action-item" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-danger); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
                                                 <span>❌</span> Hủy đăng ký
-                                            </a>
+                                            </button>
                                         <?php endif; ?>
 
                                         <div style="border-top: 1px solid rgba(0, 0, 0, 0.08); margin: 0.25rem 0;"></div>
 
                                         <!-- Xóa gói đăng ký -->
-                                        <a href="/admin/subscriptions/delete?id=<?= $sub['id'] ?><?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn gói đăng ký này khỏi hệ thống?');" class="action-item delete" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-danger);">
+                                        <button type="submit" form="delete-sub-form-<?= $sub['id'] ?>" class="action-item delete" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-danger); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
                                             <span>🗑️</span> Xóa gói
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             </td>
@@ -183,6 +183,76 @@ ob_start();
         </table>
     </div>
 </div>
+
+<!-- Các Form ẩn gửi phương thức POST cho các thao tác -->
+<?php if (!empty($subscriptions)): ?>
+    <?php foreach ($subscriptions as $sub): ?>
+        <!-- Form Reset Token -->
+        <form id="reset-token-sub-form-<?= $sub['id'] ?>" method="POST" action="/admin/subscriptions/reset-token" onsubmit="return confirm('Xác nhận đổi mã Token (UUID) mới cho gói này? Liên kết đăng ký cũ sẽ ngắt kết nối!');" style="display: none;">
+            <input type="hidden" name="id" value="<?= $sub['id'] ?>">
+            <?php if (!empty($userId)): ?>
+                <input type="hidden" name="user_id" value="<?= $userId ?>">
+            <?php endif; ?>
+        </form>
+
+        <!-- Form Gia hạn gói -->
+        <form id="renew-sub-form-<?= $sub['id'] ?>" method="POST" action="/admin/subscriptions/renew" onsubmit="return confirm('Xác nhận gia hạn thêm thời hạn sử dụng cho gói đăng ký này?');" style="display: none;">
+            <input type="hidden" name="id" value="<?= $sub['id'] ?>">
+            <?php if (!empty($userId)): ?>
+                <input type="hidden" name="user_id" value="<?= $userId ?>">
+            <?php endif; ?>
+        </form>
+
+        <!-- Form Reset lưu lượng -->
+        <form id="reset-traffic-sub-form-<?= $sub['id'] ?>" method="POST" action="/admin/subscriptions/reset-traffic" onsubmit="return confirm('Xác nhận đặt lại dung lượng đã sử dụng (Upload & Download) về 0 GB?');" style="display: none;">
+            <input type="hidden" name="id" value="<?= $sub['id'] ?>">
+            <?php if (!empty($userId)): ?>
+                <input type="hidden" name="user_id" value="<?= $userId ?>">
+            <?php endif; ?>
+        </form>
+
+        <!-- Form Thay đổi trạng thái: Kích hoạt -->
+        <?php if (($sub['status'] ?? '') !== 'active'): ?>
+            <form id="status-active-sub-form-<?= $sub['id'] ?>" method="POST" action="/admin/subscriptions/update-status" onsubmit="return confirm('Kích hoạt lại gói đăng ký này?');" style="display: none;">
+                <input type="hidden" name="id" value="<?= $sub['id'] ?>">
+                <input type="hidden" name="status" value="active">
+                <?php if (!empty($userId)): ?>
+                    <input type="hidden" name="user_id" value="<?= $userId ?>">
+                <?php endif; ?>
+            </form>
+        <?php endif; ?>
+
+        <!-- Form Thay đổi trạng thái: Tạm dừng -->
+        <?php if (($sub['status'] ?? '') === 'active'): ?>
+            <form id="status-suspended-sub-form-<?= $sub['id'] ?>" method="POST" action="/admin/subscriptions/update-status" onsubmit="return confirm('Tạm dừng gói đăng ký này?');" style="display: none;">
+                <input type="hidden" name="id" value="<?= $sub['id'] ?>">
+                <input type="hidden" name="status" value="suspended">
+                <?php if (!empty($userId)): ?>
+                    <input type="hidden" name="user_id" value="<?= $userId ?>">
+                <?php endif; ?>
+            </form>
+        <?php endif; ?>
+
+        <!-- Form Thay đổi trạng thái: Hủy đăng ký -->
+        <?php if (($sub['status'] ?? '') !== 'cancelled'): ?>
+            <form id="status-cancelled-sub-form-<?= $sub['id'] ?>" method="POST" action="/admin/subscriptions/update-status" onsubmit="return confirm('Hủy gói đăng ký này?');" style="display: none;">
+                <input type="hidden" name="id" value="<?= $sub['id'] ?>">
+                <input type="hidden" name="status" value="cancelled">
+                <?php if (!empty($userId)): ?>
+                    <input type="hidden" name="user_id" value="<?= $userId ?>">
+                <?php endif; ?>
+            </form>
+        <?php endif; ?>
+
+        <!-- Form Xóa gói -->
+        <form id="delete-sub-form-<?= $sub['id'] ?>" method="POST" action="/admin/subscriptions/delete" onsubmit="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn gói đăng ký này khỏi hệ thống?');" style="display: none;">
+            <input type="hidden" name="id" value="<?= $sub['id'] ?>">
+            <?php if (!empty($userId)): ?>
+                <input type="hidden" name="user_id" value="<?= $userId ?>">
+            <?php endif; ?>
+        </form>
+    <?php endforeach; ?>
+<?php endif; ?>
 
 <!-- Modal Hiển Thị Mã QR -->
 <div id="qrModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 9999; align-items: center; justify-content: center;">

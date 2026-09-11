@@ -106,20 +106,20 @@ ob_start();
                                         </a>
 
                                         <?php if (($order['payment_status'] ?? '') === 'pending'): ?>
-                                            <a href="/admin/orders/update-status?id=<?= $order['id'] ?>&status=completed<?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Duyệt thành công đơn hàng này và cấp gói dịch vụ cho người dùng?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-success);">
+                                            <button type="submit" form="approve-order-form-<?= $order['id'] ?>" class="action-item" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-success); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
                                                 <span>✅</span> Duyệt (Hoàn tất)
-                                            </a>
+                                            </button>
                                         <?php endif; ?>
 
                                         <?php if (($order['payment_status'] ?? '') !== 'cancelled'): ?>
-                                            <a href="/admin/orders/update-status?id=<?= $order['id'] ?>&status=cancelled<?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Hủy đơn hàng này?');" class="action-item" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-warning);">
+                                            <button type="submit" form="cancel-order-form-<?= $order['id'] ?>" class="action-item" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-warning); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
                                                 <span>❌</span> Hủy đơn hàng
-                                            </a>
+                                            </button>
                                         <?php endif; ?>
 
-                                        <a href="/admin/orders/delete?id=<?= $order['id'] ?><?= !empty($userId) ? '&user_id=' . $userId : '' ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn đơn hàng này?');" class="action-item delete" style="white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; color: var(--ios-danger);">
+                                        <button type="submit" form="delete-order-form-<?= $order['id'] ?>" class="action-item delete" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-danger); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
                                             <span>🗑️</span> Xóa đơn hàng
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             </td>
@@ -134,6 +134,38 @@ ob_start();
         </table>
     </div>
 </div>
+
+<!-- Các Form ẩn để duyệt, hủy và xóa đơn hàng bằng POST -->
+<?php if (!empty($orders)): ?>
+    <?php foreach ($orders as $order): ?>
+        <?php if (($order['payment_status'] ?? '') === 'pending'): ?>
+            <form id="approve-order-form-<?= $order['id'] ?>" method="POST" action="/admin/orders/update-status" onsubmit="return confirm('Duyệt thành công đơn hàng này và cấp gói dịch vụ cho người dùng?');" style="display: none;">
+                <input type="hidden" name="id" value="<?= $order['id'] ?>">
+                <input type="hidden" name="status" value="completed">
+                <?php if (!empty($userId)): ?>
+                    <input type="hidden" name="user_id" value="<?= $userId ?>">
+                <?php endif; ?>
+            </form>
+        <?php endif; ?>
+
+        <?php if (($order['payment_status'] ?? '') !== 'cancelled'): ?>
+            <form id="cancel-order-form-<?= $order['id'] ?>" method="POST" action="/admin/orders/update-status" onsubmit="return confirm('Hủy đơn hàng này?');" style="display: none;">
+                <input type="hidden" name="id" value="<?= $order['id'] ?>">
+                <input type="hidden" name="status" value="cancelled">
+                <?php if (!empty($userId)): ?>
+                    <input type="hidden" name="user_id" value="<?= $userId ?>">
+                <?php endif; ?>
+            </form>
+        <?php endif; ?>
+
+        <form id="delete-order-form-<?= $order['id'] ?>" method="POST" action="/admin/orders/delete" onsubmit="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn đơn hàng này?');" style="display: none;">
+            <input type="hidden" name="id" value="<?= $order['id'] ?>">
+            <?php if (!empty($userId)): ?>
+                <input type="hidden" name="user_id" value="<?= $userId ?>">
+            <?php endif; ?>
+        </form>
+    <?php endforeach; ?>
+<?php endif; ?>
 
 <?php
 $content = ob_get_clean();

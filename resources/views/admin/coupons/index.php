@@ -105,9 +105,12 @@ ob_start();
                                         <a href="/admin/coupons/edit?id=<?= $coupon['id'] ?>" class="action-item">
                                             <span>✏️</span> Chỉnh sửa
                                         </a>
-                                        <a href="/admin/coupons/delete?id=<?= $coupon['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?');" class="action-item delete" style="color: var(--ios-danger);">
-                                            <span>🗑️</span> Xóa mã
-                                        </a>
+                                        <form method="POST" action="/admin/coupons/delete" onsubmit="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?');" style="margin: 0;">
+                                            <input type="hidden" name="id" value="<?= $coupon['id'] ?>">
+                                            <button type="submit" class="action-item delete" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-danger); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                                                <span>🗑️</span> Xóa mã
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </td>

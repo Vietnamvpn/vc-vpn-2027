@@ -73,9 +73,12 @@ ob_start();
                                         <a href="/admin/server-groups/edit?id=<?= $group['id'] ?>" class="action-item">
                                             <span>✏️</span> Chỉnh sửa
                                         </a>
-                                        <a href="/admin/server-groups/delete?id=<?= $group['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa nhóm máy chủ này?');" class="action-item delete" style="color: var(--ios-danger);">
-                                            <span>🗑️</span> Xóa nhóm
-                                        </a>
+                                        <form method="POST" action="/admin/server-groups/delete" onsubmit="return confirm('Bạn có chắc chắn muốn xóa nhóm máy chủ này?');" style="margin: 0;">
+                                            <input type="hidden" name="id" value="<?= $group['id'] ?>">
+                                            <button type="submit" class="action-item delete" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--ios-danger); padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                                                <span>🗑️</span> Xóa nhóm
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </td>
