@@ -10,20 +10,37 @@ class PaymentController extends BaseController
 {
     public function webhook(): void
     {
-        // Nhận dữ liệu linh hoạt từ JSON Body hoặc Form POST
+        // 1. Nhận dữ liệu đa dạng (JSON, $_POST, hoặc raw form-urlencoded)
         $rawInput = file_get_contents('php://input');
         $payload  = json_decode($rawInput, true);
 
-        if (empty($payload)) {
+        if (empty($payload) && !empty($_POST)) {
             $payload = $_POST;
         }
+
+        if (empty($payload) && !empty($rawInput)) {
+            parse_str($rawInput, $payload);
+        }
+
+        // 2. Ghi Log chi tiết toàn bộ dữ liệu nhận được để kiểm tra
+        $logFile = __DIR__ . '/../../../logs/macrodroid_debug.log';
+        $logDir  = dirname($logFile);
+        if (!is_dir($logDir)) {
+            @mkdir($logDir, 0777, true);
+        }
+
+        $logData  = date('[Y-m-d H:i:s]') . " ---- INCOMING WEBHOOK ----\n";
+        $logData .= "RAW INPUT: " . $rawInput . "\n";
+        $logData .= "PARSED PAYLOAD: " . print_r($payload, true) . "\n";
+        $logData .= "-------------------------------------------\n\n";
+        @file_put_contents($logFile, $logData, FILE_APPEND);
 
         if (empty($payload)) {
             $this->json(['status' => false, 'message' => 'Dữ liệu Webhook không hợp lệ.'], 400);
             return;
         }
 
-        // 1. Kiểm tra Secret Token
+        // 3. Kiểm tra Secret Token
         $config = require __DIR__ . '/../../../config/app.php';
         $expectedSecret = $config['macrodroid_secret'] ?? '';
         $providedSecret = $payload['secret'] ?? $_SERVER['HTTP_X_MACRODROID_SECRET'] ?? '';
@@ -40,7 +57,7 @@ class PaymentController extends BaseController
         $orderService   = new OrderService();
         $paymentService = new PaymentService();
 
-        // 2. VietQR: Kiểm tra mã đơn hàng LS...
+        // 4. VietQR: Kiểm tra mã đơn hàng LS...
         if (!empty($content) && preg_match('/LS\d+/i', $content, $matches)) {
             $orderCode = strtoupper($matches[0]);
             
@@ -53,19 +70,36 @@ class PaymentController extends BaseController
             return;
         }
 
-        // 3. Tự động bóc tách số tiền từ nội dung thông báo WeChat (Ví dụ: 微信支付收款0.50元)
+        // 5. VietQR: Kiểm tra mã nạp tiền DEP...
+        if (!empty($content) && preg_match('/DEP\d+/i', $content, $matches)) {
+            $transCode = strtoupper($matches[0]);
+            $result = $paymentService->completePaymentByCode($transCode, $amount);
+
+            if ($result) {
+                $this->json(['status' => true, 'message' => 'Nạp tiền vào tài khoản thành công.']);
+            } else {
+                $this->json(['status' => false, 'message' => 'Xử lý mã nạp tiền thất bại hoặc đã được xử lý.'], 400);
+            }
+            return;
+        }
+
+        // 6. WeChat Pay / VietQR: Tự động bóc tách số tiền từ nội dung thông báo
         if ($amount <= 0 && !empty($content)) {
-            if (preg_match('/(\d+(?:\.\d+)?)/', $content, $amtMatches)) {
+            $cleanContent = str_replace(',', '.', $content);
+            if (preg_match('/(\d+(?:\.\d+)?)/', $cleanContent, $amtMatches)) {
                 $amount = (float)$amtMatches[1];
             }
         }
 
         if ($amount <= 0) {
-            $this->json(['status' => false, 'message' => 'Không thể bóc tách số tiền hợp lệ.'], 400);
+            $this->json([
+                'status' => false, 
+                'message' => 'Không bóc tách được số tiền.'
+            ], 400);
             return;
         }
 
-        // 4. Khớp đơn tự động WeChat Pay theo số tiền
+        // 7. Khớp đơn tự động WeChat Pay theo số tiền
         $result = $orderService->processPaymentByAmount($amount, $transId);
         $this->json(['status' => $result['status'], 'message' => $result['message']], $result['status'] ? 200 : 404);
     }
