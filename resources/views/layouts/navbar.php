@@ -35,7 +35,7 @@
                 </button>
 
                 <div id="profile-dropdown-menu" class="profile-menu glass-card">
-                    <div style="border-bottom: 1px solid var(--glass-border); padding-bottom: 0.75rem;">
+                    <div style="border-bottom: 1px solid var(--glass-border); padding-bottom: 0.4rem;">
                         <div style="font-weight: 700; font-size: 0.95rem; color: var(--ios-text);">
                             <?= htmlspecialchars($_SESSION['username'] ?? 'N/A') ?>
                         </div>
@@ -44,7 +44,7 @@
                         </div>
                     </div>
 
-                    <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.825rem; margin-top: 0.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--glass-border);">
+                    <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.825rem; margin-top: 0.4rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border);">
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: var(--ios-text-secondary);">Số dư ví:</span>
                             <span style="font-weight: 700; color: var(--ios-success);">¥<?= number_format($_SESSION['balance'] ?? 0, 2, '.', ',') ?></span>
@@ -59,7 +59,7 @@
                         </div>
                     </div>
 
-                    <div style="margin-top: 0.75rem; padding-top: 0.25rem;">
+                    <div style="margin-top: 0.5rem;">
                         <a href="/logout" style="display: flex; align-items: center; justify-content: center; gap: 0.4rem; width: 100%; color: var(--ios-danger); text-decoration: none; font-size: 0.85rem; font-weight: 700; padding: 0.5rem; background: rgba(255, 59, 48, 0.1); border-radius: var(--radius-sm); transition: var(--transition);">
                             🚪 Đăng xuất
                         </a>
