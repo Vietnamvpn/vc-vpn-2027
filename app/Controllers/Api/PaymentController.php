@@ -22,8 +22,8 @@ class PaymentController extends BaseController
             parse_str($rawInput, $payload);
         }
 
-        // 2. Ghi Log chi tiết toàn bộ dữ liệu nhận được để kiểm tra
-        $logFile = __DIR__ . '/../../../logs/macrodroid_debug.log';
+        // 2. Ghi Log vào thư mục bảo mật storage/logs/
+        $logFile = __DIR__ . '/../../../storage/logs/macrodroid_debug.log';
         $logDir  = dirname($logFile);
         if (!is_dir($logDir)) {
             @mkdir($logDir, 0777, true);

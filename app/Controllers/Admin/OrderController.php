@@ -16,6 +16,9 @@ class OrderController extends BaseController
 
     public function __construct()
     {
+        // Đồng bộ múi giờ Việt Nam (GMT+7)
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+
         if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
             $this->redirect('/auth/login');
         }
@@ -249,7 +252,8 @@ class OrderController extends BaseController
                 'plan_id'        => $planId,
                 'total_amount'   => $totalAmount,
                 'payment_status' => $paymentStatus,
-                'purchase_ip'    => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
+                'purchase_ip'    => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1',
+                'created_at'     => date('Y-m-d H:i:s')
             ];
 
             if ($this->orderModel->create($orderData)) {

@@ -52,4 +52,36 @@ class LogController extends BaseController
             'logs'       => $logs
         ]);
     }
+
+    /**
+     * Hiển thị nhật ký MacroDroid Webhook
+     */
+    public function macrodroid(): void
+    {
+        $logFile = __DIR__ . '/../../../storage/logs/macrodroid_debug.log';
+        $logContent = '';
+
+        if (file_exists($logFile)) {
+            $logContent = file_get_contents($logFile);
+        }
+
+        $this->render('admin.logs.macrodroid', [
+            'activeMenu' => 'logs',
+            'logContent' => $logContent
+        ]);
+    }
+
+    /**
+     * Xóa sạch file nhật ký MacroDroid
+     */
+    public function clearMacrodroid(): void
+    {
+        $logFile = __DIR__ . '/../../../storage/logs/macrodroid_debug.log';
+        if (file_exists($logFile)) {
+            file_put_contents($logFile, '');
+            $_SESSION['flash_message'] = 'Đã xóa sạch nội dung nhật ký MacroDroid!';
+            $_SESSION['flash_type']    = 'success';
+        }
+        $this->redirect('/admin/logs/macrodroid');
+    }
 }

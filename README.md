@@ -368,6 +368,7 @@ vc-vpn-2027/
 │           └── logs/
 │               ├── system.php
 │               ├── access.php
+│               ├── macrodroid.php
 │               └── email.php
 │
 ├── database/

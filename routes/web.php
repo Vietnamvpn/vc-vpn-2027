@@ -5,7 +5,7 @@ return [
     'GET /'                      => ['HomeController', 'index'],
     'GET /plans'                 => ['HomeController', 'plans'],
     'GET /faq'                   => ['HomeController', 'faq'],
-    'GET /post-detail'                  => ['HomeController', 'postDetail'],
+    'GET /post-detail'           => ['HomeController', 'postDetail'],
 
     // Xác thực tài khoản (Auth)
     'GET /login'                 => ['AuthController', 'showLogin'],
@@ -78,7 +78,7 @@ return [
     'GET /admin/users/edit'      => ['Admin\UserController', 'edit'],
     'POST /admin/users/edit'     => ['Admin\UserController', 'edit'],
     'GET /admin/users/detail'    => ['Admin\UserController', 'detail'],
-    'GET /admin/users/delete'    => ['Admin\UserController', 'delete'],
+    'POST /admin/users/delete'   => ['Admin\UserController', 'delete'],
 
     // Quản lý nhóm máy chủ (Server Groups)
     'GET /admin/server-groups'          => ['Admin\ServerGroupController', 'index'],
@@ -86,7 +86,7 @@ return [
     'POST /admin/server-groups/create'  => ['Admin\ServerGroupController', 'create'],
     'GET /admin/server-groups/edit'     => ['Admin\ServerGroupController', 'showEdit'],
     'POST /admin/server-groups/edit'    => ['Admin\ServerGroupController', 'edit'],
-    'GET /admin/server-groups/delete'  => ['Admin\ServerGroupController', 'delete'],
+    'POST /admin/server-groups/delete'  => ['Admin\ServerGroupController', 'delete'],
 
     // Quản lý máy chủ (Servers)
     'GET /admin/servers'          => ['Admin\ServerController', 'index'],
@@ -95,13 +95,13 @@ return [
     'GET /admin/servers/edit'     => ['Admin\ServerController', 'showEdit'],
     'POST /admin/servers/edit'    => ['Admin\ServerController', 'edit'],
     'GET /admin/servers/detail'   => ['Admin\ServerController', 'detail'],
-    'GET /admin/servers/delete'   => ['Admin\ServerController', 'delete'],
-    'GET /admin/servers/sync' => ['Admin\ServerController', 'sync'],
+    'POST /admin/servers/delete'  => ['Admin\ServerController', 'delete'],
+    'POST /admin/servers/sync'    => ['Admin\ServerController', 'sync'],
 
     // Quản lý nút kết nối (Nodes)
     'GET /admin/nodes'            => ['Admin\NodeController', 'index'],
     'GET /admin/nodes/detail'     => ['Admin\NodeController', 'detail'],
-    'GET /admin/nodes/delete'     => ['Admin\NodeController', 'delete'],
+    'POST /admin/nodes/delete'    => ['Admin\NodeController', 'delete'],
     'POST /admin/nodes/bulk-delete' => ['Admin\NodeController', 'bulkDelete'],
 
     // Quản lý gói cước (Plans)
@@ -110,7 +110,7 @@ return [
     'POST /admin/plans/create'    => ['Admin\PlanController', 'create'],
     'GET /admin/plans/edit'       => ['Admin\PlanController', 'showEdit'],
     'POST /admin/plans/edit'      => ['Admin\PlanController', 'edit'],
-    'GET /admin/plans/delete'     => ['Admin\PlanController', 'delete'],
+    'POST /admin/plans/delete'     => ['Admin\PlanController', 'delete'],
 
     // Quản lý mã giảm giá (Coupons)
     'GET /admin/coupons'          => ['Admin\CouponController', 'index'],
@@ -118,28 +118,28 @@ return [
     'POST /admin/coupons/create'  => ['Admin\CouponController', 'create'],
     'GET /admin/coupons/edit'     => ['Admin\CouponController', 'showEdit'],
     'POST /admin/coupons/edit'    => ['Admin\CouponController', 'edit'],
-    'GET /admin/coupons/delete'   => ['Admin\CouponController', 'delete'],
+    'POST /admin/coupons/delete'   => ['Admin\CouponController', 'delete'],
 
     // Quản lý đơn hàng (Orders)
-    'GET /admin/orders'               => ['Admin\OrderController', 'index'],
-    'GET /admin/orders/create'        => ['Admin\OrderController', 'create'],
-    'POST /admin/orders/create'       => ['Admin\OrderController', 'create'],
-    'GET /admin/orders/detail'        => ['Admin\OrderController', 'detail'],
-    'GET /admin/orders/update-status' => ['Admin\OrderController', 'updateStatus'],
-    'GET /admin/orders/delete'        => ['Admin\OrderController', 'delete'],
+    'GET /admin/orders'                => ['Admin\OrderController', 'index'],
+    'GET /admin/orders/create'         => ['Admin\OrderController', 'create'],
+    'POST /admin/orders/create'        => ['Admin\OrderController', 'create'],
+    'GET /admin/orders/detail'         => ['Admin\OrderController', 'detail'],
+    'POST /admin/orders/update-status' => ['Admin\OrderController', 'updateStatus'],
+    'POST /admin/orders/delete'        => ['Admin\OrderController', 'delete'],
 
     // Quản lý thanh toán (Payments)
     'GET /admin/payments'         => ['Admin\PaymentController', 'index'],
     'GET /admin/payments/detail'  => ['Admin\PaymentController', 'detail'],
 
     // Quản lý gói đăng ký (Subscriptions)
-    'GET /admin/subscriptions'               => ['Admin\SubscriptionController', 'index'],
-    'GET /admin/subscriptions/detail'        => ['Admin\SubscriptionController', 'detail'],
-    'GET /admin/subscriptions/update-status' => ['Admin\SubscriptionController', 'updateStatus'],
-    'GET /admin/subscriptions/renew'         => ['Admin\SubscriptionController', 'renew'],
-    'GET /admin/subscriptions/reset-traffic'  => ['Admin\SubscriptionController', 'resetTraffic'],
-    'GET /admin/subscriptions/reset-token'    => ['Admin\SubscriptionController', 'resetToken'],
-    'GET /admin/subscriptions/delete'        => ['Admin\SubscriptionController', 'delete'],
+    'GET /admin/subscriptions'                => ['Admin\SubscriptionController', 'index'],
+    'GET /admin/subscriptions/detail'         => ['Admin\SubscriptionController', 'detail'],
+    'POST /admin/subscriptions/update-status' => ['Admin\SubscriptionController', 'updateStatus'],
+    'POST /admin/subscriptions/renew'          => ['Admin\SubscriptionController', 'renew'],
+    'POST /admin/subscriptions/reset-traffic'  => ['Admin\SubscriptionController', 'resetTraffic'],
+    'POST /admin/subscriptions/reset-token'    => ['Admin\SubscriptionController', 'resetToken'],
+    'POST /admin/subscriptions/delete'         => ['Admin\SubscriptionController', 'delete'],
 
     // Quản lý hoa hồng & giới thiệu (Referrals)
     'GET /admin/referrals'        => ['Admin\ReferralController', 'index'],
@@ -155,7 +155,7 @@ return [
     'GET /admin/posts/edit'       => ['Admin\PostController', 'showEdit'],
     'POST /admin/posts/edit'      => ['Admin\PostController', 'edit'],
     'GET /admin/posts/detail'     => ['Admin\PostController', 'detail'],
-    'GET /admin/posts/delete'     => ['Admin\PostController', 'delete'],
+    'POST /admin/posts/delete'    => ['Admin\PostController', 'delete'],
 
     // Quản lý hỗ trợ (Tickets)
     'GET /admin/tickets'          => ['Admin\TicketController', 'index'],
@@ -167,14 +167,16 @@ return [
     'POST /admin/expenses/create' => ['Admin\ExpenseController', 'create'],
     'GET /admin/expenses/edit'    => ['Admin\ExpenseController', 'showEdit'],
     'POST /admin/expenses/edit'   => ['Admin\ExpenseController', 'edit'],
-    'GET /admin/expenses/delete'  => ['Admin\ExpenseController', 'delete'],
+    'POST /admin/expenses/delete'  => ['Admin\ExpenseController', 'delete'],
 
     // Cài đặt hệ thống (Settings)
     'GET /admin/settings'         => ['Admin\SettingController', 'index'],
     'POST /admin/settings/save'   => ['Admin\SettingController', 'save'],
 
     // Nhật ký hệ thống (Logs)
-    'GET /admin/logs/system'      => ['Admin\LogController', 'system'],
-    'GET /admin/logs/access'      => ['Admin\LogController', 'access'],
-    'GET /admin/logs/email'       => ['Admin\LogController', 'email'],
+    'GET /admin/logs/system'            => ['Admin\LogController', 'system'],
+    'GET /admin/logs/access'            => ['Admin\LogController', 'access'],
+    'GET /admin/logs/email'             => ['Admin\LogController', 'email'],
+    'GET /admin/logs/macrodroid'        => ['Admin\LogController', 'macrodroid'],
+    'POST /admin/logs/macrodroid/clear' => ['Admin\LogController', 'clearMacrodroid'],
 ];
