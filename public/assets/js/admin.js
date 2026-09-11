@@ -225,6 +225,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const lastMonthData = JSON.parse(chartCanvas.dataset.last || '[]');
         const selectedMonth = chartCanvas.dataset.month;
         const selectedYear = chartCanvas.dataset.year;
+        const currencySymbol = chartCanvas.dataset.symbol || '¥';
         const daysLabels = Array.from({ length: 31 }, (_, i) => 'Ngày ' + (i + 1));
 
         new Chart(ctx, {
@@ -272,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 let label = context.dataset.label || '';
                                 if (label) { label += ': '; }
                                 if (context.parsed.y !== null) {
-                                    label += '¥' + new Intl.NumberFormat('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(context.parsed.y);
+                                    label += currencySymbol + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(context.parsed.y);
                                 }
                                 return label;
                             }
@@ -289,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         ticks: {
                             color: getComputedStyle(document.documentElement).getPropertyValue('--ios-text-secondary').trim() || '#8e8e93',
                             callback: function (value) {
-                                return '¥' + new Intl.NumberFormat('zh-CN', { notation: 'compact' }).format(value);
+                                return currencySymbol + new Intl.NumberFormat('en-US', { notation: 'compact' }).format(value);
                             }
                         }
                     }

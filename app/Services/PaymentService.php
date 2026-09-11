@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Payment;
 use App\Models\User;
+use App\Models\Setting;
 
 class PaymentService
 {
@@ -12,19 +13,28 @@ class PaymentService
      */
     public function createDepositTransaction(int $userId, float $amount, string $paymentMethod): array
     {
-        if ($amount < 10) {
-            return ['status' => false, 'message' => 'Số tiền nạp tối thiểu là 10.00 CNY (¥).'];
+        $settingModel = new Setting();
+        $settings     = $settingModel->getAllAsKeyValue();
+
+        $minDeposit = (float)($settings['min_deposit'] ?? $settings['min_deposit_amount'] ?? 10);
+        $symbol     = $settings['currency_symbol'] ?? '¥';
+
+        if ($amount < $minDeposit) {
+            return [
+                'status'  => false, 
+                'message' => 'Số tiền nạp tối thiểu là ' . number_format($minDeposit, 2, '.', ',') . ' ' . $symbol . '.'
+            ];
         }
 
         $transCode = 'DEP' . date('YmdHis') . rand(100, 999);
 
         $paymentData = [
             'transaction_code' => $transCode,
-            'user_id' => $userId,
-            'amount' => $amount,
-            'payment_method' => $paymentMethod,
-            'status' => 'pending',
-            'created_at' => date('Y-m-d H:i:s')
+            'user_id'          => $userId,
+            'amount'           => $amount,
+            'payment_method'   => $paymentMethod,
+            'status'           => 'pending',
+            'created_at'       => date('Y-m-d H:i:s')
         ];
 
         $paymentModel = new Payment();
@@ -32,10 +42,10 @@ class PaymentService
 
         if ($created) {
             return [
-                'status' => true,
-                'message' => 'Tạo giao dịch nạp tiền thành công.',
+                'status'           => true,
+                'message'          => 'Tạo giao dịch nạp tiền thành công.',
                 'transaction_code' => $transCode,
-                'amount' => $amount
+                'amount'           => $amount
             ];
         }
 
@@ -56,7 +66,7 @@ class PaymentService
 
         // Cập nhật giao dịch nạp tiền thành công
         $paymentModel->update($paymentId, [
-            'status' => 'completed',
+            'status'     => 'completed',
             'updated_at' => date('Y-m-d H:i:s')
         ]);
 
@@ -67,7 +77,7 @@ class PaymentService
         if ($user) {
             $newBalance = (float)($user['balance'] ?? 0) + (float)$payment['amount'];
             return $userModel->update($user['id'], [
-                'balance' => $newBalance,
+                'balance'    => $newBalance,
                 'updated_at' => date('Y-m-d H:i:s')
             ]);
         }
