@@ -1,6 +1,12 @@
 <?php
-$pageTitle = "Liên Hệ - " . ($settings['site_name'] ?? 'VC VPN 2027');
+$pageTitle = "Liên Hệ - " . ($settings['site_title'] ?? 'VC VPN 2027');
 ob_start();
+
+$contactEmail = $settings['contact_email'] ?? '';
+$fanpageUrl   = $settings['fanpage_url'] ?? '';
+$youtubeUrl   = $settings['youtube_url'] ?? '';
+$zaloUrl      = $settings['zalo_url'] ?? '';
+$wechatId     = $settings['wechat_id'] ?? '';
 ?>
 
 <div style="text-align: center; margin-bottom: 2.5rem;">
@@ -18,18 +24,50 @@ ob_start();
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
     <div style="display: flex; flex-direction: column; gap: 1rem;">
-        <div class="glass-card">
-            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">📧 Email Hỗ Trợ</h3>
-            <p style="color: var(--ios-text-secondary); font-size: 0.95rem;"><?= htmlspecialchars($settings['support_email'] ?? 'support@domain.com') ?></p>
-        </div>
-        <div class="glass-card">
-            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">💬 Kênh Telegram</h3>
-            <p style="color: var(--ios-text-secondary); font-size: 0.95rem;"><?= htmlspecialchars($settings['telegram_channel'] ?? '@VC_VPN_Support') ?></p>
-        </div>
-        <div class="glass-card">
-            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">⏰ Thời Gian Làm Việc</h3>
-            <p style="color: var(--ios-text-secondary); font-size: 0.95rem;">24/7 - Hỗ trợ liên tục tất cả các ngày trong tuần.</p>
-        </div>
+        <?php if (!empty($contactEmail)): ?>
+            <div class="glass-card">
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">📧 Email Hỗ Trợ</h3>
+                <p style="color: var(--ios-text-secondary); font-size: 0.95rem;"><?= htmlspecialchars($contactEmail) ?></p>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($zaloUrl)): ?>
+            <div class="glass-card">
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">💬 Zalo</h3>
+                <p style="color: var(--ios-text-secondary); font-size: 0.95rem;">
+                    <?php if (str_istr($zaloUrl, 'http')): ?>
+                        <a href="<?= htmlspecialchars($zaloUrl) ?>" target="_blank" style="color: var(--ios-blue); text-decoration: none;"><?= htmlspecialchars($zaloUrl) ?></a>
+                    <?php else: ?>
+                        <?= htmlspecialchars($zaloUrl) ?>
+                    <?php endif; ?>
+                </p>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($wechatId)): ?>
+            <div class="glass-card">
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">💬 WeChat ID</h3>
+                <p style="color: var(--ios-text-secondary); font-size: 0.95rem;"><?= htmlspecialchars($wechatId) ?></p>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($fanpageUrl)): ?>
+            <div class="glass-card">
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">🌐 Fanpage Facebook</h3>
+                <p style="color: var(--ios-text-secondary); font-size: 0.95rem;">
+                    <a href="<?= htmlspecialchars($fanpageUrl) ?>" target="_blank" style="color: var(--ios-blue); text-decoration: none;">Xem Fanpage</a>
+                </p>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($youtubeUrl)): ?>
+            <div class="glass-card">
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">▶️ Kênh Youtube</h3>
+                <p style="color: var(--ios-text-secondary); font-size: 0.95rem;">
+                    <a href="<?= htmlspecialchars($youtubeUrl) ?>" target="_blank" style="color: var(--ios-blue); text-decoration: none;">Xem Youtube</a>
+                </p>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div class="glass-card">
