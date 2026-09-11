@@ -7,6 +7,17 @@ class Payment extends BaseModel
     protected string $table = 'vc_payments';
 
     /**
+     * Tìm giao dịch thanh toán / nạp tiền theo mã giao dịch (transaction_id)
+     */
+    public function findByTransactionId(string $transactionId): ?array
+    {
+        $stmt = self::$db->prepare("SELECT * FROM `{$this->table}` WHERE `transaction_id` = :transaction_id LIMIT 1");
+        $stmt->execute(['transaction_id' => $transactionId]);
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
+
+    /**
      * Lấy toàn bộ danh sách thanh toán kèm thông tin người dùng và mã đơn hàng
      */
     public function allWithDetails(): array

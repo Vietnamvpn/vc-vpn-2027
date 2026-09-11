@@ -29,12 +29,13 @@ class PaymentService
         $transCode = 'DEP' . date('YmdHis') . rand(100, 999);
 
         $paymentData = [
-            'transaction_code' => $transCode,
-            'user_id'          => $userId,
-            'amount'           => $amount,
-            'payment_method'   => $paymentMethod,
-            'status'           => 'pending',
-            'created_at'       => date('Y-m-d H:i:s')
+            'transaction_id' => $transCode,
+            'user_id'        => $userId,
+            'type'           => 'deposit',
+            'amount'         => $amount,
+            'payment_method' => $paymentMethod,
+            'status'         => 'pending',
+            'created_at'     => date('Y-m-d H:i:s')
         ];
 
         $paymentModel = new Payment();
@@ -60,14 +61,14 @@ class PaymentService
         $paymentModel = new Payment();
         $payment = $paymentModel->find($paymentId);
 
-        if (!$payment || $payment['status'] === 'completed') {
+        if (!$payment || $payment['status'] === 'success' || $payment['status'] === 'completed') {
             return false;
         }
 
         // Cập nhật giao dịch nạp tiền thành công
         $paymentModel->update($paymentId, [
-            'status'     => 'completed',
-            'updated_at' => date('Y-m-d H:i:s')
+            'status'     => 'success',
+            'created_at' => $payment['created_at'] ?? date('Y-m-d H:i:s')
         ]);
 
         // Cộng số dư vào tài khoản người dùng
@@ -83,5 +84,25 @@ class PaymentService
         }
 
         return false;
+    }
+
+    /**
+     * Duyệt nạp tiền theo mã giao dịch từ Webhook
+     */
+    public function completePaymentByCode(string $transCode, float $amount): bool
+    {
+        $paymentModel = new Payment();
+        $payment = null;
+
+        if (method_exists($paymentModel, 'where')) {
+            $payments = $paymentModel->where('transaction_id', $transCode);
+            $payment = $payments[0] ?? null;
+        }
+
+        if (!$payment) {
+            return false;
+        }
+
+        return $this->completePayment((int)$payment['id']);
     }
 }

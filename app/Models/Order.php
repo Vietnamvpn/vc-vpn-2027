@@ -7,7 +7,38 @@ class Order extends BaseModel
     protected string $table = 'vc_orders';
 
     /**
-     * Lấy toàn bộ danh sách đơn hàng kèm thông tin user, gói cước và mã giảm giá (có hỗ trợ lọc theo user_id)
+     * Tìm đơn hàng theo mã đơn hàng (order_code)
+     */
+    public function findByOrderCode(string $orderCode): ?array
+    {
+        $stmt = self::$db->prepare("SELECT * FROM `{$this->table}` WHERE `order_code` = :order_code LIMIT 1");
+        $stmt->execute(['order_code' => $orderCode]);
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
+
+    /**
+     * Tìm đơn hàng pending theo đúng số tiền (áp dụng cho WeChat Pay khớp tiền lẻ)
+     */
+    public function findByPendingAmount(float $amount, int $minutes = 15): ?array
+    {
+        $stmt = self::$db->prepare("
+            SELECT * FROM `{$this->table}` 
+            WHERE `total_amount` = :amount 
+              AND `payment_status` = 'pending' 
+              AND `created_at` >= DATE_SUB(NOW(), INTERVAL :minutes MINUTE)
+            ORDER BY `id` DESC 
+            LIMIT 1
+        ");
+        $stmt->bindValue(':amount', $amount);
+        $stmt->bindValue(':minutes', $minutes, \PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
+
+    /**
+     * Lấy toàn bộ danh sách đơn hàng kèm thông tin user, gói cước và mã giảm giá
      */
     public function allWithDetails(?int $userId = null): array
     {
