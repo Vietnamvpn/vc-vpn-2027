@@ -4,10 +4,26 @@ $activeMenu = "subscriptions";
 
 ob_start();
 
-$uploadGB = round(($subscription['upload'] ?? 0) / (1024 * 1024 * 1024), 2);
-$downloadGB = round(($subscription['download'] ?? 0) / (1024 * 1024 * 1024), 2);
-$totalUsedGB = round((($subscription['upload'] ?? 0) + ($subscription['download'] ?? 0)) / (1024 * 1024 * 1024), 2);
-$limitGB = round(($subscription['transfer_enable'] ?? 0) / (1024 * 1024 * 1024), 2);
+// Hàm hỗ trợ quy đổi dung lượng linh hoạt MB / GB
+$formatTraffic = function($bytes) {
+    if ($bytes <= 0) return '0 MB';
+    $gb = 1024 * 1024 * 1024;
+    $mb = 1024 * 1024;
+    if ($bytes < $gb) {
+        return round($bytes / $mb, 2) . ' MB';
+    }
+    return round($bytes / $gb, 2) . ' GB';
+};
+
+$uploadBytes = (float)($subscription['upload'] ?? 0);
+$downloadBytes = (float)($subscription['download'] ?? 0);
+$totalUsedBytes = $uploadBytes + $downloadBytes;
+$limitBytes = (float)($subscription['transfer_enable'] ?? 0);
+
+$uploadFormatted = $formatTraffic($uploadBytes);
+$downloadFormatted = $formatTraffic($downloadBytes);
+$totalUsedFormatted = $formatTraffic($totalUsedBytes);
+$limitFormatted = $limitBytes > 0 ? $formatTraffic($limitBytes) : 'Không giới hạn';
 ?>
 
 <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;">
@@ -65,12 +81,12 @@ $limitGB = round(($subscription['transfer_enable'] ?? 0) / (1024 * 1024 * 1024),
                     <?= htmlspecialchars($subscription['uuid']) ?>
                 </p>
             </div>
-            <div><strong>Tải Lên (Upload):</strong> <span style="font-weight: 600;"><?= $uploadGB ?> GB</span></div>
-            <div><strong>Tải Về (Download):</strong> <span style="font-weight: 600;"><?= $downloadGB ?> GB</span></div>
+            <div><strong>Tải Lên (Upload):</strong> <span style="font-weight: 600;"><?= $uploadFormatted ?></span></div>
+            <div><strong>Tải Về (Download):</strong> <span style="font-weight: 600;"><?= $downloadFormatted ?></span></div>
             <div>
                 <strong>Tổng Lưu Lượng Đã Dùng:</strong> 
-                <span style="color: var(--ios-blue); font-weight: 700; font-size: 1.05rem;"><?= $totalUsedGB ?> GB</span> 
-                / <?= $limitGB > 0 ? $limitGB . ' GB' : 'Không giới hạn' ?>
+                <span style="color: var(--ios-blue); font-weight: 700; font-size: 1.05rem;"><?= $totalUsedFormatted ?></span> 
+                / <?= $limitFormatted ?>
             </div>
             <div>
                 <strong>IP Kết Nối Cuối:</strong> 

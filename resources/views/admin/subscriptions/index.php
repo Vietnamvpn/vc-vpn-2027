@@ -57,8 +57,23 @@ ob_start();
                     <?php foreach ($subscriptions as $sub): ?>
                         <?php
                         $usedBytes = ($sub['upload'] ?? 0) + ($sub['download'] ?? 0);
-                        $usedGB = round($usedBytes / (1024 * 1024 * 1024), 2);
-                        $totalGB = round(($sub['transfer_enable'] ?? 0) / (1024 * 1024 * 1024), 2);
+                        $totalBytes = (float)($sub['transfer_enable'] ?? 0);
+                        
+                        // Quy đổi hiển thị MB khi dưới 1 GB (1024*1024*1024 bytes)
+                        if ($usedBytes < 1073741824) {
+                            $formattedUsed = round($usedBytes / (1024 * 1024), 2) . ' MB';
+                        } else {
+                            $formattedUsed = round($usedBytes / (1024 * 1024 * 1024), 2) . ' GB';
+                        }
+
+                        if ($totalBytes <= 0) {
+                            $formattedTotal = '∞';
+                        } elseif ($totalBytes < 1073741824) {
+                            $formattedTotal = round($totalBytes / (1024 * 1024), 2) . ' MB';
+                        } else {
+                            $formattedTotal = round($totalBytes / (1024 * 1024 * 1024), 2) . ' GB';
+                        }
+
                         $onlineDevices = (int)($sub['online_devices'] ?? 0);
                         ?>
                         <tr>
@@ -76,8 +91,8 @@ ob_start();
                                 </span>
                             </td>
                             <td style="font-size: 0.85rem;">
-                                <span style="font-weight: 700; color: var(--ios-blue);"><?= $usedGB ?> GB</span>
-                                <span style="color: var(--ios-text-secondary);">/ <?= $totalGB > 0 ? $totalGB . ' GB' : '∞' ?></span>
+                                <span style="font-weight: 700; color: var(--ios-blue);"><?= $formattedUsed ?></span>
+                                <span style="color: var(--ios-text-secondary);">/ <?= $formattedTotal ?></span>
                             </td>
                             <td style="font-size: 0.8rem; color: var(--ios-text-secondary);">
                                 <?= date('d/m/Y', strtotime($sub['start_date'])) ?>
