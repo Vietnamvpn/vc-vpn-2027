@@ -3,8 +3,8 @@ $pageTitle = htmlspecialchars($post['title'] ?? 'Chi Tiết Hướng Dẫn') . "
 ob_start();
 ?>
 
-<div style="max-width: 850px; margin: 0 auto;">
-
+<!-- Đã bỏ max-width để giao diện mở rộng linh hoạt theo toàn màn hình -->
+<div style="width: 100%; margin: 0 auto;">
     <?php if (!empty($post)): ?>
         <article class="glass-card" style="padding: 2rem;">
             <!-- Tiêu đề bài viết -->
