@@ -244,7 +244,7 @@ class OrderController extends BaseController
             }
 
             $totalAmount = $customAmount !== null ? $customAmount : (float)$plan['price'];
-            $orderCode   = 'ORD' . date('YmdHis') . rand(100, 999);
+            $orderCode   = 'AD' . date('YmdHis') . rand(100, 999);
 
             $orderData = [
                 'order_code'     => $orderCode,
