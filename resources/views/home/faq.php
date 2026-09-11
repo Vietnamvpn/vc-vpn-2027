@@ -37,6 +37,8 @@ ob_start();
     margin-bottom: 2.5rem;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .faq-group-header {
@@ -49,6 +51,7 @@ ob_start();
     color: var(--ios-text, #ffffff);
     border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
     padding-bottom: 0.75rem;
+    word-break: break-word;
 }
 
 .faq-card {
@@ -61,6 +64,8 @@ ob_start();
     border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));
     position: relative;
     overflow: hidden;
+    box-sizing: border-box;
+    word-break: break-word;
 }
 
 /* Hiệu ứng di chuột: Nhô nhẹ lên & viền phát sáng */
@@ -70,6 +75,22 @@ ob_start();
     box-shadow: 0 12px 30px rgba(0, 122, 255, 0.25), 
                 0 0 20px rgba(0, 122, 255, 0.2);
 }
+
+/* Tối ưu hóa Responsive cho màn hình nhỏ (Mobile & Tablet) */
+@media (max-width: 768px) {
+    .faq-group-section {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 14px;
+    }
+    .faq-group-header {
+        font-size: 1.15rem;
+        margin-bottom: 1rem;
+    }
+    .faq-card {
+        padding: 1.25rem !important;
+    }
+}
 </style>
 
 <div style="text-align: center; margin-bottom: 2.5rem;">
@@ -77,7 +98,8 @@ ob_start();
     <p style="color: var(--ios-text-secondary); margin-top: 0.5rem;">Giải đáp các thắc mắc và hướng dẫn chi tiết cách sử dụng dịch vụ VPN</p>
 </div>
 
-<div style="max-width: 900px; margin: 0 auto;">
+<!-- Đã bỏ max-width: 900px, chuyển sang rộng linh hoạt toàn màn hình (width: 100%) -->
+<div style="width: 100%; margin: 0 auto;">
     <?php if (!empty($groupedPosts)): ?>
         <?php 
         $cardIndex = 0;
@@ -107,11 +129,11 @@ ob_start();
                                         <?= htmlspecialchars(strip_tags($post['content'])) ?>
                                     </p>
                                 </div>
-                                <a href="/post-detail?slug=<?= urlencode($post['slug']) ?>" class="glass-btn" style="white-space: nowrap; font-size: 0.85rem; padding: 0.5rem 1rem; text-decoration: none;">
+                                <a href="/post-detail?slug=<?= urlencode($post['slug']) ?>" class="glass-btn" style="white-space: nowrap; font-size: 0.85rem; padding: 0.5rem 1rem; text-decoration: none; box-sizing: border-box;">
                                     Xem Chi Tiết ➔
                                 </a>
                             </div>
-                            <div style="display: flex; gap: 1rem; font-size: 0.78rem; color: var(--ios-text-secondary); border-top: 1px solid var(--glass-border); padding-top: 0.75rem; margin-top: 0.5rem;">
+                            <div style="display: flex; gap: 1rem; font-size: 0.78rem; color: var(--ios-text-secondary); border-top: 1px solid var(--glass-border); padding-top: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap;">
                                 <span>📅 Cập nhật: <?= date('d/m/Y', strtotime($post['created_at'])) ?></span>
                                 <span>🏷️ Chuyên mục: <?= htmlspecialchars($typeGroup) ?></span>
                             </div>
