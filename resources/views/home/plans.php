@@ -7,11 +7,18 @@ $currencyCode   = $settings['currency'] ?? 'VND';
 // Kiểm tra trạng thái đăng nhập của người dùng
 $isLoggedIn = !empty($_SESSION['user']) || !empty($_SESSION['user_id']);
 
-// Nhóm các gói dịch vụ theo Nhóm Máy Chủ (group_name)
+// Nhóm các gói dịch vụ linh hoạt theo Nhóm Máy Chủ từ database (tự động nhận diện group_name, server_group_name hoặc group_id)
 $groupedPlans = [];
 if (!empty($plans) && is_array($plans)) {
     foreach ($plans as $plan) {
-        $groupName = !empty($plan['group_name']) ? $plan['group_name'] : 'Gói Tiêu Chuẩn';
+        $groupName = !empty($plan['group_name']) 
+            ? $plan['group_name'] 
+            : (!empty($plan['server_group_name']) 
+                ? $plan['server_group_name'] 
+                : (!empty($plan['group_id']) || !empty($plan['server_group_id']) 
+                    ? 'Nhóm Máy Chủ #' . ($plan['group_id'] ?? $plan['server_group_id']) 
+                    : 'Gói Tiêu Chuẩn'));
+                    
         $groupedPlans[$groupName][] = $plan;
     }
 }
@@ -24,14 +31,37 @@ ob_start();
 @keyframes assembleIn {
     0% {
         opacity: 0;
-        transform: translateY(40px) scale(0.92);
-        filter: blur(5px);
+        transform: translateY(35px) scale(0.93);
+        filter: blur(6px);
     }
     100% {
         opacity: 1;
         transform: translateY(0) scale(1);
         filter: blur(0);
     }
+}
+
+/* Khung phân vùng theo nhóm */
+.plan-group-section {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+    border-radius: 20px;
+    padding: 1.75rem;
+    margin-bottom: 2.5rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.plan-group-header {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--ios-text, #ffffff);
+    border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+    padding-bottom: 0.75rem;
 }
 
 .plan-card {
@@ -55,18 +85,6 @@ ob_start();
     box-shadow: 0 12px 30px rgba(0, 122, 255, 0.25), 
                 0 0 20px rgba(0, 122, 255, 0.2);
 }
-
-.plan-group-title {
-    font-size: 1.35rem;
-    font-weight: 700;
-    margin-bottom: 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    color: var(--ios-text, #ffffff);
-    border-bottom: 2px solid var(--glass-border, rgba(255, 255, 255, 0.1));
-    padding-bottom: 0.5rem;
-}
 </style>
 
 <div style="text-align: center; margin-bottom: 2.5rem;">
@@ -79,10 +97,12 @@ ob_start();
     $cardIndex = 0; 
     foreach ($groupedPlans as $groupName => $groupPlans): 
     ?>
-        <div style="margin-bottom: 3rem;">
-            <div class="plan-group-title">
+        <!-- Phân vùng hiển thị riêng cho từng Nhóm Máy Chủ -->
+        <div class="plan-group-section">
+            <div class="plan-group-header">
                 <span>⚡</span> <?= htmlspecialchars($groupName) ?>
             </div>
+
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
                 <?php foreach ($groupPlans as $plan): ?>
                     <?php
@@ -98,10 +118,11 @@ ob_start();
                         $bandwidthText = $bandwidthGB . ' GB';
                     }
 
-                    // Đi qua lớp xác thực: nếu chưa đăng nhập sẽ chuyển hướng sang trang Đăng nhập kèm link quay lại
-                    $registerUrl = $isLoggedIn 
-                        ? '/checkout?id=' . (int)$plan['id'] 
-                        : '/login?redirect=' . urlencode('/checkout?id=' . (int)$plan['id']);
+                    // Đi qua lớp xác thực: nếu chưa đăng nhập sẽ tới trang /login kèm tham số quay lại /checkout
+                    $targetCheckout = '/checkout?id=' . (int)$plan['id'];
+                    $registerUrl    = $isLoggedIn 
+                        ? $targetCheckout 
+                        : '/login?redirect=' . urlencode($targetCheckout);
                     ?>
                     <div class="glass-card plan-card" style="animation-delay: <?= $animationDelay ?>s;">
                         <div>
@@ -115,10 +136,10 @@ ob_start();
                                     <span style="color: var(--ios-success);">✓</span> Dung lượng: <strong><?= $bandwidthText ?></strong>
                                 </li>
                                 <li style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <span style="color: var(--ios-success);">✓</span> Số thiết bị tối đa: <strong><?= (int)$plan['max_devices'] ?> thiết bị</strong>
+                                    <span style="color: var(--ios-success);">✓</span> Số thiết bị tối đa: <strong><?= (int)($plan['max_devices'] ?? 1) ?> thiết bị</strong>
                                 </li>
                                 <li style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <span style="color: var(--ios-success);">✓</span> Nhóm máy chủ: <strong><?= htmlspecialchars($plan['group_name'] ?? 'Tiêu chuẩn') ?></strong>
+                                    <span style="color: var(--ios-success);">✓</span> Nhóm máy chủ: <strong><?= htmlspecialchars($groupName) ?></strong>
                                 </li>
                                 <?php if (!empty($plan['description'])): ?>
                                     <li style="display: flex; align-items: flex-start; gap: 0.5rem; color: var(--ios-text-secondary); font-size: 0.85rem; line-height: 1.4;">
