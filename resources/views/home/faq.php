@@ -1,44 +1,42 @@
 <?php
-$pageTitle = "Câu Hỏi Thường Gặp - " . ($settings['site_name'] ?? 'VC VPN 2027');
+$pageTitle = "Hướng Dẫn & Câu Hỏi Thường Gặp - " . ($settings['site_title'] ?? 'VC VPN 2027');
 ob_start();
 ?>
 
 <div style="text-align: center; margin-bottom: 2.5rem;">
-    <h1 style="font-size: 2rem; font-weight: 700;">Câu Hỏi Thường Gặp (FAQ)</h1>
-    <p style="color: var(--ios-text-secondary); margin-top: 0.5rem;">Giải đáp các thắc mắc phổ biến về dịch vụ VPN của chúng tôi</p>
+    <h1 style="font-size: 2rem; font-weight: 700;">Hướng Dẫn & Câu Hỏi Thường Gặp</h1>
+    <p style="color: var(--ios-text-secondary); margin-top: 0.5rem;">Giải đáp các thắc mắc và hướng dẫn chi tiết cách sử dụng dịch vụ VPN</p>
 </div>
 
-<div style="display: flex; flex-direction: column; gap: 1rem; max-width: 800px; margin: 0 auto;">
-    <?php if (!empty($faqs) && is_array($faqs)): ?>
-        <?php foreach ($faqs as $index => $faq): ?>
-            <div class="glass-card">
-                <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--ios-blue);">
-                    <?= ($index + 1) ?>. <?= htmlspecialchars($faq['title']) ?>
-                </h3>
-                <div style="color: var(--ios-text-secondary); font-size: 0.95rem; line-height: 1.6;">
-                    <?= nl2br(htmlspecialchars($faq['content'])) ?>
+<div style="display: flex; flex-direction: column; gap: 1.25rem; max-width: 850px; margin: 0 auto;">
+    <?php if (!empty($posts) && is_array($posts)): ?>
+        <?php foreach ($posts as $index => $post): ?>
+            <div class="glass-card" style="padding: 1.5rem; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--ios-blue);">
+                            <a href="/home/post?slug=<?= urlencode($post['slug']) ?>" style="color: inherit; text-decoration: none;">
+                                <?= ($index + 1) ?>. <?= htmlspecialchars($post['title']) ?>
+                            </a>
+                        </h3>
+                        <p style="color: var(--ios-text-secondary); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            <?= htmlspecialchars(strip_tags($post['content'])) ?>
+                        </p>
+                    </div>
+                    <a href="/home/post?slug=<?= urlencode($post['slug']) ?>" class="glass-btn" style="white-space: nowrap; font-size: 0.85rem; padding: 0.5rem 1rem; text-decoration: none;">
+                        Xem Chi Tiết ➔
+                    </a>
+                </div>
+                <div style="display: flex; gap: 1rem; font-size: 0.78rem; color: var(--ios-text-secondary); border-top: 1px solid var(--glass-border); padding-top: 0.75rem; margin-top: 0.5rem;">
+                    <span>📅 Cập nhật: <?= date('d/m/Y', strtotime($post['created_at'])) ?></span>
+                    <span>📌 Thể loại: <?= strtoupper(htmlspecialchars($post['type'] ?? 'FAQ')) ?></span>
                 </div>
             </div>
         <?php endforeach; ?>
     <?php else: ?>
-        <div class="glass-card">
-            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--ios-blue);">1. Dịch vụ VPN này hỗ trợ những thiết bị nào?</h3>
-            <p style="color: var(--ios-text-secondary); font-size: 0.95rem; line-height: 1.6;">Hệ thống hỗ trợ tất cả các hệ điều hành phổ biến hiện nay như iOS, Android, Windows, macOS và Linux qua các ứng dụng kết nối chuyên dụng (v2rayNG, Shadowrocket, Clash, Sing-box...).</p>
-        </div>
-
-        <div class="glass-card">
-            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--ios-blue);">2. Tôi có thể chia sẻ tài khoản cho người khác dùng chung không?</h3>
-            <p style="color: var(--ios-text-secondary); font-size: 0.95rem; line-height: 1.6;">Mỗi gói dịch vụ đều quy định rõ số lượng thiết bị tối đa kết nối đồng thời. Bạn có thể sử dụng trên nhiều thiết bị trong hạn mức của gói đã mua.</p>
-        </div>
-
-        <div class="glass-card">
-            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--ios-blue);">3. Làm thế nào để gia hạn gói dịch vụ khi hết hạn?</h3>
-            <p style="color: var(--ios-text-secondary); font-size: 0.95rem; line-height: 1.6;">Bạn chỉ cần đăng nhập vào Bảng điều khiển (Dashboard), chọn Gói dịch vụ mong muốn và tiến hành thanh toán để gia hạn tự động.</p>
-        </div>
-
-        <div class="glass-card">
-            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--ios-blue);">4. Tôi có thể nạp tiền vào ví bằng những phương thức nào?</h3>
-            <p style="color: var(--ios-text-secondary); font-size: 0.95rem; line-height: 1.6;">Hệ thống hỗ trợ nạp tiền tự động qua Chuyển khoản ngân hàng (VietQR / QR Code) và các cổng thanh toán tự động khác.</p>
+        <div class="glass-card" style="text-align: center; padding: 3rem; color: var(--ios-text-secondary);">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📑</div>
+            <p style="font-size: 1rem; margin-bottom: 0;">Hiện chưa có bài viết hướng dẫn nào được xuất bản.</p>
         </div>
     <?php endif; ?>
 </div>
