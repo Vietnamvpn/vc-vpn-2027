@@ -30,7 +30,6 @@
                     <span style="width: 24px; height: 24px; border-radius: 50%; background: var(--ios-blue); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">
                         <?= strtoupper(substr($_SESSION['username'] ?? 'U', 0, 1)) ?>
                     </span>
-                    <span><?= htmlspecialchars($_SESSION['username'] ?? 'Tài khoản') ?></span>
                     <span style="font-size: 0.7rem; color: var(--ios-text-secondary);">▼</span>
                 </button>
 
