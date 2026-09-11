@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "VC VPN 2027 - Dịch Vụ VPN Tốc Độ Cao";
+$pageTitle = ($settings['site_name'] ?? 'VC VPN 2027') . " - Dịch Vụ VPN Tốc Độ Cao";
 ob_start();
 ?>
 
@@ -11,7 +11,11 @@ ob_start();
     </p>
     <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
         <a href="/home/plans" class="glass-btn" style="padding: 0.8rem 2rem; font-size: 1rem;">Xem Gói Dịch Vụ</a>
-        <a href="/auth/register" class="glass-btn" style="padding: 0.8rem 2rem; font-size: 1rem; background: rgba(255, 255, 255, 0.2); color: var(--ios-text); border: 1px solid var(--glass-border);">Đăng Ký Ngay</a>
+        <?php if (!empty($_SESSION['user_id'])): ?>
+            <a href="/user/dashboard" class="glass-btn" style="padding: 0.8rem 2rem; font-size: 1rem; background: rgba(255, 255, 255, 0.2); color: var(--ios-text); border: 1px solid var(--glass-border);">Bảng Điều Khiển</a>
+        <?php else: ?>
+            <a href="/auth/register" class="glass-btn" style="padding: 0.8rem 2rem; font-size: 1rem; background: rgba(255, 255, 255, 0.2); color: var(--ios-text); border: 1px solid var(--glass-border);">Đăng Ký Ngay</a>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -25,7 +29,7 @@ ob_start();
     <div class="glass-card">
         <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔒</div>
         <h3 style="margin-bottom: 0.5rem;">Mã Hóa An Toàn</h3>
-        <p style="color: var(--ios-text-secondary); font-size: 0.9rem;">Hỗ trợ các giao thức hiện đại nhất như VMess, VLess, Trojan, WireGuard và HY2.</p>
+        <p style="color: var(--ios-text-secondary); font-size: 0.9rem;">Hỗ trợ các giao thức hiện đại nhất như VMess, VLess, Trojan, WireGuard, HY2 và TUIC.</p>
     </div>
     <div class="glass-card">
         <div style="font-size: 2rem; margin-bottom: 0.5rem;">📱</div>

@@ -76,15 +76,15 @@ $limitFormatted = $limitBytes > 0 ? $formatTraffic($limitBytes) : 'Không giới
         
         <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.9rem;">
             <div>
-                <strong>Mã Khách Hàng (UUID):</strong>
+                <strong>Mã Khách Hàng:</strong>
                 <p style="margin: 0.25rem 0 0 0; background: rgba(0,0,0,0.2); padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); font-family: monospace; word-break: break-all; color: var(--ios-blue); font-weight: 600;">
                     <?= htmlspecialchars($subscription['uuid']) ?>
                 </p>
             </div>
-            <div><strong>Tải Lên (Upload):</strong> <span style="font-weight: 600;"><?= $uploadFormatted ?></span></div>
-            <div><strong>Tải Về (Download):</strong> <span style="font-weight: 600;"><?= $downloadFormatted ?></span></div>
+            <div><strong>Upload:</strong> <span style="font-weight: 600;"><?= $uploadFormatted ?></span></div>
+            <div><strong>Download:</strong> <span style="font-weight: 600;"><?= $downloadFormatted ?></span></div>
             <div>
-                <strong>Tổng Lưu Lượng Đã Dùng:</strong> 
+                <strong>Tổng Lưu Lượng:</strong> 
                 <span style="color: var(--ios-blue); font-weight: 700; font-size: 1.05rem;"><?= $totalUsedFormatted ?></span> 
                 / <?= $limitFormatted ?>
             </div>
