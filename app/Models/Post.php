@@ -38,6 +38,39 @@ class Post extends BaseModel
         return $result ?: null;
     }
 
+    /**
+     * Lấy danh sách các bài viết đã xuất bản
+     */
+    public function getAllPublished(): array
+    {
+        $stmt = self::$db->prepare("
+            SELECT p.*, u.username AS author_name
+            FROM `{$this->table}` p
+            LEFT JOIN `vc_users` u ON p.author_id = u.id
+            WHERE p.status = 'published' 
+            ORDER BY p.id DESC
+        ");
+        $stmt->execute();
+        return $stmt->fetchAll() ?: [];
+    }
+
+    /**
+     * Lấy chi tiết bài viết theo slug
+     */
+    public function getBySlug(string $slug): ?array
+    {
+        $stmt = self::$db->prepare("
+            SELECT p.*, u.username AS author_name
+            FROM `{$this->table}` p
+            LEFT JOIN `vc_users` u ON p.author_id = u.id
+            WHERE p.slug = :slug
+            LIMIT 1
+        ");
+        $stmt->execute(['slug' => $slug]);
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
+
     public function create(array $data): bool
     {
         $fields = implode(', ', array_keys($data));
