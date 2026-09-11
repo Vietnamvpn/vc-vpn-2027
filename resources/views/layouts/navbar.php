@@ -1,3 +1,6 @@
+<?php
+$siteTitle = $settings['site_title'] ?? 'VC VPN 2027';
+?>
 <nav class="glass-card navbar-container" style="margin: 0; padding: 0.875rem 1.5rem; border-radius: 0; border-top: none; border-left: none; border-right: none; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; width: 100%; position: relative; z-index: 1000; background: rgba(180, 187, 213, 0.49);">
     <!-- Bên trái: Toggle Sidebar Mobile (khi đã đăng nhập) OR Tên Web (khi chưa đăng nhập) -->
     <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -7,7 +10,7 @@
             </button>
         <?php else: ?>
             <a href="/" style="font-weight: 700; font-size: 1.05rem; color: var(--ios-text); text-decoration: none; display: flex; align-items: center; gap: 0.4rem;">
-                <span style="color: var(--ios-blue);">VC VPN</span> 2027
+                <span style="color: var(--ios-blue);"><?= htmlspecialchars($siteTitle) ?></span>
             </a>
         <?php endif; ?>
     </div>
