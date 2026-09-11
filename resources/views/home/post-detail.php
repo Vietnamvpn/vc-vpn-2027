@@ -4,12 +4,6 @@ ob_start();
 ?>
 
 <div style="max-width: 850px; margin: 0 auto;">
-    <!-- Nút quay lại -->
-    <div style="margin-bottom: 1.25rem;">
-        <a href="/faq" class="glass-btn" style="text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.4rem;">
-            ⬅️ Quay lại danh sách hướng dẫn
-        </a>
-    </div>
 
     <?php if (!empty($post)): ?>
         <article class="glass-card" style="padding: 2rem;">
