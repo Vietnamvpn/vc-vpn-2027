@@ -3,10 +3,21 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use App\Models\Setting;
 use App\Models\SystemLog;
 
 abstract class BaseController
 {
+    protected array $settings = [];
+
+    public function __construct()
+    {
+        if (class_exists('App\Models\Setting')) {
+            $settingModel = new Setting();
+            $this->settings = $settingModel->getAllAsKeyValue();
+        }
+    }
+
     /**
      * Ghi nhật ký thao tác hệ thống vào CSDL (vc_system_logs)
      */
@@ -26,36 +37,48 @@ abstract class BaseController
             $ipAddress = trim(explode(',', $ipAddress)[0]);
         }
 
-        $systemLog = new SystemLog();
-        $systemLog->create([
-            'user_id'     => (int)$_SESSION['user_id'],
-            'action'      => $action,
-            'description' => $description,
-            'ip_address'  => $ipAddress,
-            'created_at'  => date('Y-m-d H:i:s')
-        ]);
+        if (class_exists('App\Models\SystemLog')) {
+            $systemLog = new SystemLog();
+            $systemLog->create([
+                'user_id'     => (int)$_SESSION['user_id'],
+                'action'      => $action,
+                'description' => $description,
+                'ip_address'  => $ipAddress,
+                'created_at'  => date('Y-m-d H:i:s')
+            ]);
+        }
     }
 
     /**
-     * Render Giao diện View (Tự động cập nhật Session User tươi từ CSDL)
+     * Render Giao diện View (Tự động Inject $settings động & Cập nhật Session User tươi)
      */
     protected function render(string $view, array $data = []): void
     {
+        // Tự động nạp $settings vào tất cả View
+        if (!isset($data['settings'])) {
+            $data['settings'] = $this->settings;
+        } else {
+            $data['settings'] = array_merge($this->settings, $data['settings']);
+        }
+
         if (isset($_SESSION['user_id'])) {
-            $userModel = new User();
-            $currentUser = $userModel->findById((int)$_SESSION['user_id']);
+            if (class_exists('App\Models\User')) {
+                $userModel = new User();
+                $currentUser = $userModel->findById((int)$_SESSION['user_id']);
 
-            if ($currentUser) {
-                $_SESSION['username']   = $currentUser['username'] ?? $_SESSION['username'] ?? '';
-                $_SESSION['full_name']  = $currentUser['full_name'] ?? $_SESSION['full_name'] ?? '';
-                $_SESSION['email']      = $currentUser['email'] ?? '';
-                $_SESSION['balance']    = $currentUser['balance'] ?? 0;
-                $_SESSION['created_at'] = $currentUser['created_at'] ?? '';
-                $_SESSION['role']       = $currentUser['role'] ?? 'user';
+                if ($currentUser) {
+                    $_SESSION['username']           = $currentUser['username'] ?? $_SESSION['username'] ?? '';
+                    $_SESSION['full_name']          = $currentUser['full_name'] ?? $_SESSION['full_name'] ?? '';
+                    $_SESSION['email']              = $currentUser['email'] ?? '';
+                    $_SESSION['balance']            = $currentUser['balance'] ?? 0;
+                    $_SESSION['commission_balance'] = $currentUser['commission_balance'] ?? 0;
+                    $_SESSION['created_at']         = $currentUser['created_at'] ?? '';
+                    $_SESSION['role']               = $currentUser['role'] ?? 'user';
 
-                $data['currentUser'] = $currentUser;
-            } else {
-                unset($_SESSION['user_id']);
+                    $data['currentUser'] = $currentUser;
+                } else {
+                    unset($_SESSION['user_id']);
+                }
             }
         }
 

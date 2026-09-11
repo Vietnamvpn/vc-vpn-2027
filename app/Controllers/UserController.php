@@ -13,6 +13,7 @@ class UserController extends BaseController
 {
     public function __construct()
     {
+        parent::__construct();
         if (!isset($_SESSION['user_id'])) {
             $this->redirect('/auth/login');
         }
@@ -156,10 +157,13 @@ class UserController extends BaseController
     public function deposit(): void
     {
         $amount = (float)($_POST['amount'] ?? 0);
+        $minDeposit = (float)($this->settings['min_deposit'] ?? $this->settings['min_deposit_amount'] ?? 10);
+        $symbol = $this->settings['currency_symbol'] ?? '¥';
 
-        if ($amount < 10000) {
-            $_SESSION['error'] = 'Số tiền nạp tối thiểu là 10.000 VNĐ.';
+        if ($amount < $minDeposit) {
+            $_SESSION['error'] = 'Số tiền nạp tối thiểu là ' . number_format($minDeposit, 2, '.', ',') . ' ' . $symbol . '.';
             $this->redirect('/user/wallet');
+            return;
         }
 
         $_SESSION['success'] = 'Yêu cầu nạp tiền đã tạo. Vui lòng hoàn tất thanh toán.';
