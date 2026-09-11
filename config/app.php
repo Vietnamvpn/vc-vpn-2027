@@ -17,5 +17,5 @@ return [
     */
     'currency' => getenv('APP_CURRENCY') ?: 'CNY',
     'currency_symbol' => getenv('APP_CURRENCY_SYMBOL') ?: '¥',
-    'currency_position' => getenv('APP_CURRENCY_POSITION') ?: 'left', // 'left' (¥100) hoặc 'right' (100¥)
+    'currency_position' => getenv('APP_CURRENCY_POSITION') ?: 'right', // 'left' (¥100) hoặc 'right' (100¥)
 ];
