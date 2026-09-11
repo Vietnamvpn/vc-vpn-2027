@@ -32,18 +32,18 @@ class PaymentController extends BaseController
         $amount  = (float)($payload['amount'] ?? 0);
         $transId = $payload['transaction_id'] ?? '';
 
-        // Chỉ bắt buộc số tiền > 0 (Không bắt buộc $content vì WeChat Pay không gửi nội dung)
-        if ($amount <= 0) {
-            $this->json(['status' => false, 'message' => 'Số tiền chuyển khoản phải lớn hơn 0.'], 400);
-            return;
-        }
-
         $orderService   = new OrderService();
         $paymentService = new PaymentService();
 
-        // 2. VietQR: Kiểm tra nếu có mã đơn hàng LS...
+        // 2. VietQR: Kiểm tra mã đơn hàng LS...
         if (!empty($content) && preg_match('/LS\d+/', $content, $matches)) {
             $orderCode = $matches[0];
+            
+            // Nếu chưa có amount truyền lên, tự bóc tách số tiền trong content
+            if ($amount <= 0 && preg_match('/(?:\+|KH:\s*|TIEN:\s*|^)(\d+(?:\.\d+)?)/i', $content, $amtMatches)) {
+                $amount = (float)$amtMatches[1];
+            }
+
             $result = $orderService->processPaymentByOrderCode($orderCode, $amount, $transId ?: $orderCode);
 
             if ($result['status']) {
@@ -54,7 +54,7 @@ class PaymentController extends BaseController
             return;
         }
 
-        // 3. VietQR: Kiểm tra nếu có mã nạp tiền DEP...
+        // 3. VietQR: Kiểm tra mã nạp tiền DEP...
         if (!empty($content) && preg_match('/DEP\d+/', $content, $matches)) {
             $transCode = $matches[0];
             $result = $paymentService->completePaymentByCode($transCode, $amount);
@@ -67,7 +67,19 @@ class PaymentController extends BaseController
             return;
         }
 
-        // 4. WeChat Pay: Khớp đơn tự động theo số tiền lẻ duy nhất (Chạy khi content rỗng hoặc không có mã LS/DEP)
+        // 4. Nếu chưa có amount, tự động bóc tách số tiền từ nội dung thông báo (Ví dụ: 微信支付收款1.00元)
+        if ($amount <= 0 && !empty($content)) {
+            if (preg_match('/(\d+(?:\.\d+)?)/', $content, $amtMatches)) {
+                $amount = (float)$amtMatches[1];
+            }
+        }
+
+        if ($amount <= 0) {
+            $this->json(['status' => false, 'message' => 'Không thể bóc tách số tiền hợp lệ từ nội dung thông báo.'], 400);
+            return;
+        }
+
+        // 5. WeChat Pay: Khớp đơn tự động theo số tiền lẻ duy nhất
         $result = $orderService->processPaymentByAmount($amount, $transId);
         if ($result['status']) {
             $this->json(['status' => true, 'message' => $result['message']]);
