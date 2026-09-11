@@ -23,9 +23,9 @@ class PaymentController extends BaseController
         $expectedSecret = $config['macrodroid_secret'] ?? '';
         $providedSecret = $payload['secret'] ?? $_SERVER['HTTP_X_MACRODROID_SECRET'] ?? '';
 
-        if (empty($expectedSecret) || !hash_equals($expectedSecret, $providedSecret)) {
+        if (!empty($expectedSecret) && !hash_equals($expectedSecret, $providedSecret)) {
             $this->json(['status' => false, 'message' => 'Mã xác thực Webhook không hợp lệ.'], 403);
-            return;
+            return; // Dừng ngay lập tức, không cho chạy xuống logic xử lý đơn hàng bên dưới
         }
 
         $content = strtoupper(trim($payload['content'] ?? $payload['description'] ?? ''));
