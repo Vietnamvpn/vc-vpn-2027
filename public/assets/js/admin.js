@@ -216,3 +216,85 @@ function generatePlanCode(prefix = 'LS') {
         codeInput.value = prefix + randomNum;
     }
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const chartCanvas = document.getElementById('revenueComparisonChart');
+    if (chartCanvas && typeof Chart !== 'undefined') {
+        const ctx = chartCanvas.getContext('2d');
+        const currentMonthData = JSON.parse(chartCanvas.dataset.current || '[]');
+        const lastMonthData = JSON.parse(chartCanvas.dataset.last || '[]');
+        const selectedMonth = chartCanvas.dataset.month;
+        const selectedYear = chartCanvas.dataset.year;
+        const daysLabels = Array.from({ length: 31 }, (_, i) => 'Ngày ' + (i + 1));
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: daysLabels,
+                datasets: [
+                    {
+                        label: `Tháng ${selectedMonth}/${selectedYear}`,
+                        data: currentMonthData,
+                        borderColor: '#007aff',
+                        backgroundColor: 'rgba(0, 122, 255, 0.12)',
+                        fill: true,
+                        tension: 0.35,
+                        borderWidth: 2.5,
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'Tháng Liền Trước',
+                        data: lastMonthData,
+                        borderColor: '#8e8e93',
+                        backgroundColor: 'rgba(142, 142, 147, 0.08)',
+                        fill: true,
+                        tension: 0.35,
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        pointRadius: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--ios-text').trim() || '#1c1c1e',
+                            font: { weight: '600' }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed.y !== null) {
+                                    label += '¥' + new Intl.NumberFormat('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                        ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--ios-text-secondary').trim() || '#8e8e93' }
+                    },
+                    y: {
+                        grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                        ticks: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--ios-text-secondary').trim() || '#8e8e93',
+                            callback: function (value) {
+                                return '¥' + new Intl.NumberFormat('zh-CN', { notation: 'compact' }).format(value);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+});

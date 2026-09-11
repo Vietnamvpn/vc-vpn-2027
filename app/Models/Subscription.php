@@ -203,4 +203,14 @@ class Subscription extends BaseModel
         $stmt->execute(['plan_id' => $planId]);
         return (int)$stmt->fetchColumn();
     }
+
+    /**
+     * Đếm tổng số gói đăng ký đang hoạt động (Status Active & Chưa hết hạn)
+     */
+    public function countActive(): int
+    {
+        $stmt = self::$db->prepare("SELECT COUNT(*) FROM `{$this->table}` WHERE `status` = 'active' AND `end_date` > NOW()");
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
 }

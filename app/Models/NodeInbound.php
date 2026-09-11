@@ -7,6 +7,26 @@ class NodeInbound extends BaseModel
     protected string $table = 'vc_node_inbounds';
 
     /**
+     * Đếm tổng số Inbound đang hoạt động (active)
+     */
+    public function countActive(): int
+    {
+        $stmt = self::$db->prepare("SELECT COUNT(*) FROM `{$this->table}` WHERE `status` = 'active'");
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Đếm tất cả Inbound có trong hệ thống
+     */
+    public function countAll(): int
+    {
+        $stmt = self::$db->prepare("SELECT COUNT(*) FROM `{$this->table}`");
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
      * Lấy danh sách tất cả Node Inbound đang hoạt động kèm thông tin Máy chủ (Server), có hỗ trợ lọc theo group_id
      */
     public function getAllActiveWithServer(?int $groupId = null): array

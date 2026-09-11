@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\Subscription;
 use App\Models\Server;
+use App\Models\NodeInbound;
 
 class DashboardController extends BaseController
 {
@@ -40,14 +41,17 @@ class DashboardController extends BaseController
         $userModel = new User();
         $subscriptionModel = new Subscription();
         $serverModel = new Server();
+        $inboundModel = new NodeInbound();
 
         $stats = [
-            'total_users' => method_exists($userModel, 'countAll') ? $userModel->countAll() : 0,
-            'new_users_today' => method_exists($userModel, 'countToday') ? $userModel->countToday() : 0,
-            'active_subscriptions' => method_exists($subscriptionModel, 'countActive') ? $subscriptionModel->countActive() : 0,
-            'monthly_revenue' => $monthlyRevenue,
-            'active_servers' => method_exists($serverModel, 'countActive') ? $serverModel->countActive() : 0,
-            'total_servers' => method_exists($serverModel, 'countAll') ? $serverModel->countAll() : 0,
+            'total_users'          => method_exists($userModel, 'countAll') ? $userModel->countAll() : 0,
+            'new_users_today'      => method_exists($userModel, 'countToday') ? $userModel->countToday() : 0,
+            'active_subscriptions' => $subscriptionModel->countActive(),
+            'monthly_revenue'      => $monthlyRevenue,
+            'active_servers'       => method_exists($serverModel, 'countActive') ? $serverModel->countActive() : 0,
+            'total_servers'        => method_exists($serverModel, 'countAll') ? $serverModel->countAll() : 0,
+            'active_inbounds'      => method_exists($inboundModel, 'countActive') ? $inboundModel->countActive() : 0,
+            'total_inbounds'       => method_exists($inboundModel, 'countAll') ? $inboundModel->countAll() : 0,
         ];
 
         $servers = method_exists($serverModel, 'getAll') ? $serverModel->getAll() : [];

@@ -33,7 +33,7 @@ ob_start();
             <span class="title">Gói Dịch Vụ Active</span>
             <span style="font-size: 1.25rem;">🔑</span>
         </div>
-        <div class="value"><?= number_format($stats['active_subscriptions'] ?? 0) ?></div>
+        <div class="value" style="color: var(--ios-success);"><?= number_format($stats['active_subscriptions'] ?? 0) ?></div>
         <div style="font-size: 0.8rem; color: var(--ios-text-secondary);">Đang hoạt động</div>
     </div>
 
@@ -48,11 +48,11 @@ ob_start();
 
     <div class="glass-card stat-card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span class="title">Máy Chủ Online</span>
-            <span style="font-size: 1.25rem;">🖥️</span>
+            <span class="title">Cổng Inbound Active</span>
+            <span style="font-size: 1.25rem;">🌐</span>
         </div>
-        <div class="value" style="color: var(--ios-blue);"><?= ($stats['active_servers'] ?? 0) ?> / <?= ($stats['total_servers'] ?? 0) ?></div>
-        <div style="font-size: 0.8rem; color: var(--ios-success); font-weight: 600;">Hoạt động ổn định</div>
+        <div class="value" style="color: #5856D6;"><?= ($stats['active_inbounds'] ?? 0) ?> / <?= ($stats['total_inbounds'] ?? 0) ?></div>
+        <div style="font-size: 0.8rem; color: var(--ios-text-secondary);">Giao thức khả dụng</div>
     </div>
 </div>
 
@@ -155,91 +155,17 @@ ob_start();
     </div>
 
     <div style="position: relative; height: 300px; width: 100%;">
-        <canvas id="revenueComparisonChart"></canvas>
+        <canvas id="revenueComparisonChart" 
+                data-current="<?= htmlspecialchars(json_encode($monthlyChart['current_month'] ?? array_fill(0, 31, 0))) ?>" 
+                data-last="<?= htmlspecialchars(json_encode($monthlyChart['last_month'] ?? array_fill(0, 31, 0))) ?>" 
+                data-month="<?= (int)($selectedMonth ?? date('n')) ?>" 
+                data-year="<?= (int)($selectedYear ?? date('Y')) ?>">
+        </canvas>
     </div>
 </div>
 
-<!-- Script vẽ biểu đồ Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const ctx = document.getElementById('revenueComparisonChart').getContext('2d');
-    
-    const currentMonthData = <?= json_encode($monthlyChart['current_month'] ?? array_fill(0, 31, 0)) ?>;
-    const lastMonthData = <?= json_encode($monthlyChart['last_month'] ?? array_fill(0, 31, 0)) ?>;
-    const daysLabels = Array.from({length: 31}, (_, i) => 'Ngày ' + (i + 1));
-
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: daysLabels,
-            datasets: [
-                {
-                    label: 'Tháng <?= (int)($selectedMonth ?? date('n')) ?>/<?= (int)($selectedYear ?? date('Y')) ?>',
-                    data: currentMonthData,
-                    borderColor: '#007aff',
-                    backgroundColor: 'rgba(0, 122, 255, 0.12)',
-                    fill: true,
-                    tension: 0.35,
-                    borderWidth: 2.5,
-                    pointRadius: 3
-                },
-                {
-                    label: 'Tháng Liền Trước',
-                    data: lastMonthData,
-                    borderColor: '#8e8e93',
-                    backgroundColor: 'rgba(142, 142, 147, 0.08)',
-                    fill: true,
-                    tension: 0.35,
-                    borderWidth: 2,
-                    borderDash: [5, 5],
-                    pointRadius: 3
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--ios-text').trim() || '#1c1c1e',
-                        font: { weight: '600' }
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) { label += ': '; }
-                            if (context.parsed.y !== null) {
-                                label += '¥' + new Intl.NumberFormat('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(context.parsed.y);
-                            }
-                            return label;
-                        }
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    grid: { color: 'rgba(255, 255, 255, 0.08)' },
-                    ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--ios-text-secondary').trim() || '#8e8e93' }
-                },
-                y: {
-                    grid: { color: 'rgba(255, 255, 255, 0.08)' },
-                    ticks: {
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--ios-text-secondary').trim() || '#8e8e93',
-                        callback: function(value) {
-                            return '¥' + new Intl.NumberFormat('zh-CN', { notation: 'compact' }).format(value);
-                        }
-                    }
-                }
-            }
-        }
-    });
-});
-</script>
+<script src="/assets/js/admin.js"></script>
 
 <?php
 $content = ob_get_clean();
