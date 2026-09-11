@@ -93,16 +93,31 @@ ob_start();
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
                 <div>
                     <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mã Tiền Tệ Mặc Định</label>
-                    <input type="text" name="settings[currency]" class="glass-input" value="<?= htmlspecialchars($settings['currency'] ?? 'CNY') ?>" placeholder="CNY" style="width: 100%;">
+                    <input type="text" name="settings[currency]" class="glass-input" value="<?= htmlspecialchars($settings['currency'] ?? 'VND') ?>" placeholder="VND, CNY, USD..." style="width: 100%;">
                 </div>
 
                 <div>
                     <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Ký Hiệu Tiền Tệ</label>
-                    <input type="text" name="settings[currency_symbol]" class="glass-input" value="<?= htmlspecialchars($settings['currency_symbol'] ?? '¥') ?>" placeholder="¥" style="width: 100%;">
+                    <input type="text" name="settings[currency_symbol]" class="glass-input" value="<?= htmlspecialchars($settings['currency_symbol'] ?? 'đ') ?>" placeholder="đ, ¥, $..." style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tỷ Giá (CNY / 1 Đơn vị hệ thống)</label>
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Vị Trí Ký Hiệu Tiền Tệ</label>
+                    <select name="settings[currency_position]" class="glass-input" style="width: 100%; cursor: pointer;">
+                        <option value="right" <?= ($settings['currency_position'] ?? 'right') === 'right' ? 'selected' : '' ?>>Bên phải (VD: 100.000 đ)</option>
+                        <option value="left" <?= ($settings['currency_position'] ?? 'right') === 'left' ? 'selected' : '' ?>>Bên trái (VD: đ100.000)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Chữ Số Thập Phân</label>
+                    <input type="number" name="settings[currency_decimals]" class="glass-input" value="<?= htmlspecialchars($settings['currency_decimals'] ?? '0') ?>" min="0" max="4" step="1" style="width: 100%;" placeholder="0 cho VND, 2 cho CNY/USD">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+                <div>
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tỷ Giá Chuyển Đổi</label>
                     <input type="number" name="settings[exchange_rate]" class="glass-input" value="<?= htmlspecialchars($settings['exchange_rate'] ?? '1') ?>" min="0.01" step="0.01" style="width: 100%;">
                 </div>
 
@@ -110,22 +125,22 @@ ob_start();
                     <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tỷ Lệ Hoa Hồng Giới Thiệu (%)</label>
                     <input type="number" name="settings[commission_rate]" class="glass-input" value="<?= htmlspecialchars($settings['commission_rate'] ?? '10') ?>" min="0" max="100" step="0.1" style="width: 100%;">
                 </div>
+
+                <div>
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thưởng Khi Đăng Ký Có Mã Giới Thiệu</label>
+                    <input type="number" name="settings[referral_bonus]" class="glass-input" value="<?= htmlspecialchars($settings['referral_bonus'] ?? '0') ?>" min="0" step="any" style="width: 100%;">
+                </div>
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thưởng Khi Đăng Ký Có Mã Giới Thiệu (CNY)</label>
-                    <input type="number" name="settings[referral_bonus]" class="glass-input" value="<?= htmlspecialchars($settings['referral_bonus'] ?? '0') ?>" min="0" step="0.1" style="width: 100%;">
-                </div>
-                
-                <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền Nạp Tối Thiểu (CNY)</label>
-                    <input type="number" name="settings[min_deposit]" class="glass-input" value="<?= htmlspecialchars($settings['min_deposit'] ?? '10') ?>" min="0" step="0.1" style="width: 100%;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền Nạp Tối Thiểu</label>
+                    <input type="number" name="settings[min_deposit]" class="glass-input" value="<?= htmlspecialchars($settings['min_deposit'] ?? '10000') ?>" min="0" step="any" style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền Rút Tối Thiểu (CNY)</label>
-                    <input type="number" name="settings[min_withdrawal]" class="glass-input" value="<?= htmlspecialchars($settings['min_withdrawal'] ?? '50') ?>" min="0" step="0.1" style="width: 100%;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền Rút Tối Thiểu</label>
+                    <input type="number" name="settings[min_withdrawal]" class="glass-input" value="<?= htmlspecialchars($settings['min_withdrawal'] ?? '50000') ?>" min="0" step="any" style="width: 100%;">
                 </div>
             </div>
 

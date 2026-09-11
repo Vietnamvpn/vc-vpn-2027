@@ -11,6 +11,29 @@ abstract class BaseController
     protected array $settings = [];
 
     /**
+     * Định dạng số tiền động theo cấu hình CSDL (Ký hiệu, Vị trí, Số chữ số thập phân)
+     */
+    public function formatMoney($amount): string
+    {
+        if (empty($this->settings) && class_exists('App\Models\Setting')) {
+            $settingModel = new Setting();
+            $this->settings = $settingModel->getAllAsKeyValue();
+        }
+
+        $symbol   = $this->settings['currency_symbol'] ?? '¥';
+        $position = $this->settings['currency_position'] ?? 'right';
+        $decimals = isset($this->settings['currency_decimals']) ? (int)$this->settings['currency_decimals'] : 2;
+
+        $formattedNumber = number_format((float)$amount, $decimals, '.', ',');
+
+        if ($position === 'left') {
+            return $symbol . $formattedNumber;
+        }
+
+        return $formattedNumber . ' ' . $symbol;
+    }
+
+    /**
      * Ghi nhật ký thao tác hệ thống vào CSDL (vc_system_logs)
      */
     protected function logActivity(string $action, ?string $description = null): void
@@ -51,11 +74,15 @@ abstract class BaseController
             $this->settings = $settingModel->getAllAsKeyValue();
         }
 
-        // Tự động inject biến $settings vào tất cả các View
+        // Tự động inject biến $settings và helper formatMoney vào tất cả các View
         if (!isset($data['settings'])) {
             $data['settings'] = $this->settings;
         } else {
             $data['settings'] = array_merge($this->settings, $data['settings']);
+        }
+
+        if (!isset($data['formatMoney'])) {
+            $data['formatMoney'] = fn($amount) => $this->formatMoney($amount);
         }
 
         if (isset($_SESSION['user_id'])) {

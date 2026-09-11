@@ -1,6 +1,3 @@
-<?php
-$currencySymbol = $settings['currency_symbol'] ?? '¥';
-?>
 <nav class="glass-card navbar-container" style="margin: 0; padding: 0.875rem 1.5rem; border-radius: 0; border-top: none; border-left: none; border-right: none; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; width: 100%; position: relative; z-index: 1000; background: rgba(180, 187, 213, 0.49);">
     <!-- Bên trái: Toggle Sidebar Mobile (khi đã đăng nhập) OR Tên Web (khi chưa đăng nhập) -->
     <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -50,11 +47,11 @@ $currencySymbol = $settings['currency_symbol'] ?? '¥';
                     <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.825rem; margin-top: 0.4rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border);">
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: var(--ios-text-secondary);">Số dư ví:</span>
-                            <span style="font-weight: 700; color: var(--ios-success);"><?= htmlspecialchars($currencySymbol) ?><?= number_format($_SESSION['balance'] ?? 0, 2, '.', ',') ?></span>
+                            <span style="font-weight: 700; color: var(--ios-success);"><?= isset($formatMoney) ? $formatMoney($_SESSION['balance'] ?? 0) : number_format($_SESSION['balance'] ?? 0, 2) ?></span>
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: var(--ios-text-secondary);">Số dư hoa hồng:</span>
-                            <span style="font-weight: 700; color: var(--ios-warning);"><?= htmlspecialchars($currencySymbol) ?><?= number_format($_SESSION['commission_balance'] ?? 0, 2, '.', ',') ?></span>
+                            <span style="font-weight: 700; color: var(--ios-warning);"><?= isset($formatMoney) ? $formatMoney($_SESSION['commission_balance'] ?? 0) : number_format($_SESSION['commission_balance'] ?? 0, 2) ?></span>
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: var(--ios-text-secondary);">Đăng ký:</span>

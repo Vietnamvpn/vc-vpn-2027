@@ -2,7 +2,6 @@
 $pageTitle = "Dashboard - Quản Trị Hệ Thống";
 $activeMenu = "dashboard";
 
-$currencySymbol = $settings['currency_symbol'] ?? '¥';
 $currencyCode = $settings['currency'] ?? 'CNY';
 
 ob_start();
@@ -45,7 +44,7 @@ ob_start();
             <span class="title">Doanh Thu Tháng <?= htmlspecialchars($selectedMonth ?? date('n')) ?></span>
             <span style="font-size: 1.25rem;">💴</span>
         </div>
-        <div class="value" style="color: var(--ios-success);"><?= htmlspecialchars($currencySymbol) ?><?= number_format($stats['monthly_revenue'] ?? 0, 2, '.', ',') ?></div>
+        <div class="value" style="color: var(--ios-success);"><?= isset($formatMoney) ? $formatMoney($stats['monthly_revenue'] ?? 0) : number_format($stats['monthly_revenue'] ?? 0, 2) ?></div>
         <div style="font-size: 0.8rem; color: var(--ios-text-secondary);">Tổng đơn đã thanh toán</div>
     </div>
 
@@ -83,7 +82,7 @@ ob_start();
                             <tr>
                                 <td style="font-weight: 600;">#<?= htmlspecialchars($order['order_code']) ?></td>
                                 <td><?= htmlspecialchars($order['username'] ?? 'N/A') ?></td>
-                                <td style="font-weight: 600; color: var(--ios-success);"><?= htmlspecialchars($currencySymbol) ?><?= number_format($order['total_amount'], 2, '.', ',') ?></td>
+                                <td style="font-weight: 600; color: var(--ios-success);"><?= isset($formatMoney) ? $formatMoney($order['total_amount']) : number_format($order['total_amount'], 2) ?></td>
                                 <td>
                                     <?php
                                     $statusStyle = [
@@ -163,7 +162,9 @@ ob_start();
                 data-last="<?= htmlspecialchars(json_encode($monthlyChart['last_month'] ?? array_fill(0, 31, 0))) ?>" 
                 data-month="<?= (int)($selectedMonth ?? date('n')) ?>" 
                 data-year="<?= (int)($selectedYear ?? date('Y')) ?>"
-                data-symbol="<?= htmlspecialchars($currencySymbol) ?>">
+                data-symbol="<?= htmlspecialchars($settings['currency_symbol'] ?? '¥') ?>"
+                data-position="<?= htmlspecialchars($settings['currency_position'] ?? 'right') ?>"
+                data-decimals="<?= (int)($settings['currency_decimals'] ?? 2) ?>">
         </canvas>
     </div>
 </div>
