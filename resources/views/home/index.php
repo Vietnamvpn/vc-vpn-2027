@@ -14,7 +14,7 @@ ob_start();
         <?php if (!empty($_SESSION['user_id'])): ?>
             <a href="/user/dashboard" class="glass-btn" style="padding: 0.8rem 2rem; font-size: 1rem; background: rgba(255, 255, 255, 0.2); color: var(--ios-text); border: 1px solid var(--glass-border);">Bảng Điều Khiển</a>
         <?php else: ?>
-            <a href="/auth/register" class="glass-btn" style="padding: 0.8rem 2rem; font-size: 1rem; background: rgba(255, 255, 255, 0.2); color: var(--ios-text); border: 1px solid var(--glass-border);">Đăng Ký Ngay</a>
+            <a href="/register" class="glass-btn" style="padding: 0.8rem 2rem; font-size: 1rem; background: rgba(255, 255, 255, 0.2); color: var(--ios-text); border: 1px solid var(--glass-border);">Đăng Ký Ngay</a>
         <?php endif; ?>
     </div>
 </div>
