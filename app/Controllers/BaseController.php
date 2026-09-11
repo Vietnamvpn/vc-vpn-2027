@@ -10,14 +10,6 @@ abstract class BaseController
 {
     protected array $settings = [];
 
-    public function __construct()
-    {
-        if (class_exists('App\Models\Setting')) {
-            $settingModel = new Setting();
-            $this->settings = $settingModel->getAllAsKeyValue();
-        }
-    }
-
     /**
      * Ghi nhật ký thao tác hệ thống vào CSDL (vc_system_logs)
      */
@@ -32,7 +24,6 @@ abstract class BaseController
             ?? $_SERVER['REMOTE_ADDR'] 
             ?? '127.0.0.1';
 
-        // Lấy IP đầu tiên nếu qua nhiều Proxy/Cloudflare
         if (str_contains($ipAddress, ',')) {
             $ipAddress = trim(explode(',', $ipAddress)[0]);
         }
@@ -50,11 +41,17 @@ abstract class BaseController
     }
 
     /**
-     * Render Giao diện View (Tự động Inject $settings động & Cập nhật Session User tươi)
+     * Render Giao diện View (Tự động nạp $settings hệ thống & Session User tươi)
      */
     protected function render(string $view, array $data = []): void
     {
-        // Tự động nạp $settings vào tất cả View
+        // Luôn nạp cấu hình CSDL trực tiếp trong render() để không phụ thuộc vào parent::__construct()
+        if (empty($this->settings) && class_exists('App\Models\Setting')) {
+            $settingModel = new Setting();
+            $this->settings = $settingModel->getAllAsKeyValue();
+        }
+
+        // Tự động inject biến $settings vào tất cả các View
         if (!isset($data['settings'])) {
             $data['settings'] = $this->settings;
         } else {

@@ -7,16 +7,19 @@ class Setting extends BaseModel
     protected string $table = 'vc_settings';
 
     /**
-     * Lấy tất cả cài đặt dưới dạng mảng key-value
+     * Lấy tất cả cài đặt dưới dạng mảng key-value chuẩn PDO Fetch Assoc
      */
     public function getAllAsKeyValue(): array
     {
         $stmt = self::$db->prepare("SELECT `setting_key`, `setting_value` FROM `{$this->table}`");
         $stmt->execute();
-        $rows = $stmt->fetchAll() ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+        
         $settings = [];
         foreach ($rows as $row) {
-            $settings[$row['setting_key']] = $row['setting_value'];
+            if (isset($row['setting_key'])) {
+                $settings[$row['setting_key']] = $row['setting_value'];
+            }
         }
         return $settings;
     }
@@ -28,7 +31,7 @@ class Setting extends BaseModel
     {
         $stmt = self::$db->prepare("SELECT `setting_value` FROM `{$this->table}` WHERE `setting_key` = :key LIMIT 1");
         $stmt->execute(['key' => $key]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result['setting_value'] ?? null;
     }
 
