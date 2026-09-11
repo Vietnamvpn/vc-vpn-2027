@@ -2,6 +2,9 @@
 $pageTitle = "Chỉnh Sửa Mã Giảm Giá - Quản Trị Hệ Thống";
 $activeMenu = "coupons";
 
+$currencySymbol = $settings['currency_symbol'] ?? '¥';
+$currencyCode   = $settings['currency'] ?? 'CNY';
+
 ob_start();
 ?>
 
@@ -37,7 +40,7 @@ ob_start();
                 <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Loại Giảm Giá (*)</label>
                 <select name="discount_type" class="glass-input" required style="width: 100%; cursor: pointer;">
                     <option value="percent" <?= ($coupon['discount_type'] ?? '') === 'percent' ? 'selected' : '' ?>>Giảm theo phần trăm (%)</option>
-                    <option value="fixed" <?= ($coupon['discount_type'] ?? '') === 'fixed' ? 'selected' : '' ?>>Giảm số tiền cố định (CNY - ¥)</option>
+                    <option value="fixed" <?= ($coupon['discount_type'] ?? '') === 'fixed' ? 'selected' : '' ?>>Giảm số tiền cố định (<?= htmlspecialchars($currencyCode) ?> - <?= htmlspecialchars($currencySymbol) ?>)</option>
                 </select>
             </div>
         </div>

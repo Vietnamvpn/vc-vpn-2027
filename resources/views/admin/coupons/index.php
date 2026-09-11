@@ -2,6 +2,8 @@
 $pageTitle = "Quản Lý Mã Giảm Giá - Quản Trị Hệ Thống";
 $activeMenu = "coupons";
 
+$currencySymbol = $settings['currency_symbol'] ?? '¥';
+
 ob_start();
 ?>
 
@@ -74,7 +76,7 @@ ob_start();
                                 <?php if (($coupon['discount_type'] ?? 'percent') === 'percent'): ?>
                                     <?= (float)$coupon['discount_value'] ?>%
                                 <?php else: ?>
-                                    ¥<?= number_format($coupon['discount_value'], 2, '.', ',') ?>
+                                    <?= htmlspecialchars($currencySymbol) ?><?= number_format($coupon['discount_value'], 2, '.', ',') ?>
                                 <?php endif; ?>
                             </td>
                             <td style="text-align: center; font-size: 0.85rem;">

@@ -2,6 +2,9 @@
 $pageTitle = "Dashboard - Quản Trị Hệ Thống";
 $activeMenu = "dashboard";
 
+$currencySymbol = $settings['currency_symbol'] ?? '¥';
+$currencyCode = $settings['currency'] ?? 'CNY';
+
 ob_start();
 ?>
 
@@ -42,7 +45,7 @@ ob_start();
             <span class="title">Doanh Thu Tháng <?= htmlspecialchars($selectedMonth ?? date('n')) ?></span>
             <span style="font-size: 1.25rem;">💴</span>
         </div>
-        <div class="value" style="color: var(--ios-success);">¥<?= number_format($stats['monthly_revenue'] ?? 0, 2, '.', ',') ?></div>
+        <div class="value" style="color: var(--ios-success);"><?= htmlspecialchars($currencySymbol) ?><?= number_format($stats['monthly_revenue'] ?? 0, 2, '.', ',') ?></div>
         <div style="font-size: 0.8rem; color: var(--ios-text-secondary);">Tổng đơn đã thanh toán</div>
     </div>
 
@@ -80,7 +83,7 @@ ob_start();
                             <tr>
                                 <td style="font-weight: 600;">#<?= htmlspecialchars($order['order_code']) ?></td>
                                 <td><?= htmlspecialchars($order['username'] ?? 'N/A') ?></td>
-                                <td style="font-weight: 600; color: var(--ios-success);">¥<?= number_format($order['total_amount'], 2, '.', ',') ?></td>
+                                <td style="font-weight: 600; color: var(--ios-success);"><?= htmlspecialchars($currencySymbol) ?><?= number_format($order['total_amount'], 2, '.', ',') ?></td>
                                 <td>
                                     <?php
                                     $statusStyle = [
@@ -132,7 +135,7 @@ ob_start();
 <div class="glass-card" style="padding: 1.25rem;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
         <div>
-            <h2 style="font-size: 1.1rem; font-weight: 700;">So Sánh Doanh Thu (CNY)</h2>
+            <h2 style="font-size: 1.1rem; font-weight: 700;">So Sánh Doanh Thu (<?= htmlspecialchars($currencyCode) ?>)</h2>
             <p style="font-size: 0.8rem; color: var(--ios-text-secondary);">Đối soát tăng trưởng doanh thu theo từng ngày giữa tháng đã chọn và tháng liền trước</p>
         </div>
 
@@ -159,7 +162,8 @@ ob_start();
                 data-current="<?= htmlspecialchars(json_encode($monthlyChart['current_month'] ?? array_fill(0, 31, 0))) ?>" 
                 data-last="<?= htmlspecialchars(json_encode($monthlyChart['last_month'] ?? array_fill(0, 31, 0))) ?>" 
                 data-month="<?= (int)($selectedMonth ?? date('n')) ?>" 
-                data-year="<?= (int)($selectedYear ?? date('Y')) ?>">
+                data-year="<?= (int)($selectedYear ?? date('Y')) ?>"
+                data-symbol="<?= htmlspecialchars($currencySymbol) ?>">
         </canvas>
     </div>
 </div>
