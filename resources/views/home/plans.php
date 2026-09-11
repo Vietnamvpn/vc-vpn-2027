@@ -46,7 +46,7 @@ ob_start();
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
     border-radius: 20px;
-    padding: 1.75rem;
+    padding: 0.5rem;
     margin-bottom: 2.5rem;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -157,7 +157,6 @@ ob_start();
 <?php else: ?>
     <div class="glass-card" style="text-align: center; padding: 3rem; color: var(--ios-text-secondary);">
         <p style="font-size: 1.1rem; margin-bottom: 1rem;">Hiện chưa có gói dịch vụ nào mở bán.</p>
-        <a href="/" class="glass-btn" style="text-decoration: none;">Quay Về Trang Chủ</a>
     </div>
 <?php endif; ?>
 

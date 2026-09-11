@@ -33,7 +33,7 @@ ob_start();
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
     border-radius: 20px;
-    padding: 1.75rem;
+    padding: 0.5rem;
     margin-bottom: 2.5rem;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
