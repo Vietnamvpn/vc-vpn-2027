@@ -15,7 +15,7 @@ ob_start();
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 250px;">
                         <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--ios-blue);">
-                            <a href="/home/post?slug=<?= urlencode($post['slug']) ?>" style="color: inherit; text-decoration: none;">
+                            <a href="/post-detail?slug=<?= urlencode($post['slug']) ?>" style="color: inherit; text-decoration: none;">
                                 <?= ($index + 1) ?>. <?= htmlspecialchars($post['title']) ?>
                             </a>
                         </h3>
@@ -23,7 +23,7 @@ ob_start();
                             <?= htmlspecialchars(strip_tags($post['content'])) ?>
                         </p>
                     </div>
-                    <a href="/home/post?slug=<?= urlencode($post['slug']) ?>" class="glass-btn" style="white-space: nowrap; font-size: 0.85rem; padding: 0.5rem 1rem; text-decoration: none;">
+                    <a href="/post-detail?slug=<?= urlencode($post['slug']) ?>" class="glass-btn" style="white-space: nowrap; font-size: 0.85rem; padding: 0.5rem 1rem; text-decoration: none;">
                         Xem Chi Tiết ➔
                     </a>
                 </div>
