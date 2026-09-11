@@ -25,7 +25,7 @@ ob_start();
             <div>
                 <strong>Số Dư Hoa Hồng Hiện Tại:</strong> 
                 <span style="color: var(--ios-warning); font-weight: 700;">
-                    ¥<?= number_format($withdrawal['commission_balance'] ?? 0, 2, '.', ',') ?>
+                    <?= isset($formatMoney) ? $formatMoney($withdrawal['commission_balance'] ?? 0) : number_format($withdrawal['commission_balance'] ?? 0, 2) ?>
                 </span>
             </div>
             <div><strong>Thời Gian Tạo:</strong> <?= date('d/m/Y H:i:s', strtotime($withdrawal['created_at'])) ?></div>
@@ -53,7 +53,7 @@ ob_start();
             <div>
                 <strong>Số Tiền Cần Chuyển:</strong> 
                 <span style="color: var(--ios-success); font-weight: 700; font-size: 1.1rem;">
-                    ¥<?= number_format($withdrawal['amount'], 2, '.', ',') ?>
+                    <?= isset($formatMoney) ? $formatMoney($withdrawal['amount']) : number_format($withdrawal['amount'], 2) ?>
                 </span>
             </div>
             <div><strong>Tên Ngân Hàng:</strong> <span style="font-weight: 700;"><?= htmlspecialchars($withdrawal['bank_name']) ?></span></div>

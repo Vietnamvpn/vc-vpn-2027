@@ -2,6 +2,9 @@
 $pageTitle = "Sửa Người Dùng - Quản Trị Hệ Thống";
 $activeMenu = "users";
 
+$currencySymbol = $settings['currency_symbol'] ?? 'đ';
+$currencyCode   = $settings['currency'] ?? 'VND';
+
 ob_start();
 ?>
 
@@ -58,13 +61,13 @@ ob_start();
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
             <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Dư Chính (CNY - ¥)</label>
-                <input type="number" name="balance" class="glass-input" value="<?= (float)$user['balance'] ?>" step="0.01" style="width: 100%;">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Dư Chính (<?= htmlspecialchars($currencyCode) ?> - <?= htmlspecialchars($currencySymbol) ?>)</label>
+                <input type="number" name="balance" class="glass-input" value="<?= (float)$user['balance'] ?>" step="any" style="width: 100%;">
             </div>
 
             <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Dư Hoa Hồng (CNY - ¥)</label>
-                <input type="number" name="commission_balance" class="glass-input" value="<?= (float)$user['commission_balance'] ?>" step="0.01" style="width: 100%;">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Dư Hoa Hồng (<?= htmlspecialchars($currencyCode) ?> - <?= htmlspecialchars($currencySymbol) ?>)</label>
+                <input type="number" name="commission_balance" class="glass-input" value="<?= (float)$user['commission_balance'] ?>" step="any" style="width: 100%;">
             </div>
         </div>
 

@@ -2,6 +2,9 @@
 $pageTitle = "Thêm Gói Cước Mới - Quản Trị Hệ Thống";
 $activeMenu = "plans";
 
+$currencySymbol = $settings['currency_symbol'] ?? 'đ';
+$currencyCode   = $settings['currency'] ?? 'VND';
+
 ob_start();
 ?>
 
@@ -56,8 +59,8 @@ ob_start();
             </div>
 
             <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Giá Bán (CNY - ¥) (*)</label>
-                <input type="number" id="price" name="price" class="glass-input" placeholder="10.00" min="0" step="0.01" required style="width: 100%;">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Giá Bán (<?= htmlspecialchars($currencyCode) ?> - <?= htmlspecialchars($currencySymbol) ?>) (*)</label>
+                <input type="number" id="price" name="price" class="glass-input" placeholder="10.00" min="0" step="any" required style="width: 100%;">
             </div>
         </div>
 

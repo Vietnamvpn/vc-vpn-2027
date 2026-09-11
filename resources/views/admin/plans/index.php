@@ -2,6 +2,9 @@
 $pageTitle = "Quản Lý Gói Cước - Quản Trị Hệ Thống";
 $activeMenu = "plans";
 
+$currencySymbol = $settings['currency_symbol'] ?? 'đ';
+$currencyCode   = $settings['currency'] ?? 'VND';
+
 ob_start();
 ?>
 
@@ -32,7 +35,7 @@ ob_start();
 <div style="margin-bottom: 1rem; width: 100%; box-sizing: border-box;">
     <div>
         <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Quản Lý Gói Cước</h1>
-        <p style="color: var(--ios-text-secondary); font-size: 0.85rem;">Danh sách các gói dịch vụ VPN, giá bán (CNY) và thông số giới hạn</p>
+        <p style="color: var(--ios-text-secondary); font-size: 0.85rem;">Danh sách các gói dịch vụ VPN, giá bán (<?= htmlspecialchars($currencyCode) ?>) và thông số giới hạn</p>
     </div>
     <div style="display: flex; justify-content: flex-end; margin-top: 0.75rem;">
         <a href="/admin/plans/create" class="glass-btn" style="text-decoration: none; white-space: nowrap;">+ Thêm Gói Cước</a>
@@ -49,7 +52,7 @@ ob_start();
                     <th>Tên Gói Cước</th>
                     <th>Mã Code</th>
                     <th>Nhóm Server</th>
-                    <th>Giá Bán (CNY)</th>
+                    <th>Giá Bán (<?= htmlspecialchars($currencyCode) ?>)</th>
                     <th style="text-align: center;">Thời Hạn</th>
                     <th style="text-align: center;">Dung Lượng</th>
                     <th style="text-align: center;">Thiết Bị</th>
@@ -70,7 +73,7 @@ ob_start();
                             </td>
                             <td style="color: var(--ios-text-secondary); font-size: 0.85rem;"><?= htmlspecialchars($plan['group_name'] ?? 'Chưa phân nhóm') ?></td>
                             <td style="font-weight: 700; color: var(--ios-success);">
-                                ¥<?= number_format($plan['price'], 2, '.', ',') ?>
+                                <?= isset($formatMoney) ? $formatMoney($plan['price']) : number_format($plan['price'], 2) ?>
                             </td>
                             <td style="text-align: center; font-weight: 600; font-size: 0.85rem;"><?= htmlspecialchars($plan['duration_days']) ?> Ngày</td>
                             <td style="text-align: center; font-weight: 600; font-size: 0.85rem;">

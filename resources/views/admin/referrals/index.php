@@ -73,7 +73,7 @@ ob_start();
                                 </span>
                             </td>
                             <td style="font-weight: 700; color: var(--ios-success);">
-                                +¥<?= number_format($comm['commission_amount'], 2, '.', ',') ?>
+                                +<?= isset($formatMoney) ? $formatMoney($comm['commission_amount']) : number_format($comm['commission_amount'], 2) ?>
                             </td>
                             <td style="font-size: 0.8rem; color: var(--ios-text-secondary);">
                                 <?= date('d/m/Y H:i', strtotime($comm['created_at'])) ?>

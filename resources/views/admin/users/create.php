@@ -2,6 +2,9 @@
 $pageTitle = "Thêm Người Dùng Mới - Quản Trị Hệ Thống";
 $activeMenu = "users";
 
+$currencySymbol = $settings['currency_symbol'] ?? 'đ';
+$currencyCode   = $settings['currency'] ?? 'VND';
+
 ob_start();
 ?>
 
@@ -57,8 +60,8 @@ ob_start();
         </div>
 
         <div>
-            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Dư Ban Đầu (CNY - ¥)</label>
-            <input type="number" name="balance" class="glass-input" value="0" min="0" step="0.01" style="width: 100%;">
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Dư Ban Đầu (<?= htmlspecialchars($currencyCode) ?> - <?= htmlspecialchars($currencySymbol) ?>)</label>
+            <input type="number" name="balance" class="glass-input" value="0" min="0" step="any" style="width: 100%;">
         </div>
 
         <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">

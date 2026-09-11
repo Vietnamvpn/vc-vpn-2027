@@ -93,10 +93,10 @@ ob_start();
                                 </span>
                             </td>
                             <td style="font-weight: 700; color: var(--ios-success);">
-                                ¥<?= number_format($u['balance'], 2, '.', ',') ?>
+                                <?= isset($formatMoney) ? $formatMoney($u['balance']) : number_format($u['balance'], 2) ?>
                             </td>
                             <td style="font-weight: 700; color: var(--ios-warning);">
-                                ¥<?= number_format($u['commission_balance'], 2, '.', ',') ?>
+                                <?= isset($formatMoney) ? $formatMoney($u['commission_balance']) : number_format($u['commission_balance'], 2) ?>
                             </td>
                             <td>
                                 <?php

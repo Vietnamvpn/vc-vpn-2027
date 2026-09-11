@@ -63,8 +63,8 @@ ob_start();
         <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">Ví & Hoa Hồng</h2>
         
         <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.9rem;">
-            <div><strong>Số dư tài khoản:</strong> <span style="color: var(--ios-success); font-weight: 700; font-size: 1.1rem;">¥<?= number_format($user['balance'], 2, '.', ',') ?></span></div>
-            <div><strong>Số dư hoa hồng:</strong> <span style="color: var(--ios-warning); font-weight: 700;">¥<?= number_format($user['commission_balance'], 2, '.', ',') ?></span></div>
+            <div><strong>Số dư tài khoản:</strong> <span style="color: var(--ios-success); font-weight: 700; font-size: 1.1rem;"><?= isset($formatMoney) ? $formatMoney($user['balance']) : number_format($user['balance'], 2) ?></span></div>
+            <div><strong>Số dư hoa hồng:</strong> <span style="color: var(--ios-warning); font-weight: 700;"><?= isset($formatMoney) ? $formatMoney($user['commission_balance']) : number_format($user['commission_balance'], 2) ?></span></div>
             <div><strong>Mã giới thiệu (Ref Code):</strong> <code style="background: rgba(0,122,255,0.1); padding: 0.2rem 0.4rem; border-radius: var(--radius-sm); font-weight: 700;"><?= htmlspecialchars($user['ref_code'] ?? 'N/A') ?></code></div>
             <div><strong>Đăng ký IP:</strong> <?= htmlspecialchars($user['register_ip'] ?? 'N/A') ?> <?= !empty($user['register_ip']) ? '(' . htmlspecialchars(getCountryByIp($user['register_ip'])) . ')' : '' ?></div>
             <div><strong>Đăng nhập cuối IP:</strong> <?= htmlspecialchars($user['last_login_ip'] ?? 'N/A') ?> <?= !empty($user['last_login_ip']) ? '(' . htmlspecialchars(getCountryByIp($user['last_login_ip'])) . ')' : '' ?></div>
