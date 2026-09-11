@@ -7,7 +7,7 @@ ob_start();
 
 <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;">
     <div>
-        <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Chi Tiết Đơn Hàng:</h1>
+        <h1 style="font-size: 1.5rem; font-weight: 700; word-break: break-word;">Chi Tiết Đơn Hàng: #<?= $order['id'] ?></h1>
     </div>
 </div>
 
@@ -17,7 +17,6 @@ ob_start();
         <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">Thông Tin Đơn Hàng</h2>
         
         <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.9rem;">
-            <div><strong>ID Hệ Thống:</strong> #<?= $order['id'] ?></div>
             <div>
                 <strong>Mã Đơn Hàng:</strong> 
                 <code style="background: rgba(0, 122, 255, 0.08); color: var(--ios-blue); padding: 0.2rem 0.4rem; border-radius: var(--radius-sm); font-weight: 700;">
