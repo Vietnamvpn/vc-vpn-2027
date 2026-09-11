@@ -86,7 +86,17 @@ class PaymentController extends BaseController
         // 6. WeChat Pay / VietQR: Tự động bóc tách số tiền từ nội dung thông báo
         if ($amount <= 0 && !empty($content)) {
             $cleanContent = str_replace(',', '.', $content);
-            if (preg_match('/(\d+(?:\.\d+)?)/', $cleanContent, $amtMatches)) {
+            
+            // Ưu tiên 1: Tìm số đứng ngay trước chữ 元 (Ví dụ: 0.10元, 0.50元)
+            if (preg_match('/(\d+(?:\.\d+)?)\s*元/u', $cleanContent, $amtMatches)) {
+                $amount = (float)$amtMatches[1];
+            } 
+            // Ưu tiên 2: Tìm số có dấu chấm thập phân (VD: 0.10) để né số chỉ mục [2] ở đầu
+            elseif (preg_match('/(\d+\.\d+)/', $cleanContent, $amtMatches)) {
+                $amount = (float)$amtMatches[1];
+            }
+            // Ưu tiên 3: Lấy số bất kỳ
+            elseif (preg_match('/(\d+(?:\.\d+)?)/', $cleanContent, $amtMatches)) {
                 $amount = (float)$amtMatches[1];
             }
         }
