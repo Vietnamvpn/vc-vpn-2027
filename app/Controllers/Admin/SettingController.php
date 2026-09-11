@@ -14,7 +14,7 @@ class SettingController extends BaseController
     public function __construct()
     {
         if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
-            $this->redirect('/auth/login');
+            $this->redirect('/login');
         }
         $this->settingModel = new Setting();
         $this->planModel = new VpnPlan();

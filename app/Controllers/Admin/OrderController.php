@@ -20,7 +20,7 @@ class OrderController extends BaseController
         date_default_timezone_set('Asia/Ho_Chi_Minh');
 
         if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
-            $this->redirect('/auth/login');
+            $this->redirect('/login');
         }
         $this->orderModel = new Order();
     }
