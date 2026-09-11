@@ -126,7 +126,7 @@ html, body {
 .auth-card {
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 25px rgba(255, 255, 255, 0.4);
-  background-color: rgba(255, 255, 255, 0.88);
+  background-color: rgba(255, 255, 255, 0.413);
   backdrop-filter: blur(25px) saturate(180%);
   -webkit-backdrop-filter: blur(25px) saturate(180%);
   border: 1.5px solid rgba(212, 175, 55, 0.5);
