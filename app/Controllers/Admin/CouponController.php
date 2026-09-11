@@ -93,7 +93,7 @@ class CouponController extends BaseController
     // POST /admin/coupons/edit
     public function edit(): void
     {
-        $id = (int)($_GET['id'] ?? 0);
+        $id = (int)($_GET['id'] ?? $_POST['id'] ?? 0);
         $coupon = $this->couponModel->find($id);
 
         if (!$coupon) {
@@ -137,7 +137,7 @@ class CouponController extends BaseController
 
     public function delete(): void
     {
-        $id = (int)($_GET['id'] ?? 0);
+        $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
 
         if ($id > 0) {
             if ($this->couponModel->delete($id)) {
@@ -147,6 +147,8 @@ class CouponController extends BaseController
             } else {
                 $_SESSION['error'] = 'Không thể xóa mã giảm giá này!';
             }
+        } else {
+            $_SESSION['error'] = 'Mã giảm giá không hợp lệ!';
         }
 
         $this->redirect('/admin/coupons');

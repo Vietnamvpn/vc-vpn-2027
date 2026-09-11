@@ -105,9 +105,9 @@ class OrderController extends BaseController
 
     public function updateStatus(): void
     {
-        $id     = (int)($_GET['id'] ?? 0);
-        $status = $_GET['status'] ?? '';
-        $userId = (int)($_GET['user_id'] ?? 0);
+        $id     = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
+        $status = $_POST['status'] ?? $_GET['status'] ?? '';
+        $userId = (int)($_POST['user_id'] ?? $_GET['user_id'] ?? 0);
 
         $validStatuses = ['completed', 'pending', 'failed', 'cancelled'];
 
@@ -198,8 +198,8 @@ class OrderController extends BaseController
 
     public function delete(): void
     {
-        $id     = (int)($_GET['id'] ?? 0);
-        $userId = (int)($_GET['user_id'] ?? 0);
+        $id     = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
+        $userId = (int)($_POST['user_id'] ?? $_GET['user_id'] ?? 0);
 
         $order = $this->orderModel->find($id);
 

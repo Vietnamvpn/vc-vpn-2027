@@ -95,7 +95,7 @@ class PostController extends BaseController
     // POST /admin/posts/edit
     public function edit(): void
     {
-        $id = (int)($_GET['id'] ?? 0);
+        $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
         $post = $this->postModel->findWithAuthor($id);
 
         if (!$post) {
@@ -157,7 +157,7 @@ class PostController extends BaseController
 
     public function delete(): void
     {
-        $id = (int)($_GET['id'] ?? 0);
+        $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
 
         if ($id > 0) {
             if ($this->postModel->delete($id)) {
@@ -166,6 +166,8 @@ class PostController extends BaseController
             } else {
                 $_SESSION['error'] = 'Không thể xóa bài viết này!';
             }
+        } else {
+            $_SESSION['error'] = 'Mã bài viết không hợp lệ!';
         }
 
         $this->redirect('/admin/posts');

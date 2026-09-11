@@ -101,7 +101,7 @@ class PlanController extends BaseController
 
     public function edit(): void
     {
-        $id               = isset($_GET['id']) ? (int)$_GET['id'] : null;
+        $id               = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
         $groupId          = (int)($_POST['group_id'] ?? 0);
         $name             = trim($_POST['name'] ?? '');
         $code             = trim($_POST['code'] ?? '');
@@ -136,9 +136,9 @@ class PlanController extends BaseController
 
     public function delete(): void
     {
-        $id = isset($_GET['id']) ? (int)$_GET['id'] : null;
+        $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
 
-        if ($id) {
+        if ($id > 0) {
             $subModel = new Subscription();
             $count = $subModel->countByPlanId($id);
 
@@ -147,7 +147,10 @@ class PlanController extends BaseController
             } else {
                 $this->planModel->delete($id);
                 $_SESSION['flash_message'] = 'Đã xóa gói cước thành công!';
+                $_SESSION['flash_type']    = 'success';
             }
+        } else {
+            $_SESSION['error'] = 'Gói cước không hợp lệ!';
         }
 
         $this->redirect('/admin/plans');

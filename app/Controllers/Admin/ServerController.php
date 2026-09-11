@@ -8,6 +8,13 @@ use App\Models\ServerGroup;
 
 class ServerController extends BaseController
 {
+    public function __construct()
+    {
+        if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
+            $this->redirect('/auth/login');
+        }
+    }
+
     public function index(): void
     {
         $serverModel = new Server();
@@ -103,7 +110,7 @@ class ServerController extends BaseController
 
     public function edit(): void
     {
-        $id = (int)($_GET['id'] ?? 0);
+        $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
         
         $name = trim($_POST['name'] ?? '');
         $groupId = (int)($_POST['group_id'] ?? 0);
@@ -142,10 +149,10 @@ class ServerController extends BaseController
 
     public function delete(): void
     {
-        $id = (int)($_GET['id'] ?? 0);
+        $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
         $serverModel = new Server();
         
-        if ($serverModel->delete($id)) {
+        if ($id > 0 && $serverModel->delete($id)) {
             $_SESSION['success'] = 'Đã xóa máy chủ thành công.';
         } else {
             $_SESSION['error'] = 'Lỗi khi xóa máy chủ. Vui lòng thử lại.';
@@ -156,7 +163,7 @@ class ServerController extends BaseController
 
     public function sync(): void
     {
-        $id = (int)($_GET['id'] ?? 0);
+        $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
         $serverModel = new Server();
         $server = $serverModel->findById($id);
 
@@ -179,7 +186,6 @@ class ServerController extends BaseController
             $subModel  = new \App\Models\Subscription();
             $taskModel = new \App\Models\NodeTask();
 
-            // Gọi hàm lấy danh sách tài khoản active theo Nhóm máy chủ từ Model
             $activeSubs = $subModel->getActiveByGroupId($groupId);
 
             $count = 0;

@@ -90,7 +90,7 @@ class ExpenseController extends BaseController
     // POST /admin/expenses/edit
     public function edit(): void
     {
-        $id = (int)($_GET['id'] ?? 0);
+        $id = (int)($_GET['id'] ?? $_POST['id'] ?? 0);
         $expense = $this->expenseModel->find($id);
 
         if (!$expense) {
@@ -131,7 +131,7 @@ class ExpenseController extends BaseController
 
     public function delete(): void
     {
-        $id = (int)($_GET['id'] ?? 0);
+        $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
 
         if ($id > 0) {
             if ($this->expenseModel->delete($id)) {
@@ -140,6 +140,8 @@ class ExpenseController extends BaseController
             } else {
                 $_SESSION['error'] = 'Không thể xóa khoản chi phí này!';
             }
+        } else {
+            $_SESSION['error'] = 'Khoản chi phí không hợp lệ!';
         }
 
         $this->redirect('/admin/expenses');

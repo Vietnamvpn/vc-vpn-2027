@@ -91,7 +91,7 @@ class UserController extends BaseController
 
     public function edit(): void
     {
-        $id = (int)($_GET['id'] ?? 0);
+        $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
         $user = $this->userModel->findById($id);
 
         if (!$user) {
@@ -164,7 +164,7 @@ class UserController extends BaseController
 
     public function delete(): void
     {
-        $id = (int)($_GET['id'] ?? 0);
+        $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
         $targetUser = $this->userModel->findById($id);
 
         if (!$targetUser) {

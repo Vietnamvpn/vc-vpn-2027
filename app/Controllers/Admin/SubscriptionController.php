@@ -148,9 +148,9 @@ class SubscriptionController extends BaseController
 
     public function updateStatus(): void
     {
-        $id     = (int)($_GET['id'] ?? 0);
-        $status = $_GET['status'] ?? '';
-        $userId = (int)($_GET['user_id'] ?? 0);
+        $id     = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
+        $status = $_POST['status'] ?? $_GET['status'] ?? '';
+        $userId = (int)($_POST['user_id'] ?? $_GET['user_id'] ?? 0);
 
         $validStatuses = ['active', 'suspended', 'cancelled', 'expired'];
 
@@ -197,8 +197,8 @@ class SubscriptionController extends BaseController
 
     public function renew(): void
     {
-        $id     = (int)($_GET['id'] ?? 0);
-        $userId = (int)($_GET['user_id'] ?? 0);
+        $id     = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
+        $userId = (int)($_POST['user_id'] ?? $_GET['user_id'] ?? 0);
 
         $sub = $this->subscriptionModel->find($id);
         if (!$sub) {
@@ -270,8 +270,8 @@ class SubscriptionController extends BaseController
 
     public function resetTraffic(): void
     {
-        $id     = (int)($_GET['id'] ?? 0);
-        $userId = (int)($_GET['user_id'] ?? 0);
+        $id     = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
+        $userId = (int)($_POST['user_id'] ?? $_GET['user_id'] ?? 0);
 
         $sub = $this->subscriptionModel->find($id);
         if (!$sub) {
@@ -293,8 +293,8 @@ class SubscriptionController extends BaseController
 
     public function resetToken(): void
     {
-        $id     = (int)($_GET['id'] ?? 0);
-        $userId = (int)($_GET['user_id'] ?? 0);
+        $id     = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
+        $userId = (int)($_POST['user_id'] ?? $_GET['user_id'] ?? 0);
 
         $sub = $this->subscriptionModel->find($id);
         if (!$sub) {
@@ -335,8 +335,8 @@ class SubscriptionController extends BaseController
 
     public function delete(): void
     {
-        $id     = (int)($_GET['id'] ?? 0);
-        $userId = (int)($_GET['user_id'] ?? 0);
+        $id     = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
+        $userId = (int)($_POST['user_id'] ?? $_GET['user_id'] ?? 0);
 
         $sub = $this->subscriptionModel->find($id);
         if (!$sub) {

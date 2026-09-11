@@ -74,7 +74,7 @@ class ServerGroupController extends BaseController
 
     public function edit(): void
     {
-        $id = isset($_GET['id']) ? (int)$_GET['id'] : null;
+        $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
         $name = trim($_POST['name'] ?? '');
         $description = trim($_POST['description'] ?? '');
         $status = $_POST['status'] ?? 'active';
@@ -97,10 +97,12 @@ class ServerGroupController extends BaseController
 
     public function delete(): void
     {
-        $id = isset($_GET['id']) ? (int)$_GET['id'] : null;
-        if ($id) {
+        $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
+        if ($id > 0) {
             $this->serverGroupModel->delete($id);
             $_SESSION['flash_message'] = 'Đã xóa nhóm máy chủ thành công!';
+        } else {
+            $_SESSION['error'] = 'Mã nhóm máy chủ không hợp lệ!';
         }
         $this->redirect('/admin/server-groups');
     }
