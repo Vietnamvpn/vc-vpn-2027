@@ -22,7 +22,7 @@ class AuthController extends BaseController
         if (class_exists('App\Models\Setting')) {
             $settingModel = new Setting();
             $siteTitle = $settingModel->get('site_title', $siteTitle) ?? $siteTitle;
-            $siteSubtitle = $settingModel->get('site_subtitle', $siteSubtitle) ?? $siteSubtitle;
+            $siteSubtitle = $settingModel->get('site_description', $siteSubtitle) ?? $siteSubtitle;
         }
 
         $this->render('auth.login', [
