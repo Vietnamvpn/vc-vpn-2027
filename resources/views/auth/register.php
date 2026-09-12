@@ -26,7 +26,7 @@ ob_start();
         <label for="username">Tên đăng nhập</label>
         <div class="input-group-custom">
             <span class="input-group-text-custom">👤</span>
-            <input type="text" id="username" name="username" class="form-control-custom" placeholder="ten_tai_khoan" required autofocus autocomplete="username">
+            <input type="text" id="username" name="username" class="form-control-custom" placeholder="Email hoặc Username" required autofocus autocomplete="username">
         </div>
     </div>
 
