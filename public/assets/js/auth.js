@@ -93,7 +93,7 @@ function startOtpCountdown(seconds) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    // 1. Logic Toggle Ẩn/Hiện Mật Khẩu
+    // 1. Logic Toggle Ẩn/Hiện Mật Khẩu (Chỉ nhắm vào nút có class .toggle-password)
     const toggleBtns = document.querySelectorAll('.toggle-password');
 
     toggleBtns.forEach(function (btn) {
