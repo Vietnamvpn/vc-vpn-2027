@@ -302,9 +302,9 @@ html, body {
 }
 
 .input-group-text-custom {
-  background: transparent;
+  background: hsla(53, 58%, 77%, 0.078);
   border: none;
-  padding: 0 10px;
+  padding: 10px;
   color: #9a7b1c;
   display: flex;
   align-items: center;
