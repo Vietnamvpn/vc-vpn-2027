@@ -57,7 +57,7 @@ ob_start();
 </form>
 
 <div class="auth-footer assemble-bottom-2">
-    <span>Quay lại <a href="/login">Đăng nhập</a></span>
+    <a href="/login">Quay lại Đăng nhập</a>
 </div>
 
 <?php
