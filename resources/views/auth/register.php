@@ -1,6 +1,6 @@
 <?php
 $authTitle = "Tạo Tài Khoản";
-$authSubtitle = "Trải nghiệm dịch vụ VPN chất lượng cao";
+$authSubtitle = $siteSubtitle ?? "An Toàn - Bảo Mật - Uy Tín";
 ob_start();
 ?>
 

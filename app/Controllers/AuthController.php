@@ -8,15 +8,11 @@ use App\Services\MailService;
 
 class AuthController extends BaseController
 {
-    public function showLogin(): void
+    /**
+     * Lấy cấu hình Tên trang web và Khẩu hiệu từ CSDL (vc_settings)
+     */
+    private function getSiteBranding(): array
     {
-        if (isset($_SESSION['user_id'])) {
-            $this->redirect('/dashboard');
-        }
-
-        $error = $_SESSION['error'] ?? null;
-        unset($_SESSION['error']);
-
         $siteTitle = "VC VPN 2027";
         $siteSubtitle = "An Toàn - Bảo Mật - Uy Tín";
 
@@ -26,10 +22,27 @@ class AuthController extends BaseController
             $siteSubtitle = $settingModel->get('site_description', $siteSubtitle) ?? $siteSubtitle;
         }
 
-        $this->render('auth.login', [
-            'error'        => $error,
+        return [
             'siteTitle'    => $siteTitle,
             'siteSubtitle' => $siteSubtitle
+        ];
+    }
+
+    public function showLogin(): void
+    {
+        if (isset($_SESSION['user_id'])) {
+            $this->redirect('/dashboard');
+        }
+
+        $error = $_SESSION['error'] ?? null;
+        unset($_SESSION['error']);
+
+        $branding = $this->getSiteBranding();
+
+        $this->render('auth.login', [
+            'error'        => $error,
+            'siteTitle'    => $branding['siteTitle'],
+            'siteSubtitle' => $branding['siteSubtitle']
         ]);
     }
 
@@ -121,9 +134,13 @@ class AuthController extends BaseController
         $success = $_SESSION['success'] ?? null;
         unset($_SESSION['error'], $_SESSION['success']);
 
+        $branding = $this->getSiteBranding();
+
         $this->render('auth.register', [
-            'error'   => $error,
-            'success' => $success
+            'error'        => $error,
+            'success'      => $success,
+            'siteTitle'    => $branding['siteTitle'],
+            'siteSubtitle' => $branding['siteSubtitle']
         ]);
     }
 
@@ -252,9 +269,13 @@ class AuthController extends BaseController
         $success = $_SESSION['success'] ?? null;
         unset($_SESSION['error'], $_SESSION['success']);
 
+        $branding = $this->getSiteBranding();
+
         $this->render('auth.forgot-password', [
-            'error'   => $error,
-            'success' => $success
+            'error'        => $error,
+            'success'      => $success,
+            'siteTitle'    => $branding['siteTitle'],
+            'siteSubtitle' => $branding['siteSubtitle']
         ]);
     }
 
@@ -302,10 +323,14 @@ class AuthController extends BaseController
         $success = $_SESSION['success'] ?? null;
         unset($_SESSION['error'], $_SESSION['success']);
 
+        $branding = $this->getSiteBranding();
+
         $this->render('auth.reset-password', [
-            'error'   => $error,
-            'success' => $success,
-            'email'   => trim($_GET['email'] ?? '')
+            'error'        => $error,
+            'success'      => $success,
+            'email'        => trim($_GET['email'] ?? ''),
+            'siteTitle'    => $branding['siteTitle'],
+            'siteSubtitle' => $branding['siteSubtitle']
         ]);
     }
 

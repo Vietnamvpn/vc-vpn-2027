@@ -1,6 +1,6 @@
 <?php
 $authTitle = "Quên Mật Khẩu";
-$authSubtitle = "Nhập email để nhận mã xác thực OTP khôi phục";
+$authSubtitle = $siteSubtitle ?? "An Toàn - Bảo Mật - Uy Tín";
 ob_start();
 ?>
 
