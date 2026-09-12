@@ -8,6 +8,13 @@ require_once __DIR__ . '/header.php';
 <div id="dynamic-bg" class="bg-slideshow"></div>
 <div class="bg-overlay"></div>
 
+<!-- Brand Logo / Name ở góc trên bên trái màn hình -->
+<div class="auth-brand-corner" style="position: absolute; top: 20px; left: 25px; z-index: 10; display: flex; align-items: center; gap: 10px;">
+    <span style="font-size: 1.25rem; font-weight: 700; color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.6); letter-spacing: 0.5px;">
+        <?= htmlspecialchars($authTitle ?? 'VC VPN 2027', ENT_QUOTES, 'UTF-8') ?>
+    </span>
+</div>
+
 <div class="corner-glow">
   <div class="glow glow-left"></div>
   <div class="glow glow-right"></div>
@@ -21,8 +28,8 @@ require_once __DIR__ . '/header.php';
 <div class="auth-wrapper">
     <div class="auth-card">
         <div class="text-center mb-4 assemble-top">
-            <h2 class="fw-bold royal-title mb-1 text-sparkle"><?= $authTitle ?? 'VC VPN 2027' ?></h2>
-            <p class="small" style="color: #fffb04; margin: 0;"><?= $authSubtitle ?? 'An Toàn - Bảo Mật - Uy Tín' ?></p>
+            <h2 class="fw-bold royal-title mb-1 text-sparkle"><?= htmlspecialchars($authTitle ?? 'VC VPN 2027', ENT_QUOTES, 'UTF-8') ?></h2>
+            <p class="small" style="color: #fffb04; margin: 0;"><?= htmlspecialchars($authSubtitle ?? 'An Toàn - Bảo Mật - Uy Tín', ENT_QUOTES, 'UTF-8') ?></p>
         </div>
         
         <?= $content ?? '' ?>
@@ -62,7 +69,3 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 </script>
-
-<?php 
-// Đã loại bỏ footer.php ở đây để tránh lỗi dính giao diện bên dưới
-?>

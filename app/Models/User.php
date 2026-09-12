@@ -10,40 +10,48 @@ class User extends BaseModel
     {
         $stmt = self::$db->prepare("SELECT * FROM `{$this->table}` WHERE `id` = :id LIMIT 1");
         $stmt->execute(['id' => $id]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result ?: null;
+    }
+
+    /**
+     * Tìm kiếm người dùng phân biệt nghiêm ngặt chữ hoa/chữ thường (BINARY)
+     */
+    public function findByUsernameOrEmailStrict(string $identifier): ?array
+    {
+        $stmt = self::$db->prepare("SELECT * FROM `{$this->table}` WHERE BINARY `username` = :username OR BINARY `email` = :email LIMIT 1");
+        $stmt->execute([
+            'username' => $identifier,
+            'email'    => $identifier
+        ]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result ?: null;
     }
 
     public function findByUsernameOrEmail(string $identifier): ?array
     {
-        $stmt = self::$db->prepare("SELECT * FROM `{$this->table}` WHERE `username` = :username OR `email` = :email LIMIT 1");
-        $stmt->execute([
-            'username' => $identifier,
-            'email'    => $identifier
-        ]);
-        $result = $stmt->fetch();
-        return $result ?: null;
+        return $this->findByUsernameOrEmailStrict($identifier);
     }
 
     public function findByRefCode(string $refCode): ?array
     {
         $stmt = self::$db->prepare("SELECT * FROM `{$this->table}` WHERE `ref_code` = :ref_code LIMIT 1");
         $stmt->execute(['ref_code' => $refCode]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result ?: null;
     }
 
     public function countAll(): int
     {
         $stmt = self::$db->query("SELECT COUNT(*) as total FROM `{$this->table}`");
-        $result = $stmt->fetch();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return (int)($result['total'] ?? 0);
     }
 
     public function countToday(): int
     {
         $stmt = self::$db->query("SELECT COUNT(*) as total FROM `{$this->table}` WHERE DATE(`created_at`) = CURDATE()");
-        $result = $stmt->fetch();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return (int)($result['total'] ?? 0);
     }
 
@@ -71,7 +79,7 @@ class User extends BaseModel
 
         $stmt = self::$db->prepare($sql);
         $stmt->execute($params);
-        return $stmt->fetchAll() ?: [];
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
     }
 
     public function create(array $data): bool
@@ -95,14 +103,25 @@ class User extends BaseModel
         ]);
     }
 
+    /**
+     * Cập nhật thông tin User với Whitelist tên cột chống SQL Injection
+     */
     public function update(int $id, array $data): bool
     {
+        $allowedFields = [
+            'username', 'email', 'password_hash', 'role', 'status', 
+            'balance', 'commission_balance', 'ref_code', 'referred_by', 
+            'created_by', 'register_ip', 'last_login_ip', 'last_login_time'
+        ];
+
         $fields = [];
         $params = ['id' => $id];
 
         foreach ($data as $key => $value) {
-            $fields[] = "`{$key}` = :{$key}";
-            $params[$key] = $value;
+            if (in_array($key, $allowedFields, true)) {
+                $fields[] = "`{$key}` = :{$key}";
+                $params[$key] = $value;
+            }
         }
 
         if (empty($fields)) return false;

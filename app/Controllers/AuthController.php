@@ -3,21 +3,10 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use App\Models\Setting;
 
 class AuthController extends BaseController
 {
-    private function getClientIp(): string
-    {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            return $_SERVER['HTTP_CLIENT_IP'];
-        }
-        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-            return trim($ips[0]);
-        }
-        return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
-    }
-
     public function showLogin(): void
     {
         if (isset($_SESSION['user_id'])) {
@@ -27,13 +16,43 @@ class AuthController extends BaseController
         $error = $_SESSION['error'] ?? null;
         unset($_SESSION['error']);
 
+        $siteTitle = "VC VPN 2027";
+        $siteSubtitle = "An Toàn - Bảo Mật - Uy Tín";
+
+        if (class_exists('App\Models\Setting')) {
+            $settingModel = new Setting();
+            $siteTitle = $settingModel->get('site_name', $siteTitle) ?? $siteTitle;
+            $siteSubtitle = $settingModel->get('site_subtitle', $siteSubtitle) ?? $siteSubtitle;
+        }
+
         $this->render('auth.login', [
-            'error' => $error
+            'error'        => $error,
+            'siteTitle'    => $siteTitle,
+            'siteSubtitle' => $siteSubtitle
         ]);
     }
 
     public function login(): void
     {
+        // 1. Chống CSRF Attack
+        if (!$this->validateCsrfToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = 'Yêu cầu không hợp lệ hoặc phiên làm việc đã hết hạn. Vui lòng thử lại.';
+            $this->redirect('/login');
+        }
+
+        // 2. Chống Brute Force (Giới hạn 5 lần thử trong 15 phút)
+        $now = time();
+        $_SESSION['login_throttle'] = $_SESSION['login_throttle'] ?? [];
+        $_SESSION['login_throttle'] = array_filter(
+            $_SESSION['login_throttle'], 
+            fn($timestamp) => ($now - $timestamp) < 900
+        );
+
+        if (count($_SESSION['login_throttle']) >= 5) {
+            $_SESSION['error'] = 'Bạn đã nhập sai quá 5 lần. Vui lòng thử lại sau 15 phút.';
+            $this->redirect('/login');
+        }
+
         $username = trim($_POST['username'] ?? '');
         $password = trim($_POST['password'] ?? '');
 
@@ -44,13 +63,34 @@ class AuthController extends BaseController
 
         if (class_exists('App\Models\User')) {
             $userModel = new User();
-            $user = $userModel->findByUsernameOrEmail($username);
+            
+            // Tìm kiếm người dùng sử dụng so sánh BINARY trong MySQL
+            $user = $userModel->findByUsernameOrEmailStrict($username);
 
-            if ($user && password_verify($password, $user['password_hash'])) {
+            // Kiểm tra phân biệt tuyệt đối chữ hoa/chữ thường trong PHP (Tránh Timing Attack)
+            $dummyHash = '$2y$10$abcdefghijklmnopqrstuuNOPQRSTUVWXYZ0123456789abcdefgh';
+            $isExactMatch = $user && (
+                hash_equals($user['username'], $username) || 
+                hash_equals($user['email'], $username)
+            );
+
+            if ($isExactMatch) {
+                $passwordValid = password_verify($password, $user['password_hash']);
+            } else {
+                // Chạy hàm mã hóa giả định để thời gian xử lý giữ nguyên 100% (Chống Timing Attack)
+                password_verify($password, $dummyHash);
+                $passwordValid = false;
+            }
+
+            if ($isExactMatch && $passwordValid) {
                 if (($user['status'] ?? 'active') !== 'active') {
                     $_SESSION['error'] = 'Tài khoản của bạn đã bị khóa hoặc chưa kích hoạt.';
                     $this->redirect('/login');
                 }
+
+                // 3. Chống Session Fixation (Cấp lại ID phiên khi đăng nhập)
+                session_regenerate_id(true);
+                unset($_SESSION['login_throttle']);
 
                 $clientIp = $this->getClientIp();
                 $userModel->update($user['id'], [
@@ -69,6 +109,9 @@ class AuthController extends BaseController
                 }
             }
         }
+
+        // Đánh dấu 1 lần thử sai
+        $_SESSION['login_throttle'][] = $now;
 
         $_SESSION['error'] = 'Tên đăng nhập hoặc mật khẩu không chính xác.';
         $this->redirect('/login');
@@ -90,6 +133,11 @@ class AuthController extends BaseController
 
     public function register(): void
     {
+        if (!$this->validateCsrfToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = 'Phiên làm việc không hợp lệ. Vui lòng thử lại.';
+            $this->redirect('/register');
+        }
+
         $username = trim($_POST['username'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $password = trim($_POST['password'] ?? '');
@@ -109,12 +157,12 @@ class AuthController extends BaseController
         if (class_exists('App\Models\User')) {
             $userModel = new User();
 
-            if ($userModel->findByUsernameOrEmail($username)) {
+            if ($userModel->findByUsernameOrEmailStrict($username)) {
                 $_SESSION['error'] = 'Tên đăng nhập đã được sử dụng.';
                 $this->redirect('/register');
             }
 
-            if ($userModel->findByUsernameOrEmail($email)) {
+            if ($userModel->findByUsernameOrEmailStrict($email)) {
                 $_SESSION['error'] = 'Email đã được sử dụng.';
                 $this->redirect('/register');
             }
@@ -132,12 +180,12 @@ class AuthController extends BaseController
             }
 
             $created = $userModel->create([
-                'username' => $username,
-                'email' => $email,
+                'username'      => $username,
+                'email'         => $email,
                 'password_hash' => $hashedPassword,
-                'ref_code' => $myRefCode,
-                'referred_by' => $referredBy,
-                'register_ip' => $clientIp
+                'ref_code'      => $myRefCode,
+                'referred_by'   => $referredBy,
+                'register_ip'   => $clientIp
             ]);
 
             if ($created) {
@@ -164,6 +212,11 @@ class AuthController extends BaseController
 
     public function sendResetLink(): void
     {
+        if (!$this->validateCsrfToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = 'Phiên làm việc không hợp lệ.';
+            $this->redirect('/forgot-password');
+        }
+
         $email = trim($_POST['email'] ?? '');
 
         if (empty($email)) {
@@ -187,6 +240,11 @@ class AuthController extends BaseController
 
     public function resetPassword(): void
     {
+        if (!$this->validateCsrfToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = 'Phiên làm việc không hợp lệ.';
+            $this->redirect('/login');
+        }
+
         $token = trim($_POST['token'] ?? '');
         $password = trim($_POST['password'] ?? '');
         $passwordConfirm = trim($_POST['password_confirm'] ?? '');

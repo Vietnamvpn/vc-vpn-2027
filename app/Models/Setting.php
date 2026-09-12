@@ -7,7 +7,16 @@ class Setting extends BaseModel
     protected string $table = 'vc_settings';
 
     /**
-     * Lấy tất cả cài đặt dưới dạng mảng key-value chuẩn PDO Fetch Assoc
+     * Lấy giá trị cấu hình theo key kèm giá trị mặc định
+     */
+    public function get(string $key, ?string $default = null): ?string
+    {
+        $value = $this->getByKey($key);
+        return ($value !== null && $value !== '') ? $value : $default;
+    }
+
+    /**
+     * Lấy tất cả cài đặt dưới dạng mảng key-value
      */
     public function getAllAsKeyValue(): array
     {

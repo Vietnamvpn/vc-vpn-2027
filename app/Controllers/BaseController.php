@@ -11,7 +11,51 @@ abstract class BaseController
     protected array $settings = [];
 
     /**
-     * Định dạng số tiền động theo cấu hình CSDL (Ký hiệu, Vị trí, Số chữ số thập phân)
+     * Tạo và lưu CSRF token vào session
+     */
+    protected function generateCsrfToken(): string
+    {
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return $_SESSION['csrf_token'];
+    }
+
+    /**
+     * Xác minh CSRF token
+     */
+    protected function validateCsrfToken(?string $token): bool
+    {
+        if (empty($_SESSION['csrf_token']) || empty($token)) {
+            return false;
+        }
+        return hash_equals($_SESSION['csrf_token'], $token);
+    }
+
+    /**
+     * Lấy IP thực của Client an toàn chống giả mạo Header
+     */
+    protected function getClientIp(): string
+    {
+        $headers = ['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'];
+        foreach ($headers as $header) {
+            if (!empty($_SERVER[$header])) {
+                foreach (explode(',', $_SERVER[$header]) as $ip) {
+                    $ip = trim($ip);
+                    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false) {
+                        return $ip;
+                    }
+                    if (filter_var($ip, FILTER_VALIDATE_IP) !== false) {
+                        $fallbackIp = $ip;
+                    }
+                }
+            }
+        }
+        return $fallbackIp ?? $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+    }
+
+    /**
+     * Định dạng số tiền động theo cấu hình CSDL
      */
     public function formatMoney($amount): string
     {
@@ -34,7 +78,7 @@ abstract class BaseController
     }
 
     /**
-     * Ghi nhật ký thao tác hệ thống vào CSDL (vc_system_logs)
+     * Ghi nhật ký thao tác hệ thống vào CSDL
      */
     protected function logActivity(string $action, ?string $description = null): void
     {
@@ -42,14 +86,7 @@ abstract class BaseController
             return;
         }
 
-        $ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'] 
-            ?? $_SERVER['HTTP_CLIENT_IP'] 
-            ?? $_SERVER['REMOTE_ADDR'] 
-            ?? '127.0.0.1';
-
-        if (str_contains($ipAddress, ',')) {
-            $ipAddress = trim(explode(',', $ipAddress)[0]);
-        }
+        $ipAddress = $this->getClientIp();
 
         if (class_exists('App\Models\SystemLog')) {
             $systemLog = new SystemLog();
@@ -64,17 +101,15 @@ abstract class BaseController
     }
 
     /**
-     * Render Giao diện View (Tự động nạp $settings hệ thống & Session User tươi)
+     * Render Giao diện View (Tự động nạp $settings hệ thống & CSRF Token)
      */
     protected function render(string $view, array $data = []): void
     {
-        // Luôn nạp cấu hình CSDL trực tiếp trong render() để không phụ thuộc vào parent::__construct()
         if (empty($this->settings) && class_exists('App\Models\Setting')) {
             $settingModel = new Setting();
             $this->settings = $settingModel->getAllAsKeyValue();
         }
 
-        // Tự động inject biến $settings và helper formatMoney vào tất cả các View
         if (!isset($data['settings'])) {
             $data['settings'] = $this->settings;
         } else {
@@ -84,6 +119,9 @@ abstract class BaseController
         if (!isset($data['formatMoney'])) {
             $data['formatMoney'] = fn($amount) => $this->formatMoney($amount);
         }
+
+        // Tự động inject csrf_token vào tất cả các view
+        $data['csrf_token'] = $this->generateCsrfToken();
 
         if (isset($_SESSION['user_id'])) {
             if (class_exists('App\Models\User')) {
@@ -126,6 +164,8 @@ abstract class BaseController
 
     protected function redirect(string $url): void
     {
+        // Chống Header Injection
+        $url = str_replace(["\r", "\n"], '', $url);
         header("Location: {$url}");
         exit;
     }
