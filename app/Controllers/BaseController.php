@@ -11,6 +11,18 @@ abstract class BaseController
     protected array $settings = [];
 
     /**
+     * Hàm khởi tạo BaseController
+     * Tự động nạp cấu hình hệ thống từ CSDL cho các Controller kế thừa
+     */
+    public function __construct()
+    {
+        if (empty($this->settings) && class_exists('App\Models\Setting')) {
+            $settingModel = new Setting();
+            $this->settings = $settingModel->getAllAsKeyValue();
+        }
+    }
+
+    /**
      * Tạo và lưu CSRF token vào session
      */
     protected function generateCsrfToken(): string
