@@ -8,16 +8,15 @@ return [
     'GET /post-detail'           => ['HomeController', 'postDetail'],
 
     // Xác thực tài khoản (Auth)
-    'GET /login'                 => ['AuthController', 'showLogin'],
-    'POST /login'                => ['AuthController', 'login'],
-    'GET /register'              => ['AuthController', 'showRegister'],
-    'POST /register'             => ['AuthController', 'register'],
-    'POST /register/send-otp'    => ['AuthController', 'sendRegisterOtp'],
-    'GET /forgot-password'       => ['AuthController', 'showForgotPassword'],
-    'POST /forgot-password'      => ['AuthController', 'sendResetLink'],
-    'GET /reset-password'        => ['AuthController', 'showResetPassword'],
-    'POST /reset-password'       => ['AuthController', 'resetPassword'],
-    'GET /logout'                => ['AuthController', 'logout'],
+    'GET /login'                     => ['AuthController', 'showLogin'],
+    'POST /login'                    => ['AuthController', 'login'],
+    'GET /register'                  => ['AuthController', 'showRegister'],
+    'POST /register'                 => ['AuthController', 'register'],
+    'POST /register/send-otp'        => ['AuthController', 'sendRegisterOtp'],
+    'GET /forgot-password'           => ['AuthController', 'showForgotPassword'],
+    'POST /forgot-password'          => ['AuthController', 'forgotPassword'],
+    'POST /forgot-password/send-otp' => ['AuthController', 'sendForgotPasswordOtp'],
+    'GET /logout'                    => ['AuthController', 'logout'],
 
     // Khách hàng (User Dashboard)
     'GET /dashboard'             => ['UserController', 'dashboard'],
