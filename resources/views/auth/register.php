@@ -10,13 +10,15 @@ ob_start();
 
     <?php if (isset($error)): ?>
         <div class="auth-alert alert-danger">
-            <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
+            <span><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></span>
+            <span class="close-alert">&times;</span>
         </div>
     <?php endif; ?>
 
     <?php if (isset($success)): ?>
         <div class="auth-alert alert-success">
-            <?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?>
+            <span><?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?></span>
+            <span class="close-alert">&times;</span>
         </div>
     <?php endif; ?>
 

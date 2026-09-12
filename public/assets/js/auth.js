@@ -1,5 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // 1. Logic Toggle Ẩn/Hiện Mật Khẩu
+    // 1. Logic Tắt Khung Thông Báo khi bấm nút X
+    document.addEventListener('click', function (e) {
+        if (e.target && e.target.classList.contains('close-alert')) {
+            const alertBox = e.target.closest('.auth-alert');
+            if (alertBox) {
+                alertBox.style.display = 'none';
+            }
+        }
+    });
+
+    // 2. Logic Toggle Ẩn/Hiện Mật Khẩu
     const toggleBtns = document.querySelectorAll('.toggle-password, .btn-toggle-pw');
 
     toggleBtns.forEach(function (btn) {
@@ -28,11 +38,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // 2. Logic Gửi Mã Xác Thực OTP (Áp dụng tự động cho Đăng ký & Quên Mật Khẩu)
+    // 3. Logic Gửi Mã Xác Thực OTP (Áp dụng cho Đăng ký & Quên Mật Khẩu)
     const btnSendOtp = document.getElementById('btnSendOtp');
     if (btnSendOtp) {
         btnSendOtp.addEventListener('click', function (e) {
             e.preventDefault();
+            e.stopPropagation();
             
             const emailInput = document.getElementById('email');
             const csrfTokenInput = document.getElementById('csrf_token');
@@ -40,11 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const targetUrl = this.getAttribute('data-action') || '/register/send-otp';
 
             if (!emailInput || !emailInput.value || !emailInput.checkValidity()) {
-                if (alertBox) {
-                    alertBox.style.display = 'block';
-                    alertBox.className = 'auth-alert alert-danger';
-                    alertBox.textContent = 'Vui lòng nhập địa chỉ Email hợp lệ trước khi lấy mã OTP.';
-                }
+                showAlert(alertBox, 'Vui lòng nhập địa chỉ Email hợp lệ trước khi lấy mã OTP.', 'danger');
                 if (emailInput) emailInput.focus();
                 return;
             }
@@ -64,35 +71,35 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(response => response.json())
             .then(data => {
-                if (alertBox) alertBox.style.display = 'block';
                 if (data.success) {
-                    if (alertBox) {
-                        alertBox.className = 'auth-alert alert-success';
-                        alertBox.textContent = data.message;
-                    }
+                    showAlert(alertBox, data.message, 'success');
                     startOtpCountdown(btnSendOtp, 60);
                 } else {
-                    if (alertBox) {
-                        alertBox.className = 'auth-alert alert-danger';
-                        alertBox.textContent = data.message || 'Có lỗi xảy ra.';
-                    }
+                    showAlert(alertBox, data.message || 'Có lỗi xảy ra trong quá trình gửi email.', 'danger');
                     btnSendOtp.disabled = false;
                     btnSendOtp.textContent = 'Gửi mã';
                 }
             })
             .catch(error => {
-                if (alertBox) {
-                    alertBox.style.display = 'block';
-                    alertBox.className = 'auth-alert alert-danger';
-                    alertBox.textContent = 'Không thể kết nối đến máy chủ. Vui lòng thử lại sau.';
-                }
+                showAlert(alertBox, 'Không thể kết nối đến máy chủ. Vui lòng thử lại sau.', 'danger');
                 btnSendOtp.disabled = false;
                 btnSendOtp.textContent = 'Gửi mã';
             });
         });
     }
 
-    // 3. Đếm ngược thời gian chờ gửi lại OTP
+    // Hàm hiển thị thông báo động kèm nút X
+    function showAlert(box, message, type) {
+        if (!box) return;
+        box.className = `auth-alert alert-${type}`;
+        box.innerHTML = `
+            <span>${message}</span>
+            <span class="close-alert">&times;</span>
+        `;
+        box.style.display = 'flex';
+    }
+
+    // Đếm ngược thời gian chờ gửi lại OTP
     function startOtpCountdown(button, seconds) {
         let left = seconds;
         button.disabled = true;
