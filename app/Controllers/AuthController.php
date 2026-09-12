@@ -21,6 +21,17 @@ class AuthController extends BaseController
         return $siteTitle;
     }
 
+    /**
+     * Khởi tạo và lấy mã CSRF Token cho Session
+     */
+    private function getCsrfToken(): string
+    {
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return $_SESSION['csrf_token'];
+    }
+
     public function showLogin(): void
     {
         if (isset($_SESSION['user_id'])) {
@@ -39,7 +50,8 @@ class AuthController extends BaseController
         $this->render('auth.login', [
             'error'        => $error,
             'siteTitle'    => $this->getSiteTitle(),
-            'siteSubtitle' => $siteSubtitle
+            'siteSubtitle' => $siteSubtitle,
+            'csrf_token'   => $this->getCsrfToken()
         ]);
     }
 
@@ -132,9 +144,10 @@ class AuthController extends BaseController
         unset($_SESSION['error'], $_SESSION['success']);
 
         $this->render('auth.register', [
-            'error'     => $error,
-            'success'   => $success,
-            'siteTitle' => $this->getSiteTitle()
+            'error'      => $error,
+            'success'    => $success,
+            'siteTitle'  => $this->getSiteTitle(),
+            'csrf_token' => $this->getCsrfToken()
         ]);
     }
 
@@ -260,9 +273,10 @@ class AuthController extends BaseController
         unset($_SESSION['error'], $_SESSION['success']);
 
         $this->render('auth.forgot-password', [
-            'error'     => $error,
-            'success'   => $success,
-            'siteTitle' => $this->getSiteTitle()
+            'error'      => $error,
+            'success'    => $success,
+            'siteTitle'  => $this->getSiteTitle(),
+            'csrf_token' => $this->getCsrfToken()
         ]);
     }
 
@@ -302,7 +316,6 @@ class AuthController extends BaseController
             $_SESSION['forgot_otp_cooldown'] = $now;
 
             $mailService = new MailService();
-            // Đã sửa tên template chuẩn thành 'auth.reset-password'
             $sent = $mailService->send($user['email'], 'Mã xác thực khôi phục mật khẩu', 'auth.reset-password', [
                 'code' => $otpCode
             ]);
