@@ -1,5 +1,5 @@
 <?php
-$authTitle = $siteTitle ?? "VC VPN 2027";
+$authTitle = "Đăng nhập tài khoản";
 $authSubtitle = $siteSubtitle ?? "An Toàn - Bảo Mật - Uy Tín";
 ob_start();
 ?>
