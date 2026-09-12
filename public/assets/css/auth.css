@@ -303,7 +303,7 @@ html, body {
 
 .input-group-text-custom {
   border: none;
-  padding: 10px;
+  padding: 0 10px;
   color: #9a7b1c;
   display: flex;
   align-items: center;

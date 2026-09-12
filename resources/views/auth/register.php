@@ -44,7 +44,7 @@ ob_start();
         <div class="input-group-custom" style="display: flex; gap: 8px;">
             <span class="input-group-text-custom">🔑</span>
             <input type="text" id="otp_code" name="otp_code" class="form-control-custom" placeholder="6 chữ số" maxlength="6" required style="flex: 1;">
-            <button type="button" id="btnSendOtp" class="btn-toggle-pw" style="padding: 11px; font-size: 0.8rem; font-weight: 600; color: #fff; border-radius: 2px; border: none; cursor: pointer; white-space: nowrap; width: auto;" onclick="sendOtpCode()">Gửi mã</button>
+            <button type="button" id="btnSendOtp" class="btn-toggle-pw" style="padding: 0 10px; font-size: 0.8rem; font-weight: 600; color: #fff; border-radius: 2px; border: none; cursor: pointer; white-space: nowrap; width: auto;" onclick="sendOtpCode()">Gửi mã</button>
         </div>
     </div>
 
