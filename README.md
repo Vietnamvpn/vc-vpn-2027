@@ -266,6 +266,17 @@ vc-vpn-2027/
 │       │   ├── server-status.php
 │       │   └── subscription-card.php
 │       │
+│       ├── emails/
+│       │   ├── auth/
+│       │   │   ├── register-otp.php
+│       │   │   └── reset-password.php
+│       │   ├── orders/
+│       │   │   └── activated.php
+│       │   └── subscriptions/
+│       │       ├── expiring-soon.php
+│       │       ├── expired.php
+│       │       └── data-exceeded.php
+│       │
 │       ├── auth/
 │       │   ├── login.php
 │       │   ├── register.php

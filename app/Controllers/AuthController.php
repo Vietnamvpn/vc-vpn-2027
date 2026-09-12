@@ -8,9 +8,6 @@ use App\Services\MailService;
 
 class AuthController extends BaseController
 {
-    /**
-     * Lấy Tên trang web từ CSDL (vc_settings) cho góc trên màn hình
-     */
     private function getSiteTitle(): string
     {
         $siteTitle = "VC VPN 2027";
@@ -81,7 +78,8 @@ class AuthController extends BaseController
                 hash_equals($user['email'], $username)
             );
 
-            if ($isExactMatch) {
+            // Kiểm tra an toàn khi password_hash là null (tài khoản đăng ký bằng Google)
+            if ($isExactMatch && !empty($user['password_hash'])) {
                 $passwordValid = password_verify($password, $user['password_hash']);
             } else {
                 password_verify($password, $dummyHash);
@@ -119,6 +117,176 @@ class AuthController extends BaseController
 
         $_SESSION['error'] = 'Tên đăng nhập hoặc mật khẩu không chính xác.';
         $this->redirect('/login');
+    }
+
+    /**
+     * Chuyển hướng người dùng sang trang đăng nhập Google OAuth 2.0
+     */
+    public function googleRedirect(): void
+    {
+        $clientId = $_ENV['GOOGLE_CLIENT_ID'] ?? getenv('GOOGLE_CLIENT_ID') ?? '';
+        $redirectUri = $_ENV['GOOGLE_REDIRECT_URI'] ?? getenv('GOOGLE_REDIRECT_URI') ?? '';
+
+        if (empty($clientId) || empty($redirectUri)) {
+            $_SESSION['error'] = 'Cấu hình Google OAuth chưa đầy đủ.';
+            $this->redirect('/login');
+        }
+
+        $state = bin2hex(random_bytes(16));
+        $_SESSION['oauth2_state'] = $state;
+
+        $params = [
+            'client_id'     => $clientId,
+            'redirect_uri'  => $redirectUri,
+            'response_type' => 'code',
+            'scope'         => 'openid email profile',
+            'state'         => $state,
+            'prompt'        => 'select_account'
+        ];
+
+        $url = 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query($params);
+        $this->redirect($url);
+    }
+
+    /**
+     * Xử lý callback sau khi người dùng đồng ý cấp quyền từ Google
+     */
+    public function googleCallback(): void
+    {
+        $state = $_GET['state'] ?? '';
+        $code = $_GET['code'] ?? '';
+
+        if (empty($state) || empty($_SESSION['oauth2_state']) || !hash_equals($_SESSION['oauth2_state'], $state)) {
+            unset($_SESSION['oauth2_state']);
+            $_SESSION['error'] = 'Xác thực Google không hợp lệ hoặc phiên làm việc đã hết hạn.';
+            $this->redirect('/login');
+        }
+        unset($_SESSION['oauth2_state']);
+
+        if (empty($code)) {
+            $_SESSION['error'] = 'Đăng nhập Google thất bại hoặc bạn đã hủy thao tác.';
+            $this->redirect('/login');
+        }
+
+        $clientId = $_ENV['GOOGLE_CLIENT_ID'] ?? getenv('GOOGLE_CLIENT_ID') ?? '';
+        $clientSecret = $_ENV['GOOGLE_CLIENT_SECRET'] ?? getenv('GOOGLE_CLIENT_SECRET') ?? '';
+        $redirectUri = $_ENV['GOOGLE_REDIRECT_URI'] ?? getenv('GOOGLE_REDIRECT_URI') ?? '';
+
+        // 1. Đổi code lấy access token
+        $ch = curl_init('https://oauth2.googleapis.com/token');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+            'code'          => $code,
+            'client_id'     => $clientId,
+            'client_secret' => $clientSecret,
+            'redirect_uri'  => $redirectUri,
+            'grant_type'    => 'authorization_code'
+        ]));
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $tokenData = json_decode($response, true);
+        $accessToken = $tokenData['access_token'] ?? null;
+
+        if (!$accessToken) {
+            $_SESSION['error'] = 'Không thể xác thực thông tin từ Google.';
+            $this->redirect('/login');
+        }
+
+        // 2. Lấy thông tin user từ Google UserInfo API
+        $ch = curl_init('https://www.googleapis.com/oauth2/v3/userinfo');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $accessToken
+        ]);
+        $userInfoResponse = curl_exec($ch);
+        curl_close($ch);
+
+        $googleUser = json_decode($userInfoResponse, true);
+        $googleId = $googleUser['sub'] ?? null;
+        $email = filter_var($googleUser['email'] ?? '', FILTER_VALIDATE_EMAIL);
+
+        if (!$googleId || !$email) {
+            $_SESSION['error'] = 'Không lấy được thông tin email từ Google.';
+            $this->redirect('/login');
+        }
+
+        $userModel = new User();
+
+        // Bước A: Tìm user theo google_id
+        $user = $userModel->findByGoogleId($googleId);
+
+        // Bước B: Nếu chưa có theo google_id, kiểm tra theo email đã tồn tại chưa
+        if (!$user) {
+            $user = $userModel->findByUsernameOrEmailStrict($email);
+
+            if ($user) {
+                // Đã tồn tại tài khoản dùng Email này -> Gắn google_id vào
+                $userModel->update($user['id'], ['google_id' => $googleId]);
+                $user['google_id'] = $googleId;
+            } else {
+                // Bước C: Tạo tài khoản mới hoàn toàn
+                $usernameBase = explode('@', $email)[0];
+                $usernameBase = preg_replace('/[^a-zA-Z0-9_]/', '', $usernameBase);
+                if (strlen($usernameBase) < 3) {
+                    $usernameBase = 'user_' . substr(md5(uniqid()), 0, 6);
+                }
+
+                // Xử lý chống trùng username
+                $username = $usernameBase;
+                $counter = 1;
+                while ($userModel->findByUsernameOrEmailStrict($username)) {
+                    $username = $usernameBase . '_' . $counter;
+                    $counter++;
+                }
+
+                $myRefCode = strtoupper(substr(md5(uniqid($username, true)), 0, 8));
+                $clientIp = $this->getClientIp();
+
+                $created = $userModel->create([
+                    'username'      => $username,
+                    'email'         => $email,
+                    'google_id'     => $googleId,
+                    'password_hash' => null,
+                    'ref_code'      => $myRefCode,
+                    'register_ip'   => $clientIp
+                ]);
+
+                if ($created) {
+                    $user = $userModel->findByGoogleId($googleId);
+                }
+            }
+        }
+
+        if (!$user) {
+            $_SESSION['error'] = 'Đã có lỗi xảy ra trong quá trình khởi tạo tài khoản.';
+            $this->redirect('/login');
+        }
+
+        if (($user['status'] ?? 'active') !== 'active') {
+            $_SESSION['error'] = 'Tài khoản của bạn đã bị khóa hoặc chưa kích hoạt.';
+            $this->redirect('/login');
+        }
+
+        // Thiết lập phiên đăng nhập thành công
+        session_regenerate_id(true);
+        unset($_SESSION['login_throttle']);
+
+        $clientIp = $this->getClientIp();
+        $userModel->update($user['id'], [
+            'last_login_ip'   => $clientIp,
+            'last_login_time' => date('Y-m-d H:i:s')
+        ]);
+
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['role'] = $user['role'] ?? 'user';
+
+        if ($_SESSION['role'] === 'admin') {
+            $this->redirect('/admin');
+        } else {
+            $this->redirect('/dashboard');
+        }
     }
 
     public function showRegister(): void
@@ -266,9 +434,6 @@ class AuthController extends BaseController
         ]);
     }
 
-    /**
-     * API gửi mã OTP khôi phục mật khẩu qua Email
-     */
     public function sendForgotPasswordOtp(): void
     {
         if (!$this->validateCsrfToken($_POST['csrf_token'] ?? '')) {
@@ -293,7 +458,7 @@ class AuthController extends BaseController
             $user = $userModel->findByUsernameOrEmailStrict($email);
 
             if (!$user) {
-                $this->json(['success' => false, 'message' => 'Địa chỉ Email này chưa được đăng ký trong hệ thống, hãy đăng ký để tiếp tục sự dụng nhé.'], 404);
+                $this->json(['success' => false, 'message' => 'Địa chỉ Email này chưa được đăng ký trong hệ thống.'], 404);
                 return;
             }
 
@@ -312,7 +477,7 @@ class AuthController extends BaseController
             ]);
 
             if ($sent) {
-                $this->json(['success' => true, 'message' => 'Mã xác thực OTP đã được gửi đến email của bạn, hãy xem trong hộp thư rác nếu chờ quá lâu không nhận được.']);
+                $this->json(['success' => true, 'message' => 'Mã xác thực OTP đã được gửi đến email của bạn.']);
             } else {
                 $this->json(['success' => false, 'message' => 'Không thể gửi email OTP. Vui lòng kiểm tra lại cấu hình SMTP.'], 500);
             }
@@ -321,9 +486,6 @@ class AuthController extends BaseController
         }
     }
 
-    /**
-     * Xử lý Đặt lại mật khẩu trực tiếp tại /forgot-password
-     */
     public function forgotPassword(): void
     {
         if (!$this->validateCsrfToken($_POST['csrf_token'] ?? '')) {

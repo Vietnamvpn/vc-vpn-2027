@@ -15,6 +15,17 @@ class User extends BaseModel
     }
 
     /**
+     * Tìm kiếm người dùng theo Google ID
+     */
+    public function findByGoogleId(string $googleId): ?array
+    {
+        $stmt = self::$db->prepare("SELECT * FROM `{$this->table}` WHERE `google_id` = :google_id LIMIT 1");
+        $stmt->execute(['google_id' => $googleId]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result ?: null;
+    }
+
+    /**
      * Tìm kiếm người dùng phân biệt nghiêm ngặt chữ hoa/chữ thường (BINARY)
      */
     public function findByUsernameOrEmailStrict(string $identifier): ?array
@@ -85,13 +96,14 @@ class User extends BaseModel
     public function create(array $data): bool
     {
         $stmt = self::$db->prepare("
-            INSERT INTO `{$this->table}` (`username`, `email`, `password_hash`, `role`, `status`, `balance`, `commission_balance`, `ref_code`, `referred_by`, `created_by`, `register_ip`, `created_at`)
-            VALUES (:username, :email, :password_hash, :role, :status, :balance, :commission_balance, :ref_code, :referred_by, :created_by, :register_ip, NOW())
+            INSERT INTO `{$this->table}` (`username`, `email`, `google_id`, `password_hash`, `role`, `status`, `balance`, `commission_balance`, `ref_code`, `referred_by`, `created_by`, `register_ip`, `created_at`)
+            VALUES (:username, :email, :google_id, :password_hash, :role, :status, :balance, :commission_balance, :ref_code, :referred_by, :created_by, :register_ip, NOW())
         ");
         return $stmt->execute([
             'username'           => $data['username'],
             'email'              => $data['email'],
-            'password_hash'      => $data['password_hash'],
+            'google_id'          => $data['google_id'] ?? null,
+            'password_hash'      => $data['password_hash'] ?? null,
             'role'               => $data['role'] ?? 'user',
             'status'             => $data['status'] ?? 'active',
             'balance'            => $data['balance'] ?? 0.00,
@@ -109,7 +121,7 @@ class User extends BaseModel
     public function update(int $id, array $data): bool
     {
         $allowedFields = [
-            'username', 'email', 'password_hash', 'role', 'status', 
+            'username', 'email', 'google_id', 'password_hash', 'role', 'status', 
             'balance', 'commission_balance', 'ref_code', 'referred_by', 
             'created_by', 'register_ip', 'last_login_ip', 'last_login_time'
         ];

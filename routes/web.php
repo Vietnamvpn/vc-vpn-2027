@@ -10,6 +10,8 @@ return [
     // Xác thực tài khoản (Auth)
     'GET /login'                     => ['AuthController', 'showLogin'],
     'POST /login'                    => ['AuthController', 'login'],
+    'GET /auth/google'               => ['AuthController', 'googleRedirect'],
+    'GET /auth/google/callback'      => ['AuthController', 'googleCallback'],
     'GET /register'                  => ['AuthController', 'showRegister'],
     'POST /register'                 => ['AuthController', 'register'],
     'POST /register/send-otp'        => ['AuthController', 'sendRegisterOtp'],
@@ -17,7 +19,7 @@ return [
     'POST /forgot-password'          => ['AuthController', 'forgotPassword'],
     'POST /forgot-password/send-otp' => ['AuthController', 'sendForgotPasswordOtp'],
     'GET /logout'                    => ['AuthController', 'logout'],
-
+    
     // Khách hàng (User Dashboard)
     'GET /dashboard'             => ['UserController', 'dashboard'],
     
