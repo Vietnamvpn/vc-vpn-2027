@@ -491,8 +491,8 @@ html, body {
     display: flex;
     align-items: center;
     text-align: center;
-    margin: 20px 0;
-    color: #888;
+    margin: 10px 0;
+    color: #bc8c12;
 }
 .auth-divider::before, .auth-divider::after {
     content: '';
