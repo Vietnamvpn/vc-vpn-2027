@@ -21,7 +21,7 @@ class AuthController extends BaseController
 
         if (class_exists('App\Models\Setting')) {
             $settingModel = new Setting();
-            $siteTitle = $settingModel->get('site_name', $siteTitle) ?? $siteTitle;
+            $siteTitle = $settingModel->get('site_title', $siteTitle) ?? $siteTitle;
             $siteSubtitle = $settingModel->get('site_subtitle', $siteSubtitle) ?? $siteSubtitle;
         }
 
@@ -34,13 +34,11 @@ class AuthController extends BaseController
 
     public function login(): void
     {
-        // 1. Chống CSRF Attack
         if (!$this->validateCsrfToken($_POST['csrf_token'] ?? '')) {
             $_SESSION['error'] = 'Yêu cầu không hợp lệ hoặc phiên làm việc đã hết hạn. Vui lòng thử lại.';
             $this->redirect('/login');
         }
 
-        // 2. Chống Brute Force (Giới hạn 5 lần thử trong 15 phút)
         $now = time();
         $_SESSION['login_throttle'] = $_SESSION['login_throttle'] ?? [];
         $_SESSION['login_throttle'] = array_filter(
@@ -64,10 +62,8 @@ class AuthController extends BaseController
         if (class_exists('App\Models\User')) {
             $userModel = new User();
             
-            // Tìm kiếm người dùng sử dụng so sánh BINARY trong MySQL
             $user = $userModel->findByUsernameOrEmailStrict($username);
 
-            // Kiểm tra phân biệt tuyệt đối chữ hoa/chữ thường trong PHP (Tránh Timing Attack)
             $dummyHash = '$2y$10$abcdefghijklmnopqrstuuNOPQRSTUVWXYZ0123456789abcdefgh';
             $isExactMatch = $user && (
                 hash_equals($user['username'], $username) || 
@@ -77,7 +73,6 @@ class AuthController extends BaseController
             if ($isExactMatch) {
                 $passwordValid = password_verify($password, $user['password_hash']);
             } else {
-                // Chạy hàm mã hóa giả định để thời gian xử lý giữ nguyên 100% (Chống Timing Attack)
                 password_verify($password, $dummyHash);
                 $passwordValid = false;
             }
@@ -88,7 +83,6 @@ class AuthController extends BaseController
                     $this->redirect('/login');
                 }
 
-                // 3. Chống Session Fixation (Cấp lại ID phiên khi đăng nhập)
                 session_regenerate_id(true);
                 unset($_SESSION['login_throttle']);
 
@@ -110,7 +104,6 @@ class AuthController extends BaseController
             }
         }
 
-        // Đánh dấu 1 lần thử sai
         $_SESSION['login_throttle'][] = $now;
 
         $_SESSION['error'] = 'Tên đăng nhập hoặc mật khẩu không chính xác.';
