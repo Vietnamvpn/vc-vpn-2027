@@ -278,7 +278,7 @@ html, body {
 .form-group label {
   font-weight: 700;
   font-size: 0.75rem;
-  color: #78521a;
+  color: #d48715;
   margin-left: 2px;
 }
 
@@ -401,13 +401,13 @@ html, body {
 
 .auth-footer a {
   text-decoration: none;
-  color: #9a7b1c;
+  color: #d48715;
   font-weight: 700;
   transition: 0.2s;
 }
 
 .auth-footer a:hover {
-  color: #b8860b;
+  color: #03fae6;
   text-decoration: underline;
 }
 

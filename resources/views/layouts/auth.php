@@ -22,7 +22,7 @@ require_once __DIR__ . '/header.php';
     <div class="auth-card">
         <div class="text-center mb-4 assemble-top">
             <h2 class="fw-bold royal-title mb-1 text-sparkle"><?= $authTitle ?? 'VC VPN 2027' ?></h2>
-            <p class="small" style="color: #8a6a4b; margin: 0;"><?= $authSubtitle ?? 'An Toàn - Bảo Mật - Uy Tín' ?></p>
+            <p class="small" style="color: #fffb04; margin: 0;"><?= $authSubtitle ?? 'An Toàn - Bảo Mật - Uy Tín' ?></p>
         </div>
         
         <?= $content ?? '' ?>
