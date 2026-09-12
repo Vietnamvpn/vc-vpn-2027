@@ -1,5 +1,5 @@
 <?php
-$authTitle = "Đăng nhập tài khoản";
+$authTitle = "Đăng Nhập Tài Khoản";
 $authSubtitle = $siteSubtitle ?? "An Toàn - Bảo Mật - Uy Tín";
 ob_start();
 ?>
