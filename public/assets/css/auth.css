@@ -374,8 +374,8 @@ html, body {
   position: relative;
   z-index: 10 !important;
   padding: 0.75rem 2.25rem 0.75rem 1rem;
-  border-radius: 12px;
-  font-size: 0.85rem;
+  border-radius: 4px;
+  font-size: 0.77rem;
   margin-bottom: 1.5rem;
   text-align: center;
   word-break: break-word;
@@ -383,7 +383,7 @@ html, body {
 
 .alert-error {
   background: rgba(255, 59, 48, 0.12);
-  color: #dc2626;
+  color: #f70101;
   border: 1px solid rgba(220, 38, 38, 0.3);
 }
 
@@ -395,10 +395,10 @@ html, body {
 
 .alert-close {
   position: absolute;
-  top: 20%;
+  top: 30%;
   right: 6px;
   transform: translateY(-50%);
-  background: transparent;
+  background: #ffffff;
   border: none;
   color: inherit;
   font-size: 1.25rem;
