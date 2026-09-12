@@ -343,7 +343,7 @@ class AuthController extends BaseController
         ]);
 
         if ($sent) {
-            $this->json(['success' => true, 'message' => 'Mã xác thực OTP đã được gửi đến email của bạn.']);
+            $this->json(['success' => true, 'message' => 'Mã xác thực OTP đã được gửi đến email của bạn, hãy kiểm tra hộp thư rác nếu chờ quá lâu không nhận được.']);
         } else {
             $this->json(['success' => false, 'message' => 'Không thể gửi email OTP. Vui lòng kiểm tra lại địa chỉ email hoặc cấu hình SMTP.'], 500);
         }
@@ -458,7 +458,7 @@ class AuthController extends BaseController
             $user = $userModel->findByUsernameOrEmailStrict($email);
 
             if (!$user) {
-                $this->json(['success' => false, 'message' => 'Địa chỉ Email này chưa được đăng ký trong hệ thống.'], 404);
+                $this->json(['success' => false, 'message' => 'Địa chỉ Email này chưa được đăng ký trong hệ thống, vui lòng kiểm tra lại.'], 404);
                 return;
             }
 
@@ -477,7 +477,7 @@ class AuthController extends BaseController
             ]);
 
             if ($sent) {
-                $this->json(['success' => true, 'message' => 'Mã xác thực OTP đã được gửi đến email của bạn.']);
+                $this->json(['success' => true, 'message' => 'Mã xác thực OTP đã được gửi đến email của bạn, hãy kiểm tra hộp thư rác nếu chờ quá lâu không nhận được.']);
             } else {
                 $this->json(['success' => false, 'message' => 'Không thể gửi email OTP. Vui lòng kiểm tra lại cấu hình SMTP.'], 500);
             }
