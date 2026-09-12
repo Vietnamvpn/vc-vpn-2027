@@ -184,16 +184,10 @@ class AuthController extends BaseController
         $email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
         $otpCode = trim($_POST['otp_code'] ?? '');
         $password = trim($_POST['password'] ?? '');
-        $passwordConfirm = trim($_POST['password_confirm'] ?? '');
         $refCodeInput = trim($_POST['ref_code'] ?? '');
 
         if (empty($username) || !$email || empty($otpCode) || empty($password)) {
             $_SESSION['error'] = 'Vui lòng điền đầy đủ các thông tin bắt buộc.';
-            $this->redirect('/register');
-        }
-
-        if ($password !== $passwordConfirm) {
-            $_SESSION['error'] = 'Mật khẩu xác nhận không trùng khớp.';
             $this->redirect('/register');
         }
 

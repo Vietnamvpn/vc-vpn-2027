@@ -57,15 +57,6 @@ ob_start();
         </div>
     </div>
 
-    <div class="form-group assemble-right">
-        <label for="password_confirm">Xác nhận mật khẩu</label>
-        <div class="input-group-custom">
-            <span class="input-group-text-custom">🔒</span>
-            <input type="password" id="password_confirm" name="password_confirm" class="form-control-custom" placeholder="••••••••" required autocomplete="new-password">
-            <button type="button" class="btn-toggle-pw toggle-password" data-target="password_confirm" onclick="togglePasswordVisibility(this)" title="Bật/Tắt hiển thị mật khẩu">👁️</button>
-        </div>
-    </div>
-
     <div class="form-group assemble-left">
         <label for="ref_code">Mã giới thiệu (Nếu có)</label>
         <div class="input-group-custom">
