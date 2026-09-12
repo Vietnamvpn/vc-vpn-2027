@@ -398,7 +398,7 @@ html, body {
   top: 30%;
   right: 6px;
   transform: translateY(-50%);
-  background: #392b4445;
+  background: #392b440d;
   border: none;
   color: #ffffff;
   font-size: 1.25rem;
@@ -511,13 +511,13 @@ html, body {
     width: 100%;
     padding: 10px;
     background-color: #ffffff;
-    border: 1px solid #dadce0;
-    border-radius: 6px;
+    border: 1px solid #bd8d13;
+    border-radius: 10px;
     color: #3c4043;
     font-weight: 500;
     text-decoration: none;
     transition: background-color 0.2s;
 }
 .btn-google:hover {
-    background-color: #f8f9fa;
+    background-color: #b0f3ec;
 }
