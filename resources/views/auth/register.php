@@ -9,18 +9,20 @@ ob_start();
     <input type="hidden" name="csrf_token" id="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '', ENT_QUOTES, 'UTF-8') ?>">
 
     <?php if (isset($error)): ?>
-        <div style="background: rgba(255, 59, 48, 0.12); color: #dc2626; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid rgba(220, 38, 38, 0.3); margin-bottom: 1.5rem; text-align: center;">
+        <div class="alert alert-error">
             <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
+            <button type="button" class="alert-close" onclick="closeAlert(this)">&times;</button>
         </div>
     <?php endif; ?>
 
     <?php if (isset($success)): ?>
-        <div style="background: rgba(52, 199, 89, 0.12); color: #16a34a; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid rgba(22, 163, 74, 0.3); margin-bottom: 1.5rem; text-align: center;">
+        <div class="alert alert-success">
             <?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?>
+            <button type="button" class="alert-close" onclick="closeAlert(this)">&times;</button>
         </div>
     <?php endif; ?>
 
-    <div id="ajax-alert" style="display: none; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.85rem; margin-bottom: 1.5rem; text-align: center;"></div>
+    <div id="ajax-alert" class="alert" style="display: none;"></div>
 
     <div class="form-group assemble-left">
         <label for="username">Tên đăng nhập</label>
@@ -44,7 +46,7 @@ ob_start();
         <div class="input-group-custom" style="display: flex; gap: 8px;">
             <span class="input-group-text-custom">🔑</span>
             <input type="text" id="otp_code" name="otp_code" class="form-control-custom" placeholder="6 chữ số" maxlength="6" required style="flex: 1;">
-            <button type="button" id="btnSendOtp" class="btn-toggle-pw" style="padding: 0 10px; font-size: 0.8rem; font-weight: 600; color: #fff; border-radius: 2px; border: none; cursor: pointer; white-space: nowrap; width: auto;" onclick="sendOtpCode()">Gửi mã</button>
+            <button type="button" id="btnSendOtp" class="btn-toggle-pw btn-send-otp" onclick="sendOtpCode('/register/send-otp')">Gửi mã</button>
         </div>
     </div>
 
@@ -73,95 +75,6 @@ ob_start();
 <div class="auth-footer assemble-bottom-2">
     <span>Đã có tài khoản? <a href="/login">Đăng nhập</a></span>
 </div>
-
-<script>
-function togglePasswordVisibility(btn) {
-    const targetId = btn.getAttribute('data-target');
-    const input = targetId ? document.getElementById(targetId) : btn.parentElement.querySelector('input');
-    if (input) {
-        if (input.type === 'password') {
-            input.type = 'text';
-            btn.textContent = '🙈';
-        } else {
-            input.type = 'password';
-            btn.textContent = '👁️';
-        }
-    }
-}
-
-function sendOtpCode() {
-    const emailInput = document.getElementById('email');
-    const btnSend = document.getElementById('btnSendOtp');
-    const csrfToken = document.getElementById('csrf_token').value;
-    const alertBox = document.getElementById('ajax-alert');
-
-    if (!emailInput.value || !emailInput.checkValidity()) {
-        alertBox.style.display = 'block';
-        alertBox.style.background = 'rgba(255, 59, 48, 0.12)';
-        alertBox.style.color = '#dc2626';
-        alertBox.style.border = '1px solid rgba(220, 38, 38, 0.3)';
-        alertBox.textContent = 'Vui lòng nhập địa chỉ Email hợp lệ trước khi lấy mã OTP.';
-        emailInput.focus();
-        return;
-    }
-
-    btnSend.disabled = true;
-    btnSend.textContent = 'Đang gửi...';
-
-    const formData = new FormData();
-    formData.append('email', emailInput.value);
-    formData.append('csrf_token', csrfToken);
-
-    fetch('/register/send-otp', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        alertBox.style.display = 'block';
-        if (data.success) {
-            alertBox.style.background = 'rgba(52, 199, 89, 0.12)';
-            alertBox.style.color = '#16a34a';
-            alertBox.style.border = '1px solid rgba(22, 163, 74, 0.3)';
-            alertBox.textContent = data.message;
-            startOtpCountdown(60);
-        } else {
-            alertBox.style.background = 'rgba(255, 59, 48, 0.12)';
-            alertBox.style.color = '#dc2626';
-            alertBox.style.border = '1px solid rgba(220, 38, 38, 0.3)';
-            alertBox.textContent = data.message || 'Có lỗi xảy ra.';
-            btnSend.disabled = false;
-            btnSend.textContent = 'Gửi mã';
-        }
-    })
-    .catch(error => {
-        alertBox.style.display = 'block';
-        alertBox.style.background = 'rgba(255, 59, 48, 0.12)';
-        alertBox.style.color = '#dc2626';
-        alertBox.style.border = '1px solid rgba(220, 38, 38, 0.3)';
-        alertBox.textContent = 'Không thể kết nối đến máy chủ. Vui lòng thử lại sau.';
-        btnSend.disabled = false;
-        btnSend.textContent = 'Gửi mã';
-    });
-}
-
-function startOtpCountdown(seconds) {
-    const btnSend = document.getElementById('btnSendOtp');
-    let left = seconds;
-    btnSend.disabled = true;
-
-    const timer = setInterval(() => {
-        if (left <= 0) {
-            clearInterval(timer);
-            btnSend.disabled = false;
-            btnSend.textContent = 'Gửi mã';
-        } else {
-            btnSend.textContent = left + 's';
-            left--;
-        }
-    }, 1000);
-}
-</script>
 
 <?php
 $content = ob_get_clean();

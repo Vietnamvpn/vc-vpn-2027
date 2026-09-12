@@ -9,8 +9,9 @@ ob_start();
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '', ENT_QUOTES, 'UTF-8') ?>">
 
     <?php if (isset($error)): ?>
-        <div style="background: rgba(255, 59, 48, 0.12); color: #dc2626; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid rgba(220, 38, 38, 0.3); margin-bottom: 1.5rem; text-align: center;">
+        <div class="alert alert-error">
             <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
+            <button type="button" class="alert-close" onclick="closeAlert(this)">&times;</button>
         </div>
     <?php endif; ?>
 
@@ -41,22 +42,6 @@ ob_start();
     <span class="divider">|</span>
     <a href="/register">Đăng ký ngay</a>
 </div>
-
-<script>
-function togglePasswordVisibility(btn) {
-    const targetId = btn.getAttribute('data-target');
-    const input = targetId ? document.getElementById(targetId) : btn.parentElement.querySelector('input');
-    if (input) {
-        if (input.type === 'password') {
-            input.type = 'text';
-            btn.textContent = '🙈';
-        } else {
-            input.type = 'password';
-            btn.textContent = '👁️';
-        }
-    }
-}
-</script>
 
 <?php
 $content = ob_get_clean();

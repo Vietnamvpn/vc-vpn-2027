@@ -1,9 +1,105 @@
+function closeAlert(btn) {
+    const alertBox = btn.closest('.alert');
+    if (alertBox) {
+        alertBox.style.display = 'none';
+    }
+}
+
+function togglePasswordVisibility(btn) {
+    const targetId = btn.getAttribute('data-target');
+    const input = targetId ? document.getElementById(targetId) : btn.parentElement.querySelector('input');
+    if (input) {
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            btn.textContent = '👁️';
+        }
+    }
+}
+
+function sendOtpCode(endpoint) {
+    const emailInput = document.getElementById('email');
+    const btnSend = document.getElementById('btnSendOtp');
+    const csrfTokenEl = document.getElementById('csrf_token');
+    const csrfToken = csrfTokenEl ? csrfTokenEl.value : '';
+    const alertBox = document.getElementById('ajax-alert');
+
+    if (!emailInput || !emailInput.value || !emailInput.checkValidity()) {
+        if (alertBox) {
+            alertBox.className = 'alert alert-error';
+            alertBox.style.display = 'block';
+            alertBox.innerHTML = 'Vui lòng nhập địa chỉ Email hợp lệ trước khi lấy mã OTP. <button type="button" class="alert-close" onclick="closeAlert(this)">&times;</button>';
+        }
+        if (emailInput) emailInput.focus();
+        return;
+    }
+
+    btnSend.disabled = true;
+    btnSend.textContent = 'Đang gửi...';
+
+    const formData = new FormData();
+    formData.append('email', emailInput.value);
+    formData.append('csrf_token', csrfToken);
+
+    fetch(endpoint, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (alertBox) {
+            alertBox.style.display = 'block';
+            if (data.success) {
+                alertBox.className = 'alert alert-success';
+                alertBox.innerHTML = data.message + ' <button type="button" class="alert-close" onclick="closeAlert(this)">&times;</button>';
+                startOtpCountdown(60);
+            } else {
+                alertBox.className = 'alert alert-error';
+                alertBox.innerHTML = (data.message || 'Có lỗi xảy ra.') + ' <button type="button" class="alert-close" onclick="closeAlert(this)">&times;</button>';
+                btnSend.disabled = false;
+                btnSend.textContent = 'Gửi mã';
+            }
+        }
+    })
+    .catch(error => {
+        if (alertBox) {
+            alertBox.style.display = 'block';
+            alertBox.className = 'alert alert-error';
+            alertBox.innerHTML = 'Không thể kết nối đến máy chủ. Vui lòng thử lại sau. <button type="button" class="alert-close" onclick="closeAlert(this)">&times;</button>';
+            btnSend.disabled = false;
+            btnSend.textContent = 'Gửi mã';
+        }
+    });
+}
+
+function startOtpCountdown(seconds) {
+    const btnSend = document.getElementById('btnSendOtp');
+    if (!btnSend) return;
+    let left = seconds;
+    btnSend.disabled = true;
+
+    const timer = setInterval(() => {
+        if (left <= 0) {
+            clearInterval(timer);
+            btnSend.disabled = false;
+            btnSend.textContent = 'Gửi mã';
+        } else {
+            btnSend.textContent = left + 's';
+            left--;
+        }
+    }, 1000);
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     // 1. Logic Toggle Ẩn/Hiện Mật Khẩu
     const toggleBtns = document.querySelectorAll('.toggle-password, .btn-toggle-pw');
 
     toggleBtns.forEach(function (btn) {
         btn.addEventListener('click', function (e) {
+            if (this.id === 'btnSendOtp') return;
+
             e.preventDefault();
             e.stopPropagation();
             
