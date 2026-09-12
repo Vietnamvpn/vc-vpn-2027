@@ -398,9 +398,8 @@ html, body {
   top: 30%;
   right: 6px;
   transform: translateY(-50%);
-  background: #ffffff;
   border: none;
-  color: inherit;
+  color: #ffffff;
   font-size: 1.25rem;
   font-weight: bold;
   line-height: 1;
