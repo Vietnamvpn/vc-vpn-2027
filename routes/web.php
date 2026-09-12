@@ -12,6 +12,7 @@ return [
     'POST /login'                => ['AuthController', 'login'],
     'GET /register'              => ['AuthController', 'showRegister'],
     'POST /register'             => ['AuthController', 'register'],
+    'POST /register/send-otp'    => ['AuthController', 'sendRegisterOtp'],
     'GET /forgot-password'       => ['AuthController', 'showForgotPassword'],
     'POST /forgot-password'      => ['AuthController', 'sendResetLink'],
     'GET /reset-password'        => ['AuthController', 'showResetPassword'],

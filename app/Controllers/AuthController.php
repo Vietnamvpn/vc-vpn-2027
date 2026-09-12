@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\User;
 use App\Models\Setting;
+use App\Services\MailService;
 
 class AuthController extends BaseController
 {
@@ -117,11 +118,59 @@ class AuthController extends BaseController
         }
 
         $error = $_SESSION['error'] ?? null;
-        unset($_SESSION['error']);
+        $success = $_SESSION['success'] ?? null;
+        unset($_SESSION['error'], $_SESSION['success']);
 
         $this->render('auth.register', [
-            'error' => $error
+            'error'   => $error,
+            'success' => $success
         ]);
+    }
+
+    /**
+     * API gửi mã xác thực OTP Đăng ký qua Email
+     */
+    public function sendRegisterOtp(): void
+    {
+        if (!$this->validateCsrfToken($_POST['csrf_token'] ?? '')) {
+            $this->json(['success' => false, 'message' => 'Phiên làm việc không hợp lệ. Vui lòng tải lại trang.'], 403);
+        }
+
+        $email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
+        if (!$email) {
+            $this->json(['success' => false, 'message' => 'Địa chỉ Email không hợp lệ.'], 400);
+        }
+
+        $now = time();
+        if (isset($_SESSION['register_otp_cooldown']) && ($now - $_SESSION['register_otp_cooldown']) < 60) {
+            $this->json(['success' => false, 'message' => 'Vui lòng chờ ' . (60 - ($now - $_SESSION['register_otp_cooldown'])) . ' giây trước khi yêu cầu mã mới.'], 429);
+        }
+
+        if (class_exists('App\Models\User')) {
+            $userModel = new User();
+            if ($userModel->findByUsernameOrEmailStrict($email)) {
+                $this->json(['success' => false, 'message' => 'Địa chỉ Email này đã được đăng ký tài khoản.'], 400);
+            }
+        }
+
+        $otpCode = (string)random_int(100000, 999999);
+        $_SESSION['register_otp'] = [
+            'email'      => $email,
+            'code'       => $otpCode,
+            'expires_at' => $now + 300 // Hết hạn sau 5 phút
+        ];
+        $_SESSION['register_otp_cooldown'] = $now;
+
+        $mailService = new MailService();
+        $sent = $mailService->send($email, 'Mã xác thực đăng ký tài khoản', 'auth.register-otp', [
+            'code' => $otpCode
+        ]);
+
+        if ($sent) {
+            $this->json(['success' => true, 'message' => 'Mã xác thực OTP đã được gửi đến email của bạn.']);
+        } else {
+            $this->json(['success' => false, 'message' => 'Không thể gửi email OTP. Vui lòng kiểm tra lại địa chỉ email hoặc cấu hình SMTP.'], 500);
+        }
     }
 
     public function register(): void
@@ -132,18 +181,29 @@ class AuthController extends BaseController
         }
 
         $username = trim($_POST['username'] ?? '');
-        $email = trim($_POST['email'] ?? '');
+        $email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
+        $otpCode = trim($_POST['otp_code'] ?? '');
         $password = trim($_POST['password'] ?? '');
         $passwordConfirm = trim($_POST['password_confirm'] ?? '');
         $refCodeInput = trim($_POST['ref_code'] ?? '');
 
-        if (empty($username) || empty($email) || empty($password)) {
-            $_SESSION['error'] = 'Vui lòng điền đầy đủ thông tin.';
+        if (empty($username) || !$email || empty($otpCode) || empty($password)) {
+            $_SESSION['error'] = 'Vui lòng điền đầy đủ các thông tin bắt buộc.';
             $this->redirect('/register');
         }
 
         if ($password !== $passwordConfirm) {
             $_SESSION['error'] = 'Mật khẩu xác nhận không trùng khớp.';
+            $this->redirect('/register');
+        }
+
+        // Kiểm tra mã OTP đăng ký trong Session
+        $sessionOtp = $_SESSION['register_otp'] ?? null;
+        if (!$sessionOtp || 
+            !hash_equals($sessionOtp['email'], $email) || 
+            !hash_equals($sessionOtp['code'], $otpCode) || 
+            time() > ($sessionOtp['expires_at'] ?? 0)) {
+            $_SESSION['error'] = 'Mã xác thực OTP không chính xác hoặc đã hết hạn.';
             $this->redirect('/register');
         }
 
@@ -182,6 +242,7 @@ class AuthController extends BaseController
             ]);
 
             if ($created) {
+                unset($_SESSION['register_otp'], $_SESSION['register_otp_cooldown']);
                 $_SESSION['success'] = 'Đăng ký tài khoản thành công. Vui lòng đăng nhập.';
                 $this->redirect('/login');
             }
@@ -198,7 +259,7 @@ class AuthController extends BaseController
         unset($_SESSION['error'], $_SESSION['success']);
 
         $this->render('auth.forgot-password', [
-            'error' => $error,
+            'error'   => $error,
             'success' => $success
         ]);
     }
@@ -210,24 +271,47 @@ class AuthController extends BaseController
             $this->redirect('/forgot-password');
         }
 
-        $email = trim($_POST['email'] ?? '');
+        $email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
 
-        if (empty($email)) {
-            $_SESSION['error'] = 'Vui lòng nhập địa chỉ email.';
+        if (!$email) {
+            $_SESSION['error'] = 'Vui lòng nhập địa chỉ email hợp lệ.';
             $this->redirect('/forgot-password');
         }
 
-        $_SESSION['success'] = 'Nếu email tồn tại trong hệ thống, chúng tôi đã gửi liên kết khôi phục mật khẩu.';
-        $this->redirect('/forgot-password');
+        $now = time();
+        if (class_exists('App\Models\User')) {
+            $userModel = new User();
+            $user = $userModel->findByUsernameOrEmailStrict($email);
+
+            if ($user) {
+                $otpCode = (string)random_int(100000, 999999);
+                $_SESSION['reset_otp'] = [
+                    'email'      => $user['email'],
+                    'code'       => $otpCode,
+                    'expires_at' => $now + 300
+                ];
+
+                $mailService = new MailService();
+                $mailService->send($user['email'], 'Mã khôi phục mật khẩu', 'auth.reset-password', [
+                    'code' => $otpCode
+                ]);
+            }
+        }
+
+        $_SESSION['success'] = 'Nếu email tồn tại trong hệ thống, chúng tôi đã gửi mã xác thực OTP khôi phục.';
+        $this->redirect('/reset-password?email=' . urlencode($email));
     }
 
     public function showResetPassword(): void
     {
         $error = $_SESSION['error'] ?? null;
-        unset($_SESSION['error']);
+        $success = $_SESSION['success'] ?? null;
+        unset($_SESSION['error'], $_SESSION['success']);
 
         $this->render('auth.reset-password', [
-            'error' => $error
+            'error'   => $error,
+            'success' => $success,
+            'email'   => trim($_GET['email'] ?? '')
         ]);
     }
 
@@ -238,16 +322,42 @@ class AuthController extends BaseController
             $this->redirect('/login');
         }
 
-        $token = trim($_POST['token'] ?? '');
+        $email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
+        $otpCode = trim($_POST['otp_code'] ?? '');
         $password = trim($_POST['password'] ?? '');
         $passwordConfirm = trim($_POST['password_confirm'] ?? '');
 
-        if (empty($password) || $password !== $passwordConfirm) {
-            $_SESSION['error'] = 'Mật khẩu không hợp lệ hoặc xác nhận không khớp.';
-            $this->redirect('/reset-password?token=' . urlencode($token));
+        if (!$email || empty($otpCode) || empty($password) || $password !== $passwordConfirm) {
+            $_SESSION['error'] = 'Mật khẩu không hợp lệ hoặc thông tin xác nhận không khớp.';
+            $this->redirect('/reset-password?email=' . urlencode($email));
         }
 
-        $_SESSION['success'] = 'Mật khẩu đã được cập nhật thành công. Vui lòng đăng nhập.';
+        $sessionOtp = $_SESSION['reset_otp'] ?? null;
+        if (!$sessionOtp || 
+            !hash_equals($sessionOtp['email'], $email) || 
+            !hash_equals($sessionOtp['code'], $otpCode) || 
+            time() > ($sessionOtp['expires_at'] ?? 0)) {
+            $_SESSION['error'] = 'Mã xác thực OTP khôi phục không chính xác hoặc đã hết hạn.';
+            $this->redirect('/reset-password?email=' . urlencode($email));
+        }
+
+        if (class_exists('App\Models\User')) {
+            $userModel = new User();
+            $user = $userModel->findByUsernameOrEmailStrict($email);
+
+            if ($user) {
+                $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+                $userModel->update($user['id'], [
+                    'password_hash' => $hashedPassword
+                ]);
+                unset($_SESSION['reset_otp']);
+
+                $_SESSION['success'] = 'Mật khẩu đã được cập nhật thành công. Vui lòng đăng nhập.';
+                $this->redirect('/login');
+            }
+        }
+
+        $_SESSION['error'] = 'Không thể cập nhật mật khẩu. Vui lòng thử lại.';
         $this->redirect('/login');
     }
 

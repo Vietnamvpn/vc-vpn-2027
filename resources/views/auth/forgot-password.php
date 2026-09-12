@@ -1,19 +1,22 @@
 <?php
 $authTitle = "Quên Mật Khẩu";
-$authSubtitle = "Nhập email để nhận liên kết khôi phục";
+$authSubtitle = "Nhập email để nhận mã xác thực OTP khôi phục";
 ob_start();
 ?>
 
 <form action="/forgot-password" method="POST" class="auth-form">
+    <!-- CSRF Protection Input Token -->
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
     <?php if (isset($error)): ?>
         <div style="background: rgba(255, 59, 48, 0.12); color: #dc2626; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid rgba(220, 38, 38, 0.3); margin-bottom: 1.5rem; text-align: center;">
-            <?= htmlspecialchars($error) ?>
+            <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
         </div>
     <?php endif; ?>
 
     <?php if (isset($success)): ?>
         <div style="background: rgba(52, 199, 89, 0.12); color: #16a34a; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid rgba(22, 163, 74, 0.3); margin-bottom: 1.5rem; text-align: center;">
-            <?= htmlspecialchars($success) ?>
+            <?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?>
         </div>
     <?php endif; ?>
 
@@ -21,12 +24,12 @@ ob_start();
         <label for="email">Địa chỉ Email đã đăng ký</label>
         <div class="input-group-custom">
             <span class="input-group-text-custom">✉️</span>
-            <input type="email" id="email" name="email" class="form-control-custom" placeholder="email@domain.com" required autofocus>
+            <input type="email" id="email" name="email" class="form-control-custom" placeholder="email@domain.com" required autofocus autocomplete="email">
         </div>
     </div>
 
     <div class="assemble-bottom-1">
-        <button type="submit" class="btn-login">GỬI YÊU CẦU</button>
+        <button type="submit" class="btn-login">GỬI MÃ XÁC THỰC OTP</button>
     </div>
 </form>
 
