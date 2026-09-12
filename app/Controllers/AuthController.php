@@ -21,17 +21,6 @@ class AuthController extends BaseController
         return $siteTitle;
     }
 
-    /**
-     * Khởi tạo và lấy mã CSRF Token cho Session
-     */
-    private function getCsrfToken(): string
-    {
-        if (empty($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        }
-        return $_SESSION['csrf_token'];
-    }
-
     public function showLogin(): void
     {
         if (isset($_SESSION['user_id'])) {
@@ -50,8 +39,7 @@ class AuthController extends BaseController
         $this->render('auth.login', [
             'error'        => $error,
             'siteTitle'    => $this->getSiteTitle(),
-            'siteSubtitle' => $siteSubtitle,
-            'csrf_token'   => $this->getCsrfToken()
+            'siteSubtitle' => $siteSubtitle
         ]);
     }
 
@@ -144,10 +132,9 @@ class AuthController extends BaseController
         unset($_SESSION['error'], $_SESSION['success']);
 
         $this->render('auth.register', [
-            'error'      => $error,
-            'success'    => $success,
-            'siteTitle'  => $this->getSiteTitle(),
-            'csrf_token' => $this->getCsrfToken()
+            'error'     => $error,
+            'success'   => $success,
+            'siteTitle' => $this->getSiteTitle()
         ]);
     }
 
@@ -273,10 +260,9 @@ class AuthController extends BaseController
         unset($_SESSION['error'], $_SESSION['success']);
 
         $this->render('auth.forgot-password', [
-            'error'      => $error,
-            'success'    => $success,
-            'siteTitle'  => $this->getSiteTitle(),
-            'csrf_token' => $this->getCsrfToken()
+            'error'     => $error,
+            'success'   => $success,
+            'siteTitle' => $this->getSiteTitle()
         ]);
     }
 
@@ -287,16 +273,19 @@ class AuthController extends BaseController
     {
         if (!$this->validateCsrfToken($_POST['csrf_token'] ?? '')) {
             $this->json(['success' => false, 'message' => 'Phiên làm việc không hợp lệ. Vui lòng tải lại trang.'], 403);
+            return;
         }
 
         $email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
         if (!$email) {
             $this->json(['success' => false, 'message' => 'Địa chỉ Email không hợp lệ.'], 400);
+            return;
         }
 
         $now = time();
         if (isset($_SESSION['forgot_otp_cooldown']) && ($now - $_SESSION['forgot_otp_cooldown']) < 60) {
             $this->json(['success' => false, 'message' => 'Vui lòng chờ ' . (60 - ($now - $_SESSION['forgot_otp_cooldown'])) . ' giây trước khi yêu cầu mã mới.'], 429);
+            return;
         }
 
         if (class_exists('App\Models\User')) {
@@ -305,6 +294,7 @@ class AuthController extends BaseController
 
             if (!$user) {
                 $this->json(['success' => false, 'message' => 'Địa chỉ Email này chưa được đăng ký trong hệ thống.'], 404);
+                return;
             }
 
             $otpCode = (string)random_int(100000, 999999);
@@ -317,7 +307,8 @@ class AuthController extends BaseController
 
             $mailService = new MailService();
             $sent = $mailService->send($user['email'], 'Mã xác thực khôi phục mật khẩu', 'auth.reset-password', [
-                'code' => $otpCode
+                'code'      => $otpCode,
+                'siteTitle' => $this->getSiteTitle()
             ]);
 
             if ($sent) {
