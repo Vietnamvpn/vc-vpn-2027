@@ -38,7 +38,7 @@ ob_start();
         <div class="input-group-custom" style="display: flex; gap: 8px;">
             <span class="input-group-text-custom">🔑</span>
             <input type="text" id="otp_code" name="otp_code" class="form-control-custom" placeholder="6 chữ số" maxlength="6" required style="flex: 1;">
-            <button type="button" id="btnSendOtp" class="btn-toggle-pw btn-send-otp" onclick="sendOtpCode('/forgot-password/send-otp')">Gửi mã</button>
+            <button type="button" id="btnSendOtp" class="btn-send-otp" onclick="sendOtpCode('/forgot-password/send-otp')">Gửi mã</button>
         </div>
     </div>
 

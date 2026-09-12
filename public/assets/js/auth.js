@@ -94,12 +94,10 @@ function startOtpCountdown(seconds) {
 
 document.addEventListener('DOMContentLoaded', function () {
     // 1. Logic Toggle Ẩn/Hiện Mật Khẩu
-    const toggleBtns = document.querySelectorAll('.toggle-password, .btn-toggle-pw');
+    const toggleBtns = document.querySelectorAll('.toggle-password');
 
     toggleBtns.forEach(function (btn) {
         btn.addEventListener('click', function (e) {
-            if (this.id === 'btnSendOtp') return;
-
             e.preventDefault();
             e.stopPropagation();
             

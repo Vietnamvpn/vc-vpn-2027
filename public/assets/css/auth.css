@@ -351,21 +351,40 @@ html, body {
   transform: scale(1.15);
 }
 
+/* NÚT GỬI MÃ OTP */
 .btn-send-otp {
-  padding: 0 10px;
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+  color: #ffffff;
+  border: 1px solid #9a7b1c;
+  border-radius: 6px;
+  padding: 6px 12px;
   font-size: 0.8rem;
-  font-weight: 600;
-  color: #fff;
-  border-radius: 2px;
-  border: none;
-  cursor: pointer;
+  font-weight: 700;
+  cursor: pointer !important;
   white-space: nowrap;
-  width: auto;
+  margin-right: 4px;
+  position: relative;
+  z-index: 20 !important;
+  pointer-events: auto !important;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-send-otp:hover {
+  background: linear-gradient(135deg, #b8860b, #9a7b1c);
+  transform: translateY(-1px);
+}
+
+.btn-send-otp:disabled {
+  opacity: 0.6;
+  cursor: not-allowed !important;
+  transform: none;
 }
 
 /* --- KHỐI THÔNG BÁO & CÓ NÚT X TẮT --- */
 .alert {
   position: relative;
+  z-index: 10 !important;
   padding: 0.75rem 2.25rem 0.75rem 1rem;
   border-radius: 12px;
   font-size: 0.85rem;
@@ -397,10 +416,12 @@ html, body {
   font-size: 1.2rem;
   font-weight: bold;
   line-height: 1;
-  cursor: pointer;
+  cursor: pointer !important;
   padding: 0 4px;
   opacity: 0.7;
   transition: opacity 0.2s;
+  z-index: 30 !important;
+  pointer-events: auto !important;
 }
 
 .alert-close:hover {
