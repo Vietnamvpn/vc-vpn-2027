@@ -398,6 +398,7 @@ html, body {
   top: 30%;
   right: 6px;
   transform: translateY(-50%);
+  background: #392b4445;
   border: none;
   color: #ffffff;
   font-size: 1.25rem;
