@@ -351,6 +351,56 @@ html, body {
   transform: scale(1.15);
 }
 
+/* TÙY CHỈNH Ô NHẬP & NÚT GỬI MÃ OTP */
+.input-group-otp {
+  display: flex;
+  gap: 8px;
+}
+
+.input-otp-field {
+  flex: 1;
+}
+
+.btn-send-otp {
+  padding: 0 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+  border-radius: 2px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  width: auto;
+  background: #3b82f6;
+  transition: background 0.2s ease;
+}
+
+.btn-send-otp:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* THÔNG BÁO LỖI VÀ THÀNH CÔNG */
+.auth-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.alert-danger {
+  background: rgba(255, 59, 48, 0.12);
+  color: #dc2626;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+.alert-success {
+  background: rgba(52, 199, 89, 0.12);
+  color: #16a34a;
+  border: 1px solid rgba(22, 163, 74, 0.3);
+}
+
 /* AUTOFILL FIX */
 .form-control-custom:-webkit-autofill,
 .form-control-custom:-webkit-autofill:hover,

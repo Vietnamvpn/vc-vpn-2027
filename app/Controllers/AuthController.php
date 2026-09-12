@@ -302,7 +302,8 @@ class AuthController extends BaseController
             $_SESSION['forgot_otp_cooldown'] = $now;
 
             $mailService = new MailService();
-            $sent = $mailService->send($user['email'], 'Mã xác thực khôi phục mật khẩu', 'auth.forgot-password-otp', [
+            // Đã sửa tên template chuẩn thành 'auth.reset-password'
+            $sent = $mailService->send($user['email'], 'Mã xác thực khôi phục mật khẩu', 'auth.reset-password', [
                 'code' => $otpCode
             ]);
 
