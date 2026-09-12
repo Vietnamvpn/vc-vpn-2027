@@ -353,32 +353,20 @@ html, body {
 
 /* NÚT GỬI MÃ OTP */
 .btn-send-otp {
-  background: linear-gradient(135deg, #d4af37, #b8860b);
-  color: #ffffff;
-  border: 1px solid #9a7b1c;
-  border-radius: 6px;
-  padding: 6px 12px;
+  background: transparent;
+  padding: 0 10px;
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 600;
+  color: #fff;
+  border-radius: 2px;
+  border: none;
   cursor: pointer !important;
   white-space: nowrap;
-  margin-right: 4px;
+  width: auto;
   position: relative;
   z-index: 20 !important;
   pointer-events: auto !important;
-  transition: all 0.2s ease;
   flex-shrink: 0;
-}
-
-.btn-send-otp:hover {
-  background: linear-gradient(135deg, #b8860b, #9a7b1c);
-  transform: translateY(-1px);
-}
-
-.btn-send-otp:disabled {
-  opacity: 0.6;
-  cursor: not-allowed !important;
-  transform: none;
 }
 
 /* --- KHỐI THÔNG BÁO & CÓ NÚT X TẮT --- */

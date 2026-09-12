@@ -8,7 +8,7 @@ require_once __DIR__ . '/header.php';
 <div id="dynamic-bg" class="bg-slideshow"></div>
 <div class="bg-overlay"></div>
 
-<!-- Brand Logo / Tên Web ở góc trên bên trái màn hình (Click về trang chủ + Hiệu ứng Neon Gradient) -->
+<!-- Brand Logo / Tên Web ở góc trên bên trái màn hình -->
 <a href="/" class="auth-brand-corner" style="position: fixed; top: 20px; left: 25px; z-index: 9999; display: inline-flex; align-items: center; text-decoration: none; cursor: pointer; pointer-events: auto; transition: all 0.3s ease;">
     <span style="font-size: 1.35rem; font-weight: 800; background: linear-gradient(135deg, #ffffff 0%, #60a5fa 50%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.6)); letter-spacing: 0.8px; transition: transform 0.3s ease, filter 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'; this.style.filter='drop-shadow(0 0 18px rgba(96, 165, 250, 0.95))';" onmouseout="this.style.transform='scale(1)'; this.style.filter='drop-shadow(0 0 12px rgba(59, 130, 246, 0.6))';">
         <?= htmlspecialchars($siteTitle ?? 'VC VPN 2027', ENT_QUOTES, 'UTF-8') ?>
@@ -35,6 +35,11 @@ require_once __DIR__ . '/header.php';
         <?= $content ?? '' ?>
     </div>
 </div>
+
+<!-- Nạp JS Động Cho Trang Auth -->
+<?php if (isset($extraJs)): ?>
+    <script src="/assets/js/<?= $extraJs ?>.js?v=<?= time() ?>"></script>
+<?php endif; ?>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -69,3 +74,5 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 </script>
+</body>
+</html>
