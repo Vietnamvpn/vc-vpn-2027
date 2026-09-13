@@ -588,7 +588,7 @@ class AuthController extends BaseController
         $now = date('Y-m-d H:i:s');
         $endDate = date('Y-m-d H:i:s', strtotime("+{$durationDays} days"));
 
-        $subscriptionModel->create([
+        $created = $subscriptionModel->create([
             'user_id'         => $userId,
             'plan_id'         => (int)$plan['id'],
             'order_id'        => null,
@@ -601,16 +601,20 @@ class AuthController extends BaseController
             'status'          => 'active'
         ]);
 
-        // Đẩy Task tự động xuống các máy chủ thuộc group_id của gói cước
-        if (class_exists('App\Models\NodeTask') && !empty($plan['group_id'])) {
-            $nodeTaskModel = new NodeTask();
-            $nodeTaskModel->createTasksForGroup((int)$plan['group_id'], 'add_user', [
-                'uuid'            => $uuid,
-                'user_id'         => $userId,
-                'email'           => $email,
-                'transfer_enable' => $transferEnable,
-                'end_date'        => $endDate
-            ]);
+        // Đẩy Task tự động xuống các máy chủ thuộc group_id của gói cước với payload chuẩn
+        if ($created && class_exists('App\Models\NodeTask') && !empty($plan['group_id'])) {
+            $sub = $subscriptionModel->findByUuid($uuid);
+            $subId = $sub['id'] ?? 0;
+
+            if ($subId > 0) {
+                $nodeTaskModel = new NodeTask();
+                $nodeTaskModel->createTasksForGroup((int)$plan['group_id'], 'add_user', [
+                    'uuid'            => $uuid,
+                    'end_date'        => $endDate,
+                    'username'        => 'sub_' . $subId,
+                    'transfer_enable' => $transferEnable
+                ]);
+            }
         }
     }
 }
