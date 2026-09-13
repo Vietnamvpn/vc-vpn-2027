@@ -55,23 +55,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-            // Bật/tắt menu hiện tại
+            // Bật/tắt menu hiện tại và tính toán vị trí fixed theo vị trí nút bấm
             if (currentMenu) {
                 const isOpen = currentMenu.classList.toggle('show');
                 this.classList.toggle('active', isOpen);
+
+                if (isOpen) {
+                    const rect = this.getBoundingClientRect();
+                    currentMenu.style.top = (rect.bottom + 4) + 'px';
+                    currentMenu.style.left = 'auto';
+                    currentMenu.style.right = (window.innerWidth - rect.right) + 'px';
+                }
             }
         });
     });
 
-    // Bấm ra ngoài vùng menu -> Tự động đóng tất cả dropdown
-    document.addEventListener('click', function () {
+    // Bấm ra ngoài vùng menu, cuộn trang hoặc đổi kích thước màn hình -> Tự động đóng tất cả dropdown
+    function closeAllActionMenus() {
         document.querySelectorAll('.action-menu.show').forEach(menu => {
             menu.classList.remove('show');
             if (menu.previousElementSibling) {
                 menu.previousElementSibling.classList.remove('active');
             }
         });
-    });
+    }
+
+    document.addEventListener('click', closeAllActionMenus);
+    window.addEventListener('scroll', closeAllActionMenus, true);
+    window.addEventListener('resize', closeAllActionMenus);
 
     // 3. Xử lý Tự động ẩn và Nút đóng (✕) cho Thông Báo Flash
     const alerts = document.querySelectorAll('.glass-alert');
