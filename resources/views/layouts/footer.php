@@ -46,30 +46,8 @@
         
         <!-- Bố cục lưới 3 cột (Desktop) / 2 cột (Mobile) -->
         <div class="vc-footer-links-grid">
-            
-            <!-- Cột 1: Liên Hệ Hỗ Trợ -->
-            <div class="vc-info-col">
-                <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
-                    Liên Hệ Hỗ Trợ
-                </h4>
-                <?php if (!empty($settings)): ?>
-                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
-                        <?php if (!empty($settings['contact_email'])): ?>
-                            <a href="mailto:<?= htmlspecialchars($settings['contact_email']) ?>" style="display: inline-flex; align-items: center; gap: 0.5rem; color: #bf5af2; text-decoration: none; font-size: 0.85rem; font-weight: 500;">
-                                <span>📧</span> <?= htmlspecialchars($settings['contact_email']) ?>
-                            </a>
-                        <?php endif; ?>
 
-                        <?php if (!empty($settings['wechat_id'])): ?>
-                            <span style="display: inline-flex; align-items: center; gap: 0.5rem; color: #32d74b; font-size: 0.85rem; font-weight: 500;">
-                                <span>💬</span> WeChat: <?= htmlspecialchars($settings['wechat_id']) ?>
-                            </span>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-
-            <!-- Cột 2: Mạng Xã Hội -->
+            <!-- Cột 1: Mạng Xã Hội -->
             <div class="vc-info-col">
                 <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
                     Mạng Xã Hội
@@ -97,7 +75,7 @@
                 <?php endif; ?>
             </div>
 
-            <!-- Cột 3: Chính Sách (Sang phải, căn phải) -->
+            <!-- Cột 2: Chính Sách (Sang phải, căn phải) -->
             <div class="vc-policy-col">
                 <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
                     Chính Sách
@@ -107,6 +85,28 @@
                     <a href="/privacy" style="color: #30d158; text-decoration: none; transition: opacity 0.2s;">Quyền Riêng Tư</a>
                     <a href="/refund" style="color: #ff9f0a; text-decoration: none; transition: opacity 0.2s;">Chính Sách Hoàn Tiền</a>
                 </div>
+            </div>
+
+            <!-- Cột 3: Liên Hệ Hỗ Trợ -->
+            <div class="vc-info-col">
+                <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
+                    Liên Hệ Hỗ Trợ
+                </h4>
+                <?php if (!empty($settings)): ?>
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                        <?php if (!empty($settings['contact_email'])): ?>
+                            <a href="mailto:<?= htmlspecialchars($settings['contact_email']) ?>" style="display: inline-flex; align-items: center; gap: 0.5rem; color: #bf5af2; text-decoration: none; font-size: 0.85rem; font-weight: 500;">
+                                <span>📧</span> <?= htmlspecialchars($settings['contact_email']) ?>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if (!empty($settings['wechat_id'])): ?>
+                            <span style="display: inline-flex; align-items: center; gap: 0.5rem; color: #32d74b; font-size: 0.85rem; font-weight: 500;">
+                                <span>💬</span> WeChat: <?= htmlspecialchars($settings['wechat_id']) ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
         </div>
