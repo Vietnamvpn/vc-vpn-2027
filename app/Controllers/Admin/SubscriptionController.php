@@ -252,7 +252,7 @@ class SubscriptionController extends BaseController
 
         // 1. Khởi tạo đơn hàng mới cho giao dịch gia hạn
         $orderModel  = new Order();
-        $orderCode   = 'ORD' . date('YmdHis') . rand(100, 999);
+        $orderCode   = 'AD' . date('YmdHis') . rand(100, 999);
         $totalAmount = (float)($plan['price'] ?? 0);
 
         $orderCreated = $orderModel->create([
