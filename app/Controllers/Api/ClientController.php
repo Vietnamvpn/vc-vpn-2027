@@ -74,14 +74,14 @@ class ClientController extends BaseController
         $cleanLink = ($hashPos !== false) ? substr($baseLink, 0, $hashPos) : $baseLink;
 
         $nodeUpdate = $cleanLink . '#' . rawurlencode('Cập Nhật Thường Xuyên');
-        $nodeExpire = $cleanLink . '#' . rawurlencode('Hạn Dùng: ' . date('d/m/Y', $expire));
+        $nodeExpire = $cleanLink . '#' . rawurlencode('HDS: ' . date('d/m/Y', $expire));
 
         $usedGb = round(($upload + $download) / 1073741824, 2);
         if ($total > 0) {
             $totalGb = round($total / 1073741824, 2);
-            $nodeData = $cleanLink . '#' . rawurlencode("Dung Lượng: {$usedGb} GB / {$totalGb} GB");
+            $nodeData = $cleanLink . '#' . rawurlencode("Data: {$usedGb} GB / {$totalGb} GB");
         } else {
-            $nodeData = $cleanLink . '#' . rawurlencode("Dung Lượng: {$usedGb} GB / KGH");
+            $nodeData = $cleanLink . '#' . rawurlencode("Data: {$usedGb} GB / KGH");
         }
 
         array_unshift($links, $nodeUpdate, $nodeExpire, $nodeData);
