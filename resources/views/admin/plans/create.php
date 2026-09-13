@@ -45,31 +45,35 @@ ob_start();
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
-            <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Nhóm Máy Chủ (*)</label>
-                <select id="group_id" name="group_id" class="glass-input" required style="width: 100%; cursor: pointer;">
-                    <option value="">-- Chọn Nhóm Máy Chủ --</option>
-                    <?php if (!empty($groups)): ?>
-                        <?php foreach ($groups as $group): ?>
-                            <option value="<?= $group['id'] ?>"><?= htmlspecialchars($group['name']) ?></option>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </select>
+        <div>
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Nhóm Máy Chủ Áp Dụng (*)</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; background: rgba(255, 255, 255, 0.05); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.15);">
+                <?php if (!empty($groups)): ?>
+                    <?php foreach ($groups as $group): ?>
+                        <label style="display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.9rem;">
+                            <input type="checkbox" name="group_ids[]" value="<?= $group['id'] ?>" style="cursor: pointer; width: 16px; height: 16px;">
+                            <?= htmlspecialchars($group['name']) ?>
+                        </label>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <span style="font-size: 0.85rem; color: var(--ios-text-secondary, #888);">Chưa có nhóm máy chủ nào!</span>
+                <?php endif; ?>
             </div>
+        </div>
 
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
             <div>
                 <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Giá Bán (<?= htmlspecialchars($currencyCode) ?> - <?= htmlspecialchars($currencySymbol) ?>) (*)</label>
                 <input type="number" id="price" name="price" class="glass-input" placeholder="10.00" min="0" step="any" required style="width: 100%;">
             </div>
-        </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
             <div>
                 <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thời Hạn (Ngày) (*)</label>
                 <input type="number" id="duration_days" name="duration_days" class="glass-input" value="30" min="1" required style="width: 100%;">
             </div>
+        </div>
 
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
             <div>
                 <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Dung Lượng (GB)</label>
                 <input type="number" id="bandwidth_limit_gb" name="bandwidth_limit_gb" class="glass-input" value="0" min="0" placeholder="0 = Không giới hạn" style="width: 100%;">

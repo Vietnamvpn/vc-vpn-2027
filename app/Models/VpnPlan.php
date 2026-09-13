@@ -14,11 +14,35 @@ class VpnPlan extends BaseModel
 
     public function getAllWithGroup(): array
     {
-        $sql = "SELECT p.*, g.name AS group_name 
-                FROM `{$this->table}` p 
-                LEFT JOIN `vc_server_groups` g ON p.group_id = g.id 
-                ORDER BY p.id DESC";
+        $sql = "SELECT * FROM `{$this->table}` ORDER BY `id` DESC";
         $stmt = self::$db->query($sql);
-        return $stmt->fetchAll() ?: [];
+        $plans = $stmt->fetchAll() ?: [];
+
+        if (empty($plans)) {
+            return [];
+        }
+
+        // Lấy tất cả nhóm máy chủ để ghép tên
+        $groupStmt = self::$db->query("SELECT `id`, `name` FROM `vc_server_groups`");
+        $groupsList = $groupStmt->fetchAll(\PDO::FETCH_KEY_PAIR) ?: [];
+
+        foreach ($plans as &$plan) {
+            $groupIds = json_decode($plan['group_id'] ?? '[]', true);
+            if (!is_array($groupIds)) {
+                $groupIds = !empty($plan['group_id']) ? [(int)$plan['group_id']] : [];
+            }
+
+            $names = [];
+            foreach ($groupIds as $gId) {
+                if (isset($groupsList[$gId])) {
+                    $names[] = $groupsList[$gId];
+                }
+            }
+
+            $plan['group_name'] = !empty($names) ? implode(', ', $names) : 'Chưa chọn nhóm';
+            $plan['group_ids']  = $groupIds;
+        }
+
+        return $plans;
     }
 }

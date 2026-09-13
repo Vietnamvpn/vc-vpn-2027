@@ -44,7 +44,8 @@ class PlanController extends BaseController
 
     public function create(): void
     {
-        $groupId          = (int)($_POST['group_id'] ?? 0);
+        $groupIdsRaw       = $_POST['group_ids'] ?? [];
+        $groupIds          = is_array($groupIdsRaw) ? array_map('intval', array_filter($groupIdsRaw)) : [];
         $name             = trim($_POST['name'] ?? '');
         $code             = trim($_POST['code'] ?? '');
         $price            = (float)($_POST['price'] ?? 0);
@@ -58,14 +59,14 @@ class PlanController extends BaseController
             $code = 'LS' . rand(100000, 999999);
         }
 
-        if (!$groupId || empty($name) || $price < 0 || $durationDays <= 0) {
-            $_SESSION['error'] = 'Vui lòng nhập đầy đủ các thông tin bắt buộc!';
+        if (empty($groupIds) || empty($name) || $price < 0 || $durationDays <= 0) {
+            $_SESSION['error'] = 'Vui lòng chọn ít nhất 1 nhóm máy chủ và nhập đầy đủ thông tin bắt buộc!';
             $this->redirect('/admin/plans/create');
             return;
         }
 
         $this->planModel->create([
-            'group_id'           => $groupId,
+            'group_id'           => json_encode(array_values($groupIds)),
             'name'               => $name,
             'code'               => strtoupper($code),
             'price'              => $price,
@@ -91,6 +92,12 @@ class PlanController extends BaseController
             return;
         }
 
+        $groupIds = json_decode($plan['group_id'] ?? '[]', true);
+        if (!is_array($groupIds)) {
+            $groupIds = !empty($plan['group_id']) ? [(int)$plan['group_id']] : [];
+        }
+        $plan['group_ids'] = $groupIds;
+
         $groups = $this->serverGroupModel->getAll();
         $this->render('admin.plans.edit', [
             'activeMenu' => 'plans',
@@ -102,7 +109,8 @@ class PlanController extends BaseController
     public function edit(): void
     {
         $id               = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
-        $groupId          = (int)($_POST['group_id'] ?? 0);
+        $groupIdsRaw       = $_POST['group_ids'] ?? [];
+        $groupIds          = is_array($groupIdsRaw) ? array_map('intval', array_filter($groupIdsRaw)) : [];
         $name             = trim($_POST['name'] ?? '');
         $code             = trim($_POST['code'] ?? '');
         $price            = (float)($_POST['price'] ?? 0);
@@ -112,14 +120,14 @@ class PlanController extends BaseController
         $description      = trim($_POST['description'] ?? '');
         $status           = trim($_POST['status'] ?? 'active');
 
-        if (!$id || !$groupId || empty($name) || empty($code) || $price < 0 || $durationDays <= 0) {
-            $_SESSION['error'] = 'Vui lòng nhập đầy đủ các thông tin bắt buộc!';
+        if (!$id || empty($groupIds) || empty($name) || empty($code) || $price < 0 || $durationDays <= 0) {
+            $_SESSION['error'] = 'Vui lòng chọn ít nhất 1 nhóm máy chủ và nhập đầy đủ thông tin bắt buộc!';
             $this->redirect('/admin/plans/edit?id=' . $id);
             return;
         }
 
         $this->planModel->update($id, [
-            'group_id'           => $groupId,
+            'group_id'           => json_encode(array_values($groupIds)),
             'name'               => $name,
             'code'               => strtoupper($code),
             'price'              => $price,
