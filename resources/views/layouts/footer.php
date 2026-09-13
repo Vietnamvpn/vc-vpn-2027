@@ -1,40 +1,36 @@
 <footer style="margin-top: auto; padding: 2.5rem 1rem 1.5rem; color: var(--ios-text-secondary); font-size: 0.85rem; border-top: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08)); background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
     <div class="container" style="max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;">
         
-        <!-- Bố cục 2 cột chính -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; align-items: start;">
+        <!-- Tên Website ở giữa -->
+        <div style="text-align: center;">
+            <h3 style="font-size: 1.5rem; font-weight: 700; color: #ffffff; margin: 0; letter-spacing: -0.3px;">
+                <?= htmlspecialchars($settings['site_title'] ?? 'VC VPN 2027') ?>
+            </h3>
+        </div>
+        
+        <!-- Bố cục 2 cột dọc xuống -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; max-width: 800px; margin: 0 auto; width: 100%;">
             
-            <!-- CỘT 1: Thương hiệu, Mô tả & Các điều khoản -->
-            <div style="display: flex; flex-direction: column; gap: 0.8rem; text-align: left;">
-                <h3 style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0; letter-spacing: -0.3px;">
-                    <?= htmlspecialchars($settings['site_title'] ?? 'VC VPN 2027') ?>
-                </h3>
-                
-                <?php if (!empty($settings['site_description'])): ?>
-                    <p style="margin: 0; opacity: 0.75; font-size: 0.8rem; line-height: 1.5; max-width: 450px;">
-                        <?= htmlspecialchars($settings['site_description']) ?>
-                    </p>
-                <?php endif; ?>
-
-                <!-- Nút liên kết chính sách với màu sắc nhẹ nhàng -->
-                <div class="footer-links" style="display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; margin-top: 0.5rem; font-size: 0.8rem; font-weight: 500;">
+            <!-- CỘT 1: Chính sách -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">
+                <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
+                    Chính Sách
+                </h4>
+                <div class="footer-links" style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.85rem; font-weight: 500;">
                     <a href="/terms" style="color: #64d2ff; text-decoration: none; transition: opacity 0.2s;">Điều Khoản Dịch Vụ</a>
-                    <span style="opacity: 0.2; color: #fff;">•</span>
                     <a href="/privacy" style="color: #30d158; text-decoration: none; transition: opacity 0.2s;">Quyền Riêng Tư</a>
-                    <span style="opacity: 0.2; color: #fff;">•</span>
                     <a href="/refund" style="color: #ff9f0a; text-decoration: none; transition: opacity 0.2s;">Chính Sách Hoàn Tiền</a>
                 </div>
             </div>
 
-            <!-- CỘT 2: Thông tin liên hệ linh động lấy từ SQL ($settings) -->
+            <!-- CỘT 2: Thông tin hỗ trợ -->
             <div style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">
                 <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
                     Kênh Hỗ Trợ & Liên Hệ
                 </h4>
                 
                 <?php if (!empty($settings)): ?>
-                    <!-- Sắp xếp danh sách liên hệ thành 2 cột, loại bỏ viền/nút bấm -->
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem 1rem;">
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
                         <?php if (!empty($settings['contact_email'])): ?>
                             <a href="mailto:<?= htmlspecialchars($settings['contact_email']) ?>" style="display: inline-flex; align-items: center; gap: 0.5rem; color: #bf5af2; text-decoration: none; font-size: 0.85rem; font-weight: 500;">
                                 <span>📧</span> <?= htmlspecialchars($settings['contact_email']) ?>
