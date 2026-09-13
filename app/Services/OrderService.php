@@ -7,6 +7,7 @@ use App\Models\VpnPlan;
 use App\Models\Coupon;
 use App\Models\Subscription;
 use App\Models\Payment;
+use App\Models\NodeTask;
 
 class OrderService
 {
@@ -33,7 +34,7 @@ class OrderService
 
             if ($coupon && ($coupon['status'] ?? '') === 'active') {
                 $isExpired = !empty($coupon['expires_at']) && strtotime($coupon['expires_at']) < time();
-                $isMaxUsed = !empty($coupon['max_uses']) && ((int)($coupon['used_count'] ?? 0) >= (int)$coupon['max_uses']);
+                $isMaxUsed = !empty($coupon['max_uses']) && ((int)($coupon['used_count'] ?? 0) >= (int)($coupon['max_uses']));
 
                 if (!$isExpired && !$isMaxUsed) {
                     $discountType = $coupon['discount_type'] ?? 'percent';
@@ -87,7 +88,7 @@ class OrderService
     }
 
     /**
-     * Kích hoạt gói dịch vụ sau khi thanh toán thành công
+     * Kích hoạt gói dịch vụ sau khi thanh toán thành công và đồng bộ Task xuống VPS
      */
     public function activateOrder(int $orderId): bool
     {
@@ -99,38 +100,68 @@ class OrderService
             return false;
         }
 
-        // Cập nhật trạng thái đơn hàng sang completed
+        // 1. Cập nhật trạng thái đơn hàng sang completed
         $orderModel->update($orderId, [
             'payment_status' => 'completed',
             'updated_at'     => date('Y-m-d H:i:s')
         ]);
 
-        // Lấy thông tin gói cước
+        // 2. Lấy thông tin gói cước
         $planModel = new VpnPlan();
         $plan = $planModel->find((int)$order['plan_id']);
+        if (!$plan) {
+            return false;
+        }
+
         $durationDays = (int)($plan['duration_days'] ?? 30);
         $bandwidthGb  = (int)($plan['bandwidth_limit_gb'] ?? 0);
 
-        // Tạo gói đăng ký (Subscription) cho người dùng
+        // 3. Tạo gói đăng ký (Subscription) cho người dùng
         $subModel = new Subscription();
         $vpnService = new VpnService();
+
+        $uuid = method_exists($vpnService, 'generateUuid') 
+            ? $vpnService->generateUuid() 
+            : sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+
+        $transferEnable = $bandwidthGb * 1024 * 1024 * 1024;
+        $startDate = date('Y-m-d H:i:s');
+        $endDate = date('Y-m-d H:i:s', strtotime("+{$durationDays} days"));
 
         $subData = [
             'user_id'         => $order['user_id'],
             'plan_id'         => $order['plan_id'],
             'order_id'        => $order['id'],
-            'uuid'            => method_exists($vpnService, 'generateUuid') ? $vpnService->generateUuid() : sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)),
-            'transfer_enable' => $bandwidthGb * 1024 * 1024 * 1024,
+            'uuid'            => $uuid,
+            'transfer_enable' => $transferEnable,
             'upload'          => 0,
             'download'        => 0,
-            'start_date'      => date('Y-m-d H:i:s'),
-            'end_date'        => date('Y-m-d H:i:s', strtotime("+{$durationDays} days")),
+            'start_date'      => $startDate,
+            'end_date'        => $endDate,
             'status'          => 'active',
-            'created_at'      => date('Y-m-d H:i:s'),
-            'updated_at'      => date('Y-m-d H:i:s')
+            'created_at'      => $startDate,
+            'updated_at'      => $startDate
         ];
 
-        return (bool)$subModel->create($subData);
+        $created = (bool)$subModel->create($subData);
+
+        // 4. Đẩy Task tự động xuống các máy chủ VPS thuộc group_id của gói cước với payload chuẩn
+        if ($created && class_exists('App\Models\NodeTask') && !empty($plan['group_id'])) {
+            $sub = $subModel->findByUuid($uuid);
+            $subId = $sub['id'] ?? 0;
+
+            if ($subId > 0) {
+                $nodeTaskModel = new NodeTask();
+                $nodeTaskModel->createTasksForGroup((int)$plan['group_id'], 'add_user', [
+                    'uuid'            => $uuid,
+                    'end_date'        => $endDate,
+                    'username'        => 'sub_' . $subId,
+                    'transfer_enable' => $transferEnable
+                ]);
+            }
+        }
+
+        return $created;
     }
 
     /**
