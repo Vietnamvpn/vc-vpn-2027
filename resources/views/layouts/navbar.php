@@ -89,6 +89,7 @@ $siteTitle = $settings['site_title'] ?? 'VC VPN 2027';
             <a href="/" class="guest-nav-link">Trang chủ</a>
             <a href="/plans" class="guest-nav-link">Gói dịch vụ</a>
             <a href="/faq" class="guest-nav-link">Hướng dẫn</a>
+            <div class="guest-auth-group">
                 <a href="/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 600; text-align: center; padding: 0.5rem; background: rgba(239, 171, 12, 0.85); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;">Đăng nhập</a>
                 <a href="/register" class="glass-btn" style="padding: 0.5rem; font-size: 0.85rem; text-align: center; width: 100%;">Đăng ký</a>
             </div>
