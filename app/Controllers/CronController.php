@@ -12,6 +12,17 @@ use App\Services\MailService;
 class CronController extends BaseController
 {
     /**
+     * Lấy kết nối PDO an toàn từ BaseModel
+     */
+    private function getPdo(): \PDO
+    {
+        $ref = new \ReflectionClass(\App\Models\BaseModel::class);
+        $prop = $ref->getProperty('db');
+        $prop->setAccessible(true);
+        return $prop->getValue();
+    }
+
+    /**
      * Tự động quét và xử lý các gói cước hết hạn, hết data, sắp hết hạn và reset lưu lượng đầu tháng
      */
     public function checkSubscriptions(): void
@@ -26,6 +37,7 @@ class CronController extends BaseController
             return;
         }
 
+        $db                = $this->getPdo();
         $subscriptionModel = new Subscription();
         $nodeTaskModel     = new NodeTask();
         $mailService       = new MailService();
@@ -52,7 +64,7 @@ class CronController extends BaseController
                 INNER JOIN `vc_vpn_plans` p ON s.plan_id = p.id
                 WHERE s.status = 'suspended' AND s.end_date > :now
             ";
-            $stmt = self::$db->prepare($sqlSuspended);
+            $stmt = $db->prepare($sqlSuspended);
             $stmt->execute(['now' => $now]);
             $suspendedSubs = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
@@ -80,7 +92,7 @@ class CronController extends BaseController
                 SET `upload` = 0, `download` = 0, `updated_at` = :now 
                 WHERE `status` = 'active'
             ";
-            $stmtReset = self::$db->prepare($sqlResetActive);
+            $stmtReset = $db->prepare($sqlResetActive);
             $stmtReset->execute(['now' => $now]);
 
             // C. Đánh dấu đã hoàn tất reset cho tháng này
@@ -98,7 +110,7 @@ class CronController extends BaseController
             INNER JOIN `vc_vpn_plans` p ON s.plan_id = p.id
             WHERE s.status = 'active' AND s.end_date <= :now
         ";
-        $stmt = self::$db->prepare($sqlExpired);
+        $stmt = $db->prepare($sqlExpired);
         $stmt->execute(['now' => $now]);
         $expiredSubs = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
@@ -138,7 +150,7 @@ class CronController extends BaseController
               AND s.transfer_enable > 0 
               AND (s.upload + s.download) >= s.transfer_enable
         ";
-        $stmt = self::$db->prepare($sqlDataExceeded);
+        $stmt = $db->prepare($sqlDataExceeded);
         $stmt->execute();
         $dataExceededSubs = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
@@ -178,7 +190,7 @@ class CronController extends BaseController
               AND s.end_date > :now 
               AND s.end_date <= :three_days
         ";
-        $stmt = self::$db->prepare($sqlExpiringSoon);
+        $stmt = $db->prepare($sqlExpiringSoon);
         $stmt->execute([
             'now'        => $now,
             'three_days' => $threeDaysLater
@@ -208,14 +220,15 @@ class CronController extends BaseController
      */
     private function hasRecentEmailLog(string $recipient, string $subjectKeyword, int $hours = 72): bool
     {
-        $sql = "
+        $db   = $this->getPdo();
+        $sql  = "
             SELECT COUNT(*) FROM `vc_email_logs` 
             WHERE `recipient` = :recipient 
               AND `subject` LIKE :subject 
               AND `status` = 'sent' 
               AND `created_at` >= DATE_SUB(NOW(), INTERVAL {$hours} HOUR)
         ";
-        $stmt = self::$db->prepare($sql);
+        $stmt = $db->prepare($sql);
         $stmt->execute([
             'recipient' => $recipient,
             'subject'   => '%' . $subjectKeyword . '%'
