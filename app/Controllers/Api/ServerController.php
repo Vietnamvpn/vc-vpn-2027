@@ -116,16 +116,21 @@ class ServerController extends BaseController
      */
     private function handleUpdateTaskStatus(int $serverId, array $payload): void
     {
-        $taskId = $payload['task_id'] ?? null;
-        $status = $payload['task_status'] ?? 'done';
-        $errorMsg = $payload['error_msg'] ?? null;
+        // Hứng linh hoạt cả task_id hoặc id từ VPS gửi lên
+        $taskId = $payload['task_id'] ?? $payload['id'] ?? null;
+        
+        // Hứng linh hoạt task_status hoặc status từ VPS gửi lên
+        $rawStatus = strtolower(trim((string)($payload['task_status'] ?? $payload['status'] ?? 'done')));
+        
+        // Hứng thông báo lỗi nếu có
+        $errorMsg = $payload['error_msg'] ?? $payload['message'] ?? $payload['error'] ?? null;
 
-        if ($taskId) {
+        if (!empty($taskId)) {
             $taskModel = new NodeTask();
             $task = $taskModel->find((int)$taskId);
 
             if ($task && (int)($task['server_id'] ?? 0) === $serverId) {
-                $mappedStatus = ($status === 'done' || $status === 'completed') ? 'completed' : 'failed';
+                $mappedStatus = in_array($rawStatus, ['done', 'completed', 'success', 'ok'], true) ? 'completed' : 'failed';
                 $taskModel->updateStatus((int)$taskId, $mappedStatus, $errorMsg);
             }
         }
