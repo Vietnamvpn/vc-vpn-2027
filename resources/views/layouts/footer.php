@@ -22,12 +22,12 @@
             gap: 0.8rem 1rem;
         }
 
-        /* Cột chính sách ép sang phải */
+        /* Cột chính sách ép sang phải và căn chữ lề phải */
         .vc-policy-col {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            text-align: right;
+            text-align: right; /* Căn chữ bên phải */
         }
         
         /* Màn hình nhỏ (Mobile/Tablet) chuyển về 2 cột */
@@ -46,7 +46,7 @@
 
     <div class="container" style="max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 2.5rem;">
         
-        <!-- Tên Website ở giữa (Hoàn toàn độc lập, không nằm trong lưới cột) -->
+        <!-- Tên Website ở giữa -->
         <div style="text-align: center;">
             <h3 style="font-size: 1.5rem; font-weight: 700; color: #ffffff; margin: 0; letter-spacing: -0.3px;">
                 <?= htmlspecialchars($settings['site_title'] ?? 'VC VPN 2027') ?>
@@ -96,12 +96,12 @@
                 <?php endif; ?>
             </div>
 
-            <!-- Cột Chính Sách (Sang phải) -->
+            <!-- Cột Chính Sách (Sang phải, căn phải) -->
             <div class="vc-policy-col">
                 <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
                     Chính Sách
                 </h4>
-                <div style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.85rem; font-weight: 500;">
+                <div style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.85rem; font-weight: 500; text-align: right; width: 100%;">
                     <a href="/terms" style="color: #64d2ff; text-decoration: none; transition: opacity 0.2s;">Điều Khoản Dịch Vụ</a>
                     <a href="/privacy" style="color: #30d158; text-decoration: none; transition: opacity 0.2s;">Quyền Riêng Tư</a>
                     <a href="/refund" style="color: #ff9f0a; text-decoration: none; transition: opacity 0.2s;">Chính Sách Hoàn Tiền</a>
