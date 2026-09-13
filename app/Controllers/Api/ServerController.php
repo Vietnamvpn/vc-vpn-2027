@@ -121,13 +121,10 @@ class ServerController extends BaseController
         $errorMsg = $payload['error_msg'] ?? null;
 
         if ($taskId) {
-            // Xác minh Task thuộc đúng server_id trước khi cập nhật
-            $stmt = self::$db->prepare("SELECT `server_id` FROM `vc_node_tasks` WHERE `id` = :id LIMIT 1");
-            $stmt->execute(['id' => (int)$taskId]);
-            $task = $stmt->fetch();
+            $taskModel = new NodeTask();
+            $task = $taskModel->find((int)$taskId);
 
-            if ($task && (int)$task['server_id'] === $serverId) {
-                $taskModel = new NodeTask();
+            if ($task && (int)($task['server_id'] ?? 0) === $serverId) {
                 $mappedStatus = ($status === 'done' || $status === 'completed') ? 'completed' : 'failed';
                 $taskModel->updateStatus((int)$taskId, $mappedStatus, $errorMsg);
             }
@@ -159,7 +156,7 @@ class ServerController extends BaseController
                     $ips = [];
                 }
 
-                // Lấy duy nhất IP đầu tiên để chống lỗi tràn độ dài cột VARCHAR(45) trong SQL[cite: 2]
+                // Lấy duy nhất IP đầu tiên để chống lỗi tràn độ dài cột VARCHAR(45) trong SQL
                 $firstIp = !empty($ips) ? trim((string)$ips[0]) : null;
                 if (!empty($firstIp) && strlen($firstIp) > 45) {
                     $firstIp = substr($firstIp, 0, 45);
