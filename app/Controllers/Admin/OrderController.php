@@ -26,10 +26,28 @@ class OrderController extends BaseController
     }
 
     /**
-     * Hàm phụ trợ: Tự động tạo task 'add_user' cho các VPS thuộc đúng Nhóm Máy Chủ (group_id) của gói cước
+     * Hàm phụ trợ: Giải mã mảng JSON hoặc số nguyên của group_id thành mảng danh sách ID nhóm máy chủ
      */
-    private function dispatchAddUserTask(int $subId, string $uuid, int $bytesTotal, string $endDate, int $groupId): void
+    private function parseGroupIds(mixed $rawGroupId): array
     {
+        if (is_array($rawGroupId)) {
+            $ids = $rawGroupId;
+        } else {
+            $ids = json_decode((string)$rawGroupId, true);
+            if (!is_array($ids)) {
+                $ids = !empty($rawGroupId) ? [(int)$rawGroupId] : [];
+            }
+        }
+        return array_values(array_filter(array_map('intval', $ids), fn($id) => $id > 0));
+    }
+
+    /**
+     * Hàm phụ trợ: Tự động tạo task 'add_user' cho các VPS thuộc đúng các Nhóm Máy Chủ (group_ids) của gói cước
+     */
+    private function dispatchAddUserTask(int $subId, string $uuid, int $bytesTotal, string $endDate, array $groupIds): void
+    {
+        if (empty($groupIds)) return;
+
         $serverModel = new Server();
         $servers = $serverModel->getAll();
 
@@ -46,9 +64,13 @@ class OrderController extends BaseController
         ];
 
         foreach ($servers as $server) {
-            if (($server['status'] ?? 'active') === 'active' && (int)($server['group_id'] ?? 0) === $groupId) {
+            $serverId = (int)($server['id'] ?? 0);
+            $serverGroupId = (int)($server['group_id'] ?? 0);
+            $status = $server['status'] ?? 'active';
+
+            if ($status === 'active' && in_array($serverGroupId, $groupIds, true)) {
                 $taskModel->create([
-                    'server_id' => (int)$server['id'],
+                    'server_id' => $serverId,
                     'action'    => 'add_user',
                     'payload'   => $payload
                 ]);
@@ -59,8 +81,10 @@ class OrderController extends BaseController
     /**
      * Hàm phụ trợ: Tự động tạo task 'delete_user' gửi xuống VPS khi hủy đơn hàng
      */
-    private function dispatchDelUserTask(int $subId, int $groupId): void
+    private function dispatchDelUserTask(int $subId, array $groupIds): void
     {
+        if (empty($groupIds)) return;
+
         $serverModel = new Server();
         $servers = $serverModel->getAll();
 
@@ -74,9 +98,13 @@ class OrderController extends BaseController
         ];
 
         foreach ($servers as $server) {
-            if (($server['status'] ?? 'active') === 'active' && (int)($server['group_id'] ?? 0) === $groupId) {
+            $serverId = (int)($server['id'] ?? 0);
+            $serverGroupId = (int)($server['group_id'] ?? 0);
+            $status = $server['status'] ?? 'active';
+
+            if ($status === 'active' && in_array($serverGroupId, $groupIds, true)) {
                 $taskModel->create([
-                    'server_id' => (int)$server['id'],
+                    'server_id' => $serverId,
                     'action'    => 'delete_user',
                     'payload'   => $payload
                 ]);
@@ -134,7 +162,7 @@ class OrderController extends BaseController
                     $subModel       = new Subscription();
                     $durationDays   = (int)($plan['duration_days'] ?? 30);
                     $bandwidthLimit = (int)($plan['bandwidth_limit_gb'] ?? 0);
-                    $groupId        = (int)($plan['group_id'] ?? 0);
+                    $groupIds       = $this->parseGroupIds($plan['group_id'] ?? []);
                     $bytesTotal     = $bandwidthLimit > 0 ? ($bandwidthLimit * 1073741824) : 0;
                     $uuid           = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', 
                                         mt_rand(0, 0xffff), mt_rand(0, 0xffff), 
@@ -159,8 +187,8 @@ class OrderController extends BaseController
 
                     if ($created) {
                         $subId = method_exists($subModel, 'lastInsertId') ? $subModel->lastInsertId() : 0;
-                        if ($subId > 0 && $groupId > 0) {
-                            $this->dispatchAddUserTask($subId, $uuid, $bytesTotal, $endDate, $groupId);
+                        if ($subId > 0 && !empty($groupIds)) {
+                            $this->dispatchAddUserTask($subId, $uuid, $bytesTotal, $endDate, $groupIds);
                         }
                     }
                 }
@@ -177,10 +205,10 @@ class OrderController extends BaseController
                     if (class_exists('App\Models\VpnPlan')) {
                         $planModel = new VpnPlan();
                         $plan      = $planModel->find((int)$order['plan_id']);
-                        $groupId   = (int)($plan['group_id'] ?? 0);
+                        $groupIds  = $this->parseGroupIds($plan['group_id'] ?? []);
 
-                        if ($groupId > 0) {
-                            $this->dispatchDelUserTask((int)$sub['id'], $groupId);
+                        if (!empty($groupIds)) {
+                            $this->dispatchDelUserTask((int)$sub['id'], $groupIds);
                         }
                     }
                 }
@@ -263,7 +291,7 @@ class OrderController extends BaseController
                     $subModel       = new Subscription();
                     $durationDays   = (int)($plan['duration_days'] ?? 30);
                     $bandwidthLimit = (int)($plan['bandwidth_limit_gb'] ?? 0);
-                    $groupId        = (int)($plan['group_id'] ?? 0);
+                    $groupIds       = $this->parseGroupIds($plan['group_id'] ?? []);
                     
                     $bytesTotal = $bandwidthLimit > 0 ? ($bandwidthLimit * 1073741824) : 0;
                     $uuid       = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', 
@@ -289,8 +317,8 @@ class OrderController extends BaseController
 
                     if ($created) {
                         $subId = method_exists($subModel, 'lastInsertId') ? $subModel->lastInsertId() : 0;
-                        if ($subId > 0 && $groupId > 0) {
-                            $this->dispatchAddUserTask($subId, $uuid, $bytesTotal, $endDate, $groupId);
+                        if ($subId > 0 && !empty($groupIds)) {
+                            $this->dispatchAddUserTask($subId, $uuid, $bytesTotal, $endDate, $groupIds);
                         }
                     }
                 }

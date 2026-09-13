@@ -23,6 +23,22 @@ class CronController extends BaseController
     }
 
     /**
+     * Hàm phụ trợ: Giải mã mảng JSON hoặc số nguyên của group_id thành mảng danh sách ID nhóm máy chủ
+     */
+    private function parseGroupIds(mixed $rawGroupId): array
+    {
+        if (is_array($rawGroupId)) {
+            $ids = $rawGroupId;
+        } else {
+            $ids = json_decode((string)$rawGroupId, true);
+            if (!is_array($ids)) {
+                $ids = !empty($rawGroupId) ? [(int)$rawGroupId] : [];
+            }
+        }
+        return array_values(array_filter(array_map('intval', $ids), fn($id) => $id > 0));
+    }
+
+    /**
      * Tự động quét và xử lý các gói cước hết hạn, hết data, sắp hết hạn và reset lưu lượng đầu tháng
      */
     public function checkSubscriptions(): void
@@ -78,8 +94,9 @@ class CronController extends BaseController
                 ]);
 
                 // Gửi Task mở lại kết nối trên VPS
-                if (!empty($sub['group_id'])) {
-                    $nodeTaskModel->createTasksForGroup((int)$sub['group_id'], 'toggle_user', [
+                $groupIds = $this->parseGroupIds($sub['group_id'] ?? []);
+                if (!empty($groupIds)) {
+                    $nodeTaskModel->createTasksForGroup($groupIds, 'toggle_user', [
                         'username' => 'sub_' . $sub['id'],
                         'status'   => 'active'
                     ]);
@@ -120,8 +137,9 @@ class CronController extends BaseController
                 'updated_at' => $now
             ]);
 
-            if (!empty($sub['group_id'])) {
-                $nodeTaskModel->createTasksForGroup((int)$sub['group_id'], 'toggle_user', [
+            $groupIds = $this->parseGroupIds($sub['group_id'] ?? []);
+            if (!empty($groupIds)) {
+                $nodeTaskModel->createTasksForGroup($groupIds, 'toggle_user', [
                     'username' => 'sub_' . $sub['id'],
                     'status'   => 'disabled'
                 ]);
@@ -160,8 +178,9 @@ class CronController extends BaseController
                 'updated_at' => $now
             ]);
 
-            if (!empty($sub['group_id'])) {
-                $nodeTaskModel->createTasksForGroup((int)$sub['group_id'], 'toggle_user', [
+            $groupIds = $this->parseGroupIds($sub['group_id'] ?? []);
+            if (!empty($groupIds)) {
+                $nodeTaskModel->createTasksForGroup($groupIds, 'toggle_user', [
                     'username' => 'sub_' . $sub['id'],
                     'status'   => 'disabled'
                 ]);

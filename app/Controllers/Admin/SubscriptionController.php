@@ -23,10 +23,28 @@ class SubscriptionController extends BaseController
     }
 
     /**
-     * Hàm phụ trợ: Tự động tạo task 'add_user' cho các VPS thuộc đúng Nhóm Máy Chủ (group_id)
+     * Hàm phụ trợ: Giải mã mảng JSON hoặc số nguyên của group_id thành mảng danh sách ID nhóm máy chủ
      */
-    private function dispatchAddUserTask(int $subId, string $uuid, int $bytesTotal, string $endDate, int $groupId): void
+    private function parseGroupIds(mixed $rawGroupId): array
     {
+        if (is_array($rawGroupId)) {
+            $ids = $rawGroupId;
+        } else {
+            $ids = json_decode((string)$rawGroupId, true);
+            if (!is_array($ids)) {
+                $ids = !empty($rawGroupId) ? [(int)$rawGroupId] : [];
+            }
+        }
+        return array_values(array_filter(array_map('intval', $ids), fn($id) => $id > 0));
+    }
+
+    /**
+     * Hàm phụ trợ: Tự động tạo task 'add_user' cho các VPS thuộc đúng Nhóm Máy Chủ (group_ids)
+     */
+    private function dispatchAddUserTask(int $subId, string $uuid, int $bytesTotal, string $endDate, array $groupIds): void
+    {
+        if (empty($groupIds)) return;
+
         if (class_exists('App\Models\Server') && class_exists('App\Models\NodeTask')) {
             $serverModel = new Server();
             $servers     = $serverModel->getAll();
@@ -42,9 +60,13 @@ class SubscriptionController extends BaseController
             ];
 
             foreach ($servers as $server) {
-                if (($server['status'] ?? 'active') === 'active' && (int)($server['group_id'] ?? 0) === $groupId) {
+                $serverId = (int)($server['id'] ?? 0);
+                $serverGroupId = (int)($server['group_id'] ?? 0);
+                $status = $server['status'] ?? 'active';
+
+                if ($status === 'active' && in_array($serverGroupId, $groupIds, true)) {
                     $taskModel->create([
-                        'server_id' => (int)$server['id'],
+                        'server_id' => $serverId,
                         'action'    => 'add_user',
                         'payload'   => $payload
                     ]);
@@ -56,8 +78,10 @@ class SubscriptionController extends BaseController
     /**
      * Hàm phụ trợ: Tự động tạo task 'toggle_user' gửi xuống VPS khi tạm dừng hoặc đổi trạng thái gói
      */
-    private function dispatchToggleUserTask(int $subId, string $status, int $groupId): void
+    private function dispatchToggleUserTask(int $subId, string $status, array $groupIds): void
     {
+        if (empty($groupIds)) return;
+
         if (class_exists('App\Models\Server') && class_exists('App\Models\NodeTask')) {
             $serverModel = new Server();
             $servers     = $serverModel->getAll();
@@ -71,9 +95,13 @@ class SubscriptionController extends BaseController
             ];
 
             foreach ($servers as $server) {
-                if (($server['status'] ?? 'active') === 'active' && (int)($server['group_id'] ?? 0) === $groupId) {
+                $serverId = (int)($server['id'] ?? 0);
+                $serverGroupId = (int)($server['group_id'] ?? 0);
+                $serverStatus = $server['status'] ?? 'active';
+
+                if ($serverStatus === 'active' && in_array($serverGroupId, $groupIds, true)) {
                     $taskModel->create([
-                        'server_id' => (int)$server['id'],
+                        'server_id' => $serverId,
                         'action'    => 'toggle_user',
                         'payload'   => $payload
                     ]);
@@ -83,10 +111,12 @@ class SubscriptionController extends BaseController
     }
 
     /**
-     * Hàm phụ trợ: Tự động tạo task 'delete_user' gửi xuống VPS thuộc đúng Nhóm Máy Chủ (group_id)
+     * Hàm phụ trợ: Tự động tạo task 'delete_user' gửi xuống VPS thuộc đúng Nhóm Máy Chủ (group_ids)
      */
-    private function dispatchDelUserTask(int $subId, int $groupId): void
+    private function dispatchDelUserTask(int $subId, array $groupIds): void
     {
+        if (empty($groupIds)) return;
+
         if (class_exists('App\Models\Server') && class_exists('App\Models\NodeTask')) {
             $serverModel = new Server();
             $servers     = $serverModel->getAll();
@@ -99,9 +129,13 @@ class SubscriptionController extends BaseController
             ];
 
             foreach ($servers as $server) {
-                if (($server['status'] ?? 'active') === 'active' && (int)($server['group_id'] ?? 0) === $groupId) {
+                $serverId = (int)($server['id'] ?? 0);
+                $serverGroupId = (int)($server['group_id'] ?? 0);
+                $status = $server['status'] ?? 'active';
+
+                if ($status === 'active' && in_array($serverGroupId, $groupIds, true)) {
                     $taskModel->create([
-                        'server_id' => (int)$server['id'],
+                        'server_id' => $serverId,
                         'action'    => 'delete_user',
                         'payload'   => $payload
                     ]);
@@ -168,20 +202,20 @@ class SubscriptionController extends BaseController
         }
 
         if ($this->subscriptionModel->update($id, ['status' => $status])) {
-            $groupId = 0;
+            $groupIds = [];
             if (class_exists('App\Models\VpnPlan') && !empty($sub['plan_id'])) {
                 $planModel = new VpnPlan();
                 $plan      = $planModel->find((int)$sub['plan_id']);
-                $groupId   = (int)($plan['group_id'] ?? 0);
+                $groupIds  = $this->parseGroupIds($plan['group_id'] ?? []);
             }
 
-            if ($groupId > 0) {
+            if (!empty($groupIds)) {
                 if ($status === 'active') {
-                    $this->dispatchAddUserTask($id, $sub['uuid'], (int)$sub['transfer_enable'], $sub['end_date'], $groupId);
+                    $this->dispatchAddUserTask($id, $sub['uuid'], (int)$sub['transfer_enable'], $sub['end_date'], $groupIds);
                 } elseif ($status === 'suspended') {
-                    $this->dispatchToggleUserTask($id, 'inactive', $groupId);
+                    $this->dispatchToggleUserTask($id, 'inactive', $groupIds);
                 } else {
-                    $this->dispatchDelUserTask($id, $groupId);
+                    $this->dispatchDelUserTask($id, $groupIds);
                 }
             }
 
@@ -233,7 +267,7 @@ class SubscriptionController extends BaseController
         if ($orderCreated) {
             $newOrderId   = method_exists($orderModel, 'lastInsertId') ? $orderModel->lastInsertId() : null;
             $durationDays = (int)($plan['duration_days'] ?? 30);
-            $groupId      = (int)($plan['group_id'] ?? 0);
+            $groupIds     = $this->parseGroupIds($plan['group_id'] ?? []);
 
             $currentEndDate = strtotime($sub['end_date']);
             $baseTime       = ($currentEndDate > time()) ? $currentEndDate : time();
@@ -250,8 +284,8 @@ class SubscriptionController extends BaseController
 
             // 2. Cập nhật thời hạn và liên kết đơn hàng mới vào gói đăng ký
             if ($this->subscriptionModel->update($id, $updateData)) {
-                if ($groupId > 0) {
-                    $this->dispatchAddUserTask($id, $sub['uuid'], (int)$sub['transfer_enable'], $newEndDate, $groupId);
+                if (!empty($groupIds)) {
+                    $this->dispatchAddUserTask($id, $sub['uuid'], (int)$sub['transfer_enable'], $newEndDate, $groupIds);
                 }
 
                 $_SESSION['flash_message'] = 'Gia hạn gói đăng ký và tạo đơn hàng mới thành công!';
@@ -312,15 +346,15 @@ class SubscriptionController extends BaseController
         );
 
         if ($this->subscriptionModel->update($id, ['uuid' => $newUuid])) {
-            $groupId = 0;
+            $groupIds = [];
             if (class_exists('App\Models\VpnPlan') && !empty($sub['plan_id'])) {
                 $planModel = new VpnPlan();
                 $plan      = $planModel->find((int)$sub['plan_id']);
-                $groupId   = (int)($plan['group_id'] ?? 0);
+                $groupIds  = $this->parseGroupIds($plan['group_id'] ?? []);
             }
 
-            if ($groupId > 0) {
-                $this->dispatchAddUserTask($id, $newUuid, (int)$sub['transfer_enable'], $sub['end_date'], $groupId);
+            if (!empty($groupIds)) {
+                $this->dispatchAddUserTask($id, $newUuid, (int)$sub['transfer_enable'], $sub['end_date'], $groupIds);
             }
 
             $_SESSION['flash_message'] = 'Đặt lại mã Token (UUID) mới thành công!';
@@ -346,10 +380,10 @@ class SubscriptionController extends BaseController
             if (class_exists('App\Models\VpnPlan') && !empty($sub['plan_id'])) {
                 $planModel = new VpnPlan();
                 $plan      = $planModel->find((int)$sub['plan_id']);
-                $groupId   = (int)($plan['group_id'] ?? 0);
+                $groupIds  = $this->parseGroupIds($plan['group_id'] ?? []);
 
-                if ($groupId > 0) {
-                    $this->dispatchDelUserTask($id, $groupId);
+                if (!empty($groupIds)) {
+                    $this->dispatchDelUserTask($id, $groupIds);
                 }
             }
 
