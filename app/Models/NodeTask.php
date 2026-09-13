@@ -23,23 +23,21 @@ class NodeTask extends BaseModel
     }
 
     /**
-     * Cập nhật trạng thái của Task sau khi VPS xử lý xong (Lưu đầy đủ thông báo lỗi nếu có)
+     * Cập nhật trạng thái của Task sau khi VPS xử lý xong
      */
     public function updateStatus(int $taskId, string $status, ?string $errorMsg = null): bool
     {
         $sql = "
             UPDATE `{$this->table}` 
             SET `status` = :status, 
-                `error_msg` = :error_msg,
                 `attempts` = `attempts` + 1, 
                 `updated_at` = NOW() 
             WHERE `id` = :id
         ";
         $stmt = self::$db->prepare($sql);
         return $stmt->execute([
-            'status'    => $status,
-            'error_msg' => $errorMsg,
-            'id'        => $taskId
+            'status' => $status,
+            'id'     => (int)$taskId
         ]);
     }
 
