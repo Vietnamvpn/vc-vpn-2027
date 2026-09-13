@@ -95,7 +95,7 @@ CREATE TABLE `vc_node_tasks` (
 
 CREATE TABLE `vc_vpn_plans` (
     `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `group_id` INT UNSIGNED NOT NULL,
+    `group_id` JSON NULL,
     `name` VARCHAR(100) NOT NULL,
     `code` VARCHAR(50) NOT NULL UNIQUE,
     `price` DECIMAL(15, 2) NOT NULL,
@@ -105,8 +105,7 @@ CREATE TABLE `vc_vpn_plans` (
     `description` TEXT NULL,
     `status` ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (`group_id`) REFERENCES `vc_server_groups`(`id`) ON DELETE CASCADE
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `vc_coupons` (
