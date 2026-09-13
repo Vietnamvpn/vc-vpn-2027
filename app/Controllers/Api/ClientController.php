@@ -62,7 +62,7 @@ class ClientController extends BaseController
         // Nhân đôi node đầu tiên và đổi tên thành "Cập nhật thường xuyên" đưa lên vị trí đầu tiên
         $infoLink = $links[0];
         $hashPos = strpos($infoLink, '#');
-        $newName = rawurlencode('Cập nhật thường xuyên');
+        $newName = rawurlencode('Cập Nhật Thường Xuyên');
         if ($hashPos !== false) {
             $infoLink = substr($infoLink, 0, $hashPos + 1) . $newName;
         } else {
