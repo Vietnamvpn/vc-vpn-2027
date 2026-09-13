@@ -200,8 +200,12 @@ class Subscription extends BaseModel
 
                 // 2. Gửi Task toggle_user khóa kết nối tức thì xuống VPS thuộc group_id
                 if (!empty($sub['group_id']) && class_exists('App\Models\NodeTask')) {
+                    $groupIds = json_decode($sub['group_id'] ?? '[]', true);
+                    if (!is_array($groupIds)) {
+                        $groupIds = !empty($sub['group_id']) ? [(int)$sub['group_id']] : [];
+                    }
                     $nodeTaskModel = new \App\Models\NodeTask();
-                    $nodeTaskModel->createTasksForGroup((int)$sub['group_id'], 'toggle_user', [
+                    $nodeTaskModel->createTasksForGroup($groupIds, 'toggle_user', [
                         'username' => 'sub_' . $sub['id'],
                         'status'   => 'disabled'
                     ]);
@@ -247,12 +251,15 @@ class Subscription extends BaseModel
             SELECT s.id, s.uuid, s.transfer_enable, s.end_date 
             FROM `{$this->table}` s
             INNER JOIN `vc_vpn_plans` p ON s.plan_id = p.id
-            WHERE p.group_id = :group_id 
+            WHERE (JSON_CONTAINS(p.group_id, CAST(:group_id AS JSON)) OR p.group_id = :group_id_str)
               AND s.status = 'active' 
               AND s.end_date > NOW()
         ";
         $stmt = self::$db->prepare($sql);
-        $stmt->execute(['group_id' => $groupId]);
+        $stmt->execute([
+            'group_id'     => $groupId,
+            'group_id_str' => (string)$groupId
+        ]);
         return $stmt->fetchAll() ?: [];
     }
 
