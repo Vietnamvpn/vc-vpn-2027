@@ -56,7 +56,7 @@ class PlanController extends BaseController
         $status           = trim($_POST['status'] ?? 'active');
 
         if (empty($code)) {
-            $code = 'LS' . rand(100000, 999999);
+            $code = 'VVC' . rand(100000, 999999);
         }
 
         if (empty($groupIds) || empty($name) || $price < 0 || $durationDays <= 0) {
