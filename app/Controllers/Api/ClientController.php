@@ -68,6 +68,17 @@ class ClientController extends BaseController
         $total = $subscription['transfer_enable'] ?? 0;
         $expire = strtotime($subscription['end_date']);
 
+        // Hàm quy đổi đơn vị dung lượng tự động (MB / GB / TB) từ MB trở lên
+        $formatBytes = function (int|float $bytes): string {
+            if ($bytes >= 1099511627776) {
+                return round($bytes / 1099511627776, 2) . ' TB';
+            }
+            if ($bytes >= 1073741824) {
+                return round($bytes / 1073741824, 2) . ' GB';
+            }
+            return round($bytes / 1048576, 2) . ' MB';
+        };
+
         // Nhân bản node đầu tiên để tạo 3 node thông tin: Cập nhật, Hạn dùng và Dung lượng
         $baseLink = $links[0];
         $hashPos = strpos($baseLink, '#');
@@ -76,12 +87,12 @@ class ClientController extends BaseController
         $nodeUpdate = $cleanLink . '#' . rawurlencode('Cập Nhật Thường Xuyên');
         $nodeExpire = $cleanLink . '#' . rawurlencode('HDS: ' . date('d/m/Y', $expire));
 
-        $usedGb = round(($upload + $download) / 1073741824, 2);
+        $usedStr = $formatBytes($upload + $download);
         if ($total > 0) {
-            $totalGb = round($total / 1073741824, 2);
-            $nodeData = $cleanLink . '#' . rawurlencode("Data: {$usedGb} GB / {$totalGb} GB");
+            $totalStr = $formatBytes($total);
+            $nodeData = $cleanLink . '#' . rawurlencode("Data: {$usedStr} / {$totalStr}");
         } else {
-            $nodeData = $cleanLink . '#' . rawurlencode("Data: {$usedGb} GB / KGH");
+            $nodeData = $cleanLink . '#' . rawurlencode("Data: {$usedStr} / KGH");
         }
 
         array_unshift($links, $nodeUpdate, $nodeExpire, $nodeData);
