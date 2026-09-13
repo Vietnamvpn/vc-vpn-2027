@@ -1,4 +1,4 @@
-<footer style="margin-top: auto; padding: 2.5rem 1rem 1.5rem; color: #0f0d0d; font-size: 0.85rem; border-top: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08)); background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+<footer style="margin-top: auto; padding: 2.5rem 1rem 1.5rem; color: #8f7ddf; font-size: 0.85rem; border-top: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08)); background: rgb(31, 28, 28); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
     
     <style>
         /* Bố cục chia 3 cột */
