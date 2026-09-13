@@ -1,3 +1,9 @@
+<?php
+$planDisplay  = $plan_name ?? $planName ?? '';
+$limitDisplay = $limitGb ?? $limit_gb ?? (isset($transfer_enable) ? round($transfer_enable / (1024 * 1024 * 1024), 2) : '');
+$titleDisplay = $siteTitle ?? '';
+$urlDisplay   = $siteUrl ?? '#';
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -20,12 +26,12 @@
         </div>
         <div class="body">
             <div class="alert-icon">⚠️</div>
-            <p style="font-size: 15px; color: #cbd5e1; line-height: 1.6;">Gói cước <strong><?= htmlspecialchars($planName) ?></strong> của bạn đã sử dụng hết hạn mức lưu lượng <strong><?= htmlspecialchars($limitGb) ?> GB</strong>.</p>
+            <p style="font-size: 15px; color: #cbd5e1; line-height: 1.6;">Gói cước <strong><?= htmlspecialchars($planDisplay) ?></strong> của bạn đã sử dụng hết hạn mức lưu lượng<?= $limitDisplay !== '' ? ' <strong>' . htmlspecialchars((string)$limitDisplay) . ' GB</strong>' : '' ?>.</p>
             <p style="font-size: 13px; color: #94a3b8;">Kết nối VPN sẽ tạm thời ngắt cho đến khi gói cước gia hạn hoặc làm mới chu kỳ.</p>
-            <a href="<?= htmlspecialchars($siteUrl ?? '#') ?>/plans" class="btn">Nâng Cấp / Gia Hạn Ngay</a>
+            <a href="<?= htmlspecialchars($urlDisplay) ?>/plans" class="btn">Nâng Cấp / Gia Hạn Ngay</a>
         </div>
         <div class="footer">
-            &copy; <?= date('Y') ?> <?= htmlspecialchars($siteTitle) ?>.
+            &copy; <?= date('Y') ?> <?= htmlspecialchars($titleDisplay) ?>.
         </div>
     </div>
 </body>

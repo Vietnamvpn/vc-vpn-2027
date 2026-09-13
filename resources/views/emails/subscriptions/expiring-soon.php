@@ -1,3 +1,11 @@
+<?php
+$planDisplay      = $plan_name ?? $planName ?? '';
+$rawEndDate       = $end_date ?? $endDate ?? null;
+$formattedEndDate = $rawEndDate ? date('d/m/Y H:i', strtotime($rawEndDate)) : '';
+$daysDisplay      = $daysLeft ?? ($rawEndDate ? max(1, (int)ceil((strtotime($rawEndDate) - time()) / 86400)) : 0);
+$titleDisplay     = $siteTitle ?? '';
+$urlDisplay       = $siteUrl ?? '#';
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -19,13 +27,13 @@
             <h1>Gói Cước Sắp Hết Hạn</h1>
         </div>
         <div class="body">
-            <p style="font-size: 15px; color: #cbd5e1;">Gói cước <strong><?= htmlspecialchars($planName) ?></strong> của bạn sắp hết hạn sử dụng.</p>
-            <div class="days-badge">Chỉ còn <?= htmlspecialchars($daysLeft) ?> ngày (Hết hạn: <?= htmlspecialchars($endDate) ?>)</div>
+            <p style="font-size: 15px; color: #cbd5e1;">Gói cước <strong><?= htmlspecialchars($planDisplay) ?></strong> của bạn sắp hết hạn sử dụng.</p>
+            <div class="days-badge">Chỉ còn <?= htmlspecialchars((string)$daysDisplay) ?> ngày (Hết hạn: <?= htmlspecialchars($formattedEndDate) ?>)</div>
             <p style="font-size: 13px; color: #94a3b8;">Vui lòng gia hạn trước thời gian trên để tránh gián đoạn dịch vụ VPN.</p>
-            <a href="<?= htmlspecialchars($siteUrl ?? '#') ?>/subscriptions" class="btn">Gia Hạn Ngay</a>
+            <a href="<?= htmlspecialchars($urlDisplay) ?>/subscriptions" class="btn">Gia Hạn Ngay</a>
         </div>
         <div class="footer">
-            &copy; <?= date('Y') ?> <?= htmlspecialchars($siteTitle) ?>.
+            &copy; <?= date('Y') ?> <?= htmlspecialchars($titleDisplay) ?>.
         </div>
     </div>
 </body>

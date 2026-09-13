@@ -1,3 +1,10 @@
+<?php
+$planDisplay      = $plan_name ?? $planName ?? '';
+$rawEndDate       = $end_date ?? $endDate ?? null;
+$formattedEndDate = $rawEndDate ? date('d/m/Y H:i', strtotime($rawEndDate)) : '';
+$titleDisplay     = $siteTitle ?? '';
+$urlDisplay       = $siteUrl ?? '#';
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -18,12 +25,12 @@
             <h1>Gói Cước Đã Hết Hạn</h1>
         </div>
         <div class="body">
-            <p style="font-size: 15px; color: #cbd5e1;">Gói cước <strong><?= htmlspecialchars($planName) ?></strong> của bạn đã hết hạn sử dụng vào ngày <strong><?= htmlspecialchars($endDate) ?></strong>.</p>
+            <p style="font-size: 15px; color: #cbd5e1;">Gói cước <strong><?= htmlspecialchars($planDisplay) ?></strong> của bạn đã hết hạn sử dụng vào ngày <strong><?= htmlspecialchars($formattedEndDate) ?></strong>.</p>
             <p style="font-size: 13px; color: #94a3b8;">Các kết nối qua Node VPN thuộc gói cước này đã tạm dừng hoạt động.</p>
-            <a href="<?= htmlspecialchars($siteUrl ?? '#') ?>/plans" class="btn">Đăng Ký Gói Mới</a>
+            <a href="<?= htmlspecialchars($urlDisplay) ?>/plans" class="btn">Đăng Ký Gói Mới</a>
         </div>
         <div class="footer">
-            &copy; <?= date('Y') ?> <?= htmlspecialchars($siteTitle) ?>.
+            &copy; <?= date('Y') ?> <?= htmlspecialchars($titleDisplay) ?>.
         </div>
     </div>
 </body>
