@@ -18,7 +18,7 @@
     <div class="container">
         <div class="header">
             <h1><?= htmlspecialchars($siteTitle) ?></h1>
-            <p><?= htmlspecialchars($siteSubtitle) ?></p>
+            <p style="color: #eaff00;"><?= htmlspecialchars($siteSubtitle) ?></p>
         </div>
         <div class="body">
             <h2 style="font-size: 18px; color: #f1f5f9; margin-top: 0;">Xác Minh Địa Chỉ Email</h2>

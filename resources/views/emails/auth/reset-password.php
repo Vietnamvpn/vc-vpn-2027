@@ -16,7 +16,7 @@
     <div class="container">
         <div class="header">
             <h1><?= htmlspecialchars($siteTitle) ?></h1>
-            <p style="margin: 4px 0 0 0; font-size: 13px; color: #fca5a5;">Khôi Phục Mật Khẩu Tài Khoản</p>
+            <p style="margin: 4px 0 0 0; font-size: 13px; color: #e2ff02;">Khôi Phục Mật Khẩu Tài Khoản</p>
         </div>
         <div class="body">
             <p style="font-size: 14px; color: #94a3b8; line-height: 1.6;">Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn. Nhập mã OTP bên dưới để tiến hành thiết lập mật khẩu mới:</p>
