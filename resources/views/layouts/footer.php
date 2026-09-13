@@ -27,39 +27,40 @@
             </div>
 
             <!-- CỘT 2: Thông tin liên hệ linh động lấy từ SQL ($settings) -->
-            <div style="display: flex; flex-direction: column; gap: 0.8rem; text-align: left;">
+            <div style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">
                 <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
                     Kênh Hỗ Trợ & Liên Hệ
                 </h4>
                 
                 <?php if (!empty($settings)): ?>
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem 0.6rem;">
+                    <!-- Sắp xếp danh sách liên hệ thành 2 cột, loại bỏ viền/nút bấm -->
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem 1rem;">
                         <?php if (!empty($settings['contact_email'])): ?>
-                            <a href="mailto:<?= htmlspecialchars($settings['contact_email']) ?>" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.45rem 0.85rem; background: rgba(175, 82, 222, 0.12); border: 1px solid rgba(175, 82, 222, 0.3); border-radius: 8px; color: #bf5af2; text-decoration: none; font-size: 0.8rem; font-weight: 500;">
+                            <a href="mailto:<?= htmlspecialchars($settings['contact_email']) ?>" style="display: inline-flex; align-items: center; gap: 0.5rem; color: #bf5af2; text-decoration: none; font-size: 0.85rem; font-weight: 500;">
                                 <span>📧</span> <?= htmlspecialchars($settings['contact_email']) ?>
                             </a>
                         <?php endif; ?>
 
                         <?php if (!empty($settings['fanpage_url'])): ?>
-                            <a href="<?= htmlspecialchars($settings['fanpage_url']) ?>" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.45rem 0.85rem; background: rgba(10, 132, 255, 0.12); border: 1px solid rgba(10, 132, 255, 0.3); border-radius: 8px; color: #0a84ff; text-decoration: none; font-size: 0.8rem; font-weight: 500;">
+                            <a href="<?= htmlspecialchars($settings['fanpage_url']) ?>" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.5rem; color: #0a84ff; text-decoration: none; font-size: 0.85rem; font-weight: 500;">
                                 <span>🌐</span> Fanpage Hỗ Trợ
                             </a>
                         <?php endif; ?>
 
                         <?php if (!empty($settings['zalo_url'])): ?>
-                            <a href="<?= htmlspecialchars($settings['zalo_url']) ?>" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.45rem 0.85rem; background: rgba(48, 209, 88, 0.12); border: 1px solid rgba(48, 209, 88, 0.3); border-radius: 8px; color: #30d158; text-decoration: none; font-size: 0.8rem; font-weight: 500;">
+                            <a href="<?= htmlspecialchars($settings['zalo_url']) ?>" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.5rem; color: #30d158; text-decoration: none; font-size: 0.85rem; font-weight: 500;">
                                 <span>💬</span> Zalo
                             </a>
                         <?php endif; ?>
 
                         <?php if (!empty($settings['youtube_url'])): ?>
-                            <a href="<?= htmlspecialchars($settings['youtube_url']) ?>" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.45rem 0.85rem; background: rgba(255, 69, 58, 0.12); border: 1px solid rgba(255, 69, 58, 0.3); border-radius: 8px; color: #ff453a; text-decoration: none; font-size: 0.8rem; font-weight: 500;">
+                            <a href="<?= htmlspecialchars($settings['youtube_url']) ?>" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.5rem; color: #ff453a; text-decoration: none; font-size: 0.85rem; font-weight: 500;">
                                 <span>▶️</span> Youtube
                             </a>
                         <?php endif; ?>
 
                         <?php if (!empty($settings['wechat_id'])): ?>
-                            <span style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.45rem 0.85rem; background: rgba(52, 199, 89, 0.12); border: 1px solid rgba(52, 199, 89, 0.3); border-radius: 8px; color: #32d74b; font-size: 0.8rem; font-weight: 500;">
+                            <span style="display: inline-flex; align-items: center; gap: 0.5rem; color: #32d74b; font-size: 0.85rem; font-weight: 500;">
                                 <span>💬</span> WeChat: <?= htmlspecialchars($settings['wechat_id']) ?>
                             </span>
                         <?php endif; ?>
