@@ -1,4 +1,4 @@
-<footer style="margin-top: auto; padding: 2.5rem 1rem 1.5rem; color: var(--ios-text-secondary); font-size: 0.85rem; border-top: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08)); background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+<footer style="margin-top: auto; padding: 2.5rem 1rem 1.5rem; color: #0f0d0d; font-size: 0.85rem; border-top: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08)); background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
     
     <style>
         /* Bố cục chia 3 cột */
@@ -20,7 +20,7 @@
         .vc-policy-col {
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
+            align-items: flex-start;
             text-align: right;
         }
         
@@ -102,7 +102,7 @@
                 <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
                     Chính Sách
                 </h4>
-                <div style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.85rem; font-weight: 500; text-align: right; width: 100%;">
+                <div style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.85rem; font-weight: 500; text-align: left; width: 100%;">
                     <a href="/terms" style="color: #64d2ff; text-decoration: none; transition: opacity 0.2s;">Điều Khoản Dịch Vụ</a>
                     <a href="/privacy" style="color: #30d158; text-decoration: none; transition: opacity 0.2s;">Quyền Riêng Tư</a>
                     <a href="/refund" style="color: #ff9f0a; text-decoration: none; transition: opacity 0.2s;">Chính Sách Hoàn Tiền</a>
