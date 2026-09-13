@@ -40,46 +40,56 @@ document.addEventListener('DOMContentLoaded', function () {
     // 2. Xử lý toggle Menu Ba Chấm (Action Dropdown)
     const actionBtns = document.querySelectorAll('.action-btn');
 
-    actionBtns.forEach(btn => {
-        btn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            const currentMenu = this.nextElementSibling;
-            
-            // Đóng tất cả menu ba chấm khác đang mở
-            document.querySelectorAll('.action-menu.show').forEach(menu => {
-                if (menu !== currentMenu) {
-                    menu.classList.remove('show');
-                    if (menu.previousElementSibling) {
-                        menu.previousElementSibling.classList.remove('active');
-                    }
-                }
-            });
-
-            // Bật/tắt menu hiện tại và tính toán vị trí fixed theo vị trí nút bấm
-            if (currentMenu) {
-                const isOpen = currentMenu.classList.toggle('show');
-                this.classList.toggle('active', isOpen);
-
-                if (isOpen) {
-                    const rect = this.getBoundingClientRect();
-                    currentMenu.style.top = (rect.bottom + 4) + 'px';
-                    currentMenu.style.left = 'auto';
-                    currentMenu.style.right = (window.innerWidth - rect.right) + 'px';
-                }
-            }
-        });
-    });
-
-    // Bấm ra ngoài vùng menu, cuộn trang hoặc đổi kích thước màn hình -> Tự động đóng tất cả dropdown
     function closeAllActionMenus() {
         document.querySelectorAll('.action-menu.show').forEach(menu => {
             menu.classList.remove('show');
-            if (menu.previousElementSibling) {
+            if (menu._triggerBtn) {
+                menu._triggerBtn.classList.remove('active');
+            } else if (menu.previousElementSibling) {
                 menu.previousElementSibling.classList.remove('active');
             }
         });
     }
 
+    actionBtns.forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+
+            // Lấy menu tương ứng (kề sau nút hoặc đã được gán trước đó)
+            let currentMenu = this.nextElementSibling;
+            if (!currentMenu || !currentMenu.classList.contains('action-menu')) {
+                currentMenu = this._actionMenu;
+            }
+
+            if (!currentMenu) return;
+
+            // Lưu tham chiếu 2 chiều giữa nút bấm và menu
+            this._actionMenu = currentMenu;
+            currentMenu._triggerBtn = this;
+
+            const isCurrentlyShown = currentMenu.classList.contains('show');
+
+            // Đóng tất cả các menu khác đang mở
+            closeAllActionMenus();
+
+            // Nếu menu chưa mở -> Đưa ra body và tính vị trí fixed chuẩn theo viewport
+            if (!isCurrentlyShown) {
+                if (currentMenu.parentNode !== document.body) {
+                    document.body.appendChild(currentMenu);
+                }
+
+                currentMenu.classList.add('show');
+                this.classList.add('active');
+
+                const rect = this.getBoundingClientRect();
+                currentMenu.style.top = (rect.bottom + 4) + 'px';
+                currentMenu.style.left = 'auto';
+                currentMenu.style.right = (window.innerWidth - rect.right) + 'px';
+            }
+        });
+    });
+
+    // Bấm ra ngoài vùng menu, cuộn trang hoặc đổi kích thước màn hình -> Tự động đóng tất cả dropdown
     document.addEventListener('click', closeAllActionMenus);
     window.addEventListener('scroll', closeAllActionMenus, true);
     window.addEventListener('resize', closeAllActionMenus);
