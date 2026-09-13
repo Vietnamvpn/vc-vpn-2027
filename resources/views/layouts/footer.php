@@ -1,57 +1,68 @@
 <footer style="margin-top: auto; padding: 2.5rem 1rem 1.5rem; color: var(--ios-text-secondary); font-size: 0.85rem; border-top: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08)); background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
     
-    <!-- Khai báo CSS xử lý Responsive Grid 3 cột / 2 cột -->
     <style>
-        .vc-footer-grid {
+        /* Bố cục chia cột cho phần liên kết */
+        .vc-footer-links-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
             width: 100%;
         }
-        .vc-footer-support {
+        
+        /* Cột hỗ trợ chiếm 2 phần trong 3 cột ở màn hình lớn */
+        .vc-support-col {
+            grid-column: span 2;
             text-align: left;
-            align-items: flex-start;
-        }
-        .vc-footer-brand {
-            text-align: center;
-            align-items: center;
-        }
-        .vc-footer-policies {
-            text-align: right;
-            align-items: flex-end;
         }
         
-        /* Mobile & Tablet */
+        /* Lưới nhỏ bên trong phần hỗ trợ để dàn đều các kênh */
+        .vc-support-items {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem 1rem;
+        }
+
+        /* Cột chính sách ép sang phải */
+        .vc-policy-col {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            text-align: right;
+        }
+        
+        /* Màn hình nhỏ (Mobile/Tablet) chuyển về 2 cột */
         @media (max-width: 768px) {
-            .vc-footer-grid {
+            .vc-footer-links-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .vc-footer-brand {
-                grid-column: span 2;
-                order: -1; /* Đưa Tên website lên trên cùng ở mobile */
-                margin-bottom: 0.5rem;
+            .vc-support-col {
+                grid-column: span 1; /* Hỗ trợ về lại 1 cột */
             }
-            .vc-footer-support {
-                order: 1; /* Nằm dưới, cột trái */
-            }
-            .vc-footer-policies {
-                order: 2; /* Nằm dưới, cột phải */
+            .vc-support-items {
+                grid-template-columns: 1fr; /* Xếp dọc các kênh hỗ trợ */
             }
         }
     </style>
 
-    <div class="container" style="max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;">
+    <div class="container" style="max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 2.5rem;">
         
-        <div class="vc-footer-grid">
+        <!-- Tên Website ở giữa (Hoàn toàn độc lập, không nằm trong lưới cột) -->
+        <div style="text-align: center;">
+            <h3 style="font-size: 1.5rem; font-weight: 700; color: #ffffff; margin: 0; letter-spacing: -0.3px;">
+                <?= htmlspecialchars($settings['site_title'] ?? 'VC VPN 2027') ?>
+            </h3>
+        </div>
+        
+        <!-- Bố cục lưới 3 cột (Desktop) / 2 cột (Mobile) -->
+        <div class="vc-footer-links-grid">
             
-            <!-- CỘT 1 (Bên Trái): Thông tin hỗ trợ -->
-            <div class="vc-footer-support" style="display: flex; flex-direction: column; gap: 1rem;">
-                <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
+            <!-- Cột Hỗ Trợ -->
+            <div class="vc-support-col">
+                <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
                     Kênh Hỗ Trợ & Liên Hệ
                 </h4>
-                
                 <?php if (!empty($settings)): ?>
-                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                    <div class="vc-support-items">
                         <?php if (!empty($settings['contact_email'])): ?>
                             <a href="mailto:<?= htmlspecialchars($settings['contact_email']) ?>" style="display: inline-flex; align-items: center; gap: 0.5rem; color: #bf5af2; text-decoration: none; font-size: 0.85rem; font-weight: 500;">
                                 <span>📧</span> <?= htmlspecialchars($settings['contact_email']) ?>
@@ -85,19 +96,12 @@
                 <?php endif; ?>
             </div>
 
-            <!-- CỘT 2 (Ở Giữa): Tên Website -->
-            <div class="vc-footer-brand" style="display: flex; flex-direction: column; justify-content: flex-start;">
-                <h3 style="font-size: 1.5rem; font-weight: 700; color: #ffffff; margin: 0; letter-spacing: -0.3px;">
-                    <?= htmlspecialchars($settings['site_title'] ?? 'VC VPN 2027') ?>
-                </h3>
-            </div>
-
-            <!-- CỘT 3 (Bên Phải): Chính sách -->
-            <div class="vc-footer-policies" style="display: flex; flex-direction: column; gap: 1rem;">
-                <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
+            <!-- Cột Chính Sách (Sang phải) -->
+            <div class="vc-policy-col">
+                <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
                     Chính Sách
                 </h4>
-                <div class="footer-links" style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.85rem; font-weight: 500;">
+                <div style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.85rem; font-weight: 500;">
                     <a href="/terms" style="color: #64d2ff; text-decoration: none; transition: opacity 0.2s;">Điều Khoản Dịch Vụ</a>
                     <a href="/privacy" style="color: #30d158; text-decoration: none; transition: opacity 0.2s;">Quyền Riêng Tư</a>
                     <a href="/refund" style="color: #ff9f0a; text-decoration: none; transition: opacity 0.2s;">Chính Sách Hoàn Tiền</a>
