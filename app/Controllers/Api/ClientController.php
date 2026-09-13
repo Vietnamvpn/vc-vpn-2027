@@ -28,19 +28,22 @@ class ClientController extends BaseController
             exit;
         }
 
-        // Lấy group_id từ gói cước tương ứng với gói đăng ký
-        $groupId = null;
+        // Lấy danh sách group_id (mảng) từ gói cước tương ứng với gói đăng ký
+        $groupIds = [];
         if (class_exists('App\Models\VpnPlan') && !empty($subscription['plan_id'])) {
             $planModel = new VpnPlan();
             $plan = $planModel->find((int)$subscription['plan_id']);
             if ($plan) {
-                $groupId = (int)($plan['group_id'] ?? 0);
+                $groupIds = json_decode($plan['group_id'] ?? '[]', true);
+                if (!is_array($groupIds)) {
+                    $groupIds = !empty($plan['group_id']) ? [(int)$plan['group_id']] : [];
+                }
             }
         }
 
-        // Lấy danh sách Node Inbounds đang hoạt động thuộc đúng nhóm máy chủ của gói cước
+        // Lấy danh sách Node Inbounds đang hoạt động thuộc các nhóm máy chủ của gói cước
         $nodeInboundModel = new NodeInbound();
-        $inbounds = $nodeInboundModel->getAllActiveWithServer($groupId);
+        $inbounds = $nodeInboundModel->getAllActiveWithServer($groupIds);
 
         $vpnService = new VpnService();
         $links = [];

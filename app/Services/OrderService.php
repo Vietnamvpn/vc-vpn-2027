@@ -145,19 +145,29 @@ class OrderService
 
         $created = (bool)$subModel->create($subData);
 
-        // 4. Đẩy Task tự động xuống các máy chủ VPS thuộc group_id của gói cước với payload chuẩn
+        // 4. Đẩy Task tự động xuống tất cả các máy chủ VPS thuộc các group_id được chọn trong gói cước
         if ($created && class_exists('App\Models\NodeTask') && !empty($plan['group_id'])) {
+            $groupIds = json_decode($plan['group_id'] ?? '[]', true);
+            if (!is_array($groupIds)) {
+                $groupIds = !empty($plan['group_id']) ? [(int)$plan['group_id']] : [];
+            }
+
             $sub = $subModel->findByUuid($uuid);
             $subId = $sub['id'] ?? 0;
 
-            if ($subId > 0) {
+            if ($subId > 0 && !empty($groupIds)) {
                 $nodeTaskModel = new NodeTask();
-                $nodeTaskModel->createTasksForGroup((int)$plan['group_id'], 'add_user', [
-                    'uuid'            => $uuid,
-                    'end_date'        => $endDate,
-                    'username'        => 'sub_' . $subId,
-                    'transfer_enable' => $transferEnable
-                ]);
+                foreach ($groupIds as $gId) {
+                    $gId = (int)$gId;
+                    if ($gId > 0) {
+                        $nodeTaskModel->createTasksForGroup($gId, 'add_user', [
+                            'uuid'            => $uuid,
+                            'end_date'        => $endDate,
+                            'username'        => 'sub_' . $subId,
+                            'transfer_enable' => $transferEnable
+                        ]);
+                    }
+                }
             }
         }
 
