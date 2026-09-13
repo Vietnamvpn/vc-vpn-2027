@@ -146,6 +146,12 @@ bash vc_update.sh
 ```
 
 ---
+## Chạy cron trong temina
+
+```bash
+*/5 * * * * curl -s "https://vpn2s.linksub24h.com/api/cron/check-subscriptions?key=VC_VPN_CRON_2027_SECRET" > /dev/null 2>&1
+```
+---
 
 * ##cấu trúc dự án:
 ```
@@ -190,6 +196,7 @@ vc-vpn-2027/
 │   │   ├── HomeController.php
 │   │   ├── AuthController.php
 │   │   ├── UserController.php
+│   │   ├── CronController.php
 │   │   │
 │   │   ├── Admin/
 │   │   │   ├── DashboardController.php
