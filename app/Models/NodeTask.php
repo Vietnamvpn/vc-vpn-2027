@@ -61,4 +61,25 @@ class NodeTask extends BaseModel
             'payload'   => is_array($payload) ? json_encode($payload, JSON_UNESCAPED_UNICODE) : $payload
         ]);
     }
+
+    /**
+     * Tạo Task đồng bộ cho tất cả các máy chủ VPS đang hoạt động thuộc nhóm máy chủ (group_id)
+     */
+    public function createTasksForGroup(int $groupId, string $action, array $payload): void
+    {
+        $stmt = self::$db->prepare("
+            SELECT `id` FROM `vc_servers` 
+            WHERE `group_id` = :group_id AND `status` = 'active'
+        ");
+        $stmt->execute(['group_id' => $groupId]);
+        $servers = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
+        foreach ($servers as $server) {
+            $this->create([
+                'server_id' => (int)$server['id'],
+                'action'    => $action,
+                'payload'   => $payload
+            ]);
+        }
+    }
 }

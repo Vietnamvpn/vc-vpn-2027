@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Setting;
 use App\Models\VpnPlan;
 use App\Models\Subscription;
+use App\Models\NodeTask;
 use App\Services\MailService;
 
 class AuthController extends BaseController
@@ -80,7 +81,6 @@ class AuthController extends BaseController
                 hash_equals($user['email'], $username)
             );
 
-            // Kiểm tra an toàn khi password_hash là null (tài khoản đăng ký bằng Google)
             if ($isExactMatch && !empty($user['password_hash'])) {
                 $passwordValid = password_verify($password, $user['password_hash']);
             } else {
@@ -121,9 +121,6 @@ class AuthController extends BaseController
         $this->redirect('/login');
     }
 
-    /**
-     * Chuyển hướng người dùng sang trang đăng nhập Google OAuth 2.0
-     */
     public function googleRedirect(): void
     {
         $clientId = $_ENV['GOOGLE_CLIENT_ID'] ?? getenv('GOOGLE_CLIENT_ID') ?? '';
@@ -150,9 +147,6 @@ class AuthController extends BaseController
         $this->redirect($url);
     }
 
-    /**
-     * Xử lý callback sau khi người dùng đồng ý cấp quyền từ Google
-     */
     public function googleCallback(): void
     {
         $state = $_GET['state'] ?? '';
@@ -174,7 +168,6 @@ class AuthController extends BaseController
         $clientSecret = $_ENV['GOOGLE_CLIENT_SECRET'] ?? getenv('GOOGLE_CLIENT_SECRET') ?? '';
         $redirectUri = $_ENV['GOOGLE_REDIRECT_URI'] ?? getenv('GOOGLE_REDIRECT_URI') ?? '';
 
-        // 1. Đổi code lấy access token
         $ch = curl_init('https://oauth2.googleapis.com/token');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
@@ -195,7 +188,6 @@ class AuthController extends BaseController
             $this->redirect('/login');
         }
 
-        // 2. Lấy thông tin user từ Google UserInfo API
         $ch = curl_init('https://www.googleapis.com/oauth2/v3/userinfo');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
@@ -214,27 +206,21 @@ class AuthController extends BaseController
         }
 
         $userModel = new User();
-
-        // Bước A: Tìm user theo google_id
         $user = $userModel->findByGoogleId($googleId);
 
-        // Bước B: Nếu chưa có theo google_id, kiểm tra theo email đã tồn tại chưa
         if (!$user) {
             $user = $userModel->findByUsernameOrEmailStrict($email);
 
             if ($user) {
-                // Đã tồn tại tài khoản dùng Email này -> Gắn google_id vào
                 $userModel->update($user['id'], ['google_id' => $googleId]);
                 $user['google_id'] = $googleId;
             } else {
-                // Bước C: Tạo tài khoản mới hoàn toàn
                 $usernameBase = explode('@', $email)[0];
                 $usernameBase = preg_replace('/[^a-zA-Z0-9_]/', '', $usernameBase);
                 if (strlen($usernameBase) < 3) {
                     $usernameBase = 'user_' . substr(md5(uniqid()), 0, 6);
                 }
 
-                // Xử lý chống trùng username
                 $username = $usernameBase;
                 $counter = 1;
                 while ($userModel->findByUsernameOrEmailStrict($username)) {
@@ -257,7 +243,7 @@ class AuthController extends BaseController
                 if ($created) {
                     $user = $userModel->findByGoogleId($googleId);
                     if ($user && isset($user['id'])) {
-                        $this->activateTrialPlan((int)$user['id']);
+                        $this->activateTrialPlan((int)$user['id'], (string)($user['email'] ?? ''));
                     }
                 }
             }
@@ -273,7 +259,6 @@ class AuthController extends BaseController
             $this->redirect('/login');
         }
 
-        // Thiết lập phiên đăng nhập thành công
         session_regenerate_id(true);
         unset($_SESSION['login_throttle']);
 
@@ -418,7 +403,7 @@ class AuthController extends BaseController
             if ($created) {
                 $newUser = $userModel->findByUsernameOrEmailStrict($email);
                 if ($newUser && isset($newUser['id'])) {
-                    $this->activateTrialPlan((int)$newUser['id']);
+                    $this->activateTrialPlan((int)$newUser['id'], (string)($newUser['email'] ?? ''));
                 }
                 unset($_SESSION['register_otp'], $_SESSION['register_otp_cooldown']);
                 $_SESSION['success'] = 'Đăng ký tài khoản thành công. Vui lòng đăng nhập.';
@@ -548,10 +533,9 @@ class AuthController extends BaseController
     }
 
     /**
-     * Tự động kích hoạt gói dùng thử cho người dùng mới
-     * Bảo mật: Kiểm tra điều kiện nghiêm ngặt, chống lặp gói cước và chống SQL Injection
+     * Tự động kích hoạt gói dùng thử và khởi tạo Task gửi xuống toàn bộ máy chủ VPS
      */
-    private function activateTrialPlan(int $userId): void
+    private function activateTrialPlan(int $userId, string $email = ''): void
     {
         if ($userId <= 0) {
             return;
@@ -616,5 +600,17 @@ class AuthController extends BaseController
             'end_date'        => $endDate,
             'status'          => 'active'
         ]);
+
+        // Đẩy Task tự động xuống các máy chủ thuộc group_id của gói cước
+        if (class_exists('App\Models\NodeTask') && !empty($plan['group_id'])) {
+            $nodeTaskModel = new NodeTask();
+            $nodeTaskModel->createTasksForGroup((int)$plan['group_id'], 'add_user', [
+                'uuid'            => $uuid,
+                'user_id'         => $userId,
+                'email'           => $email,
+                'transfer_enable' => $transferEnable,
+                'end_date'        => $endDate
+            ]);
+        }
     }
 }
