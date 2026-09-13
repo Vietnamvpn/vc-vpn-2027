@@ -458,3 +458,110 @@ body.overlay-open .admin-main {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Bố cục Footer tràn viền */
+    .vc-footer {
+        margin-top: auto;
+        padding: 2.5rem 1rem 1.5rem;
+        color: #333333;
+        font-size: 0.85rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        background: rgba(233, 239, 245, 0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* Container giới hạn nội dung ở giữa */
+    .vc-footer-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+
+    /* Tiêu đề Website */
+    .vc-footer-title-wrap {
+        text-align: center;
+    }
+
+    .vc-footer-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #007bff;
+        margin: 0;
+        letter-spacing: -0.3px;
+    }
+
+    /* Bố cục flex để tự động co giãn tối đa, chỉ xuống hàng khi khoảng trống mỗi cột < 160px */
+    .vc-footer-links-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 1.5rem;
+        width: 100%;
+    }
+    
+    .vc-footer-col {
+        flex: 1 1 auto;
+        min-width: 160px; /* Ép xuống hàng khi không đủ 160px */
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+    }
+
+    .vc-footer-col h4 {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #333333;
+        margin: 0 0 1rem 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Nhóm các liên kết bên trong cột */
+    .vc-footer-col-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        width: 100%;
+    }
+
+    .vc-footer-col a, .vc-footer-col span.wechat-text {
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: opacity 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .vc-footer-col a:hover {
+        opacity: 0.7;
+    }
+
+    /* Màu sắc riêng cho từng liên kết */
+    .vc-color-blue { color: #0056b3 !important; }
+    .vc-color-green { color: #28a745 !important; }
+    .vc-color-red { color: #dc3545 !important; }
+    .vc-color-orange { color: #d35400 !important; }
+    .vc-color-purple { color: #6f42c1 !important; }
+    .vc-color-darkgreen { color: #1e7e34 !important; }
+
+    /* Bản quyền */
+    .vc-footer-copyright-wrap {
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        padding-top: 1rem;
+        text-align: center;
+    }
+
+    .vc-footer-copyright-text {
+        margin: 0;
+        color: #6c757d;
+        font-size: 0.78rem;
+    }
