@@ -149,6 +149,10 @@ bash vc_update.sh
 ## Chạy cron trong temina
 
 ```bash
+crontab -e
+```
+
+```bash
 */5 * * * * curl -s "https://vpn2s.linksub24h.com/api/cron/check-subscriptions?key=VC_VPN_CRON_2027_SECRET" > /dev/null 2>&1
 ```
 ---

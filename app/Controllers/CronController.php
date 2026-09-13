@@ -12,7 +12,7 @@ use App\Services\MailService;
 class CronController extends BaseController
 {
     /**
-     * Tự động quét và xử lý các gói cước hết hạn, hết data, hoặc sắp hết hạn
+     * Tự động quét và xử lý các gói cước hết hạn, hết data, sắp hết hạn và reset lưu lượng đầu tháng
      */
     public function checkSubscriptions(): void
     {
@@ -32,13 +32,64 @@ class CronController extends BaseController
 
         $now = date('Y-m-d H:i:s');
         $stats = [
-            'expired'       => 0,
-            'data_exceeded' => 0,
-            'expiring_soon' => 0
+            'expired'        => 0,
+            'data_exceeded'  => 0,
+            'expiring_soon'  => 0,
+            'monthly_reset'  => false
         ];
 
         // -------------------------------------------------------------
-        // XỬ LÝ 1: CÁC GÓI ACTIVE ĐÃ HẾT HẠN (end_date <= NOW)
+        // XỬ LÝ 1: RESET LƯU LƯỢNG VÀO NGÀY 1 HÀNG THÁNG (CHẠY 1 LẦN DUY NHẤT)
+        // -------------------------------------------------------------
+        $currentMonthKey = date('Y-m-01');
+        $lastResetDate   = $settingModel->get('last_monthly_reset_date', '');
+
+        if (date('j') === '1' && $lastResetDate !== $currentMonthKey) {
+            // A. Mở khóa và reset các gói bị tạm ngưng do hết data (status = suspended) nhưng chưa hết hạn
+            $sqlSuspended = "
+                SELECT s.*, p.group_id 
+                FROM `vc_subscriptions` s
+                INNER JOIN `vc_vpn_plans` p ON s.plan_id = p.id
+                WHERE s.status = 'suspended' AND s.end_date > :now
+            ";
+            $stmt = self::$db->prepare($sqlSuspended);
+            $stmt->execute(['now' => $now]);
+            $suspendedSubs = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
+            foreach ($suspendedSubs as $sub) {
+                // Cập nhật trạng thái lại thành active và reset lưu lượng
+                $subscriptionModel->update($sub['id'], [
+                    'status'     => 'active',
+                    'upload'     => 0,
+                    'download'   => 0,
+                    'updated_at' => $now
+                ]);
+
+                // Gửi Task mở lại kết nối trên VPS
+                if (!empty($sub['group_id'])) {
+                    $nodeTaskModel->createTasksForGroup((int)$sub['group_id'], 'toggle_user', [
+                        'username' => 'sub_' . $sub['id'],
+                        'status'   => 'active'
+                    ]);
+                }
+            }
+
+            // B. Reset lưu lượng upload/download về 0 cho tất cả các gói đang active
+            $sqlResetActive = "
+                UPDATE `vc_subscriptions` 
+                SET `upload` = 0, `download` = 0, `updated_at` = :now 
+                WHERE `status` = 'active'
+            ";
+            $stmtReset = self::$db->prepare($sqlResetActive);
+            $stmtReset->execute(['now' => $now]);
+
+            // C. Đánh dấu đã hoàn tất reset cho tháng này
+            $settingModel->setByKey('last_monthly_reset_date', $currentMonthKey);
+            $stats['monthly_reset'] = true;
+        }
+
+        // -------------------------------------------------------------
+        // XỬ LÝ 2: CÁC GÓI ACTIVE ĐÃ HẾT HẠN (end_date <= NOW)
         // -------------------------------------------------------------
         $sqlExpired = "
             SELECT s.*, u.email, u.username AS user_name, p.group_id, p.name AS plan_name
@@ -52,13 +103,11 @@ class CronController extends BaseController
         $expiredSubs = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         foreach ($expiredSubs as $sub) {
-            // Cập nhật trạng thái trong Database
             $subscriptionModel->update($sub['id'], [
                 'status'     => 'expired',
                 'updated_at' => $now
             ]);
 
-            // Gửi Task toggle_user khóa tài khoản xuống các máy chủ thuộc nhóm của gói cước
             if (!empty($sub['group_id'])) {
                 $nodeTaskModel->createTasksForGroup((int)$sub['group_id'], 'toggle_user', [
                     'username' => 'sub_' . $sub['id'],
@@ -66,8 +115,7 @@ class CronController extends BaseController
                 ]);
             }
 
-            // Gửi Email thông báo
-            if (!empty($sub['email'])) {
+            if (!empty($sub['email']) && !$this->hasRecentEmailLog($sub['email'], 'hết hạn', 24)) {
                 $mailService->send($sub['email'], 'Tài khoản VPN của bạn đã hết hạn', 'subscriptions.expired', [
                     'username'  => $sub['user_name'],
                     'plan_name' => $sub['plan_name'],
@@ -79,7 +127,7 @@ class CronController extends BaseController
         }
 
         // -------------------------------------------------------------
-        // XỬ LÝ 2: CÁC GÓI ACTIVE ĐÃ HẾT DUNG LƯỢNG ((upload + download) >= transfer_enable)
+        // XỬ LÝ 3: CÁC GÓI ACTIVE ĐÃ HẾT DUNG LƯỢNG ((upload + download) >= transfer_enable)
         // -------------------------------------------------------------
         $sqlDataExceeded = "
             SELECT s.*, u.email, u.username AS user_name, p.group_id, p.name AS plan_name
@@ -95,13 +143,11 @@ class CronController extends BaseController
         $dataExceededSubs = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         foreach ($dataExceededSubs as $sub) {
-            // Cập nhật trạng thái trong Database
             $subscriptionModel->update($sub['id'], [
                 'status'     => 'suspended',
                 'updated_at' => $now
             ]);
 
-            // Gửi Task toggle_user khóa tài khoản xuống các máy chủ thuộc nhóm của gói cước
             if (!empty($sub['group_id'])) {
                 $nodeTaskModel->createTasksForGroup((int)$sub['group_id'], 'toggle_user', [
                     'username' => 'sub_' . $sub['id'],
@@ -109,8 +155,7 @@ class CronController extends BaseController
                 ]);
             }
 
-            // Gửi Email thông báo
-            if (!empty($sub['email'])) {
+            if (!empty($sub['email']) && !$this->hasRecentEmailLog($sub['email'], 'hết dung lượng', 24)) {
                 $mailService->send($sub['email'], 'Tài khoản VPN của bạn đã hết dung lượng', 'subscriptions.data-exceeded', [
                     'username'  => $sub['user_name'],
                     'plan_name' => $sub['plan_name']
@@ -121,7 +166,7 @@ class CronController extends BaseController
         }
 
         // -------------------------------------------------------------
-        // XỬ LÝ 3: CÁC GÓI SẮP HẾT HẠN (Còn dưới 3 ngày)
+        // XỬ LÝ 4: CÁC GÓI SẮP HẾT HẠN (Còn dưới 3 ngày)
         // -------------------------------------------------------------
         $threeDaysLater = date('Y-m-d H:i:s', strtotime('+3 days'));
         $sqlExpiringSoon = "
@@ -141,14 +186,14 @@ class CronController extends BaseController
         $expiringSoonSubs = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         foreach ($expiringSoonSubs as $sub) {
-            if (!empty($sub['email'])) {
+            if (!empty($sub['email']) && !$this->hasRecentEmailLog($sub['email'], 'sắp hết hạn', 72)) {
                 $mailService->send($sub['email'], 'Cảnh báo: Tài khoản VPN sắp hết hạn', 'subscriptions.expiring-soon', [
                     'username'  => $sub['user_name'],
                     'plan_name' => $sub['plan_name'],
                     'end_date'  => $sub['end_date']
                 ]);
+                $stats['expiring_soon']++;
             }
-            $stats['expiring_soon']++;
         }
 
         $this->json([
@@ -156,5 +201,25 @@ class CronController extends BaseController
             'message' => 'Hoàn tất tiến trình tự động quét gói cước.',
             'data'    => $stats
         ]);
+    }
+
+    /**
+     * Kiểm tra xem đã gửi email có tiêu đề chứa từ khóa cho người nhận trong khoảng thời gian (giờ) nhất định chưa
+     */
+    private function hasRecentEmailLog(string $recipient, string $subjectKeyword, int $hours = 72): bool
+    {
+        $sql = "
+            SELECT COUNT(*) FROM `vc_email_logs` 
+            WHERE `recipient` = :recipient 
+              AND `subject` LIKE :subject 
+              AND `status` = 'sent' 
+              AND `created_at` >= DATE_SUB(NOW(), INTERVAL {$hours} HOUR)
+        ";
+        $stmt = self::$db->prepare($sql);
+        $stmt->execute([
+            'recipient' => $recipient,
+            'subject'   => '%' . $subjectKeyword . '%'
+        ]);
+        return ((int)$stmt->fetchColumn()) > 0;
     }
 }
