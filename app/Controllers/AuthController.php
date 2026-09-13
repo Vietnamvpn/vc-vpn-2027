@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Models\User;
 use App\Models\Setting;
+use App\Models\VpnPlan;
+use App\Models\Subscription;
 use App\Services\MailService;
 
 class AuthController extends BaseController
@@ -254,6 +256,9 @@ class AuthController extends BaseController
 
                 if ($created) {
                     $user = $userModel->findByGoogleId($googleId);
+                    if ($user && isset($user['id'])) {
+                        $this->activateTrialPlan((int)$user['id']);
+                    }
                 }
             }
         }
@@ -411,6 +416,10 @@ class AuthController extends BaseController
             ]);
 
             if ($created) {
+                $newUser = $userModel->findByUsernameOrEmailStrict($email);
+                if ($newUser && isset($newUser['id'])) {
+                    $this->activateTrialPlan((int)$newUser['id']);
+                }
                 unset($_SESSION['register_otp'], $_SESSION['register_otp_cooldown']);
                 $_SESSION['success'] = 'Đăng ký tài khoản thành công. Vui lòng đăng nhập.';
                 $this->redirect('/login');
@@ -536,5 +545,76 @@ class AuthController extends BaseController
         unset($_SESSION['user_id'], $_SESSION['username'], $_SESSION['role']);
         session_destroy();
         $this->redirect('/');
+    }
+
+    /**
+     * Tự động kích hoạt gói dùng thử cho người dùng mới
+     * Bảo mật: Kiểm tra điều kiện nghiêm ngặt, chống lặp gói cước và chống SQL Injection
+     */
+    private function activateTrialPlan(int $userId): void
+    {
+        if ($userId <= 0) {
+            return;
+        }
+
+        if (!class_exists('App\Models\Setting') || 
+            !class_exists('App\Models\VpnPlan') || 
+            !class_exists('App\Models\Subscription')) {
+            return;
+        }
+
+        $settingModel = new Setting();
+        $trialEnabled = $settingModel->get('trial_enabled', '0');
+        if ((string)$trialEnabled !== '1') {
+            return;
+        }
+
+        $trialPlanId = (int)$settingModel->get('trial_plan_id', '0');
+        if ($trialPlanId <= 0) {
+            return;
+        }
+
+        $subscriptionModel = new Subscription();
+        $existingSubs = $subscriptionModel->getByUserId($userId);
+        if (!empty($existingSubs)) {
+            return;
+        }
+
+        $planModel = new VpnPlan();
+        $plan = $planModel->find($trialPlanId);
+        if (!$plan || ($plan['status'] ?? '') !== 'active') {
+            return;
+        }
+
+        $trialDaysConfig = $settingModel->get('trial_duration_days');
+        if ($trialDaysConfig !== null && (int)$trialDaysConfig > 0) {
+            $durationDays = (int)$trialDaysConfig;
+        } else {
+            $durationDays = (int)($plan['duration_days'] ?? 3);
+        }
+
+        $bytes = random_bytes(16);
+        $bytes[6] = chr(ord($bytes[6]) & 0x0f | 0x40);
+        $bytes[8] = chr(ord($bytes[8]) & 0x3f | 0x80);
+        $uuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($bytes), 4));
+
+        $bandwidthGb = (int)($plan['bandwidth_limit_gb'] ?? 0);
+        $transferEnable = $bandwidthGb * 1073741824;
+
+        $now = date('Y-m-d H:i:s');
+        $endDate = date('Y-m-d H:i:s', strtotime("+{$durationDays} days"));
+
+        $subscriptionModel->create([
+            'user_id'         => $userId,
+            'plan_id'         => (int)$plan['id'],
+            'order_id'        => null,
+            'uuid'            => $uuid,
+            'transfer_enable' => $transferEnable,
+            'upload'          => 0,
+            'download'        => 0,
+            'start_date'      => $now,
+            'end_date'        => $endDate,
+            'status'          => 'active'
+        ]);
     }
 }
