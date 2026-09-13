@@ -88,7 +88,7 @@ class Subscription extends BaseModel
     }
 
     /**
-     * Cộng dồn dung lượng Upload/Download, cập nhật IP sử dụng và số lượng thiết bị theo ID gói cước (sub_X)
+     * Cộng dồn dung lượng Upload/Download, cập nhật IP sử dụng và tự động kiểm tra ngắt kết nối tức thì nếu vượt hạn mức
      */
     public function addTrafficById(int $id, int $u, int $d, ?string $lastIp = null, ?int $ipCount = null): bool
     {
@@ -119,11 +119,17 @@ class Subscription extends BaseModel
         ";
 
         $stmt = self::$db->prepare($sql);
-        return $stmt->execute($params);
+        $executed = $stmt->execute($params);
+
+        if ($executed) {
+            $this->checkAndSuspendRealtimeById($id);
+        }
+
+        return $executed;
     }
 
     /**
-     * Cộng dồn dung lượng Upload/Download, cập nhật IP sử dụng và số lượng thiết bị theo UUID
+     * Cộng dồn dung lượng Upload/Download theo UUID và tự động kiểm tra ngắt kết nối tức thì nếu vượt hạn mức
      */
     public function addTrafficByUuid(string $uuid, int $u, int $d, ?string $lastIp = null, ?int $ipCount = null): bool
     {
@@ -154,7 +160,63 @@ class Subscription extends BaseModel
         ";
 
         $stmt = self::$db->prepare($sql);
-        return $stmt->execute($params);
+        $executed = $stmt->execute($params);
+
+        if ($executed) {
+            $sub = $this->findByUuid($uuid);
+            if ($sub && isset($sub['id'])) {
+                $this->checkAndSuspendRealtimeById((int)$sub['id']);
+            }
+        }
+
+        return $executed;
+    }
+
+    /**
+     * Kiểm tra và ngắt kết nối Real-time ngay khi phát hiện tài khoản vượt hạn mức dung lượng
+     */
+    private function checkAndSuspendRealtimeById(int $id): void
+    {
+        $sql = "
+            SELECT s.id, s.upload, s.download, s.transfer_enable, s.status, s.user_id, p.group_id, u.email, u.username AS user_name, p.name AS plan_name
+            FROM `{$this->table}` s
+            INNER JOIN `vc_vpn_plans` p ON s.plan_id = p.id
+            INNER JOIN `vc_users` u ON s.user_id = u.id
+            WHERE s.id = :id AND s.status = 'active'
+            LIMIT 1
+        ";
+        $stmt = self::$db->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        $sub = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if ($sub && (int)$sub['transfer_enable'] > 0) {
+            $totalUsed = (int)$sub['upload'] + (int)$sub['download'];
+            if ($totalUsed >= (int)$sub['transfer_enable']) {
+                // 1. Cập nhật trạng thái thành suspended trong DB
+                $this->update($sub['id'], [
+                    'status'     => 'suspended',
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+
+                // 2. Gửi Task toggle_user khóa kết nối tức thì xuống VPS thuộc group_id
+                if (!empty($sub['group_id']) && class_exists('App\Models\NodeTask')) {
+                    $nodeTaskModel = new \App\Models\NodeTask();
+                    $nodeTaskModel->createTasksForGroup((int)$sub['group_id'], 'toggle_user', [
+                        'username' => 'sub_' . $sub['id'],
+                        'status'   => 'disabled'
+                    ]);
+                }
+
+                // 3. Gửi Email thông báo hết dung lượng nếu MailService có sẵn
+                if (!empty($sub['email']) && class_exists('App\Services\MailService')) {
+                    $mailService = new \App\Services\MailService();
+                    $mailService->send($sub['email'], 'Tài khoản VPN của bạn đã hết dung lượng', 'subscriptions.data-exceeded', [
+                        'username'  => $sub['user_name'],
+                        'plan_name' => $sub['plan_name']
+                    ]);
+                }
+            }
+        }
     }
 
     /**

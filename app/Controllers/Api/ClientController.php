@@ -59,14 +59,25 @@ class ClientController extends BaseController
             exit;
         }
 
-        // Trả về Header thông tin dung lượng cho App Client
-        $upload = $subscription['upload'] ?? 0;
-        $download = $subscription['download'] ?? 0;
+        // Đổi tên (Remark) của node đầu tiên thành "Cập nhật thường xuyên"
+        if (!empty($links[0])) {
+            $hashPos = strpos($links[0], '#');
+            $newName = rawurlencode('Cập nhật thường xuyên');
+            if ($hashPos !== false) {
+                $links[0] = substr($links[0], 0, $hashPos + 1) . $newName;
+            } else {
+                $links[0] .= '#' . $newName;
+            }
+        }
+
+        // Tính tổng dung lượng đã sử dụng (upload + download)
+        $usedTraffic = ((int)($subscription['upload'] ?? 0)) + ((int)($subscription['download'] ?? 0));
         $total = $subscription['transfer_enable'] ?? 0;
         $expire = strtotime($subscription['end_date']);
 
+        // Trả về Header thông tin dung lượng cho App Client (upload=0, download=tổng lưu lượng đã dùng)
         header('Content-Type: text/plain; charset=utf-8');
-        header("Subscription-Userinfo: upload={$upload}; download={$download}; total={$total}; expire={$expire}");
+        header("Subscription-Userinfo: upload=0; download={$usedTraffic}; total={$total}; expire={$expire}");
 
         echo base64_encode(implode("\n", $links));
         exit;

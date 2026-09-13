@@ -22,10 +22,15 @@ class Server extends BaseModel
     }
 
     /**
-     * Tìm máy chủ VPS bằng API Token gửi từ Node
+     * Tìm máy chủ VPS bằng API Token gửi từ Node (Chặn Token rỗng để tránh khớp nhầm)
      */
     public function findByToken(string $token): ?array
     {
+        $token = trim($token);
+        if (empty($token)) {
+            return null;
+        }
+
         $sql = "
             SELECT * FROM `{$this->table}` 
             WHERE `api_token` = :token 
@@ -35,6 +40,21 @@ class Server extends BaseModel
         $stmt->execute(['token' => $token]);
         $result = $stmt->fetch();
         return $result ?: null;
+    }
+
+    /**
+     * Lấy danh sách máy chủ đang hoạt động (active) thuộc một Nhóm máy chủ (group_id)
+     */
+    public function getActiveByGroupId(int $groupId): array
+    {
+        $sql = "
+            SELECT * FROM `{$this->table}` 
+            WHERE `group_id` = :group_id AND `status` = 'active'
+            ORDER BY `id` ASC
+        ";
+        $stmt = self::$db->prepare($sql);
+        $stmt->execute(['group_id' => $groupId]);
+        return $stmt->fetchAll() ?: [];
     }
 
     public function getAll(): array

@@ -23,21 +23,23 @@ class NodeTask extends BaseModel
     }
 
     /**
-     * Cập nhật trạng thái của Task sau khi VPS xử lý xong
+     * Cập nhật trạng thái của Task sau khi VPS xử lý xong (Lưu đầy đủ thông báo lỗi nếu có)
      */
     public function updateStatus(int $taskId, string $status, ?string $errorMsg = null): bool
     {
         $sql = "
             UPDATE `{$this->table}` 
             SET `status` = :status, 
+                `error_msg` = :error_msg,
                 `attempts` = `attempts` + 1, 
                 `updated_at` = NOW() 
             WHERE `id` = :id
         ";
         $stmt = self::$db->prepare($sql);
         return $stmt->execute([
-            'status' => $status,
-            'id'     => $taskId
+            'status'    => $status,
+            'error_msg' => $errorMsg,
+            'id'        => $taskId
         ]);
     }
 
@@ -46,9 +48,13 @@ class NodeTask extends BaseModel
      */
     public function create(array $data): bool
     {
-        $serverId = $data['server_id'] ?? 0;
-        $action   = $data['action'] ?? '';
+        $serverId = (int)($data['server_id'] ?? 0);
+        $action   = trim($data['action'] ?? '');
         $payload  = $data['payload'] ?? [];
+
+        if ($serverId <= 0 || empty($action)) {
+            return false;
+        }
 
         $sql = "
             INSERT INTO `{$this->table}` (`server_id`, `action`, `payload`, `status`, `created_at`) 
@@ -67,6 +73,10 @@ class NodeTask extends BaseModel
      */
     public function createTasksForGroup(int $groupId, string $action, array $payload): void
     {
+        if ($groupId <= 0 || empty($action)) {
+            return;
+        }
+
         $stmt = self::$db->prepare("
             SELECT `id` FROM `vc_servers` 
             WHERE `group_id` = :group_id AND `status` = 'active'

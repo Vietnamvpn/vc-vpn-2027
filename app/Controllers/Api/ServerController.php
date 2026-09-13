@@ -11,7 +11,7 @@ use App\Models\NodeInbound;
 class ServerController extends BaseController
 {
     /**
-     * Xác thực thông tin Máy chủ VPS thông qua X-API-Token và X-API-Port
+     * Xác thực thông tin Máy chủ VPS thông qua X-API-Token, X-API-Port và Trạng thái máy chủ
      */
     private function authenticateServer(): ?array
     {
@@ -28,6 +28,18 @@ class ServerController extends BaseController
 
         if (!$server) {
             $this->json(['status' => false, 'message' => 'Token xác thực Node không hợp lệ.'], 401);
+            exit;
+        }
+
+        // 1. Kiểm tra trạng thái máy chủ phải đang ở trạng thái active
+        if (($server['status'] ?? '') !== 'active') {
+            $this->json(['status' => false, 'message' => 'Máy chủ VPS đang ngưng hoạt động hoặc bảo trì.'], 403);
+            exit;
+        }
+
+        // 2. Kiểm tra cổng API nếu có truyền lên từ VPS
+        if ($port > 0 && (int)($server['api_port'] ?? 0) !== $port) {
+            $this->json(['status' => false, 'message' => 'Cổng kết nối API không chính xác.'], 403);
             exit;
         }
 
@@ -55,11 +67,11 @@ class ServerController extends BaseController
                 break;
 
             case 'update_task_status':
-                $this->handleUpdateTaskStatus($payload);
+                $this->handleUpdateTaskStatus((int)$server['id'], $payload);
                 break;
 
             case 'report_traffic':
-                $this->handleReportTraffic($payload);
+                $this->handleReportTraffic($server, $payload);
                 break;
 
             case 'report_inbounds':
@@ -100,17 +112,25 @@ class ServerController extends BaseController
 
     /**
      * 2. Cập nhật trạng thái sau khi VPS chạy xong Task (update_task_status)
+     * Xác minh chặt chẽ task_id phải thuộc về chính server_id đang kết nối
      */
-    private function handleUpdateTaskStatus(array $payload): void
+    private function handleUpdateTaskStatus(int $serverId, array $payload): void
     {
         $taskId = $payload['task_id'] ?? null;
         $status = $payload['task_status'] ?? 'done';
         $errorMsg = $payload['error_msg'] ?? null;
 
         if ($taskId) {
-            $taskModel = new NodeTask();
-            $mappedStatus = ($status === 'done' || $status === 'completed') ? 'completed' : 'failed';
-            $taskModel->updateStatus((int)$taskId, $mappedStatus, $errorMsg);
+            // Xác minh Task thuộc đúng server_id trước khi cập nhật
+            $stmt = self::$db->prepare("SELECT `server_id` FROM `vc_node_tasks` WHERE `id` = :id LIMIT 1");
+            $stmt->execute(['id' => (int)$taskId]);
+            $task = $stmt->fetch();
+
+            if ($task && (int)$task['server_id'] === $serverId) {
+                $taskModel = new NodeTask();
+                $mappedStatus = ($status === 'done' || $status === 'completed') ? 'completed' : 'failed';
+                $taskModel->updateStatus((int)$taskId, $mappedStatus, $errorMsg);
+            }
         }
 
         $this->json([
@@ -122,7 +142,7 @@ class ServerController extends BaseController
     /**
      * 3. Xử lý lưu lượng, ghi nhận danh sách IP và số lượng thiết bị kết nối do VPS báo cáo về (report_traffic)
      */
-    private function handleReportTraffic(array $payload): void
+    private function handleReportTraffic(array $server, array $payload): void
     {
         $logs = $payload['logs'] ?? [];
 
@@ -131,13 +151,22 @@ class ServerController extends BaseController
 
             foreach ($logs as $log) {
                 $username = trim($log['username'] ?? '');
-                $upload   = (int)($log['upload'] ?? 0);
-                $download = (int)($log['download'] ?? 0);
+                $upload   = max(0, (int)($log['upload'] ?? 0));
+                $download = max(0, (int)($log['download'] ?? 0));
                 $ips      = $log['ips'] ?? [];
-                
-                // Thu thập số lượng thiết bị và danh sách IP kết nối đồng thời
-                $ipCount = (int)($log['ip_count'] ?? (is_array($ips) ? count($ips) : 0));
-                $allIps  = (!empty($ips) && is_array($ips)) ? implode(', ', array_unique($ips)) : null;
+
+                if (!is_array($ips)) {
+                    $ips = [];
+                }
+
+                // Lấy duy nhất IP đầu tiên để chống lỗi tràn độ dài cột VARCHAR(45) trong SQL[cite: 2]
+                $firstIp = !empty($ips) ? trim((string)$ips[0]) : null;
+                if (!empty($firstIp) && strlen($firstIp) > 45) {
+                    $firstIp = substr($firstIp, 0, 45);
+                }
+
+                // Thu thập chính xác số lượng thiết bị online (trả về 0 khi ngắt kết nối)
+                $ipCount = isset($log['ip_count']) ? max(0, (int)$log['ip_count']) : count($ips);
 
                 if (empty($username)) {
                     continue;
@@ -146,12 +175,17 @@ class ServerController extends BaseController
                 // Tách ID gói cước từ định dạng "sub_77"
                 if (strpos($username, 'sub_') === 0) {
                     $subId = (int)str_replace('sub_', '', $username);
-                    $subModel->addTrafficById($subId, $upload, $download, $allIps, $ipCount);
+                    if ($subId > 0) {
+                        $subModel->addTrafficById($subId, $upload, $download, $firstIp, $ipCount);
+                    }
                 } elseif (is_numeric($username)) {
-                    $subModel->addTrafficById((int)$username, $upload, $download, $allIps, $ipCount);
+                    $subId = (int)$username;
+                    if ($subId > 0) {
+                        $subModel->addTrafficById($subId, $upload, $download, $firstIp, $ipCount);
+                    }
                 } else {
                     // Trường hợp username truyền trực tiếp dạng UUID
-                    $subModel->addTrafficByUuid($username, $upload, $download, $allIps, $ipCount);
+                    $subModel->addTrafficByUuid($username, $upload, $download, $firstIp, $ipCount);
                 }
             }
         }
