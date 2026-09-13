@@ -67,19 +67,31 @@ class NodeTask extends BaseModel
     }
 
     /**
-     * Tạo Task đồng bộ cho tất cả các máy chủ VPS đang hoạt động thuộc nhóm máy chủ (group_id)
+     * Tạo Task đồng bộ cho tất cả các máy chủ VPS đang hoạt động thuộc nhóm hoặc danh sách nhóm máy chủ (group_id)
      */
-    public function createTasksForGroup(int $groupId, string $action, array $payload): void
+    public function createTasksForGroup(int|array $groupId, string $action, array $payload): void
     {
-        if ($groupId <= 0 || empty($action)) {
+        if (empty($groupId) || empty($action)) {
             return;
         }
 
+        if (is_array($groupId)) {
+            $groupIds = array_map('intval', array_filter($groupId));
+        } else {
+            $groupIds = [(int)$groupId];
+        }
+
+        $groupIds = array_filter($groupIds, fn($id) => $id > 0);
+        if (empty($groupIds)) {
+            return;
+        }
+
+        $inClause = implode(',', array_fill(0, count($groupIds), '?'));
         $stmt = self::$db->prepare("
             SELECT `id` FROM `vc_servers` 
-            WHERE `group_id` = :group_id AND `status` = 'active'
+            WHERE `group_id` IN ({$inClause}) AND `status` = 'active'
         ");
-        $stmt->execute(['group_id' => $groupId]);
+        $stmt->execute(array_values($groupIds));
         $servers = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         foreach ($servers as $server) {

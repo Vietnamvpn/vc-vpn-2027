@@ -27,9 +27,9 @@ class NodeInbound extends BaseModel
     }
 
     /**
-     * Lấy danh sách tất cả Node Inbound đang hoạt động kèm thông tin Máy chủ (Server), có hỗ trợ lọc theo group_id
+     * Lấy danh sách tất cả Node Inbound đang hoạt động kèm thông tin Máy chủ (Server), hỗ trợ truyền 1 ID hoặc mảng group_ids
      */
-    public function getAllActiveWithServer(?int $groupId = null): array
+    public function getAllActiveWithServer(int|array|null $groupId = null): array
     {
         $sql = "SELECT i.*, s.name AS server_name, s.ip_address, s.group_id 
                 FROM {$this->table} i
@@ -37,9 +37,22 @@ class NodeInbound extends BaseModel
                 WHERE i.status = 'active' AND s.status = 'active'";
 
         $params = [];
-        if ($groupId !== null && $groupId > 0) {
-            $sql .= " AND s.group_id = :group_id";
-            $params['group_id'] = $groupId;
+
+        if (!empty($groupId)) {
+            if (is_array($groupId)) {
+                $groupIds = array_map('intval', array_filter($groupId));
+                if (!empty($groupIds)) {
+                    $inClause = implode(',', array_fill(0, count($groupIds), '?'));
+                    $sql .= " AND s.group_id IN ({$inClause})";
+                    $params = array_values($groupIds);
+                }
+            } else {
+                $gId = (int)$groupId;
+                if ($gId > 0) {
+                    $sql .= " AND s.group_id = ?";
+                    $params = [$gId];
+                }
+            }
         }
 
         $stmt = self::$db->prepare($sql);
