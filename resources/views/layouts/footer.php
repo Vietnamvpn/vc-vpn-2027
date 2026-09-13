@@ -1,7 +1,7 @@
 <footer style="margin-top: auto; padding: 2.5rem 1rem 1.5rem; color: var(--ios-text-secondary); font-size: 0.85rem; border-top: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08)); background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
     
     <style>
-        /* Bố cục chia cột cho phần liên kết */
+        /* Bố cục chia 3 cột */
         .vc-footer-links-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -9,17 +9,11 @@
             width: 100%;
         }
         
-        /* Cột hỗ trợ chiếm 2 phần trong 3 cột ở màn hình lớn */
-        .vc-support-col {
-            grid-column: span 2;
+        /* Cột Liên hệ & Mạng xã hội */
+        .vc-info-col {
+            display: flex;
+            flex-direction: column;
             text-align: left;
-        }
-        
-        /* Lưới nhỏ bên trong phần hỗ trợ để dàn đều các kênh */
-        .vc-support-items {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.8rem 1rem;
         }
 
         /* Cột chính sách ép sang phải và căn chữ lề phải */
@@ -27,7 +21,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            text-align: right; /* Căn chữ bên phải */
+            text-align: right;
         }
         
         /* Màn hình nhỏ (Mobile/Tablet) chuyển về 2 cột */
@@ -35,11 +29,8 @@
             .vc-footer-links-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .vc-support-col {
-                grid-column: span 1; /* Hỗ trợ về lại 1 cột */
-            }
-            .vc-support-items {
-                grid-template-columns: 1fr; /* Xếp dọc các kênh hỗ trợ */
+            .vc-policy-col {
+                grid-column: span 2; /* Chính sách rớt xuống hàng dưới chiếm 2 cột để giữ lề phải */
             }
         }
     </style>
@@ -56,19 +47,35 @@
         <!-- Bố cục lưới 3 cột (Desktop) / 2 cột (Mobile) -->
         <div class="vc-footer-links-grid">
             
-            <!-- Cột Hỗ Trợ -->
-            <div class="vc-support-col">
+            <!-- Cột 1: Liên Hệ Hỗ Trợ -->
+            <div class="vc-info-col">
                 <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
-                    Kênh Hỗ Trợ & Liên Hệ
+                    Liên Hệ Hỗ Trợ
                 </h4>
                 <?php if (!empty($settings)): ?>
-                    <div class="vc-support-items">
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
                         <?php if (!empty($settings['contact_email'])): ?>
                             <a href="mailto:<?= htmlspecialchars($settings['contact_email']) ?>" style="display: inline-flex; align-items: center; gap: 0.5rem; color: #bf5af2; text-decoration: none; font-size: 0.85rem; font-weight: 500;">
                                 <span>📧</span> <?= htmlspecialchars($settings['contact_email']) ?>
                             </a>
                         <?php endif; ?>
 
+                        <?php if (!empty($settings['wechat_id'])): ?>
+                            <span style="display: inline-flex; align-items: center; gap: 0.5rem; color: #32d74b; font-size: 0.85rem; font-weight: 500;">
+                                <span>💬</span> WeChat: <?= htmlspecialchars($settings['wechat_id']) ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Cột 2: Mạng Xã Hội -->
+            <div class="vc-info-col">
+                <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
+                    Mạng Xã Hội
+                </h4>
+                <?php if (!empty($settings)): ?>
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
                         <?php if (!empty($settings['fanpage_url'])): ?>
                             <a href="<?= htmlspecialchars($settings['fanpage_url']) ?>" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.5rem; color: #0a84ff; text-decoration: none; font-size: 0.85rem; font-weight: 500;">
                                 <span>🌐</span> Fanpage Hỗ Trợ
@@ -86,17 +93,11 @@
                                 <span>▶️</span> Youtube
                             </a>
                         <?php endif; ?>
-
-                        <?php if (!empty($settings['wechat_id'])): ?>
-                            <span style="display: inline-flex; align-items: center; gap: 0.5rem; color: #32d74b; font-size: 0.85rem; font-weight: 500;">
-                                <span>💬</span> WeChat: <?= htmlspecialchars($settings['wechat_id']) ?>
-                            </span>
-                        <?php endif; ?>
                     </div>
                 <?php endif; ?>
             </div>
 
-            <!-- Cột Chính Sách (Sang phải, căn phải) -->
+            <!-- Cột 3: Chính Sách (Sang phải, căn phải) -->
             <div class="vc-policy-col">
                 <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">
                     Chính Sách
