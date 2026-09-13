@@ -62,22 +62,29 @@ class ClientController extends BaseController
             exit;
         }
 
-        // Nhân đôi node đầu tiên và đổi tên thành "Cập nhật thường xuyên" đưa lên vị trí đầu tiên
-        $infoLink = $links[0];
-        $hashPos = strpos($infoLink, '#');
-        $newName = rawurlencode('Cập Nhật Thường Xuyên');
-        if ($hashPos !== false) {
-            $infoLink = substr($infoLink, 0, $hashPos + 1) . $newName;
-        } else {
-            $infoLink .= '#' . $newName;
-        }
-        array_unshift($links, $infoLink);
-
         // Trả về Header thông tin dung lượng cho App Client
         $upload = $subscription['upload'] ?? 0;
         $download = $subscription['download'] ?? 0;
         $total = $subscription['transfer_enable'] ?? 0;
         $expire = strtotime($subscription['end_date']);
+
+        // Nhân bản node đầu tiên để tạo 3 node thông tin: Cập nhật, Hạn dùng và Dung lượng
+        $baseLink = $links[0];
+        $hashPos = strpos($baseLink, '#');
+        $cleanLink = ($hashPos !== false) ? substr($baseLink, 0, $hashPos) : $baseLink;
+
+        $nodeUpdate = $cleanLink . '#' . rawurlencode('Cập Nhật Thường Xuyên');
+        $nodeExpire = $cleanLink . '#' . rawurlencode('Hạn Dùng: ' . date('d/m/Y', $expire));
+
+        $usedGb = round(($upload + $download) / 1073741824, 2);
+        if ($total > 0) {
+            $totalGb = round($total / 1073741824, 2);
+            $nodeData = $cleanLink . '#' . rawurlencode("Dung Lượng: {$usedGb} GB / {$totalGb} GB");
+        } else {
+            $nodeData = $cleanLink . '#' . rawurlencode("Dung Lượng: {$usedGb} GB / KGH");
+        }
+
+        array_unshift($links, $nodeUpdate, $nodeExpire, $nodeData);
 
         header('Content-Type: text/plain; charset=utf-8');
         header("Subscription-Userinfo: upload={$upload}; download={$download}; total={$total}; expire={$expire}");
