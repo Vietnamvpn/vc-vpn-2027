@@ -661,8 +661,4 @@ body.overlay-open .admin-main {
         gap: 1.75rem;
     }
 
-    .vc-footer-links-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
 }
