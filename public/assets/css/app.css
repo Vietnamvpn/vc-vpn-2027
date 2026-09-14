@@ -546,30 +546,29 @@ body.overlay-open .admin-main {
   100% { transform: rotate(360deg); }
 }
 
-/* Bố cục Footer tràn viền */
-    .vc-footer {
-        margin-top: auto;
-        padding: 2.5rem 1rem 1.5rem;
-        color: #333333;
-        font-size: 0.85rem;
-        border-top: 1px solid rgba(0, 0, 0, 0.1);
-        background: rgba(233, 239, 245, 0.85);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        width: 100vw;
-        position: relative;
-        left: 50%;
-        transform: translateX(-50%);
-    }
+/* Footer phủ hết vùng nội dung, không tràn vào sidebar */
+.vc-footer {
+    width: calc(100% + 2rem);
+    margin: auto -1rem 0;
+    padding: 2.5rem 1rem 1.5rem;
+    color: #333333;
+    font-size: 0.85rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(233, 239, 245, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    flex-shrink: 0;
+}
 
     /* Container giới hạn nội dung ở giữa */
-    .vc-footer-container {
-        max-width: 1100px;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        gap: 2.5rem;
-    }
+.vc-footer-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
 
     /* Tiêu đề Website */
     .vc-footer-title-wrap {
@@ -582,24 +581,23 @@ body.overlay-open .admin-main {
         color: #007bff;
         margin: 0;
         letter-spacing: -0.3px;
+        overflow-wrap: anywhere;
     }
 
-    /* Bố cục flex để tự động co giãn tối đa, chỉ xuống hàng khi khoảng trống mỗi cột < 160px */
-    .vc-footer-links-grid {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 1.5rem;
-        width: 100%;
-    }
+    /* Các cột tự co giãn và xuống hàng theo chiều rộng khả dụng */
+.vc-footer-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+}
     
-    .vc-footer-col {
-        flex: 1 1 auto;
-        min-width: 160px; /* Ép xuống hàng khi không đủ 160px */
-        display: flex;
-        flex-direction: column;
-        text-align: left;
-    }
+.vc-footer-col {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
 
     .vc-footer-col h4 {
         font-size: 0.85rem;
@@ -626,6 +624,7 @@ body.overlay-open .admin-main {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
+        overflow-wrap: anywhere;
     }
     
     .vc-footer-col a:hover {
@@ -652,3 +651,18 @@ body.overlay-open .admin-main {
         color: #6c757d;
         font-size: 0.78rem;
     }
+
+@media (max-width: 640px) {
+    .vc-footer {
+        padding: 1.75rem 1rem 1.25rem;
+    }
+
+    .vc-footer-container {
+        gap: 1.75rem;
+    }
+
+    .vc-footer-links-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
