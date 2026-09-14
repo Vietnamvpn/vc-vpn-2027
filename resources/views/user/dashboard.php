@@ -1,5 +1,15 @@
 <?php
 // Layout: resources/views/user/dashboard.php
+// Lấy gói dịch vụ đang hoạt động (nếu có)
+$activeSubscription = null;
+if (!empty($subscriptions) && is_array($subscriptions)) {
+    foreach ($subscriptions as $sub) {
+        if (isset($sub['status']) && $sub['status'] === 'active') {
+            $activeSubscription = $sub;
+            break;
+        }
+    }
+}
 ?>
 <div class="container-fluid py-4">
     <div class="row">
@@ -11,7 +21,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-capitalize font-weight-bold">Số dư tài khoản</p>
                                 <h5 class="font-weight-bolder mb-0">
-                                    ¥<?= number_format($user->balance ?? 0, 2) ?>
+                                    <?= $formatMoney($user['balance'] ?? 0) ?>
                                 </h5>
                             </div>
                         </div>
@@ -32,7 +42,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-capitalize font-weight-bold">Hoa hồng giới thiệu</p>
                                 <h5 class="font-weight-bolder mb-0">
-                                    ¥<?= number_format($user->commission_balance ?? 0, 2) ?>
+                                    <?= $formatMoney($user['commission_balance'] ?? 0) ?>
                                 </h5>
                             </div>
                         </div>
@@ -53,7 +63,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-capitalize font-weight-bold">Gói dịch vụ</p>
                                 <h5 class="font-weight-bolder mb-0">
-                                    <?= isset($activeSubscription) ? htmlspecialchars($activeSubscription->plan_name) : 'Chưa có' ?>
+                                    <?= $activeSubscription ? htmlspecialchars($activeSubscription['plan_name'] ?? 'Đang hoạt động') : 'Chưa có' ?>
                                 </h5>
                             </div>
                         </div>
@@ -73,8 +83,8 @@
                         <div class="col-8">
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-capitalize font-weight-bold">Trạng thái</p>
-                                <h5 class="font-weight-bolder mb-0 text-<?= ($user->status === 'active') ? 'success' : 'danger' ?>">
-                                    <?= ucfirst($user->status ?? 'unknown') ?>
+                                <h5 class="font-weight-bolder mb-0 text-<?= (($user['status'] ?? '') === 'active') ? 'success' : 'danger' ?>">
+                                    <?= ucfirst($user['status'] ?? 'unknown') ?>
                                 </h5>
                             </div>
                         </div>
@@ -99,7 +109,7 @@
                     </div>
                 </div>
                 <div class="card-body p-3">
-                    <?php if(isset($activeSubscription)): ?>
+                    <?php if($activeSubscription): ?>
                         <ul class="list-group">
                             <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
                                 <div class="d-flex align-items-center">
@@ -108,16 +118,18 @@
                                     </div>
                                     <div class="d-flex flex-column">
                                         <h6 class="mb-1 text-dark text-sm">Lưu lượng đã dùng</h6>
-                                        <span class="text-xs"><?= number_format(($activeSubscription->upload + $activeSubscription->download) / 1073741824, 2) ?> GB</span>
+                                        <span class="text-xs">
+                                            <?= number_format((($activeSubscription['upload'] ?? 0) + ($activeSubscription['download'] ?? 0)) / 1073741824, 2) ?> GB
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center text-dark text-sm font-weight-bold">
-                                    Hết hạn: <?= date('d/m/Y', strtotime($activeSubscription->end_date)) ?>
+                                    Hết hạn: <?= isset($activeSubscription['end_date']) ? date('d/m/Y', strtotime($activeSubscription['end_date'])) : 'N/A' ?>
                                 </div>
                             </li>
                         </ul>
                         <div class="mt-3">
-                            <a href="/user/subscriptions/connect?id=<?= $activeSubscription->id ?>" class="btn btn-primary w-100">Kết nối VPN ngay</a>
+                            <a href="/user/subscriptions/connect?id=<?= $activeSubscription['id'] ?? 0 ?>" class="btn btn-primary w-100">Kết nối VPN ngay</a>
                         </div>
                     <?php else: ?>
                         <div class="text-center py-4">
@@ -135,9 +147,9 @@
                 </div>
                 <div class="card-body p-3">
                     <div class="border-dashed border-1 border-secondary border-radius-md p-3 text-center mb-3">
-                        <h4 class="text-primary tracking-wide mb-0" id="refCode"><?= htmlspecialchars($user->ref_code ?? 'Chưa có') ?></h4>
+                        <h4 class="text-primary tracking-wide mb-0" id="refCode"><?= htmlspecialchars($user['ref_code'] ?? 'Chưa có') ?></h4>
                     </div>
-                    <p class="text-sm">Chia sẻ mã này để nhận <strong class="text-dark"><?= config('referral_commission_rate', '10') ?>%</strong> hoa hồng mỗi khi người được giới thiệu thanh toán đơn hàng.</p>
+                    <p class="text-sm">Chia sẻ mã này để nhận <strong class="text-dark"><?= htmlspecialchars($settings['referral_commission_rate'] ?? '10') ?>%</strong> hoa hồng mỗi khi người được giới thiệu thanh toán đơn hàng.</p>
                     <button class="btn btn-sm btn-dark w-100 mb-0" onclick="copyRefCode()">Sao chép liên kết</button>
                 </div>
             </div>
@@ -148,6 +160,7 @@
 <script>
 function copyRefCode() {
     const refCode = document.getElementById('refCode').innerText;
+    if (refCode === 'Chưa có') return;
     const link = window.location.origin + '/register?ref=' + refCode;
     navigator.clipboard.writeText(link).then(() => {
         alert('Đã sao chép liên kết giới thiệu!');
