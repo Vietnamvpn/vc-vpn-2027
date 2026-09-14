@@ -71,6 +71,12 @@ class LogController extends BaseController
      */
     public function clearMacrodroid(): void
     {
+        if (!$this->validateCsrfToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['flash_message'] = 'Phiên làm việc không hợp lệ. Vui lòng thử lại.';
+            $_SESSION['flash_type'] = 'danger';
+            $this->redirect('/admin/logs/macrodroid');
+        }
+
         $logFile = __DIR__ . '/../../../storage/logs/macrodroid_debug.log';
         if (file_exists($logFile)) {
             file_put_contents($logFile, '');
@@ -78,6 +84,61 @@ class LogController extends BaseController
             $_SESSION['flash_type']    = 'success';
         }
         $this->redirect('/admin/logs/macrodroid');
+    }
+
+    /**
+     * Xóa các bản ghi đã chọn hoặc toàn bộ một loại log lưu trong CSDL.
+     */
+    public function delete(): void
+    {
+        $logType = $_POST['log_type'] ?? '';
+        $logSources = [
+            'system' => ['model' => $this->systemLogModel, 'url' => '/admin/logs/system'],
+            'access' => ['model' => $this->accessLogModel, 'url' => '/admin/logs/access'],
+            'email'  => ['model' => $this->emailLogModel, 'url' => '/admin/logs/email']
+        ];
+        $redirectUrl = isset($logSources[$logType])
+            ? $logSources[$logType]['url']
+            : '/admin/logs';
+
+        if (!$this->validateCsrfToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['flash_message'] = 'Phiên làm việc không hợp lệ. Vui lòng thử lại.';
+            $_SESSION['flash_type'] = 'danger';
+            $this->redirect($redirectUrl);
+        }
+
+        if (!isset($logSources[$logType])) {
+            $_SESSION['flash_message'] = 'Loại nhật ký không hợp lệ.';
+            $_SESSION['flash_type'] = 'danger';
+            $this->redirect('/admin/logs');
+        }
+
+        $logModel = $logSources[$logType]['model'];
+        $deleteAll = ($_POST['delete_all'] ?? '') === '1';
+        $logIds = $_POST['log_ids'] ?? [];
+        $logIds = is_array($logIds) ? $logIds : [];
+
+        if (!$deleteAll && empty($logIds)) {
+            $_SESSION['flash_message'] = 'Vui lòng chọn ít nhất một bản ghi để xóa.';
+            $_SESSION['flash_type'] = 'danger';
+            $this->redirect($redirectUrl);
+        }
+
+        try {
+            $deletedCount = $deleteAll
+                ? $logModel->deleteAll()
+                : $logModel->deleteMany($logIds);
+
+            $_SESSION['flash_message'] = $deletedCount > 0
+                ? "Đã xóa {$deletedCount} bản ghi nhật ký."
+                : 'Không tìm thấy bản ghi nào để xóa.';
+            $_SESSION['flash_type'] = $deletedCount > 0 ? 'success' : 'danger';
+        } catch (\Throwable $exception) {
+            $_SESSION['flash_message'] = 'Không thể xóa nhật ký. Vui lòng thử lại.';
+            $_SESSION['flash_type'] = 'danger';
+        }
+
+        $this->redirect($redirectUrl);
     }
 
     private function renderLogTab(string $activeLogTab, array $data = []): void

@@ -59,6 +59,7 @@ ob_start();
         <div class="logs-page-actions">
             <a href="/admin/logs/macrodroid" class="glass-btn">🔄 Tải lại</a>
             <form method="POST" action="/admin/logs/macrodroid/clear" onsubmit="return confirm('Bạn có chắc chắn muốn xóa toàn bộ nội dung nhật ký này?');">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                 <button type="submit" class="logs-clear-btn">🗑️ Xóa log</button>
             </form>
         </div>
@@ -75,10 +76,21 @@ ob_start();
 
 <div class="glass-card logs-content-card">
     <?php if ($activeLogTab === 'system'): ?>
-        <div class="table-responsive">
-            <table class="glass-table">
+        <form method="POST" action="/admin/logs/delete" class="logs-bulk-form">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+            <input type="hidden" name="log_type" value="system">
+            <div class="logs-bulk-actions">
+                <label class="logs-select-all-label"><input type="checkbox" class="logs-select-all"> Chọn tất cả</label>
+                <div class="logs-delete-actions">
+                    <button type="submit" class="logs-delete-selected" onclick="return confirm('Bạn có chắc chắn muốn xóa các bản ghi đã chọn?');">Xóa mục đã chọn</button>
+                    <button type="submit" name="delete_all" value="1" class="logs-delete-all" onclick="return confirm('Bạn có chắc chắn muốn xóa toàn bộ nhật ký hoạt động hệ thống?');">Xóa toàn bộ</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="glass-table">
                 <thead>
                     <tr>
+                        <th class="logs-select-column"><span class="sr-only">Chọn</span></th>
                         <th>ID</th>
                         <th>Tài Khoản</th>
                         <th>Hành Động</th>
@@ -91,6 +103,7 @@ ob_start();
                     <?php if (!empty($logs)): ?>
                         <?php foreach ($logs as $log): ?>
                             <tr>
+                                <td class="logs-select-column"><input type="checkbox" name="log_ids[]" value="<?= (int)$log['id'] ?>" class="logs-row-select" aria-label="Chọn log #<?= (int)$log['id'] ?>"></td>
                                 <td class="logs-id">#<?= $log['id'] ?></td>
                                 <td class="logs-user"><?= htmlspecialchars($log['username'] ?? 'Hệ thống') ?></td>
                                 <td><span class="logs-badge logs-badge-blue"><?= htmlspecialchars($log['action']) ?></span></td>
@@ -100,16 +113,28 @@ ob_start();
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <tr><td colspan="6" class="logs-empty">Chưa có nhật ký hoạt động nào.</td></tr>
+                        <tr><td colspan="7" class="logs-empty">Chưa có nhật ký hoạt động nào.</td></tr>
                     <?php endif; ?>
                 </tbody>
-            </table>
-        </div>
+                </table>
+            </div>
+        </form>
     <?php elseif ($activeLogTab === 'access'): ?>
-        <div class="table-responsive">
-            <table class="glass-table">
+        <form method="POST" action="/admin/logs/delete" class="logs-bulk-form">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+            <input type="hidden" name="log_type" value="access">
+            <div class="logs-bulk-actions">
+                <label class="logs-select-all-label"><input type="checkbox" class="logs-select-all"> Chọn tất cả</label>
+                <div class="logs-delete-actions">
+                    <button type="submit" class="logs-delete-selected" onclick="return confirm('Bạn có chắc chắn muốn xóa các bản ghi đã chọn?');">Xóa mục đã chọn</button>
+                    <button type="submit" name="delete_all" value="1" class="logs-delete-all" onclick="return confirm('Bạn có chắc chắn muốn xóa toàn bộ nhật ký truy cập?');">Xóa toàn bộ</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="glass-table">
                 <thead>
                     <tr>
+                        <th class="logs-select-column"><span class="sr-only">Chọn</span></th>
                         <th>ID</th>
                         <th>Thành Viên</th>
                         <th>Hành Động</th>
@@ -122,6 +147,7 @@ ob_start();
                     <?php if (!empty($logs)): ?>
                         <?php foreach ($logs as $log): ?>
                             <tr>
+                                <td class="logs-select-column"><input type="checkbox" name="log_ids[]" value="<?= (int)$log['id'] ?>" class="logs-row-select" aria-label="Chọn log #<?= (int)$log['id'] ?>"></td>
                                 <td class="logs-id">#<?= $log['id'] ?></td>
                                 <td>
                                     <div class="logs-user-name"><?= htmlspecialchars($log['username'] ?? 'N/A') ?></div>
@@ -134,16 +160,28 @@ ob_start();
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <tr><td colspan="6" class="logs-empty">Chưa có dữ liệu truy cập nào.</td></tr>
+                        <tr><td colspan="7" class="logs-empty">Chưa có dữ liệu truy cập nào.</td></tr>
                     <?php endif; ?>
                 </tbody>
-            </table>
-        </div>
+                </table>
+            </div>
+        </form>
     <?php elseif ($activeLogTab === 'email'): ?>
-        <div class="table-responsive">
-            <table class="glass-table">
+        <form method="POST" action="/admin/logs/delete" class="logs-bulk-form">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+            <input type="hidden" name="log_type" value="email">
+            <div class="logs-bulk-actions">
+                <label class="logs-select-all-label"><input type="checkbox" class="logs-select-all"> Chọn tất cả</label>
+                <div class="logs-delete-actions">
+                    <button type="submit" class="logs-delete-selected" onclick="return confirm('Bạn có chắc chắn muốn xóa các bản ghi đã chọn?');">Xóa mục đã chọn</button>
+                    <button type="submit" name="delete_all" value="1" class="logs-delete-all" onclick="return confirm('Bạn có chắc chắn muốn xóa toàn bộ nhật ký email?');">Xóa toàn bộ</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="glass-table">
                 <thead>
                     <tr>
+                        <th class="logs-select-column"><span class="sr-only">Chọn</span></th>
                         <th>ID</th>
                         <th>Email Người Nhận</th>
                         <th>Tiêu Đề Email</th>
@@ -156,6 +194,7 @@ ob_start();
                     <?php if (!empty($logs)): ?>
                         <?php foreach ($logs as $log): ?>
                             <tr>
+                                <td class="logs-select-column"><input type="checkbox" name="log_ids[]" value="<?= (int)$log['id'] ?>" class="logs-row-select" aria-label="Chọn log #<?= (int)$log['id'] ?>"></td>
                                 <td class="logs-id">#<?= $log['id'] ?></td>
                                 <td class="logs-user"><?= htmlspecialchars($log['recipient']) ?></td>
                                 <td class="logs-subject"><?= htmlspecialchars($log['subject']) ?></td>
@@ -171,11 +210,12 @@ ob_start();
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <tr><td colspan="6" class="logs-empty">Chưa có nhật ký gửi email nào.</td></tr>
+                        <tr><td colspan="7" class="logs-empty">Chưa có nhật ký gửi email nào.</td></tr>
                     <?php endif; ?>
                 </tbody>
-            </table>
-        </div>
+                </table>
+            </div>
+        </form>
     <?php else: ?>
         <?php if (!empty(trim($logContent))): ?>
             <pre class="macrodroid-log-output"><?= htmlspecialchars($logContent) ?></pre>
@@ -187,6 +227,29 @@ ob_start();
         <?php endif; ?>
     <?php endif; ?>
 </div>
+
+<script>
+document.querySelectorAll('.logs-bulk-form').forEach(function (form) {
+    const selectAll = form.querySelector('.logs-select-all');
+    const rowSelects = form.querySelectorAll('.logs-row-select');
+
+    if (!selectAll || rowSelects.length === 0) {
+        return;
+    }
+
+    selectAll.addEventListener('change', function () {
+        rowSelects.forEach(function (checkbox) {
+            checkbox.checked = selectAll.checked;
+        });
+    });
+
+    rowSelects.forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+            selectAll.checked = rowSelects.length === form.querySelectorAll('.logs-row-select:checked').length;
+        });
+    });
+});
+</script>
 
 <?php
 $content = ob_get_clean();

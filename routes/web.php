@@ -184,6 +184,7 @@ return [
     'GET /admin/logs/access'            => ['Admin\LogController', 'access'],
     'GET /admin/logs/email'             => ['Admin\LogController', 'email'],
     'GET /admin/logs/macrodroid'        => ['Admin\LogController', 'macrodroid'],
+    'POST /admin/logs/delete'           => ['Admin\LogController', 'delete'],
     'POST /admin/logs/macrodroid/clear' => ['Admin\LogController', 'clearMacrodroid'],
 
     // Tự động quét gói cước (Cron Job)

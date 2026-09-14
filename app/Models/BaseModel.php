@@ -77,6 +77,35 @@ abstract class BaseModel
     }
 
     /**
+     * Xóa nhiều bản ghi theo ID bằng một truy vấn có tham số hóa.
+     */
+    public function deleteMany(array $ids): int
+    {
+        $ids = array_values(array_unique(array_filter(
+            array_map('intval', $ids),
+            static fn(int $id): bool => $id > 0
+        )));
+
+        if (empty($ids)) {
+            return 0;
+        }
+
+        $placeholders = implode(', ', array_fill(0, count($ids), '?'));
+        $stmt = self::$db->prepare("DELETE FROM `{$this->table}` WHERE `id` IN ({$placeholders})");
+        $stmt->execute($ids);
+
+        return $stmt->rowCount();
+    }
+
+    /**
+     * Xóa toàn bộ bản ghi của model hiện tại.
+     */
+    public function deleteAll(): int
+    {
+        return (int)self::$db->exec("DELETE FROM `{$this->table}`");
+    }
+
+    /**
      * Lấy ID của bản ghi vừa được chèn vào cơ sở dữ liệu
      */
     public function lastInsertId(): int
