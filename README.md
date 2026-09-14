@@ -300,6 +300,11 @@ vc-vpn-2027/
 │       │   ├── faq.php
 │       │   └── contact.php
 │       │
+│       ├── policies/
+│       │   ├── terms.php
+│       │   ├── privacy.php
+│       │   └── refund.php
+│       │
 │       ├── user/
 │       │   ├── dashboard.php
 │       │   ├── profile/

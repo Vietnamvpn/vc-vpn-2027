@@ -6,6 +6,9 @@ return [
     'GET /plans'                 => ['HomeController', 'plans'],
     'GET /faq'                   => ['HomeController', 'faq'],
     'GET /post-detail'           => ['HomeController', 'postDetail'],
+    'GET /terms'                 => ['HomeController', 'terms'],
+    'GET /privacy'               => ['HomeController', 'privacy'],
+    'GET /refund'                => ['HomeController', 'refund'],
 
     // Xác thực tài khoản (Auth)
     'GET /login'                     => ['AuthController', 'showLogin'],

@@ -151,6 +151,93 @@ html, body {
   gap: 1rem;
 }
 
+/* Public policy pages */
+.policy-page {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.policy-hero {
+  padding: 2.25rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.14), rgba(52, 199, 89, 0.08));
+}
+
+.policy-eyebrow {
+  display: inline-block;
+  margin-bottom: 0.65rem;
+  color: var(--ios-blue);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.policy-title {
+  margin-bottom: 0.65rem;
+  font-size: clamp(1.75rem, 4vw, 2.35rem);
+  line-height: 1.2;
+}
+
+.policy-summary,
+.policy-meta {
+  color: var(--ios-text-secondary);
+}
+
+.policy-meta {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}
+
+.policy-content {
+  padding: 2rem 2.25rem;
+}
+
+.policy-section + .policy-section {
+  margin-top: 1.75rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.policy-section h2 {
+  margin-bottom: 0.7rem;
+  font-size: 1.2rem;
+}
+
+.policy-section p + p {
+  margin-top: 0.75rem;
+}
+
+.policy-list {
+  padding-left: 1.25rem;
+  margin-top: 0.75rem;
+}
+
+.policy-list li + li {
+  margin-top: 0.45rem;
+}
+
+.policy-note {
+  margin-top: 1.5rem;
+  padding: 1rem 1.1rem;
+  border-left: 4px solid var(--ios-blue);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  background: rgba(0, 122, 255, 0.08);
+}
+
+.policy-contact-link {
+  color: var(--ios-blue);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .policy-hero,
+  .policy-content {
+    padding: 1.25rem;
+  }
+}
+
 /* Responsive Mobile / Tablet (< 992px) */
 @media (max-width: 991px) {
   .admin-sidebar {

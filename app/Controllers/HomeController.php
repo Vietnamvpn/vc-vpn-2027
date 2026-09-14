@@ -59,4 +59,19 @@ class HomeController extends BaseController
         ]);
     }
 
+    public function terms(): void
+    {
+        $this->render('policies.terms');
+    }
+
+    public function privacy(): void
+    {
+        $this->render('policies.privacy');
+    }
+
+    public function refund(): void
+    {
+        $this->render('policies.refund');
+    }
+
 }
