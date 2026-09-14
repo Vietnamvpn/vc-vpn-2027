@@ -1,5 +1,8 @@
 <?php
 // Layout: resources/views/user/dashboard.php
+// Bắt đầu lưu bộ đệm nội dung
+ob_start();
+
 // Lấy gói dịch vụ đang hoạt động (nếu có)
 $activeSubscription = null;
 if (!empty($subscriptions) && is_array($subscriptions)) {
@@ -11,7 +14,9 @@ if (!empty($subscriptions) && is_array($subscriptions)) {
     }
 }
 ?>
+
 <div class="container-fluid py-4">
+    <!-- Thống kê chung -->
     <div class="row">
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
             <div class="card">
@@ -99,6 +104,7 @@ if (!empty($subscriptions) && is_array($subscriptions)) {
         </div>
     </div>
 
+    <!-- Chi tiết gói & Mã giới thiệu -->
     <div class="row mt-4">
         <div class="col-lg-7 mb-lg-0 mb-4">
             <div class="card">
@@ -167,3 +173,14 @@ function copyRefCode() {
     });
 }
 </script>
+
+<?php
+// Kết thúc bộ đệm và gán vào biến $content
+$content = ob_get_clean();
+
+// Gọi layout chính của app
+$showSidebar = true; // Bật Sidebar
+$extraCss = 'app';   // Sử dụng CSS cho user/app
+$extraJs = 'app';    // Sử dụng JS cho user/app
+require_once __DIR__ . '/../layouts/app.php';
+?>

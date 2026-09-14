@@ -1,6 +1,9 @@
 <?php
 // Layout: resources/views/user/profile/index.php
+// Bắt đầu lưu bộ đệm nội dung
+ob_start();
 ?>
+
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-md-8">
@@ -94,3 +97,14 @@
         </div>
     </div>
 </div>
+
+<?php
+// Kết thúc bộ đệm và gán vào biến $content
+$content = ob_get_clean();
+
+// Gọi layout chính của app
+$showSidebar = true;
+$extraCss = 'app';
+$extraJs = 'app';
+require_once __DIR__ . '/../../layouts/app.php';
+?>
