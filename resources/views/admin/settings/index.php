@@ -41,49 +41,49 @@ ob_start();
     
     <!-- TAB 1: CẤU HÌNH CHUNG -->
     <div id="tab-general" class="settings-tab-pane active">
-        <form method="POST" action="/admin/settings/save" class="glass-card" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.25rem;">
+        <form method="POST" action="/admin/settings/save" class="glass-card settings-form" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.25rem;">
             <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; color: var(--ios-blue);">
                 Cấu Hình Website & Thương Hiệu
             </h2>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+            <div class="settings-field-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Trang Web (Site Title)</label>
+                    <label data-hint="Tên hiển thị trên tiêu đề, thanh điều hướng và footer." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Trang Web (Site Title)</label>
                     <input type="text" name="settings[site_title]" class="glass-input" value="<?= htmlspecialchars($settings['site_title'] ?? 'VC VPN 2027') ?>" style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Email Liên Hệ Hỗ Trợ</label>
+                    <label data-hint="Địa chỉ nhận các yêu cầu hỗ trợ từ người dùng." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Email Liên Hệ Hỗ Trợ</label>
                     <input type="email" name="settings[contact_email]" class="glass-input" value="<?= htmlspecialchars($settings['contact_email'] ?? 'support@vpn2s.linksub24h.com') ?>" style="width: 100%;">
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+            <div class="settings-field-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Kênh Fanpage Hỗ Trợ</label>
+                    <label data-hint="Liên kết Facebook dùng để hỗ trợ khách hàng." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Kênh Fanpage Hỗ Trợ</label>
                     <input type="text" name="settings[fanpage_url]" class="glass-input" value="<?= htmlspecialchars($settings['fanpage_url'] ?? '') ?>" placeholder="https://facebook.com/..." style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Kênh Youtube</label>
+                    <label data-hint="Liên kết tới kênh YouTube chính thức của website." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Kênh Youtube</label>
                     <input type="text" name="settings[youtube_url]" class="glass-input" value="<?= htmlspecialchars($settings['youtube_url'] ?? '') ?>" placeholder="https://youtube.com/..." style="width: 100%;">
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+            <div class="settings-field-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Zalo / SĐT Zalo</label>
+                    <label data-hint="Đường dẫn Zalo hoặc số điện thoại để người dùng liên hệ." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Zalo / SĐT Zalo</label>
                     <input type="text" name="settings[zalo_url]" class="glass-input" value="<?= htmlspecialchars($settings['zalo_url'] ?? '') ?>" placeholder="https://zalo.me/... hoặc Số điện thoại" style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">WeChat ID</label>
+                    <label data-hint="ID WeChat hiển thị trong phần liên hệ hỗ trợ." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">WeChat ID</label>
                     <input type="text" name="settings[wechat_id]" class="glass-input" value="<?= htmlspecialchars($settings['wechat_id'] ?? '') ?>" placeholder="Nhập WeChat ID..." style="width: 100%;">
                 </div>
             </div>
 
-            <div>
-                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mô Tả Trang Web (Meta Description)</label>
+            <div class="settings-field-row">
+                <label data-hint="Mô tả ngắn của website, có thể được dùng cho công cụ tìm kiếm." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mô Tả Trang Web (Meta Description)</label>
                 <textarea name="settings[site_description]" rows="2" class="glass-input" style="width: 100%; resize: vertical;"><?= htmlspecialchars($settings['site_description'] ?? '') ?></textarea>
             </div>
 
@@ -97,25 +97,24 @@ ob_start();
 
     <!-- TAB 2: TÀI CHÍNH & ƯU ĐÃI -->
     <div id="tab-finance" class="settings-tab-pane">
-        <form method="POST" action="/admin/settings/save" class="glass-card" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.25rem;">
+        <form method="POST" action="/admin/settings/save" class="glass-card settings-form" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.25rem;">
             <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; color: var(--ios-success);">
                 Cấu Hình Tài Chính & Ưu Đãi Giới Thiệu
             </h2>
 
-            <!-- Lưới 3 cột đồng nhất cho 9 ô input -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;">
+            <div class="settings-field-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;">
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mã Tiền Tệ Mặc Định</label>
+                    <label data-hint="Mã ISO dùng khi hiển thị và xử lý tiền tệ." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mã Tiền Tệ Mặc Định</label>
                     <input type="text" name="settings[currency]" class="glass-input" value="<?= htmlspecialchars($settings['currency'] ?? 'VND') ?>" placeholder="VND, CNY, USD..." style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Ký Hiệu Tiền Tệ</label>
+                    <label data-hint="Ký hiệu hiển thị kèm theo giá trị tiền tệ." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Ký Hiệu Tiền Tệ</label>
                     <input type="text" name="settings[currency_symbol]" class="glass-input" value="<?= htmlspecialchars($settings['currency_symbol'] ?? 'đ') ?>" placeholder="đ, ¥, $..." style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Vị Trí Ký Hiệu Tiền Tệ</label>
+                    <label data-hint="Chọn vị trí của ký hiệu khi hiển thị số tiền." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Vị Trí Ký Hiệu Tiền Tệ</label>
                     <select name="settings[currency_position]" class="glass-input" style="width: 100%; cursor: pointer;">
                         <option value="right" <?= ($settings['currency_position'] ?? 'right') === 'right' ? 'selected' : '' ?>>Bên phải (VD: 100.000 đ)</option>
                         <option value="left" <?= ($settings['currency_position'] ?? 'right') === 'left' ? 'selected' : '' ?>>Bên trái (VD: đ100.000)</option>
@@ -123,32 +122,32 @@ ob_start();
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Chữ Số Thập Phân</label>
+                    <label data-hint="Dùng 0 cho VND, thường dùng 2 cho USD hoặc CNY." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Chữ Số Thập Phân</label>
                     <input type="number" name="settings[currency_decimals]" class="glass-input" value="<?= htmlspecialchars($settings['currency_decimals'] ?? '0') ?>" min="0" max="4" step="1" style="width: 100%;" placeholder="0 cho VND, 2 cho CNY/USD">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tỷ Giá Chuyển Đổi</label>
+                    <label data-hint="Hệ số quy đổi dùng trong các phép tính thanh toán." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tỷ Giá Chuyển Đổi</label>
                     <input type="number" name="settings[exchange_rate]" class="glass-input" value="<?= htmlspecialchars($settings['exchange_rate'] ?? '1') ?>" min="0.01" step="0.01" style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tỷ Lệ Hoa Hồng Giới Thiệu (%)</label>
+                    <label data-hint="Phần trăm hoa hồng cho đơn hàng giới thiệu thành công." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tỷ Lệ Hoa Hồng Giới Thiệu (%)</label>
                     <input type="number" name="settings[commission_rate]" class="glass-input" value="<?= htmlspecialchars($settings['commission_rate'] ?? '10') ?>" min="0" max="100" step="0.1" style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thưởng Khi Đăng Ký Có Mã Giới Thiệu</label>
+                    <label data-hint="Số dư tặng cho tài khoản đăng ký bằng mã giới thiệu." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thưởng Khi Đăng Ký Có Mã Giới Thiệu</label>
                     <input type="number" name="settings[referral_bonus]" class="glass-input" value="<?= htmlspecialchars($settings['referral_bonus'] ?? '0') ?>" min="0" step="any" style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền Nạp Tối Thiểu</label>
+                    <label data-hint="Giá trị nhỏ nhất người dùng được phép nạp vào ví." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền Nạp Tối Thiểu</label>
                     <input type="number" name="settings[min_deposit]" class="glass-input" value="<?= htmlspecialchars($settings['min_deposit'] ?? '10000') ?>" min="0" step="any" style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền Rút Tối Thiểu</label>
+                    <label data-hint="Giá trị nhỏ nhất người dùng được phép yêu cầu rút." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Số Tiền Rút Tối Thiểu</label>
                     <input type="number" name="settings[min_withdrawal]" class="glass-input" value="<?= htmlspecialchars($settings['min_withdrawal'] ?? '50000') ?>" min="0" step="any" style="width: 100%;">
                 </div>
             </div>
@@ -163,14 +162,14 @@ ob_start();
 
     <!-- TAB 3: DÙNG THỬ -->
     <div id="tab-trial" class="settings-tab-pane">
-        <form method="POST" action="/admin/settings/save" class="glass-card" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.25rem;">
+        <form method="POST" action="/admin/settings/save" class="glass-card settings-form" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.25rem;">
             <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; color: #af52de;">
                 🎁 Cấu Hình Gói Dùng Thử Cho Tài Khoản Mới
             </h2>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+            <div class="settings-field-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Trạng Thái Dùng Thử</label>
+                    <label data-hint="Bật để tự tạo gói dùng thử cho tài khoản mới." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Trạng Thái Dùng Thử</label>
                     <select name="settings[trial_enabled]" class="glass-input" style="width: 100%; cursor: pointer;">
                         <option value="1" <?= ($settings['trial_enabled'] ?? '0') == '1' ? 'selected' : '' ?>>Bật</option>
                         <option value="0" <?= ($settings['trial_enabled'] ?? '0') == '0' ? 'selected' : '' ?>>Tắt</option>
@@ -178,7 +177,7 @@ ob_start();
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Gói Cước Dùng Thử (Plan)</label>
+                    <label data-hint="Gói cước được cấp khi người dùng đăng ký lần đầu." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Gói Cước Dùng Thử (Plan)</label>
                     <select name="settings[trial_plan_id]" class="glass-input" style="width: 100%; cursor: pointer;">
                         <option value="">-- Chọn Gói Cước --</option>
                         <?php foreach (($plans ?? []) as $plan): ?>
@@ -190,7 +189,7 @@ ob_start();
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thời Gian Dùng Thử (Ngày)</label>
+                    <label data-hint="Số ngày gói dùng thử còn hiệu lực sau khi kích hoạt." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thời Gian Dùng Thử (Ngày)</label>
                     <input type="number" name="settings[trial_duration_days]" class="glass-input" value="<?= htmlspecialchars($settings['trial_duration_days'] ?? '3') ?>" min="1" step="1" style="width: 100%;">
                 </div>
             </div>
@@ -205,14 +204,14 @@ ob_start();
 
     <!-- TAB 4: THÔNG TIN NGÂN HÀNG & ĐA CỔNG (QR) -->
     <div id="tab-bank" class="settings-tab-pane">
-        <form method="POST" action="/admin/settings/save" class="glass-card" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.5rem;">
+        <form method="POST" action="/admin/settings/save" class="glass-card settings-form" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.5rem;">
             <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; color: #ff9500;">
                 🏦 Cấu Hình Đa Cổng Thanh Toán
             </h2>
 
-            <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%; overflow-x: auto;">
+            <div class="settings-payment-list" style="display: flex; flex-direction: column; gap: 1rem; width: 100%; overflow-x: auto;">
                 <!-- Dòng 1: Ngân Hàng VN -->
-                <div style="display: grid; grid-template-columns: 120px 1fr 1fr 1fr; gap: 1rem; align-items: end; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); min-width: 800px;">
+                <div class="settings-payment-gateway" data-title="Ngân hàng Việt Nam" data-hint="Thiết lập tài khoản nhận thanh toán qua VietQR." style="display: grid; grid-template-columns: 120px 1fr 1fr 1fr; gap: 1rem; align-items: end; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); min-width: 800px;">
                     <div>
                         <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Trạng Thái</label>
                         <select name="settings[enable_vietqr]" class="glass-input" style="width: 100%; cursor: pointer;">
@@ -235,7 +234,7 @@ ob_start();
                 </div>
 
                 <!-- Dòng 2: WeChat -->
-                <div style="display: grid; grid-template-columns: 120px 1fr 1fr 1fr; gap: 1rem; align-items: end; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); min-width: 800px;">
+                <div class="settings-payment-gateway" data-title="WeChat Pay" data-hint="Bật cổng và cung cấp mã QR để nhận thanh toán WeChat." style="display: grid; grid-template-columns: 120px 1fr 1fr 1fr; gap: 1rem; align-items: end; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); min-width: 800px;">
                     <div>
                         <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Trạng Thái</label>
                         <select name="settings[enable_wechat]" class="glass-input" style="width: 100%; cursor: pointer;">
@@ -258,7 +257,7 @@ ob_start();
                 </div>
 
                 <!-- Dòng 3: Alipay -->
-                <div style="display: grid; grid-template-columns: 120px 1fr 1fr 1fr; gap: 1rem; align-items: end; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); min-width: 800px;">
+                <div class="settings-payment-gateway" data-title="Alipay" data-hint="Bật cổng và cung cấp mã QR để nhận thanh toán Alipay." style="display: grid; grid-template-columns: 120px 1fr 1fr 1fr; gap: 1rem; align-items: end; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); min-width: 800px;">
                     <div>
                         <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Trạng Thái</label>
                         <select name="settings[enable_alipay]" class="glass-input" style="width: 100%; cursor: pointer;">
@@ -281,13 +280,13 @@ ob_start();
                 </div>
 
                 <!-- Dòng cuối: Cú Pháp Nạp / Thanh Toán -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: end; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
+                <div class="settings-field-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: end; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
                     <div>
-                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Cú Pháp Nạp Tiền</label>
+                        <label data-hint="Tiền tố cần có trong nội dung chuyển khoản nạp tiền." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Cú Pháp Nạp Tiền</label>
                         <input type="text" name="settings[bank_transfer_syntax]" class="glass-input" value="<?= htmlspecialchars($settings['bank_transfer_syntax'] ?? 'NAPTIEN') ?>" placeholder="VD: NAPTIEN" style="width: 100%;">
                     </div>
                     <div>
-                        <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Cú Pháp Thanh Toán Đơn</label>
+                        <label data-hint="Tiền tố cần có khi thanh toán một đơn hàng." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Cú Pháp Thanh Toán Đơn</label>
                         <input type="text" name="settings[order_transfer_syntax]" class="glass-input" value="<?= htmlspecialchars($settings['order_transfer_syntax'] ?? 'THANHTOAN') ?>" placeholder="VD: THANHTOAN" style="width: 100%;">
                     </div>
                 </div>
@@ -303,24 +302,24 @@ ob_start();
 
     <!-- TAB 5: CẤU HÌNH EMAIL -->
     <div id="tab-email" class="settings-tab-pane">
-        <form method="POST" action="/admin/settings/save" class="glass-card" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.25rem;">
+        <form method="POST" action="/admin/settings/save" class="glass-card settings-form" style="padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.25rem;">
             <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; color: var(--ios-danger);">
                 Cấu Hình Máy Chủ Gửi Email (SMTP)
             </h2>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+            <div class="settings-field-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Máy Chủ SMTP (Host)</label>
+                    <label data-hint="Tên miền hoặc địa chỉ máy chủ gửi email." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Máy Chủ SMTP (Host)</label>
                     <input type="text" name="settings[smtp_host]" class="glass-input" value="<?= htmlspecialchars($settings['smtp_host'] ?? '') ?>" placeholder="VD: smtp.gmail.com" style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Cổng (Port)</label>
+                    <label data-hint="Cổng kết nối SMTP, thường là 465 hoặc 587." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Cổng (Port)</label>
                     <input type="number" name="settings[smtp_port]" class="glass-input" value="<?= htmlspecialchars($settings['smtp_port'] ?? '465') ?>" placeholder="VD: 465 hoặc 587" style="width: 100%;">
                 </div>
                 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Phương Thức Mã Hóa (Encryption)</label>
+                    <label data-hint="Cơ chế bảo mật kết nối phù hợp với máy chủ SMTP." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Phương Thức Mã Hóa (Encryption)</label>
                     <select name="settings[smtp_encryption]" class="glass-input" style="width: 100%;">
                         <option value="ssl" <?= ($settings['smtp_encryption'] ?? '') === 'ssl' ? 'selected' : '' ?>>SSL</option>
                         <option value="tls" <?= ($settings['smtp_encryption'] ?? '') === 'tls' ? 'selected' : '' ?>>TLS</option>
@@ -329,26 +328,26 @@ ob_start();
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+            <div class="settings-field-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tài Khoản Đăng Nhập (Username)</label>
+                    <label data-hint="Tài khoản được phép xác thực với máy chủ SMTP." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tài Khoản Đăng Nhập (Username)</label>
                     <input type="text" name="settings[smtp_username]" class="glass-input" value="<?= htmlspecialchars($settings['smtp_username'] ?? '') ?>" placeholder="Email của bạn" style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mật Khẩu / App Password</label>
+                    <label data-hint="Dùng App Password nếu nhà cung cấp email yêu cầu." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Mật Khẩu / App Password</label>
                     <input type="password" name="settings[smtp_password]" class="glass-input" value="<?= htmlspecialchars($settings['smtp_password'] ?? '') ?>" placeholder="Mật khẩu ứng dụng" style="width: 100%;">
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+            <div class="settings-field-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Địa Chỉ Gửi (Mail From Address)</label>
+                    <label data-hint="Địa chỉ email hiển thị là người gửi thư hệ thống." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Địa Chỉ Gửi (Mail From Address)</label>
                     <input type="email" name="settings[mail_from_address]" class="glass-input" value="<?= htmlspecialchars($settings['mail_from_address'] ?? '') ?>" placeholder="no-reply@domain.com" style="width: 100%;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Người Gửi (Mail From Name)</label>
+                    <label data-hint="Tên hiển thị ở hộp thư đến của người nhận." style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tên Người Gửi (Mail From Name)</label>
                     <input type="text" name="settings[mail_from_name]" class="glass-input" value="<?= htmlspecialchars($settings['mail_from_name'] ?? 'VC VPN') ?>" placeholder="VD: Hệ thống VC VPN" style="width: 100%;">
                 </div>
             </div>

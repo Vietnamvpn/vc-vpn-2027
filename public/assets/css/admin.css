@@ -282,3 +282,131 @@
     from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* Biểu mẫu cài đặt: thông tin ở trái, trường nhập ở phải */
+.settings-form {
+    gap: 0 !important;
+}
+
+.settings-form > h2 {
+    margin-bottom: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+}
+
+.settings-field-list {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0 !important;
+}
+
+.settings-field-list > div,
+.settings-field-row {
+    display: grid;
+    grid-template-columns: minmax(210px, 0.75fr) minmax(0, 1.25fr);
+    align-items: center;
+    column-gap: 2rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.settings-field-list label,
+.settings-field-row label {
+    margin: 0 !important;
+    color: var(--ios-text);
+}
+
+.settings-field-list label[data-hint]::after,
+.settings-field-row label[data-hint]::after {
+    content: attr(data-hint);
+    display: block;
+    margin-top: 0.3rem;
+    color: var(--ios-text-secondary);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.45;
+}
+
+.settings-field-list :is(input, select, textarea),
+.settings-field-row :is(input, select, textarea) {
+    grid-column: 2;
+    min-width: 0;
+}
+
+.settings-field-row textarea {
+    align-self: stretch;
+}
+
+.settings-payment-list {
+    display: flex !important;
+    flex-direction: column;
+    gap: 1rem !important;
+    width: 100% !important;
+    overflow: visible !important;
+}
+
+.settings-payment-gateway {
+    display: grid !important;
+    grid-template-columns: minmax(190px, 0.65fr) minmax(0, 1.35fr) !important;
+    column-gap: 2rem !important;
+    align-items: start !important;
+    min-width: 0 !important;
+    padding: 1.25rem !important;
+}
+
+.settings-payment-gateway::before {
+    content: attr(data-title) "\A" attr(data-hint);
+    white-space: pre-line;
+    color: var(--ios-text-secondary);
+    font-size: 0.78rem;
+    line-height: 1.5;
+}
+
+.settings-payment-gateway::first-line {
+    color: var(--ios-text);
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.settings-payment-gateway > div {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: minmax(145px, 0.8fr) minmax(0, 1.2fr);
+    align-items: center;
+    column-gap: 1rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.settings-payment-gateway > div:last-child {
+    border-bottom: 0;
+}
+
+.settings-payment-gateway label {
+    margin: 0 !important;
+}
+
+.settings-payment-gateway :is(input, select) {
+    grid-column: 2;
+    min-width: 0;
+}
+
+@media (max-width: 760px) {
+    .settings-field-list > div,
+    .settings-field-row,
+    .settings-payment-gateway,
+    .settings-payment-gateway > div {
+        grid-template-columns: 1fr !important;
+        row-gap: 0.6rem;
+    }
+
+    .settings-field-list :is(input, select, textarea),
+    .settings-field-row :is(input, select, textarea),
+    .settings-payment-gateway > div,
+    .settings-payment-gateway :is(input, select) {
+        grid-column: 1;
+    }
+
+    .settings-payment-gateway::before {
+        margin-bottom: 0.25rem;
+    }
+}
