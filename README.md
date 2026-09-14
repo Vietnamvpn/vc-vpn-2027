@@ -308,8 +308,8 @@ vc-vpn-2027/
 │       ├── user/
 │       │   ├── dashboard.php
 │       │   ├── profile/
-│       │   │   └── index.php
-│       │   │    
+│       │   │   ├── index.php
+│       │   │   └── password.php
 │       │   ├── plans/
 │       │   │   ├── index.php
 │       │   │   └── checkout.php
