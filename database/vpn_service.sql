@@ -32,9 +32,16 @@ CREATE TABLE `vc_access_logs` (
     `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `user_id` BIGINT UNSIGNED NOT NULL,
     `action` VARCHAR(50) NOT NULL,
+    `source` VARCHAR(100) NULL,
+    `referrer_host` VARCHAR(255) NULL,
+    `landing_path` VARCHAR(255) NULL,
+    `utm_source` VARCHAR(100) NULL,
+    `utm_medium` VARCHAR(100) NULL,
+    `utm_campaign` VARCHAR(150) NULL,
     `ip_address` VARCHAR(45) NOT NULL,
     `user_agent` TEXT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX `idx_access_logs_source` (`source`),
     FOREIGN KEY (`user_id`) REFERENCES `vc_users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

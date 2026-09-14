@@ -9,6 +9,64 @@ ini_set('error_log', '/tmp/php_error.log');
 
 session_start();
 
+// Lưu nguồn truy cập đầu tiên của phiên để gắn vào Access Log khi người dùng đăng nhập.
+// Chỉ giữ tên miền referrer và tham số UTM, không lưu URL đầy đủ có thể chứa dữ liệu nhạy cảm.
+if (!isset($_SESSION['traffic_attribution'])) {
+    $requestUri = (string)($_SERVER['REQUEST_URI'] ?? '/');
+    $landingPath = parse_url($requestUri, PHP_URL_PATH);
+    $landingPath = is_string($landingPath) && str_starts_with($landingPath, '/') ? $landingPath : '/';
+
+    $queryParams = [];
+    $queryString = parse_url($requestUri, PHP_URL_QUERY);
+    if (is_string($queryString)) {
+        parse_str($queryString, $queryParams);
+    }
+
+    $normalizeValue = static function (mixed $value, int $maxLength): ?string {
+        $value = trim((string)$value);
+        return $value === '' ? null : substr($value, 0, $maxLength);
+    };
+
+    $referer = (string)($_SERVER['HTTP_REFERER'] ?? '');
+    $referrerHost = strtolower((string)(parse_url($referer, PHP_URL_HOST) ?: ''));
+    $referrerHost = preg_replace('/[^a-z0-9.-]/', '', $referrerHost) ?? '';
+
+    $requestHost = strtolower((string)($_SERVER['HTTP_HOST'] ?? ''));
+    $requestHost = preg_replace('/:\\d+$/', '', $requestHost) ?? '';
+    $internalHosts = array_filter([
+        $requestHost,
+        preg_replace('/^www\\./', '', $requestHost),
+        $requestHost !== '' ? 'www.' . preg_replace('/^www\\./', '', $requestHost) : ''
+    ]);
+    if (in_array($referrerHost, $internalHosts, true)) {
+        $referrerHost = '';
+    }
+
+    $utmSource = $normalizeValue($queryParams['utm_source'] ?? null, 100);
+    $sourceCandidate = strtolower($utmSource ?: $referrerHost);
+    $sourceCandidate = preg_replace('/[^a-z0-9._-]/', '', $sourceCandidate) ?? '';
+    if (in_array($sourceCandidate, ['facebook', 'fb', 'facebook_ads'], true)
+        || preg_match('/(^|\\.)(facebook\\.com|fb\\.me)$/', $sourceCandidate)) {
+        $source = 'facebook';
+    } elseif (in_array($sourceCandidate, ['google', 'gads', 'google_ads'], true)
+        || preg_match('/(^|\\.)google\\.[a-z.]+$/', $sourceCandidate)) {
+        $source = 'google';
+    } elseif ($sourceCandidate !== '') {
+        $source = substr($sourceCandidate, 0, 100);
+    } else {
+        $source = 'direct';
+    }
+
+    $_SESSION['traffic_attribution'] = [
+        'source'        => $source,
+        'referrer_host' => $normalizeValue($referrerHost, 255),
+        'landing_path'  => substr($landingPath, 0, 255),
+        'utm_source'    => $utmSource,
+        'utm_medium'    => $normalizeValue($queryParams['utm_medium'] ?? null, 100),
+        'utm_campaign'  => $normalizeValue($queryParams['utm_campaign'] ?? null, 150)
+    ];
+}
+
 define('BASE_PATH', dirname(__DIR__));
 
 // 1. Tự động nạp thư viện Composer (nếu có)

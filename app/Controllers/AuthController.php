@@ -7,10 +7,29 @@ use App\Models\Setting;
 use App\Models\VpnPlan;
 use App\Models\Subscription;
 use App\Models\NodeTask;
+use App\Models\AccessLog;
 use App\Services\MailService;
 
 class AuthController extends BaseController
 {
+    /**
+     * Ghi Access Log khi đăng ký hoặc xác thực thành công mà không làm gián đoạn luồng xử lý.
+     */
+    private function recordAccessEvent(int $userId, string $action): void
+    {
+        $attribution = $_SESSION['traffic_attribution'] ?? [];
+        $attribution = is_array($attribution) ? $attribution : [];
+
+        $accessLog = new AccessLog();
+        $accessLog->record(
+            $userId,
+            $action,
+            $this->getClientIp(),
+            (string)($_SERVER['HTTP_USER_AGENT'] ?? ''),
+            $attribution
+        );
+    }
+
     private function getSiteTitle(): string
     {
         $siteTitle = "VC VPN 2027";
@@ -106,6 +125,7 @@ class AuthController extends BaseController
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'] ?? 'user';
+                $this->recordAccessEvent((int)$user['id'], 'LOGIN_PASSWORD');
 
                 if ($_SESSION['role'] === 'admin') {
                     $this->redirect('/admin');
@@ -207,6 +227,7 @@ class AuthController extends BaseController
 
         $userModel = new User();
         $user = $userModel->findByGoogleId($googleId);
+        $isNewGoogleUser = false;
 
         if (!$user) {
             $user = $userModel->findByUsernameOrEmailStrict($email);
@@ -244,6 +265,7 @@ class AuthController extends BaseController
                     $user = $userModel->findByGoogleId($googleId);
                     if ($user && isset($user['id'])) {
                         $this->activateTrialPlan((int)$user['id'], (string)($user['email'] ?? ''));
+                        $isNewGoogleUser = true;
                     }
                 }
             }
@@ -271,6 +293,10 @@ class AuthController extends BaseController
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
         $_SESSION['role'] = $user['role'] ?? 'user';
+        if ($isNewGoogleUser) {
+            $this->recordAccessEvent((int)$user['id'], 'REGISTER_GOOGLE');
+        }
+        $this->recordAccessEvent((int)$user['id'], 'LOGIN_GOOGLE');
 
         if ($_SESSION['role'] === 'admin') {
             $this->redirect('/admin');
@@ -413,6 +439,7 @@ class AuthController extends BaseController
                 $newUser = $userModel->findByUsernameOrEmailStrict($email);
                 if ($newUser && isset($newUser['id'])) {
                     $this->activateTrialPlan((int)$newUser['id'], (string)($newUser['email'] ?? ''));
+                    $this->recordAccessEvent((int)$newUser['id'], 'REGISTER_PASSWORD');
                 }
                 unset($_SESSION['register_otp'], $_SESSION['register_otp_cooldown']);
                 $_SESSION['success'] = 'Đăng ký tài khoản thành công. Vui lòng đăng nhập.';
@@ -536,6 +563,10 @@ class AuthController extends BaseController
 
     public function logout(): void
     {
+        if (isset($_SESSION['user_id'])) {
+            $this->recordAccessEvent((int)$_SESSION['user_id'], 'LOGOUT');
+        }
+
         unset($_SESSION['user_id'], $_SESSION['username'], $_SESSION['role']);
         session_destroy();
         $this->redirect('/');

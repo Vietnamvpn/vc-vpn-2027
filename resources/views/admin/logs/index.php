@@ -13,7 +13,7 @@ $logTabs = [
         'icon'        => '🔐',
         'url'         => '/admin/logs/access',
         'title'       => 'Nhật Ký Truy Cập & Đăng Nhập',
-        'description' => 'Lịch sử truy cập, đăng nhập và xác thực của các thành viên.'
+        'description' => 'Lịch sử đăng ký, đăng nhập, thiết bị và nguồn truy cập đầu tiên của các thành viên.'
     ],
     'email' => [
         'label'       => 'Email',
@@ -135,6 +135,8 @@ ob_start();
                         <th>ID</th>
                         <th>Thành Viên</th>
                         <th>Hành Động</th>
+                        <th>Nguồn / UTM</th>
+                        <th>Trang Đích</th>
                         <th>Địa Chỉ IP</th>
                         <th>Thiết Bị / Trình Duyệt</th>
                         <th>Thời Gian</th>
@@ -151,13 +153,31 @@ ob_start();
                                     <div class="logs-user-email"><?= htmlspecialchars($log['email'] ?? '') ?></div>
                                 </td>
                                 <td><span class="logs-badge logs-badge-green"><?= htmlspecialchars($log['action']) ?></span></td>
+                                <td>
+                                    <?php $source = $log['source'] ?? ''; ?>
+                                    <div class="logs-user-name"><?= htmlspecialchars($source === 'direct' ? 'Trực tiếp' : ($source ?: 'Không xác định')) ?></div>
+                                    <?php if (!empty($log['referrer_host'])): ?>
+                                        <div class="logs-user-email"><?= htmlspecialchars($log['referrer_host']) ?></div>
+                                    <?php endif; ?>
+                                    <?php
+                                    $utmDetails = array_filter([
+                                        !empty($log['utm_source']) ? 'Nguồn: ' . $log['utm_source'] : null,
+                                        !empty($log['utm_medium']) ? 'Kênh: ' . $log['utm_medium'] : null,
+                                        !empty($log['utm_campaign']) ? 'Chiến dịch: ' . $log['utm_campaign'] : null
+                                    ]);
+                                    ?>
+                                    <?php if (!empty($utmDetails)): ?>
+                                        <div class="logs-user-email"><?= htmlspecialchars(implode(' · ', $utmDetails)) ?></div>
+                                    <?php endif; ?>
+                                </td>
+                                <td><code class="logs-code"><?= htmlspecialchars($log['landing_path'] ?? '-') ?></code></td>
                                 <td><code class="logs-code logs-code-blue"><?= htmlspecialchars($log['ip_address']) ?></code></td>
                                 <td class="logs-truncate"><?= htmlspecialchars($log['user_agent'] ?: '-') ?></td>
                                 <td class="logs-time"><?= date('d/m/Y H:i:s', strtotime($log['created_at'])) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <tr><td colspan="7" class="logs-empty">Chưa có dữ liệu truy cập nào.</td></tr>
+                        <tr><td colspan="9" class="logs-empty">Chưa có dữ liệu truy cập nào.</td></tr>
                     <?php endif; ?>
                 </tbody>
                 </table>
