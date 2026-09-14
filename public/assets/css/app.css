@@ -109,6 +109,82 @@ html, body {
   box-shadow: 0 4px 14px rgba(0, 122, 255, 0.35);
 }
 
+.sidebar-section-label {
+  padding: 0.25rem 0.5rem;
+  font-weight: 700;
+  color: var(--ios-text-secondary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-navigation {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.35rem 0.5rem 0.75rem;
+}
+
+.admin-sidebar .sidebar-navigation > .nav-item {
+  margin: 0;
+}
+
+.sidebar-nav-group {
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.sidebar-nav-group[open] {
+  background: rgba(0, 122, 255, 0.07);
+  border-color: rgba(0, 122, 255, 0.25);
+}
+
+.sidebar-nav-group-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  cursor: pointer;
+  color: var(--ios-text);
+  font-size: 0.8rem;
+  font-weight: 650;
+  list-style: none;
+  user-select: none;
+}
+
+.sidebar-nav-group-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.sidebar-nav-group-toggle:hover {
+  color: var(--ios-blue);
+  background: rgba(0, 122, 255, 0.08);
+}
+
+.sidebar-nav-group-arrow {
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.sidebar-nav-group[open] .sidebar-nav-group-arrow {
+  transform: rotate(180deg);
+}
+
+.sidebar-nav-group-items {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0 0.3rem 0.35rem;
+}
+
+.admin-sidebar .sidebar-nav-group-items .nav-item {
+  margin: 0;
+  padding: 0.5rem 0.55rem 0.5rem 1rem;
+  font-size: 0.78rem;
+}
+
 /* Khung Phải Chứa Navbar & Nội Dung */
 .admin-main-wrapper {
   flex: 1;
