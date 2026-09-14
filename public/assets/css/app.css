@@ -662,3 +662,10 @@ body.overlay-open .admin-main {
     }
 
 }
+
+/* Khi grid còn hai cột, cột hỗ trợ cuối chiếm cả hàng để nội dung không bị bó hẹp. */
+@media (min-width: 416px) and (max-width: 619px) {
+    .vc-footer-col:nth-child(3) {
+        grid-column: 1 / -1;
+    }
+}
