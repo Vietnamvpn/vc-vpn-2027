@@ -57,7 +57,6 @@ ob_start();
 
     <?php if ($activeLogTab === 'macrodroid'): ?>
         <div class="logs-page-actions">
-            <a href="/admin/logs/macrodroid" class="glass-btn">🔄 Tải lại</a>
             <form method="POST" action="/admin/logs/macrodroid/clear" onsubmit="return confirm('Bạn có chắc chắn muốn xóa toàn bộ nội dung nhật ký này?');">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                 <button type="submit" class="logs-clear-btn">🗑️ Xóa log</button>
@@ -83,7 +82,6 @@ ob_start();
                 <label class="logs-select-all-label"><input type="checkbox" class="logs-select-all"> Chọn tất cả</label>
                 <div class="logs-delete-actions">
                     <button type="submit" class="logs-delete-selected" onclick="return confirm('Bạn có chắc chắn muốn xóa các bản ghi đã chọn?');">Xóa mục đã chọn</button>
-                    <button type="submit" name="delete_all" value="1" class="logs-delete-all" onclick="return confirm('Bạn có chắc chắn muốn xóa toàn bộ nhật ký hoạt động hệ thống?');">Xóa toàn bộ</button>
                 </div>
             </div>
             <div class="table-responsive">
@@ -127,7 +125,6 @@ ob_start();
                 <label class="logs-select-all-label"><input type="checkbox" class="logs-select-all"> Chọn tất cả</label>
                 <div class="logs-delete-actions">
                     <button type="submit" class="logs-delete-selected" onclick="return confirm('Bạn có chắc chắn muốn xóa các bản ghi đã chọn?');">Xóa mục đã chọn</button>
-                    <button type="submit" name="delete_all" value="1" class="logs-delete-all" onclick="return confirm('Bạn có chắc chắn muốn xóa toàn bộ nhật ký truy cập?');">Xóa toàn bộ</button>
                 </div>
             </div>
             <div class="table-responsive">
@@ -174,7 +171,6 @@ ob_start();
                 <label class="logs-select-all-label"><input type="checkbox" class="logs-select-all"> Chọn tất cả</label>
                 <div class="logs-delete-actions">
                     <button type="submit" class="logs-delete-selected" onclick="return confirm('Bạn có chắc chắn muốn xóa các bản ghi đã chọn?');">Xóa mục đã chọn</button>
-                    <button type="submit" name="delete_all" value="1" class="logs-delete-all" onclick="return confirm('Bạn có chắc chắn muốn xóa toàn bộ nhật ký email?');">Xóa toàn bộ</button>
                 </div>
             </div>
             <div class="table-responsive">

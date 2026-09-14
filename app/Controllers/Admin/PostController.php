@@ -65,6 +65,7 @@ class PostController extends BaseController
         ];
 
         if ($this->postModel->create($data)) {
+            $this->logActivity('CREATE_POST', 'Tạo bài viết: ' . $title);
             $_SESSION['flash_message'] = 'Tạo bài viết mới thành công!';
             $_SESSION['flash_type']    = 'success';
             $this->redirect('/admin/posts');
@@ -129,6 +130,7 @@ class PostController extends BaseController
         ];
 
         if ($this->postModel->update($id, $data)) {
+            $this->logActivity('UPDATE_POST', 'Cập nhật bài viết #' . $id . ': ' . $title);
             $_SESSION['flash_message'] = 'Cập nhật bài viết thành công!';
             $_SESSION['flash_type']    = 'success';
             $this->redirect('/admin/posts');
@@ -161,6 +163,7 @@ class PostController extends BaseController
 
         if ($id > 0) {
             if ($this->postModel->delete($id)) {
+                $this->logActivity('DELETE_POST', 'Xóa bài viết #' . $id);
                 $_SESSION['flash_message'] = 'Đã xóa bài viết thành công!';
                 $_SESSION['flash_type']    = 'success';
             } else {

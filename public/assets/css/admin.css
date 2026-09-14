@@ -550,8 +550,7 @@
     flex-wrap: wrap;
 }
 
-.logs-delete-selected,
-.logs-delete-all {
+.logs-delete-selected {
     padding: 0.5rem 0.85rem;
     border: 0;
     border-radius: var(--radius-sm);
@@ -565,12 +564,7 @@
     background: var(--ios-danger);
 }
 
-.logs-delete-all {
-    background: #9f231c;
-}
-
-.logs-delete-selected:hover,
-.logs-delete-all:hover {
+.logs-delete-selected:hover {
     filter: brightness(0.92);
 }
 

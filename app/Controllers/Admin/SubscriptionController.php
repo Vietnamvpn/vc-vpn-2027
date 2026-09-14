@@ -219,6 +219,10 @@ class SubscriptionController extends BaseController
                 }
             }
 
+            $this->logActivity(
+                'UPDATE_SUBSCRIPTION_STATUS',
+                'Cập nhật trạng thái gói đăng ký #' . $id . ' từ ' . ($sub['status'] ?? 'N/A') . ' sang ' . $status
+            );
             $_SESSION['flash_message'] = 'Cập nhật trạng thái gói đăng ký thành công!';
             $_SESSION['flash_type']    = 'success';
         } else {
@@ -288,6 +292,10 @@ class SubscriptionController extends BaseController
                     $this->dispatchAddUserTask($id, $sub['uuid'], (int)$sub['transfer_enable'], $newEndDate, $groupIds);
                 }
 
+                $this->logActivity(
+                    'RENEW_SUBSCRIPTION',
+                    'Gia hạn gói đăng ký #' . $id . ' đến ' . $newEndDate . ' bằng đơn hàng ' . $orderCode
+                );
                 $_SESSION['flash_message'] = 'Gia hạn gói đăng ký và tạo đơn hàng mới thành công!';
                 $_SESSION['flash_type']    = 'success';
             } else {
@@ -315,6 +323,7 @@ class SubscriptionController extends BaseController
         }
 
         if ($this->subscriptionModel->update($id, ['upload' => 0, 'download' => 0])) {
+            $this->logActivity('RESET_SUBSCRIPTION_TRAFFIC', 'Đặt lại lưu lượng gói đăng ký #' . $id);
             $_SESSION['flash_message'] = 'Reset lưu lượng gói đăng ký về 0 GB thành công!';
             $_SESSION['flash_type']    = 'success';
         } else {
@@ -357,6 +366,7 @@ class SubscriptionController extends BaseController
                 $this->dispatchAddUserTask($id, $newUuid, (int)$sub['transfer_enable'], $sub['end_date'], $groupIds);
             }
 
+            $this->logActivity('RESET_SUBSCRIPTION_TOKEN', 'Đặt lại UUID gói đăng ký #' . $id);
             $_SESSION['flash_message'] = 'Đặt lại mã Token (UUID) mới thành công!';
             $_SESSION['flash_type']    = 'success';
         } else {
@@ -388,6 +398,7 @@ class SubscriptionController extends BaseController
             }
 
             if ($this->subscriptionModel->delete($id)) {
+                $this->logActivity('DELETE_SUBSCRIPTION', 'Xóa gói đăng ký #' . $id);
                 $_SESSION['flash_message'] = 'Xóa gói đăng ký thành công!';
                 $_SESSION['flash_type']    = 'success';
             } else {

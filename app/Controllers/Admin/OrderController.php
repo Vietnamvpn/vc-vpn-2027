@@ -214,6 +214,10 @@ class OrderController extends BaseController
                 }
             }
 
+            $this->logActivity(
+                'UPDATE_ORDER_STATUS',
+                'Cập nhật trạng thái đơn hàng #' . $id . ' (' . ($order['order_code'] ?? 'N/A') . ') từ ' . ($order['payment_status'] ?? 'N/A') . ' sang ' . $status
+            );
             $_SESSION['flash_message'] = 'Cập nhật trạng thái đơn hàng thành công!';
             $_SESSION['flash_type']    = 'success';
         } else {
@@ -236,6 +240,7 @@ class OrderController extends BaseController
             $_SESSION['flash_type']    = 'danger';
         } else {
             if ($this->orderModel->delete($id)) {
+                $this->logActivity('DELETE_ORDER', 'Xóa đơn hàng #' . $id . ' (' . ($order['order_code'] ?? 'N/A') . ')');
                 $_SESSION['flash_message'] = 'Xóa đơn hàng thành công!';
                 $_SESSION['flash_type']    = 'success';
             } else {
@@ -323,6 +328,7 @@ class OrderController extends BaseController
                     }
                 }
 
+                $this->logActivity('CREATE_ORDER', 'Tạo đơn hàng #' . ($orderId ?: 'N/A') . ' (' . $orderCode . ') cho người dùng #' . $userId);
                 $_SESSION['flash_message'] = 'Tạo đơn hàng thủ công thành công!';
                 $_SESSION['flash_type']    = 'success';
                 $this->redirect('/admin/orders');

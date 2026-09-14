@@ -76,6 +76,7 @@ class UserController extends BaseController
             ];
 
             if ($this->userModel->create($data)) {
+                $this->logActivity('CREATE_USER', 'Tạo người dùng: ' . $username);
                 $_SESSION['flash_message'] = 'Thêm thành viên mới thành công!';
                 $_SESSION['flash_type'] = 'success';
                 $this->redirect('/admin/users');
@@ -130,6 +131,7 @@ class UserController extends BaseController
             }
 
             if ($this->userModel->update($id, $updateData)) {
+                $this->logActivity('UPDATE_USER', 'Cập nhật người dùng #' . $id . ' (' . $user['username'] . ')');
                 $_SESSION['flash_message'] = 'Cập nhật thông tin người dùng thành công!';
                 $_SESSION['flash_type'] = 'success';
                 $this->redirect('/admin/users');
@@ -186,6 +188,7 @@ class UserController extends BaseController
         }
 
         if ($this->userModel->delete($id)) {
+            $this->logActivity('DELETE_USER', 'Xóa người dùng #' . $id . ' (' . $targetUser['username'] . ')');
             $_SESSION['flash_message'] = 'Đã xóa người dùng thành công!';
             $_SESSION['flash_type'] = 'success';
         } else {
