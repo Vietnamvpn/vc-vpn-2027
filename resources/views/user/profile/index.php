@@ -1,100 +1,105 @@
 <?php
-// Layout: resources/views/user/profile/index.php
 // Bắt đầu lưu bộ đệm nội dung
 ob_start();
 ?>
 
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-md-8">
-            <!-- Form Đổi Mật Khẩu & Thông Tin -->
-            <div class="card">
-                <div class="card-header pb-0">
-                    <div class="d-flex align-items-center">
-                        <p class="mb-0">Thông tin cá nhân & Đổi mật khẩu</p>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <?php if (isset($_SESSION['success'])): ?>
-                        <div class="alert alert-success text-white">
-                            <?= htmlspecialchars($_SESSION['success']) ?>
-                        </div>
-                        <?php unset($_SESSION['success']); ?>
-                    <?php endif; ?>
-                    
-                    <form action="/user/profile/update" method="POST">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '') ?>">
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="username" class="form-control-label">Tên đăng nhập</label>
-                                    <input class="form-control" type="text" id="username" value="<?= htmlspecialchars($user['username'] ?? '') ?>" disabled>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="email" class="form-control-label">Địa chỉ Email</label>
-                                    <input class="form-control" type="email" id="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" disabled>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-control-label">Ngày tham gia</label>
-                                    <input class="form-control" type="text" value="<?= isset($user['created_at']) ? date('d/m/Y H:i', strtotime($user['created_at'])) : 'N/A' ?>" disabled>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-control-label">Liên kết Google</label>
-                                    <input class="form-control" type="text" value="<?= !empty($user['google_id']) ? 'Đã liên kết' : 'Chưa liên kết' ?>" disabled>
-                                </div>
-                            </div>
-                        </div>
+<style>
+/* CSS Layout riêng cho trang Profile đồng bộ với app.css */
+.profile-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.2rem; }
+@media (max-width: 768px) { .profile-grid { grid-template-columns: 1fr; } }
+@media (max-width: 576px) { .form-grid-2 { grid-template-columns: 1fr !important; } }
 
-                        <hr class="horizontal dark mt-4">
-                        <p class="text-uppercase text-sm">Đổi mật khẩu mới</p>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="new_password" class="form-control-label">Mật khẩu mới (Để trống nếu không muốn đổi)</label>
-                                    <input class="form-control" type="password" id="new_password" name="new_password" minlength="6" placeholder="Nhập mật khẩu mới">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="text-end mt-4">
-                            <button type="submit" class="btn btn-primary btn-sm ms-auto">Cập nhật mật khẩu</button>
-                        </div>
-                    </form>
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { margin-bottom: 1.2rem; }
+.form-label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--ios-text); margin-bottom: 0.5rem; }
+
+.profile-header { font-size: 1.15rem; font-weight: 700; margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--glass-border); color: var(--ios-text); }
+.profile-info-list { list-style: none; padding: 0; margin: 0; }
+.profile-info-list li { padding: 0.8rem 0; border-bottom: 1px dashed var(--glass-border); display: flex; justify-content: space-between; font-size: 0.9rem; }
+.profile-info-list li:last-child { border-bottom: none; padding-bottom: 0; }
+
+.alert-success { background: rgba(52, 199, 89, 0.15); color: var(--ios-success); padding: 0.8rem; border-radius: var(--radius-md); margin-bottom: 1.2rem; font-size: 0.9rem; font-weight: 600; border: 1px solid rgba(52, 199, 89, 0.3); }
+</style>
+
+<div class="profile-grid">
+    <!-- Cột bên trái: Form Đổi thông tin / Mật khẩu -->
+    <div class="glass-card">
+        <h2 class="profile-header">Thông tin cá nhân & Cập nhật mật khẩu</h2>
+
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert-success">
+                <?= htmlspecialchars($_SESSION['success']) ?>
+            </div>
+            <?php unset($_SESSION['success']); ?>
+        <?php endif; ?>
+
+        <form action="/user/profile/update" method="POST">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '') ?>">
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label class="form-label" for="username">Tên đăng nhập</label>
+                    <input class="glass-input" type="text" id="username" value="<?= htmlspecialchars($user['username'] ?? '') ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="email">Địa chỉ Email</label>
+                    <input class="glass-input" type="email" id="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ngày tham gia</label>
+                    <input class="glass-input" type="text" value="<?= isset($user['created_at']) ? date('d/m/Y H:i', strtotime($user['created_at'])) : 'N/A' ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Liên kết Google</label>
+                    <input class="glass-input" type="text" value="<?= !empty($user['google_id']) ? 'Đã liên kết' : 'Chưa liên kết' ?>" disabled>
                 </div>
             </div>
-        </div>
-        
-        <div class="col-md-4">
-            <!-- Thẻ User bên cạnh -->
-            <div class="card card-profile">
-                <div class="card-body pt-0">
-                    <div class="text-center mt-4">
-                        <h5>
-                            <?= htmlspecialchars($user['username'] ?? 'Người dùng') ?>
-                        </h5>
-                        <div class="h6 font-weight-300">
-                            <i class="ni location_pin mr-2"></i><?= htmlspecialchars($user['email'] ?? '') ?>
-                        </div>
-                        <div class="h6 mt-4">
-                            <i class="ni business_briefcase-24 mr-2"></i>Thành viên <?= ucfirst($user['role'] ?? 'user') ?>
-                        </div>
-                        <div class="mt-4 text-start">
-                            <ul class="list-group">
-                                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Số dư:</strong> <?= $formatMoney($user['balance'] ?? 0) ?></li>
-                                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Hoa hồng:</strong> <?= $formatMoney($user['commission_balance'] ?? 0) ?></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+
+            <h3 class="profile-header" style="margin-top: 1.5rem; font-size: 1rem;">Đổi mật khẩu mới</h3>
+            <div class="form-group">
+                <label class="form-label" for="new_password">Mật khẩu mới (Để trống nếu không muốn đổi)</label>
+                <input class="glass-input" type="password" id="new_password" name="new_password" minlength="6" placeholder="Nhập mật khẩu mới...">
+            </div>
+
+            <div style="text-align: right; margin-top: 1.5rem;">
+                <button type="submit" class="glass-btn">Lưu thay đổi</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Cột bên phải: Thẻ tóm tắt User -->
+    <div class="glass-card" style="align-self: start;">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <!-- Avatar giả lập dạng chữ cái đầu -->
+            <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--ios-blue), #5ac8fa); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; margin: 0 auto 1rem; box-shadow: 0 4px 10px rgba(0,122,255,0.3);">
+                <?= strtoupper(substr($user['username'] ?? 'U', 0, 1)) ?>
+            </div>
+            <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--ios-text);"><?= htmlspecialchars($user['username'] ?? 'Người dùng') ?></h3>
+            <p style="color: var(--ios-text-secondary); margin: 0.3rem 0 0; font-size: 0.85rem;"><?= htmlspecialchars($user['email'] ?? '') ?></p>
+            
+            <div style="margin-top: 0.8rem;">
+                <span style="display: inline-block; padding: 0.35rem 0.8rem; background: rgba(0,122,255,0.1); color: var(--ios-blue); border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
+                    Thành viên <?= ucfirst($user['role'] ?? 'user') ?>
+                </span>
             </div>
         </div>
+
+        <ul class="profile-info-list">
+            <li>
+                <span style="color: var(--ios-text-secondary); font-weight: 600;">Số dư</span>
+                <span style="font-weight: 700; color: var(--ios-text);"><?= $formatMoney($user['balance'] ?? 0) ?></span>
+            </li>
+            <li>
+                <span style="color: var(--ios-text-secondary); font-weight: 600;">Hoa hồng</span>
+                <span style="font-weight: 700; color: var(--ios-text);"><?= $formatMoney($user['commission_balance'] ?? 0) ?></span>
+            </li>
+            <li>
+                <span style="color: var(--ios-text-secondary); font-weight: 600;">Trạng thái</span>
+                <span style="font-weight: 700; color: <?= (($user['status'] ?? '') === 'active') ? 'var(--ios-success)' : 'var(--ios-danger)' ?>;">
+                    <?= ucfirst($user['status'] ?? 'unknown') ?>
+                </span>
+            </li>
+        </ul>
     </div>
 </div>
 
@@ -104,7 +109,5 @@ $content = ob_get_clean();
 
 // Gọi layout chính của app
 $showSidebar = true;
-$extraCss = 'app';
-$extraJs = 'app';
 require_once __DIR__ . '/../../layouts/app.php';
 ?>
