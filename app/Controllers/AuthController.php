@@ -384,10 +384,18 @@ class AuthController extends BaseController
             $myRefCode = strtoupper(substr(md5(uniqid($username, true)), 0, 8));
 
             $referredBy = null;
+            $referralBonus = 0.00;
             if (!empty($refCodeInput)) {
                 $referrer = $userModel->findByRefCode($refCodeInput);
                 if ($referrer) {
-                    $referredBy = $referrer['id'];
+                    $referredBy = (int)$referrer['id'];
+
+                    // Chỉ thưởng khi mã giới thiệu hợp lệ; số tiền được cộng trực tiếp
+                    // lúc tạo tài khoản để tránh cấp thưởng nhiều lần.
+                    $configuredBonus = (float)($this->settings['referral_bonus'] ?? 0);
+                    if (is_finite($configuredBonus) && $configuredBonus > 0) {
+                        $referralBonus = $configuredBonus;
+                    }
                 }
             }
 
@@ -397,6 +405,7 @@ class AuthController extends BaseController
                 'password_hash' => $hashedPassword,
                 'ref_code'      => $myRefCode,
                 'referred_by'   => $referredBy,
+                'balance'       => $referralBonus,
                 'register_ip'   => $clientIp
             ]);
 
