@@ -23,33 +23,29 @@ class LogController extends BaseController
         $this->emailLogModel = new EmailLog();
     }
 
+    public function index(): void
+    {
+        $this->system();
+    }
+
     public function system(): void
     {
-        $logs = $this->systemLogModel->allWithUser();
-
-        $this->render('admin.logs.system', [
-            'activeMenu' => 'logs',
-            'logs'       => $logs
+        $this->renderLogTab('system', [
+            'logs' => $this->systemLogModel->allWithUser()
         ]);
     }
 
     public function access(): void
     {
-        $logs = $this->accessLogModel->allWithUser();
-
-        $this->render('admin.logs.access', [
-            'activeMenu' => 'logs',
-            'logs'       => $logs
+        $this->renderLogTab('access', [
+            'logs' => $this->accessLogModel->allWithUser()
         ]);
     }
 
     public function email(): void
     {
-        $logs = $this->emailLogModel->all();
-
-        $this->render('admin.logs.email', [
-            'activeMenu' => 'logs',
-            'logs'       => $logs
+        $this->renderLogTab('email', [
+            'logs' => $this->emailLogModel->all()
         ]);
     }
 
@@ -65,8 +61,7 @@ class LogController extends BaseController
             $logContent = file_get_contents($logFile);
         }
 
-        $this->render('admin.logs.macrodroid', [
-            'activeMenu' => 'logs',
+        $this->renderLogTab('macrodroid', [
             'logContent' => $logContent
         ]);
     }
@@ -83,5 +78,15 @@ class LogController extends BaseController
             $_SESSION['flash_type']    = 'success';
         }
         $this->redirect('/admin/logs/macrodroid');
+    }
+
+    private function renderLogTab(string $activeLogTab, array $data = []): void
+    {
+        $this->render('admin.logs.index', array_merge([
+            'activeMenu'  => 'logs',
+            'activeLogTab' => $activeLogTab,
+            'logs'         => [],
+            'logContent'   => ''
+        ], $data));
     }
 }

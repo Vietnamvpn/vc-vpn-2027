@@ -179,6 +179,7 @@ return [
     'POST /admin/settings/save'   => ['Admin\SettingController', 'save'],
 
     // Nhật ký hệ thống (Logs)
+    'GET /admin/logs'                   => ['Admin\LogController', 'index'],
     'GET /admin/logs/system'            => ['Admin\LogController', 'system'],
     'GET /admin/logs/access'            => ['Admin\LogController', 'access'],
     'GET /admin/logs/email'             => ['Admin\LogController', 'email'],

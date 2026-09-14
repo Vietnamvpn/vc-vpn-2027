@@ -417,3 +417,203 @@
         margin-bottom: 0.25rem;
     }
 }
+
+/* Trang nhật ký quản trị */
+.logs-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.logs-page-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    word-break: break-word;
+}
+
+.logs-page-header p {
+    margin: 0.25rem 0 0;
+    color: var(--ios-text-secondary);
+    font-size: 0.85rem;
+}
+
+.logs-page-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logs-page-actions form {
+    margin: 0;
+}
+
+.logs-page-actions .glass-btn,
+.logs-clear-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.logs-clear-btn {
+    border: 0;
+    border-radius: var(--radius-md);
+    background: rgba(255, 59, 48, 0.15);
+    color: var(--ios-danger);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.logs-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+}
+
+.logs-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex: 0 0 auto;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    color: var(--ios-text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.logs-tab:hover {
+    color: var(--ios-blue);
+    background: rgba(0, 122, 255, 0.1);
+}
+
+.logs-tab.active {
+    border-color: var(--ios-blue);
+    background: var(--ios-blue);
+    color: #fff;
+}
+
+.logs-content-card {
+    width: 100%;
+    padding: 1.25rem;
+}
+
+.logs-id,
+.logs-user-name,
+.logs-subject {
+    font-weight: 700;
+}
+
+.logs-user {
+    color: var(--ios-blue);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.logs-user-name {
+    font-size: 0.85rem;
+}
+
+.logs-user-email,
+.logs-time {
+    color: var(--ios-text-secondary);
+    font-size: 0.8rem;
+}
+
+.logs-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.logs-badge-blue {
+    background: rgba(0, 122, 255, 0.08);
+    color: var(--ios-text);
+}
+
+.logs-badge-green {
+    background: rgba(52, 199, 89, 0.12);
+    color: var(--ios-success);
+}
+
+.logs-badge-danger {
+    background: rgba(255, 59, 48, 0.15);
+    color: var(--ios-danger);
+}
+
+.logs-code {
+    padding: 0.15rem 0.35rem;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.1);
+    font-size: 0.8rem;
+}
+
+.logs-code-blue {
+    color: var(--ios-blue);
+    background: rgba(0, 122, 255, 0.08);
+    font-weight: 600;
+}
+
+.logs-truncate {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--ios-text-secondary);
+    font-size: 0.85rem;
+}
+
+.logs-error {
+    max-width: 200px;
+    color: var(--ios-danger);
+    font-size: 0.8rem;
+}
+
+.logs-empty {
+    padding: 2rem;
+    color: var(--ios-text-secondary);
+    text-align: center;
+}
+
+.macrodroid-log-output {
+    max-height: 600px;
+    margin: 0;
+    overflow: auto;
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
+    background: #1e1e1e;
+    color: #00ff66;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.logs-empty-block {
+    padding: 3rem 1rem;
+    color: var(--ios-text-secondary);
+    text-align: center;
+}
+
+.logs-empty-block p {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.logs-empty-block span {
+    font-size: 0.85rem;
+}

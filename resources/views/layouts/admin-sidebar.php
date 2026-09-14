@@ -40,5 +40,5 @@ if (isset($_SESSION['user_id'])) {
     <a href="/admin/tickets" class="nav-item <?= ($activeMenu ?? '') === 'tickets' ? 'active' : '' ?>">🎫 Ticket Hỗ Trợ</a>
     <a href="/admin/expenses" class="nav-item <?= ($activeMenu ?? '') === 'expenses' ? 'active' : '' ?>">💸 Chi Phí</a>
     <a href="/admin/settings" class="nav-item <?= ($activeMenu ?? '') === 'settings' ? 'active' : '' ?>">⚙️ Cài Đặt</a>
-    <a href="/admin/logs/system" class="nav-item <?= ($activeMenu ?? '') === 'logs' ? 'active' : '' ?>">📝 Logs Hệ Thống</a>
+    <a href="/admin/logs" class="nav-item <?= ($activeMenu ?? '') === 'logs' ? 'active' : '' ?>">📝 Nhật Ký Hệ Thống</a>
 </aside>
