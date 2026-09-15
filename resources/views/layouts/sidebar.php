@@ -1,5 +1,6 @@
 <?php
 $currentUri = $_SERVER['REQUEST_URI'] ?? '';
+$currentPath = parse_url($currentUri, PHP_URL_PATH) ?: '';
 $isAdminRoute = (strncmp($currentUri, '/admin', 6) === 0);
 $userRole = $_SESSION['role'] ?? 'user';
 $siteTitle = $settings['site_title'] ?? 'VC VPN 2027';
@@ -30,6 +31,12 @@ if (isset($_SESSION['user_id'])) {
     </a>
     <a href="/user/plans" class="nav-item <?= ($activeMenu ?? '') === 'plans' ? 'active' : '' ?>">
         <span class="festival-nav-icon festival-nav-lantern" aria-hidden="true"></span><span>Gói Dịch Vụ</span>
+    </a>
+    <a href="/faq" class="nav-item <?= $currentPath === '/faq' ? 'active' : '' ?>">
+        <span class="festival-nav-icon festival-nav-scroll" aria-hidden="true"></span><span>Hướng Dẫn</span>
+    </a>
+    <a href="/download" class="nav-item <?= $currentPath === '/download' ? 'active' : '' ?>">
+        <span class="festival-nav-icon festival-nav-download" aria-hidden="true"></span><span>Tải Ứng Dụng</span>
     </a>
     <a href="/subscriptions" class="nav-item <?= ($activeMenu ?? '') === 'subscriptions' ? 'active' : '' ?>">
         <span class="festival-nav-icon festival-nav-spark" aria-hidden="true"></span><span>Gói Đã Mua</span>

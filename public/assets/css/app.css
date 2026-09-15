@@ -209,6 +209,8 @@ body.user-festival .admin-sidebar .nav-item.active { color: #07366c; background:
 .festival-nav-spark::before, .festival-nav-star::before { content: '*'; display: block; color: currentColor; font-size: 24px; font-weight: 700; line-height: 18px; text-align: center; }
 .festival-nav-scroll { border: 1px solid currentColor; border-radius: 3px; transform: rotate(-8deg); }
 .festival-nav-scroll::after { content: ''; position: absolute; inset: 4px 3px; border-top: 1px solid currentColor; border-bottom: 1px solid currentColor; }
+.festival-nav-download::before { content: ''; position: absolute; top: 1px; left: 8px; height: 10px; border-left: 2px solid currentColor; }
+.festival-nav-download::after { content: ''; position: absolute; top: 7px; left: 4px; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); }
 .festival-nav-coin { border: 2px solid currentColor; border-radius: 50%; } .festival-nav-coin::after { content: ''; position: absolute; inset: 4px; border: 1px solid currentColor; border-radius: 50%; }
  .festival-nav-wallet { border: 1px solid currentColor; border-radius: 3px; } .festival-nav-wallet::after { content: ''; position: absolute; top: 6px; right: -2px; width: 5px; height: 4px; border: 1px solid currentColor; border-radius: 2px; background: #123f7b; }
 .festival-nav-gift::before { content: ''; position: absolute; inset: 5px 1px 1px; border: 1px solid currentColor; border-radius: 2px; } .festival-nav-gift::after { content: ''; position: absolute; left: 8px; top: 1px; width: 2px; height: 16px; background: currentColor; box-shadow: -5px 2px 0 -1px #123f7b, 5px 2px 0 -1px #123f7b; }
