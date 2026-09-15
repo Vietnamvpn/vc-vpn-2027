@@ -70,7 +70,17 @@ ob_start();
                 <?= $post['content'] ?>
             </div>
         </article>
-        <aside class="related-posts"><h3>Bài viết khác</h3><?php foreach (array_slice($relatedPosts ?? [], 0, 6) as $related): ?><a href="/post-detail?slug=<?= urlencode($related['slug']) ?>"><?= htmlspecialchars($related['title']) ?></a><?php endforeach; ?></aside>
+        <aside class="related-posts">
+            <h3>Bài viết khác</h3>
+            <?php $visibleRelatedPosts = array_slice($relatedPosts ?? [], 0, 6); ?>
+            <?php if (!empty($visibleRelatedPosts)): ?>
+                <?php foreach ($visibleRelatedPosts as $related): ?>
+                    <a href="/post-detail?slug=<?= urlencode($related['slug']) ?>"><?= htmlspecialchars($related['title']) ?></a>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p class="related-posts-empty">Không có bài viết nào.</p>
+            <?php endif; ?>
+        </aside>
         </div>
     <?php else: ?>
         <div class="glass-card" style="text-align: center; padding: 3rem; color: var(--ios-text-secondary);">
