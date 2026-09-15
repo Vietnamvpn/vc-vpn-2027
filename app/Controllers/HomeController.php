@@ -64,11 +64,12 @@ class HomeController extends BaseController
     public function postDetail(): void
     {
         $slug = $_GET['slug'] ?? '';
+        $postId = (int) ($_GET['id'] ?? 0);
         $post = null;
 
-        if (!empty($slug) && class_exists('App\Models\Post')) {
+        if ((!empty($slug) || $postId > 0) && class_exists('App\Models\Post')) {
             $postModel = new Post();
-            $post = $postModel->getBySlug($slug);
+            $post = !empty($slug) ? $postModel->getBySlug($slug) : $postModel->findWithAuthor($postId);
             $relatedPosts = array_values(array_filter($postModel->getAllPublished(), fn ($item) => ($item['id'] ?? 0) !== ($post['id'] ?? 0)));
         }
 
