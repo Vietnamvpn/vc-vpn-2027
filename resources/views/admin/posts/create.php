@@ -5,22 +5,13 @@ $activeMenu = "posts";
 ob_start();
 ?>
 
-<!-- Thư viện Summernote Lite & jQuery miễn phí -->
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<!-- Thư viện TinyMCE 6.8.3 miễn phí -->
+<script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js"></script>
 
 <style>
-/* Sửa lỗi z-index làm tối đen màn hình của Summernote modal */
-.note-modal-backdrop { display: none !important; }
-.note-modal { z-index: 10000 !important; background: rgba(0, 0, 0, 0.5) !important; }
-.note-modal .modal-dialog { margin-top: 80px !important; }
-.note-modal .modal-content { background: #ffffff !important; color: #1c1c1e !important; border-radius: 10px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important; }
-
-/* Ép hiển thị ảnh và video nhúng YouTube trong khung soạn thảo */
-.note-editable { background: #ffffff !important; color: #1c1c1e !important; }
-.note-editable img { max-width: 100% !important; height: auto !important; display: inline-block !important; }
-.note-editable iframe { width: 100% !important; height: 350px !important; display: block !important; border: 0 !important; }
+/* Cấu hình hiển thị TinyMCE trên nền giao diện Glassmorphism */
+.tox-tinymce-aux { z-index: 999999 !important; }
+.tox-tinymce { border-radius: var(--radius-md) !important; border: 1px solid var(--glass-border) !important; }
 </style>
 
 <div style="margin-bottom: 1.25rem;">
@@ -81,7 +72,7 @@ ob_start();
 
         <div>
             <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Nội Dung Bài Viết (*)</label>
-            <textarea id="post_content" name="content" rows="12" class="glass-input" required placeholder="Soạn thảo nội dung bài viết ở đây..." style="width: 100%; resize: vertical; line-height: 1.5;"></textarea>
+            <textarea id="post_content" name="content" rows="12" class="glass-input" placeholder="Soạn thảo nội dung bài viết ở đây..." style="width: 100%; resize: vertical; line-height: 1.5;"></textarea>
         </div>
 
         <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
@@ -91,22 +82,20 @@ ob_start();
 </div>
 
 <script>
-$(document).ready(function() {
-    $('#post_content').summernote({
-        placeholder: 'Soạn thảo nội dung bài viết, chèn hình ảnh hoặc dán link YouTube...',
-        tabsize: 2,
-        height: 380,
-        dialogsInBody: true,
-        toolbar: [
-            ['style', ['style']],
-            ['font', ['bold', 'underline', 'clear']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['table', ['table']],
-            ['insert', ['link', 'picture', 'video']],
-            ['view', ['fullscreen', 'codeview', 'help']]
-        ]
-    });
+tinymce.init({
+    selector: '#post_content',
+    height: 420,
+    menubar: false,
+    promotion: false, 
+    branding: false,  
+    plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table wordcount',
+    toolbar: 'undo redo | blocks | bold italic textcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | removeformat | code fullscreen',
+    content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.5; } img { max-width: 100%; height: auto; } iframe { max-width: 100%; }',
+    setup: function(editor) {
+        editor.on('change', function() {
+            editor.save(); 
+        });
+    }
 });
 </script>
 
