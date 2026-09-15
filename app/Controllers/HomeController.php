@@ -86,17 +86,23 @@ class HomeController extends BaseController
 
     public function terms(): void
     {
-        $this->render('policies.terms');
+        $this->render('policies.terms', [
+            'showSidebar' => !empty($_SESSION['user_id'])
+        ]);
     }
 
     public function privacy(): void
     {
-        $this->render('policies.privacy');
+        $this->render('policies.privacy', [
+            'showSidebar' => !empty($_SESSION['user_id'])
+        ]);
     }
 
     public function refund(): void
     {
-        $this->render('policies.refund');
+        $this->render('policies.refund', [
+            'showSidebar' => !empty($_SESSION['user_id'])
+        ]);
     }
 
 }
