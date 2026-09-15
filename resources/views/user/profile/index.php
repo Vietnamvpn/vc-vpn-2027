@@ -1,19 +1,27 @@
 <?php
 // Bắt đầu lưu bộ đệm nội dung
 ob_start();
+$activeProfileTab = ($_GET['tab'] ?? 'account') === 'security' ? 'security' : 'account';
 ?>
 
 <style>
 /* CSS Layout riêng cho trang Profile đồng bộ với app.css */
 .profile-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.2rem; }
 @media (max-width: 768px) { .profile-grid { grid-template-columns: 1fr; } }
-@media (max-width: 576px) { .form-grid-2 { grid-template-columns: 1fr !important; } }
+@media (max-width: 576px) { .form-grid-2 { grid-template-columns: 1fr !important; } .profile-tabs { gap: .35rem; } .profile-tab { flex: 1; justify-content: center; } }
 
 .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .form-group { margin-bottom: 1.2rem; }
 .form-label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--ios-text); margin-bottom: 0.5rem; }
 
-.profile-header { font-size: 1.15rem; font-weight: 700; margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--glass-border); color: var(--ios-text); }
+.profile-page-header { margin-bottom: 1rem; }
+.profile-page-header h1 { margin: 0; font-size: 1.5rem; font-weight: 700; color: var(--ios-text); }
+.profile-page-header p { margin: .3rem 0 0; color: var(--ios-text-secondary); font-size: .85rem; }
+.profile-tabs { display: flex; gap: .5rem; margin-bottom: 1.2rem; overflow-x: auto; padding-bottom: .25rem; }
+.profile-tab { display: inline-flex; align-items: center; gap: .4rem; flex: 0 0 auto; padding: .6rem 1rem; border: 1px solid var(--glass-border); border-radius: var(--radius-md); color: var(--ios-text-secondary); background: rgba(255, 255, 255, .05); font-size: .85rem; font-weight: 600; text-decoration: none; }
+.profile-tab:hover { color: var(--ios-blue); background: rgba(0, 122, 255, .1); }
+.profile-tab.active { color: #fff; background: var(--ios-blue); border-color: var(--ios-blue); }
+.profile-header { font-size: 1.15rem; font-weight: 700; margin: 0 0 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--glass-border); color: var(--ios-text); }
 .profile-info-list { list-style: none; padding: 0; margin: 0; }
 .profile-info-list li { padding: 0.8rem 0; border-bottom: 1px dashed var(--glass-border); display: flex; justify-content: space-between; font-size: 0.9rem; }
 .profile-info-list li:last-child { border-bottom: none; padding-bottom: 0; }
@@ -21,21 +29,27 @@ ob_start();
 .alert-success { background: rgba(52, 199, 89, 0.15); color: var(--ios-success); padding: 0.8rem; border-radius: var(--radius-md); margin-bottom: 1.2rem; font-size: 0.9rem; font-weight: 600; border: 1px solid rgba(52, 199, 89, 0.3); }
 </style>
 
-<div class="profile-grid">
-    <!-- Cột bên trái: Form Đổi thông tin / Mật khẩu -->
-    <div class="glass-card">
-        <h2 class="profile-header">Thông tin cá nhân & Cập nhật mật khẩu</h2>
+<div class="profile-page-header">
+    <h1>Tài Khoản</h1>
+    <p>Quản lý thông tin cá nhân và bảo mật tài khoản.</p>
+</div>
 
-        <?php if (isset($_SESSION['success'])): ?>
-            <div class="alert-success">
-                <?= htmlspecialchars($_SESSION['success']) ?>
-            </div>
-            <?php unset($_SESSION['success']); ?>
-        <?php endif; ?>
+<nav class="profile-tabs" aria-label="Quản lý tài khoản">
+    <a href="/profile?tab=account" class="profile-tab <?= $activeProfileTab === 'account' ? 'active' : '' ?>" <?= $activeProfileTab === 'account' ? 'aria-current="page"' : '' ?>>👤 Thông tin tài khoản</a>
+    <a href="/profile?tab=security" class="profile-tab <?= $activeProfileTab === 'security' ? 'active' : '' ?>" <?= $activeProfileTab === 'security' ? 'aria-current="page"' : '' ?>>🔒 Bảo mật</a>
+</nav>
 
-        <form action="/user/profile/update" method="POST">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '') ?>">
+<?php if (isset($_SESSION['success'])): ?>
+    <div class="alert-success">
+        <?= htmlspecialchars($_SESSION['success']) ?>
+    </div>
+    <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
 
+<?php if ($activeProfileTab === 'account'): ?>
+    <div class="profile-grid">
+        <div class="glass-card">
+            <h2 class="profile-header">Thông tin cá nhân</h2>
             <div class="form-grid-2">
                 <div class="form-group">
                     <label class="form-label" for="username">Tên đăng nhập</label>
@@ -54,54 +68,45 @@ ob_start();
                     <input class="glass-input" type="text" value="<?= !empty($user['google_id']) ? 'Đã liên kết' : 'Chưa liên kết' ?>" disabled>
                 </div>
             </div>
+        </div>
 
-            <h3 class="profile-header" style="margin-top: 1.5rem; font-size: 1rem;">Đổi mật khẩu mới</h3>
-            <div class="form-group">
-                <label class="form-label" for="new_password">Mật khẩu mới (Để trống nếu không muốn đổi)</label>
-                <input class="glass-input" type="password" id="new_password" name="new_password" minlength="6" placeholder="Nhập mật khẩu mới...">
+        <div class="glass-card" style="align-self: start;">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--ios-blue), #5ac8fa); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; margin: 0 auto 1rem; box-shadow: 0 4px 10px rgba(0,122,255,0.3);">
+                    <?= strtoupper(substr($user['username'] ?? 'U', 0, 1)) ?>
+                </div>
+                <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--ios-text);"><?= htmlspecialchars($user['username'] ?? 'Người dùng') ?></h3>
+                <p style="color: var(--ios-text-secondary); margin: 0.3rem 0 0; font-size: 0.85rem;"><?= htmlspecialchars($user['email'] ?? '') ?></p>
+                <div style="margin-top: 0.8rem;">
+                    <span style="display: inline-block; padding: 0.35rem 0.8rem; background: rgba(0,122,255,0.1); color: var(--ios-blue); border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
+                        Thành viên <?= ucfirst($user['role'] ?? 'user') ?>
+                    </span>
+                </div>
             </div>
 
+            <ul class="profile-info-list">
+                <li><span style="color: var(--ios-text-secondary); font-weight: 600;">Số dư</span><span style="font-weight: 700; color: var(--ios-text);"><?= isset($formatMoney) ? $formatMoney($user['balance'] ?? 0) : number_format($user['balance'] ?? 0, 2) ?></span></li>
+                <li><span style="color: var(--ios-text-secondary); font-weight: 600;">Hoa hồng</span><span style="font-weight: 700; color: var(--ios-text);"><?= isset($formatMoney) ? $formatMoney($user['commission_balance'] ?? 0) : number_format($user['commission_balance'] ?? 0, 2) ?></span></li>
+                <li><span style="color: var(--ios-text-secondary); font-weight: 600;">Trạng thái</span><span style="font-weight: 700; color: <?= (($user['status'] ?? '') === 'active') ? 'var(--ios-success)' : 'var(--ios-danger)' ?>;"><?= ucfirst($user['status'] ?? 'unknown') ?></span></li>
+            </ul>
+        </div>
+    </div>
+<?php else: ?>
+    <div class="glass-card" style="max-width: 680px;">
+        <h2 class="profile-header">Đổi mật khẩu</h2>
+        <form action="/user/profile/update" method="POST">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '') ?>">
+
+            <div class="form-group">
+                <label class="form-label" for="new_password">Mật khẩu mới</label>
+                <input class="glass-input" type="password" id="new_password" name="new_password" minlength="6" required placeholder="Nhập mật khẩu mới...">
+            </div>
             <div style="text-align: right; margin-top: 1.5rem;">
                 <button type="submit" class="glass-btn">Lưu thay đổi</button>
             </div>
         </form>
     </div>
-
-    <!-- Cột bên phải: Thẻ tóm tắt User -->
-    <div class="glass-card" style="align-self: start;">
-        <div style="text-align: center; margin-bottom: 1.5rem;">
-            <!-- Avatar giả lập dạng chữ cái đầu -->
-            <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--ios-blue), #5ac8fa); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; margin: 0 auto 1rem; box-shadow: 0 4px 10px rgba(0,122,255,0.3);">
-                <?= strtoupper(substr($user['username'] ?? 'U', 0, 1)) ?>
-            </div>
-            <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--ios-text);"><?= htmlspecialchars($user['username'] ?? 'Người dùng') ?></h3>
-            <p style="color: var(--ios-text-secondary); margin: 0.3rem 0 0; font-size: 0.85rem;"><?= htmlspecialchars($user['email'] ?? '') ?></p>
-            
-            <div style="margin-top: 0.8rem;">
-                <span style="display: inline-block; padding: 0.35rem 0.8rem; background: rgba(0,122,255,0.1); color: var(--ios-blue); border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
-                    Thành viên <?= ucfirst($user['role'] ?? 'user') ?>
-                </span>
-            </div>
-        </div>
-
-        <ul class="profile-info-list">
-            <li>
-                <span style="color: var(--ios-text-secondary); font-weight: 600;">Số dư</span>
-                <span style="font-weight: 700; color: var(--ios-text);"><?= $formatMoney($user['balance'] ?? 0) ?></span>
-            </li>
-            <li>
-                <span style="color: var(--ios-text-secondary); font-weight: 600;">Hoa hồng</span>
-                <span style="font-weight: 700; color: var(--ios-text);"><?= $formatMoney($user['commission_balance'] ?? 0) ?></span>
-            </li>
-            <li>
-                <span style="color: var(--ios-text-secondary); font-weight: 600;">Trạng thái</span>
-                <span style="font-weight: 700; color: <?= (($user['status'] ?? '') === 'active') ? 'var(--ios-success)' : 'var(--ios-danger)' ?>;">
-                    <?= ucfirst($user['status'] ?? 'unknown') ?>
-                </span>
-            </li>
-        </ul>
-    </div>
-</div>
+<?php endif; ?>
 
 <?php
 // Kết thúc bộ đệm và gán vào biến $content

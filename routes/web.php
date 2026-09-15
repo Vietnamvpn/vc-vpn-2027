@@ -29,8 +29,6 @@ return [
     // Hồ sơ cá nhân (Profile)
     'GET /profile'               => ['UserController', 'profile'],
     'POST /profile/update'       => ['UserController', 'updateProfile'],
-    'GET /profile/password'      => ['UserController', 'showChangePassword'],
-    'POST /profile/password'     => ['UserController', 'changePassword'],
 
     // Gói cước & Mua hàng (Plans & Checkout)
     'GET /user/plans'            => ['UserController', 'plans'],
