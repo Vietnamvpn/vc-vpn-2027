@@ -22,7 +22,7 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
     <p>Quản lý dịch vụ VPN và theo dõi tài khoản của bạn</p>
 </div>
 
-<!-- Phần 2: Slide bài viết / hướng dẫn (Đọc ảnh đại diện từ mã ẩn hoặc ảnh đầu tiên trong nội dung) -->
+<!-- Phần 2: Slide bài viết / hướng dẫn (Lấy Thumbnail đa tầng an toàn) -->
 <?php if (!empty($posts) && is_array($posts)): ?>
 <div class="glass-card tutorial-slider-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -32,11 +32,21 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
         <div class="tutorial-slider" id="tutorialSlider">
             <?php foreach ($posts as $index => $post): 
                 $thumbUrl = '/assets/images/logo.png';
-                if (!empty($post['content'])) {
-                    if (preg_match('/<!--thumbnail:(.*?)-->/i', $post['content'], $mThumb)) {
-                        $thumbUrl = $mThumb[1];
-                    } elseif (preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $post['content'], $mImg)) {
-                        $thumbUrl = $mImg[1];
+                
+                // 1. Kiểm tra nếu có sẵn trường thumbnail riêng trong CSDL
+                if (!empty($post['thumbnail'])) {
+                    $thumbUrl = $post['thumbnail'];
+                } 
+                // 2. Tìm mã comment ẩn hoặc ảnh <img> trong nội dung
+                elseif (!empty($post['content'])) {
+                    $rawContent = htmlspecialchars_decode($post['content']);
+                    
+                    if (preg_match('/<!--thumbnail:(.*?)-->/i', $rawContent, $mThumb)) {
+                        $thumbUrl = trim($mThumb[1]);
+                    } elseif (preg_match('/<!--thumbnail:(.*?)-->/i', $post['content'], $mThumb)) {
+                        $thumbUrl = trim($mThumb[1]);
+                    } elseif (preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $rawContent, $mImg)) {
+                        $thumbUrl = trim($mImg[1]);
                     }
                 }
             ?>
@@ -46,7 +56,7 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
                         <div>
                             <span class="tutorial-badge"><?= htmlspecialchars(strtoupper(($post['type'] ?? '') === 'faq' ? 'NOTICE' : ($post['type'] ?? 'TUTORIAL'))) ?></span>
                             <h4 class="tutorial-title"><?= htmlspecialchars($post['title'] ?? '') ?></h4>
-                            <div class="tutorial-desc"><?= htmlspecialchars(strip_tags($post['content'] ?? '')) ?></div>
+                            <div class="tutorial-desc"><?= htmlspecialchars(strip_tags(htmlspecialchars_decode($post['content'] ?? ''))) ?></div>
                         </div>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
                             <span style="font-size: 0.75rem; color: var(--ios-text-secondary);">
