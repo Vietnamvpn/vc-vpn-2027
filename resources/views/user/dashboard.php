@@ -84,7 +84,7 @@ function getNoticeFallbackThumb($id) {
     flex-direction: column;
     justify-content: space-between;
     flex: 1;
-    min-width: 0; /* Giúp text-overflow hoạt động chính xác */
+    min-width: 0;
 }
 
 .tutorial-title {
@@ -101,7 +101,7 @@ function getNoticeFallbackThumb($id) {
     color: var(--ios-text-secondary, #8e8e93);
     line-height: 1.4;
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* Giới hạn tối đa 2 dòng */
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -109,7 +109,16 @@ function getNoticeFallbackThumb($id) {
     margin-bottom: 0.5rem;
 }
 
-/* 4 Thẻ thống kê */
+.tutorial-thumb {
+    width: 180px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: var(--radius-sm, 8px);
+    flex-shrink: 0;
+    display: block;
+}
+
+/* 4 Thẻ thống kê: Tối ưu layout chữ gọn gàng, căn lề góc phải chuẩn responsive */
 .dashboard-grid-4 {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -122,24 +131,47 @@ function getNoticeFallbackThumb($id) {
     flex-direction: row !important;
     justify-content: space-between !important;
     align-items: flex-end !important;
-    padding: 1.25rem;
+    padding: 1.1rem 1.25rem !important;
+    box-sizing: border-box !important;
+    min-width: 0 !important;
 }
 
-.stat-card-item .stat-link {
+.stat-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.stat-label {
     font-size: 0.8rem;
+    color: var(--ios-text-secondary, #8e8e93);
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stat-value {
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stat-link {
+    font-size: 0.78rem;
     color: var(--ios-primary, #007aff);
     text-decoration: none;
     white-space: nowrap;
-    margin-left: 0.5rem;
-}
-
-.tutorial-thumb {
-    width: 180px;
-    height: 110px;
-    object-fit: cover;
-    border-radius: var(--radius-sm, 8px);
     flex-shrink: 0;
-    display: block;
+    margin-left: 0.5rem;
+    font-weight: 500;
+    padding-bottom: 2px;
 }
 
 @media (max-width: 768px) {
@@ -147,13 +179,21 @@ function getNoticeFallbackThumb($id) {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 0.75rem !important;
     }
-    
+
     .stat-card-item {
-        padding: 0.85rem 1rem !important;
+        padding: 0.85rem 0.9rem !important;
     }
-    
-    .stat-card-item .stat-link {
+
+    .stat-label {
         font-size: 0.75rem !important;
+    }
+
+    .stat-value {
+        font-size: 1.15rem !important;
+    }
+
+    .stat-link {
+        font-size: 0.7rem !important;
     }
 
     .tutorial-card {
@@ -175,7 +215,7 @@ function getNoticeFallbackThumb($id) {
     <p>Quản lý dịch vụ VPN và theo dõi tài khoản của bạn</p>
 </div>
 
-<!-- Phần 2: Slide bài viết thông báo (Đã giới hạn độ dài nội dung) -->
+<!-- Phần 2: Slide bài viết thông báo -->
 <?php if (!empty($noticePosts)): ?>
 <div style="margin-top: 1.5rem;">
     <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0 0 0.8rem 0;">📢 Thông Báo Hệ Thống</h3>
@@ -200,7 +240,6 @@ function getNoticeFallbackThumb($id) {
                         $thumbUrl = getNoticeFallbackThumb($post['id'] ?? $index);
                     }
 
-                    // Xử lý cắt văn bản ngắn tối đa 120 ký tự
                     $cleanDesc = strip_tags(htmlspecialchars_decode($post['content'] ?? ''));
                     if (mb_strlen($cleanDesc, 'UTF-8') > 120) {
                         $cleanDesc = mb_substr($cleanDesc, 0, 120, 'UTF-8') . '...';
@@ -235,31 +274,31 @@ function getNoticeFallbackThumb($id) {
 </div>
 <?php endif; ?>
 
-<!-- Phần 3: 4 thẻ thống kê -->
+<!-- Phần 3: 4 thẻ thống kê chuẩn đẹp -->
 <div class="dashboard-grid-4">
     <div class="glass-card stat-card-item">
-        <div>
+        <div class="stat-main">
             <div class="stat-label">Gói đang chạy</div>
             <div class="stat-value" style="color: var(--ios-success);"><?= $activeSubCount ?></div>
         </div>
         <a href="/subscriptions" class="stat-link">Xem chi tiết &rarr;</a>
     </div>
     <div class="glass-card stat-card-item">
-        <div>
+        <div class="stat-main">
             <div class="stat-label">Số lượng đơn hàng</div>
             <div class="stat-value"><?= is_array($orders ?? null) ? count($orders) : 0 ?></div>
         </div>
         <a href="/orders" class="stat-link">Xem chi tiết &rarr;</a>
     </div>
     <div class="glass-card stat-card-item">
-        <div>
+        <div class="stat-main">
             <div class="stat-label">Ticket hỗ trợ</div>
             <div class="stat-value"><?= is_array($tickets ?? null) ? count($tickets) : 0 ?></div>
         </div>
         <a href="/tickets" class="stat-link">Xem chi tiết &rarr;</a>
     </div>
     <div class="glass-card stat-card-item">
-        <div>
+        <div class="stat-main">
             <div class="stat-label">Số dư tài khoản</div>
             <div class="stat-value"><?= isset($formatMoney) ? $formatMoney($user['balance'] ?? 0) : number_format($user['balance'] ?? 0, 2) ?></div>
         </div>
