@@ -188,7 +188,7 @@ function getNoticeFallbackThumb($id) {
                 <div class="plan-item-card glass-card">
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));">
-                            <div class="plan-name" style="margin: 0; font-weight: 600;"><?= htmlspecialchars($plan['name'] ?? '') ?></div>
+                            <div class="plan-name" style="margin: 0; font-weight: 600;"><span class="plan-name-icon" aria-hidden="true">🛒</span><?= htmlspecialchars($plan['name'] ?? '') ?></div>
                             <div class="plan-price" style="margin: 0; text-align: right; white-space: nowrap;">
                                 <?= isset($formatMoney) ? $formatMoney($plan['price'] ?? 0) : number_format($plan['price'] ?? 0, 2) ?>
                                 <span style="font-size: 0.8rem; font-weight: normal;">/ <?= (int)($plan['duration_days'] ?? 30) ?> ngày</span>

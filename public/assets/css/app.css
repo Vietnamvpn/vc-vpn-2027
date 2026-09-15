@@ -1000,6 +1000,7 @@ body.overlay-open .admin-main {
 
 .plan-item-card {
   border: 1px solid var(--glass-border);
+  border-top: 3px solid var(--ios-blue);
   border-radius: var(--radius-md);
   padding: 1.5rem;
   display: flex;
@@ -1013,9 +1014,24 @@ body.overlay-open .admin-main {
 }
 
 .plan-name {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--ios-text);
+}
+
+.plan-name-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  flex: 0 0 1.8rem;
+  border-radius: 6px;
+  background: rgba(22, 119, 255, 0.12);
+  font-size: 1rem;
 }
 
 .plan-price {
