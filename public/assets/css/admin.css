@@ -503,6 +503,51 @@
     color: #fff;
 }
 
+.admin-group-header {
+  margin-bottom: 0.75rem;
+}
+
+.admin-group-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.admin-group-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.admin-group-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--ios-text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.admin-group-tab:hover {
+  color: var(--ios-blue);
+  background: rgba(0, 122, 255, 0.1);
+}
+
+.admin-group-tab.active {
+  border-color: var(--ios-blue);
+  background: var(--ios-blue);
+  color: #fff;
+}
+
 .logs-content-card {
     width: 100%;
     padding: 1.25rem;

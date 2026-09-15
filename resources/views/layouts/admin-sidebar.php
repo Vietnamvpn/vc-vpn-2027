@@ -3,6 +3,9 @@ $currentUri = $_SERVER['REQUEST_URI'] ?? '';
 $isAdminRoute = (strncmp($currentUri, '/admin', 6) === 0);
 $userRole = $_SESSION['role'] ?? 'user';
 $siteTitle = $settings['site_title'] ?? 'VC VPN 2027';
+$activeMenu = $activeMenu ?? '';
+$infrastructureMenus = ['server-groups', 'servers', 'nodes', 'plans'];
+$businessMenus = ['coupons', 'orders', 'payments', 'subscriptions', 'referrals', 'withdrawals', 'tickets'];
 
 $logoHref = '/';
 if (isset($_SESSION['user_id'])) {
@@ -24,21 +27,12 @@ if (isset($_SESSION['user_id'])) {
     <div style="padding: 0.25rem 0.5rem; font-weight: 700; color: var(--ios-text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
         Quản Trị Hệ Thống
     </div>
-    <a href="/admin" class="nav-item <?= ($activeMenu ?? '') === 'dashboard' ? 'active' : '' ?>">📈 Dashboard</a>
-    <a href="/admin/users" class="nav-item <?= ($activeMenu ?? '') === 'users' ? 'active' : '' ?>">👥 Người Dùng</a>
-    <a href="/admin/server-groups" class="nav-item <?= ($activeMenu ?? '') === 'server-groups' ? 'active' : '' ?>">📁 Nhóm Máy Chủ</a>
-    <a href="/admin/servers" class="nav-item <?= ($activeMenu ?? '') === 'servers' ? 'active' : '' ?>">🖥️ Máy Chủ</a>
-    <a href="/admin/nodes" class="nav-item <?= ($activeMenu ?? '') === 'nodes' ? 'active' : '' ?>">🌐 Node Inbound</a>
-    <a href="/admin/plans" class="nav-item <?= ($activeMenu ?? '') === 'plans' ? 'active' : '' ?>">💎 Gói Cước</a>
-    <a href="/admin/coupons" class="nav-item <?= ($activeMenu ?? '') === 'coupons' ? 'active' : '' ?>">🏷️ Mã Giảm Giá</a>
-    <a href="/admin/orders" class="nav-item <?= ($activeMenu ?? '') === 'orders' ? 'active' : '' ?>">🧾 Đơn Hàng</a>
-    <a href="/admin/payments" class="nav-item <?= ($activeMenu ?? '') === 'payments' ? 'active' : '' ?>">💵 Thanh Toán</a>
-    <a href="/admin/subscriptions" class="nav-item <?= ($activeMenu ?? '') === 'subscriptions' ? 'active' : '' ?>">🔑 Đăng Ký VPN</a>
-    <a href="/admin/referrals" class="nav-item <?= ($activeMenu ?? '') === 'referrals' ? 'active' : '' ?>">🤝 Hoa Hồng</a>
-    <a href="/admin/withdrawals" class="nav-item <?= ($activeMenu ?? '') === 'withdrawals' ? 'active' : '' ?>">🏦 Rút Tiền</a>
-    <a href="/admin/posts" class="nav-item <?= ($activeMenu ?? '') === 'posts' ? 'active' : '' ?>">📰 Bài Viết</a>
-    <a href="/admin/tickets" class="nav-item <?= ($activeMenu ?? '') === 'tickets' ? 'active' : '' ?>">🎫 Ticket Hỗ Trợ</a>
-    <a href="/admin/expenses" class="nav-item <?= ($activeMenu ?? '') === 'expenses' ? 'active' : '' ?>">💸 Chi Phí</a>
-    <a href="/admin/settings" class="nav-item <?= ($activeMenu ?? '') === 'settings' ? 'active' : '' ?>">⚙️ Cài Đặt</a>
-    <a href="/admin/logs" class="nav-item <?= ($activeMenu ?? '') === 'logs' ? 'active' : '' ?>">📝 Nhật Ký Hệ Thống</a>
+    <a href="/admin" class="nav-item <?= $activeMenu === 'dashboard' ? 'active' : '' ?>">📈 Dashboard</a>
+    <a href="/admin/users" class="nav-item <?= $activeMenu === 'users' ? 'active' : '' ?>">👥 Người Dùng</a>
+    <a href="/admin/server-groups" class="nav-item <?= in_array($activeMenu, $infrastructureMenus, true) ? 'active' : '' ?>">🖥️ Quản Lý Hạ Tầng VPN</a>
+    <a href="/admin/coupons" class="nav-item <?= in_array($activeMenu, $businessMenus, true) ? 'active' : '' ?>">🧾 Quản Lý Kinh Doanh</a>
+    <a href="/admin/posts" class="nav-item <?= $activeMenu === 'posts' ? 'active' : '' ?>">📰 Bài Viết</a>
+    <a href="/admin/expenses" class="nav-item <?= $activeMenu === 'expenses' ? 'active' : '' ?>">💸 Chi Phí</a>
+    <a href="/admin/settings" class="nav-item <?= $activeMenu === 'settings' ? 'active' : '' ?>">⚙️ Cài Đặt</a>
+    <a href="/admin/logs" class="nav-item <?= $activeMenu === 'logs' ? 'active' : '' ?>">📝 Nhật Ký Hệ Thống</a>
 </aside>
