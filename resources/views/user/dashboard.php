@@ -48,7 +48,7 @@ if (!empty($plans) && is_array($plans)) {
     }
 }
 
-// Hàm sinh ảnh đại diện SVG ngẫu nhiên an toàn (Chống giật / chống xoay vô hạn)
+// Hàm sinh ảnh đại diện SVG ngẫu nhiên chuẩn responsive (Chống méo / tràn màn hình nhỏ)
 function getNoticeFallbackThumb($id) {
     $colors = [
         ['#007aff', '#5856d6'],
@@ -58,20 +58,20 @@ function getNoticeFallbackThumb($id) {
         ['#5856d6', '#007aff']
     ];
     $pair = $colors[(int)$id % count($colors)];
-    $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="125" viewBox="0 0 200 125">'
+    $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250" viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice">'
          . '<defs><linearGradient id="g'.$id.'" x1="0%" y1="0%" x2="100%" y2="100%">'
          . '<stop offset="0%" stop-color="'.$pair[0].'"/>'
          . '<stop offset="100%" stop-color="'.$pair[1].'"/>'
          . '</linearGradient></defs>'
          . '<rect width="100%" height="100%" fill="url(#g'.$id.')"/>'
-         . '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="20" font-weight="bold">THÔNG BÁO</text>'
+         . '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="28" font-weight="bold">THÔNG BÁO</text>'
          . '</svg>';
     return 'data:image/svg+xml;base64,' . base64_encode($svg);
 }
 ?>
 
 <style>
-/* CSS Cấu hình Grid 4 thẻ thống kê hiển thị 2 cột trên màn hình nhỏ & nút xem chi tiết góc phải */
+/* 4 Thẻ thống kê: Nội dung luôn ở bên trái, Xem chi tiết luôn ở góc dưới bên phải */
 .dashboard-grid-4 {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -80,9 +80,10 @@ function getNoticeFallbackThumb($id) {
 }
 
 .stat-card-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: flex-end !important;
     padding: 1.25rem;
 }
 
@@ -91,6 +92,17 @@ function getNoticeFallbackThumb($id) {
     color: var(--ios-primary, #007aff);
     text-decoration: none;
     white-space: nowrap;
+    margin-left: 0.5rem;
+}
+
+/* Định dạng hiển thị ảnh Thumbnail slider chuẩn trên máy tính & điện thoại */
+.tutorial-thumb {
+    width: 180px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: var(--radius-sm, 8px);
+    flex-shrink: 0;
+    display: block;
 }
 
 @media (max-width: 768px) {
@@ -98,16 +110,24 @@ function getNoticeFallbackThumb($id) {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 0.75rem !important;
     }
+    
     .stat-card-item {
-        flex-direction: column !important;
-        align-items: flex-start !important;
         padding: 0.85rem 1rem !important;
-        position: relative;
     }
+    
     .stat-card-item .stat-link {
-        align-self: flex-end !important;
         font-size: 0.75rem !important;
-        margin-top: 0.25rem;
+    }
+
+    /* Sửa lỗi hiển thị Thumbnail SVG trên màn hình nhỏ */
+    .tutorial-card {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+    .tutorial-thumb {
+        width: 100% !important;
+        height: 140px !important;
+        max-height: 140px !important;
     }
 }
 </style>
@@ -118,7 +138,7 @@ function getNoticeFallbackThumb($id) {
     <p>Quản lý dịch vụ VPN và theo dõi tài khoản của bạn</p>
 </div>
 
-<!-- Phần 2: Slide bài viết thông báo (Tự động chuyển bài lặp đi lặp lại - Tiêu đề nằm độc lập ngoài thẻ) -->
+<!-- Phần 2: Slide bài viết thông báo (Tiêu đề nằm độc lập ngoài thẻ) -->
 <?php if (!empty($noticePosts)): ?>
 <div style="margin-top: 1.5rem;">
     <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0 0 0.8rem 0;">📢 Thông Báo Hệ Thống</h3>
@@ -139,7 +159,7 @@ function getNoticeFallbackThumb($id) {
                         }
                     }
                     
-                    // Nếu không tìm thấy ảnh tải lên -> sinh ảnh SVG ngẫu nhiên lập tức
+                    // Nếu không có ảnh tải lên -> sử dụng ảnh SVG ngẫu nhiên
                     if (empty($thumbUrl)) {
                         $thumbUrl = getNoticeFallbackThumb($post['id'] ?? $index);
                     }
@@ -173,7 +193,7 @@ function getNoticeFallbackThumb($id) {
 </div>
 <?php endif; ?>
 
-<!-- Phần 3: 4 thẻ thống kê số dư, đơn hàng, ticket, gói chạy -->
+<!-- Phần 3: 4 thẻ thống kê (Nội dung bên trái, Xem chi tiết góc phải) -->
 <div class="dashboard-grid-4">
     <div class="glass-card stat-card-item">
         <div>
