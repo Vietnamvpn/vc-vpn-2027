@@ -218,37 +218,41 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
 </div>
 
 <script>
-// Xử lý chuyển Slide bài hướng dẫn và cập nhật Dot sáng
+// Xử lý chuyển Slide bài hướng dẫn an toàn
 const slider = document.getElementById('tutorialSlider');
 const dots = document.querySelectorAll('.tutorial-dot');
 
 if (slider && dots.length > 0) {
     slider.addEventListener('scroll', () => {
         const slideWidth = slider.clientWidth;
-        const activeIndex = Math.round(slider.scrollLeft / slideWidth);
-        dots.forEach((dot, idx) => {
-            if (idx === activeIndex) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        });
+        if (slideWidth > 0) {
+            const activeIndex = Math.round(slider.scrollLeft / slideWidth);
+            dots.forEach((dot, idx) => {
+                if (idx === activeIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
     });
 }
 
 function goToSlide(index) {
     if (!slider) return;
     const slideWidth = slider.clientWidth;
-    slider.scrollTo({
-        left: slideWidth * index,
-        behavior: 'smooth'
-    });
+    if (slideWidth > 0) {
+        slider.scrollTo({
+            left: slideWidth * index,
+            behavior: 'smooth'
+        });
+    }
 }
 
 // Xử lý Chuyển Tab nhóm máy chủ
 function switchGroupTab(groupId, btnElement) {
     document.querySelectorAll('.group-tab-btn').forEach(btn => btn.classList.remove('active'));
-    btnElement.classList.add('active');
+    if (btnElement) btnElement.classList.add('active');
 
     const planCards = document.querySelectorAll('.plan-item-card');
     planCards.forEach(card => {

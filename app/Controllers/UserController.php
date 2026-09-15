@@ -71,10 +71,8 @@ class UserController extends BaseController
 
         if (class_exists('App\Models\ServerGroup')) {
             $groupModel = new ServerGroup();
-            if (method_exists($groupModel, 'all')) {
-                $serverGroups = $groupModel->all();
-            } elseif (method_exists($groupModel, 'getAllActive')) {
-                $serverGroups = $groupModel->getAllActive();
+            if (method_exists($groupModel, 'getAll')) {
+                $serverGroups = $groupModel->getAll();
             }
         }
 
