@@ -58,10 +58,17 @@
 .home-faq-item summary::after { content: '+'; color: var(--ios-blue); font-size: 1.35rem; font-weight: 400; }
 .home-faq-item[open] summary::after { content: '-'; }
 .home-faq-item p { padding: 0 1.15rem 1rem; margin: 0; color: var(--ios-text-secondary); line-height: 1.65; }
+@keyframes assembleIn { 0% { opacity: 0; transform: translateY(35px) scale(.93); filter: blur(6px); } 100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
+.faq-group-header { display: flex; align-items: center; gap: .6rem; margin: 0 0 1.25rem; padding-bottom: .75rem; border-bottom: 1px solid var(--glass-border); color: var(--ios-text); font-size: 1.35rem; font-weight: 700; word-break: break-word; }
+.faq-card { display: flex; align-items: stretch; position: relative; box-sizing: border-box; overflow: hidden; padding: 0; border: 1px solid var(--glass-border); opacity: 0; word-break: break-word; animation: assembleIn .6s cubic-bezier(.16, 1, .3, 1) forwards; transition: transform .35s cubic-bezier(.16, 1, .3, 1), box-shadow .35s ease, border-color .35s ease; }
+.faq-card-thumbnail { display: block; flex-shrink: 0; width: 160px; height: auto; border-right: 1px solid var(--glass-border); object-fit: cover; }
+.faq-card-body { display: flex; flex: 1; flex-direction: column; padding: 1.5rem; }
+.faq-card:hover { transform: translateY(-6px) scale(1.01); border-color: var(--ios-blue); box-shadow: 0 12px 30px rgba(0, 122, 255, .25), 0 0 20px rgba(0, 122, 255, .2); }
 .home-reveal { opacity: 0; transform: translateY(52px); transition: opacity .48s ease-out, transform .68s cubic-bezier(.34, 1.56, .64, 1); }
 .home-reveal.is-visible { opacity: 1; transform: translateY(0); }
 .home-reveal:nth-child(2) { transition-delay: .09s; } .home-reveal:nth-child(3) { transition-delay: .18s; } .home-reveal:nth-child(4) { transition-delay: .27s; }
 @media (max-width: 800px) { .home-hero-grid { grid-template-columns: 1fr; } .home-stats, .home-features { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px) { .faq-group-header { margin-bottom: 1rem; font-size: 1.15rem; } .faq-card { flex-direction: column; } .faq-card-thumbnail { width: 100%; height: 160px; border-right: 0; border-bottom: 1px solid var(--glass-border); } .faq-card-body { padding: 1.25rem; } }
 @media (max-width: 520px) { .home-hero { padding: 1.5rem; } .home-stats, .home-features { grid-template-columns: 1fr; } .home-actions .home-button { width: 100%; } .home-pricing { padding: 1rem; } }
 @media (prefers-reduced-motion: reduce) { .home-reveal { opacity: 1; transform: none; filter: none; transition: none; } }
 
@@ -87,7 +94,7 @@ body.home-festival .home-pricing .home-badge { color: #9d2b3c; border-color: rgb
 body.home-festival .home-tabs { background: rgba(167, 47, 64, .08); } body.home-festival .home-tab[aria-selected="true"] { background: #a72f40; }
 body.home-festival .home-plan { --home-muted: rgba(255, 236, 198, .81); border-color: rgba(255, 221, 145, .24); background: linear-gradient(145deg, #6a2134, #8b3541); box-shadow: 0 12px 22px rgba(97, 30, 41, .12); }
 body.home-festival .home-plan-list li::before { color: #ffd778; }
-body.home-festival .faq-group-section { background: rgba(255, 250, 240, .55); border-color: rgba(167, 47, 64, .16); } body.home-festival .faq-card:hover { border-color: #a72f40; box-shadow: 0 12px 30px rgba(167, 47, 64, .17); }
+body.home-festival .faq-card:hover { border-color: #a72f40; box-shadow: 0 12px 30px rgba(167, 47, 64, .17); }
 body.home-festival .related-posts { border-color: rgba(167, 47, 64, .18); } body.home-festival .related-posts a { color: #a72f40; border-color: rgba(167, 47, 64, .16); }
 body.home-festival .vc-footer { color: #e9f6ff; border-top-color: rgba(178, 222, 255, .2); background: #082553 !important; }
 body.home-festival .vc-footer-title, body.home-festival .vc-footer-col h4 { color: #ffe5a4; } body.home-festival .vc-footer-copyright-text { color: rgba(255, 238, 198, .68); }
@@ -107,6 +114,6 @@ body.vpn-theme.home-festival .home-pricing .home-badge { color: #1677ff; border-
 body.vpn-theme.home-festival .home-tabs { background: rgba(22, 119, 255, .07); } body.vpn-theme.home-festival .home-tab[aria-selected="true"] { background: #1677ff; }
 body.vpn-theme.home-festival .home-plan { --home-muted: rgba(220, 244, 255, .78); border-color: rgba(135, 220, 241, .2); background: linear-gradient(145deg, #0c3768, #125a88); box-shadow: 0 12px 22px rgba(15, 66, 124, .14); }
 body.vpn-theme.home-festival .home-plan-list li::before { color: #63e0a1; }
-body.vpn-theme.home-festival .faq-group-section { background: rgba(255, 255, 255, .55); border-color: rgba(43, 100, 163, .14); } body.vpn-theme.home-festival .faq-card:hover { border-color: #1677ff; box-shadow: 0 12px 30px rgba(22, 119, 255, .14); }
+body.vpn-theme.home-festival .faq-card:hover { border-color: #1677ff; box-shadow: 0 12px 30px rgba(22, 119, 255, .14); }
 body.vpn-theme.home-festival .related-posts { border-color: rgba(43, 100, 163, .16); } body.vpn-theme.home-festival .related-posts a { color: #1677ff; border-color: rgba(43, 100, 163, .14); }
 body.vpn-theme.home-festival .vc-footer { color: #38536f; border-top-color: rgba(43, 100, 163, .16); background: #eaf4fb !important; } body.vpn-theme.home-festival .vc-footer-title, body.vpn-theme.home-festival .vc-footer-col h4 { color: #132238; } body.vpn-theme.home-festival .vc-footer-copyright-text { color: #617087; }
