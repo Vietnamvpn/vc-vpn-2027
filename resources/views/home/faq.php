@@ -68,6 +68,8 @@ ob_start();
 }
 
 .faq-card {
+    display: flex;
+    flex-direction: column;
     padding: 0;
     opacity: 0;
     animation: assembleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -85,6 +87,7 @@ ob_start();
     display: block;
     width: 100%;
     height: 190px;
+    flex-shrink: 0;
     object-fit: cover;
     border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));
 }
@@ -157,8 +160,7 @@ ob_start();
                         <div class="glass-card faq-card" style="animation-delay: <?= $animationDelay ?>s;">
                             <img src="<?= htmlspecialchars($thumbnailUrl) ?>" alt="<?= htmlspecialchars($post['title'] ?? '') ?>" class="faq-card-thumbnail">
                             <div class="faq-card-body">
-                                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
-                                    <div style="flex: 1; min-width: 250px;">
+                                <div>
                                     <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--ios-blue);">
                                         <a href="/post-detail?slug=<?= urlencode($post['slug']) ?>" style="color: inherit; text-decoration: none;">
                                             <?= ($itemIndex + 1) ?>. <?= htmlspecialchars($post['title']) ?>
@@ -167,14 +169,15 @@ ob_start();
                                     <p style="color: var(--ios-text-secondary); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5; display: -webkit-box; line-clamp: 2; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                         <?= htmlspecialchars(strip_tags($summary)) ?>
                                     </p>
-                                    </div>
-                                    <a href="/post-detail?slug=<?= urlencode($post['slug']) ?>" class="glass-btn" style="white-space: nowrap; font-size: 0.85rem; padding: 0.5rem 1rem; text-decoration: none; box-sizing: border-box;">
-                                        Xem Chi Tiết ➔
-                                    </a>
                                 </div>
                                 <div style="display: flex; gap: 1rem; font-size: 0.78rem; color: var(--ios-text-secondary); border-top: 1px solid var(--glass-border); padding-top: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap;">
                                     <span>📅 Cập nhật: <?= date('d/m/Y', strtotime($post['created_at'])) ?></span>
                                     <span>🏷️ Chuyên mục: <?= htmlspecialchars($typeGroup) ?></span>
+                                </div>
+                                <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                                    <a href="/post-detail?slug=<?= urlencode($post['slug']) ?>" class="glass-btn" style="font-size: 0.85rem; padding: 0.5rem 1rem; text-decoration: none; box-sizing: border-box;">
+                                        Xem Chi Tiết
+                                    </a>
                                 </div>
                             </div>
                         </div>
