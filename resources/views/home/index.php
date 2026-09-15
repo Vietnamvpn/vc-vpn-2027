@@ -8,8 +8,13 @@ ob_start();
 <?php
 $groups = [];
 foreach (($plans ?? []) as $plan) {
-    $group = $plan['group_name'] ?? $plan['server_group_name'] ?? 'Gói tiêu chuẩn';
-    $groups[$group][] = $plan;
+    $planGroups = $plan['group_names'] ?? [];
+    if (!$planGroups) {
+        $planGroups = ['Gói tiêu chuẩn'];
+    }
+    foreach ($planGroups as $group) {
+        $groups[$group][] = $plan;
+    }
 }
 $loggedIn = !empty($_SESSION['user_id']);
 ?>
@@ -23,10 +28,10 @@ $loggedIn = !empty($_SESSION['user_id']);
         </div><aside class="home-status home-glass"><div class="home-status-title">Trạng thái hạ tầng</div><div class="home-status-item"><span><span class="home-dot"></span>Hệ thống</span><strong>Ổn định</strong></div><div class="home-status-item"><span>Hỗ trợ</span><strong>24/7</strong></div><div class="home-status-item"><span>Nền tảng</span><strong>Đa thiết bị</strong></div></aside></div>
     </section>
     <div class="home-features">
-        <article class="home-feature home-glass home-reveal"><div class="home-feature-icon">⚡</div><h3>Tốc độ tối ưu</h3><p>Phù hợp cho công việc, xem nội dung chất lượng cao và kết nối hằng ngày.</p></article>
-        <article class="home-feature home-glass home-reveal"><div class="home-feature-icon">◈</div><h3>Riêng tư mặc định</h3><p>Giao thức hiện đại bảo vệ phiên truy cập trên mạng công cộng.</p></article>
-        <article class="home-feature home-glass home-reveal"><div class="home-feature-icon">⌘</div><h3>Đa nền tảng</h3><p>Sử dụng trên iOS, Android, Windows, macOS và Linux.</p></article>
-        <article class="home-feature home-glass home-reveal"><div class="home-feature-icon">✦</div><h3>Dễ bắt đầu</h3><p>Chọn gói, nhận cấu hình và kết nối trong vài bước ngắn gọn.</p></article>
+        <article class="home-feature home-reveal"><div class="home-feature-icon">⚡</div><h3>Tốc độ tối ưu</h3><p>Phù hợp cho công việc, xem nội dung chất lượng cao và kết nối hằng ngày.</p></article>
+        <article class="home-feature home-reveal"><div class="home-feature-icon">◈</div><h3>Riêng tư mặc định</h3><p>Giao thức hiện đại bảo vệ phiên truy cập trên mạng công cộng.</p></article>
+        <article class="home-feature home-reveal"><div class="home-feature-icon">⌘</div><h3>Đa nền tảng</h3><p>Sử dụng trên iOS, Android, Windows, macOS và Linux.</p></article>
+        <article class="home-feature home-reveal"><div class="home-feature-icon">✦</div><h3>Dễ bắt đầu</h3><p>Chọn gói, nhận cấu hình và kết nối trong vài bước ngắn gọn.</p></article>
     </div>
     <section id="bang-gia" class="home-pricing home-glass home-reveal"><div class="home-pricing-header"><div><span class="home-badge">BẢNG GIÁ MINH BẠCH</span><h2>Chọn gói phù hợp với bạn</h2><p>Dữ liệu giá được cập nhật trực tiếp từ hệ thống.</p></div>
         <?php if ($groups): ?><div class="home-tabs" role="tablist"><?php $i = 0; foreach ($groups as $name => $items): ?><button class="home-tab" type="button" role="tab" aria-controls="home-panel-<?= $i ?>" aria-selected="<?= $i === 0 ? 'true' : 'false' ?>"><?= htmlspecialchars($name) ?></button><?php $i++; endforeach; ?></div><?php endif; ?></div>
