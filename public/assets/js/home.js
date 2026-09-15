@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+const initializeHomePage = () => {
     const revealItems = document.querySelectorAll('.home-reveal');
 
     if ('IntersectionObserver' in window) {
@@ -26,6 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
         panels.forEach((panel) => {
             panel.hidden = panel.id !== tab.getAttribute('aria-controls');
         });
+        const activePanel = document.getElementById(tab.getAttribute('aria-controls'));
+        if (activePanel) {
+            activePanel.querySelectorAll('.home-reveal').forEach((item) => {
+                item.classList.add('is-visible');
+            });
+        }
     };
 
     tabs.forEach((tab, index) => {
@@ -42,4 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
             activateTab(nextTab);
         });
     });
-});
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeHomePage, { once: true });
+} else {
+    initializeHomePage();
+}
