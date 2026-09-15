@@ -10,4 +10,4 @@
         <link rel="stylesheet" href="/assets/css/<?= $extraCss ?>.css?v=<?= time() ?>">
     <?php endif; ?>
 </head>
-<body>
+<body class="<?= isset($_SESSION['user_id']) && ($_SESSION['role'] ?? 'user') !== 'admin' ? 'user-festival' : '' ?>">

@@ -71,8 +71,9 @@ function getNoticeFallbackThumb($id) {
 ?>
 
 <!-- Phần 1: Tiêu đề chào mừng căn giữa -->
-<div class="dashboard-header-welcome">
-    <h1>Chào mừng trở lại, <?= htmlspecialchars($user['username'] ?? 'Thành viên') ?>! 👋</h1>
+<div class="dashboard-header-welcome moonlit-welcome">
+    <span class="festival-kicker">DEM HOI TRANG RAM</span>
+    <h1>Chào mừng trở lại, <?= htmlspecialchars($user['username'] ?? 'Thành viên') ?>!</h1>
     <p>Quản lý dịch vụ VPN và theo dõi tài khoản của bạn</p>
 </div>
 
@@ -139,28 +140,32 @@ function getNoticeFallbackThumb($id) {
 <div style="margin-top: 1.5rem;">
     <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0 0 0.8rem 0;">📊 Thống Kê Tài Khoản</h3>
     <div class="dashboard-grid-4">
-        <div class="glass-card stat-card-item">
+        <div class="glass-card stat-card-item festival-stat-card">
+            <span class="festival-stat-icon festival-stat-moon" aria-hidden="true"></span>
             <div>
                 <div class="stat-label">Gói đang chạy</div>
                 <div class="stat-value" style="color: var(--ios-success);"><?= $activeSubCount ?></div>
             </div>
             <a href="/subscriptions" class="stat-link">Xem chi tiết &rarr;</a>
         </div>
-        <div class="glass-card stat-card-item">
+        <div class="glass-card stat-card-item festival-stat-card">
+            <span class="festival-stat-icon festival-stat-lantern" aria-hidden="true"></span>
             <div>
                 <div class="stat-label">Số lượng đơn hàng</div>
                 <div class="stat-value"><?= is_array($orders ?? null) ? count($orders) : 0 ?></div>
             </div>
             <a href="/orders" class="stat-link">Xem chi tiết &rarr;</a>
         </div>
-        <div class="glass-card stat-card-item">
+        <div class="glass-card stat-card-item festival-stat-card">
+            <span class="festival-stat-icon festival-stat-star" aria-hidden="true"></span>
             <div>
                 <div class="stat-label">Ticket hỗ trợ</div>
                 <div class="stat-value"><?= is_array($tickets ?? null) ? count($tickets) : 0 ?></div>
             </div>
             <a href="/tickets" class="stat-link">Xem chi tiết &rarr;</a>
         </div>
-        <div class="glass-card stat-card-item">
+        <div class="glass-card stat-card-item festival-stat-card">
+            <span class="festival-stat-icon festival-stat-coin" aria-hidden="true"></span>
             <div>
                 <div class="stat-label">Số dư tài khoản</div>
                 <div class="stat-value"><?= isset($formatMoney) ? $formatMoney($user['balance'] ?? 0) : number_format($user['balance'] ?? 0, 2) ?></div>
