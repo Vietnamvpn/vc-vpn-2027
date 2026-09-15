@@ -942,28 +942,20 @@ body.overlay-open .admin-main {
 
 @media (max-width: 768px) {
   .dashboard-grid-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    gap: 0.4rem !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
   }
 
   .stat-card-item {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0.4rem;
-    min-width: 0;
-    padding: 0.75rem 0.55rem !important;
+    padding: 0.9rem 1rem !important;
   }
 
   .stat-label {
-    font-size: 0.68rem !important;
+    font-size: 0.78rem !important;
   }
 
   .stat-value {
-    font-size: 0.95rem !important;
-  }
-
-  .stat-link {
-    display: none;
+    font-size: 1.15rem !important;
   }
 
   .stat-link {
