@@ -216,4 +216,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         startTimer();
     }
+
+    // 8. Chọn nhanh số tiền nạp tại trang Ví tiền
+    const depositAmountInput = document.getElementById('deposit-amount');
+    const quickAmountButtons = document.querySelectorAll('.wallet-quick-amount');
+
+    if (depositAmountInput && quickAmountButtons.length > 0) {
+        quickAmountButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                depositAmountInput.value = button.dataset.amount;
+                quickAmountButtons.forEach(function (item) {
+                    item.classList.toggle('active', item === button);
+                });
+            });
+        });
+    }
 });

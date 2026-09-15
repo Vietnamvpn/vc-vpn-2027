@@ -1116,3 +1116,29 @@ body.vpn-theme .festival-stat-moon { background: #7edcf1; box-shadow: 0 0 0 5px 
 body.vpn-theme .festival-stat-lantern { border-color: #1677ff; background: #7edcf1; box-shadow: inset 0 0 0 4px #dff9ff; } body.vpn-theme .festival-stat-lantern::before, body.vpn-theme .festival-stat-lantern::after { background: #1677ff; }
 body.vpn-theme .festival-stat-star::before { color: #22a66f; } body.vpn-theme .festival-stat-coin, body.vpn-theme .festival-stat-coin::after { border-color: #e59a21; }
 body.vpn-theme .plan-item-card:hover, body.vpn-theme .festival-stat-card:hover { border-color: rgba(22, 119, 255, 0.38); box-shadow: 0 15px 26px rgba(22, 119, 255, 0.12); }
+
+/* User wallet */
+.wallet-page-header { margin-bottom: 1.25rem; }
+.wallet-page-header h1 { margin: 0; color: var(--ios-text); font-size: 1.5rem; font-weight: 700; }
+.wallet-page-header p { margin: .3rem 0 0; color: var(--ios-text-secondary); font-size: .85rem; }
+.wallet-overview { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(240px, .6fr); gap: 1.2rem; margin-bottom: 1.2rem; }
+.wallet-balance-card { padding: 1.5rem; border-top: 3px solid var(--ios-blue); }
+.wallet-balance-label { color: var(--ios-text-secondary); font-size: .85rem; font-weight: 600; }
+.wallet-balance-value { margin-top: .35rem; color: var(--ios-text); font-size: 2rem; font-weight: 800; line-height: 1.2; overflow-wrap: anywhere; }
+.wallet-balance-note { margin: .6rem 0 0; color: var(--ios-text-secondary); font-size: .8rem; }
+.wallet-history-card { display: flex; flex-direction: column; justify-content: space-between; gap: 1rem; padding: 1.5rem; }
+.wallet-history-card h2 { margin: 0; color: var(--ios-text); font-size: 1rem; }
+.wallet-history-card p { margin: .35rem 0 0; color: var(--ios-text-secondary); font-size: .82rem; line-height: 1.5; }
+.wallet-deposit-card { width: 100%; box-sizing: border-box; padding: 1.5rem; }
+.wallet-deposit-card h2 { margin: 0; color: var(--ios-text); font-size: 1.15rem; }
+.wallet-deposit-card > p { margin: .35rem 0 1.2rem; color: var(--ios-text-secondary); font-size: .84rem; }
+.wallet-quick-amounts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .65rem; margin-bottom: 1.2rem; }
+.wallet-quick-amount { min-height: 2.5rem; border: 1px solid var(--glass-border); border-radius: var(--radius-md); background: rgba(22, 119, 255, .06); color: var(--ios-blue); cursor: pointer; font-size: .85rem; font-weight: 700; }
+.wallet-quick-amount:hover, .wallet-quick-amount.active { border-color: var(--ios-blue); background: rgba(22, 119, 255, .14); }
+.wallet-form-row { display: flex; gap: .8rem; align-items: end; }
+.wallet-form-group { flex: 1; }
+.wallet-form-group label { display: block; margin-bottom: .45rem; color: var(--ios-text); font-size: .85rem; font-weight: 600; }
+.wallet-form-group small { display: block; margin-top: .4rem; color: var(--ios-text-secondary); font-size: .75rem; }
+.wallet-alert { margin-bottom: 1.2rem; padding: .85rem 1rem; border-radius: var(--radius-md); font-size: .88rem; font-weight: 600; }
+.wallet-alert.error { border: 1px solid rgba(255, 59, 48, .28); background: rgba(255, 59, 48, .1); color: var(--ios-danger); }
+@media (max-width: 768px) { .wallet-overview { grid-template-columns: 1fr; } .wallet-quick-amounts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .wallet-form-row { flex-direction: column; align-items: stretch; } .wallet-form-row .glass-btn { width: 100%; } }
