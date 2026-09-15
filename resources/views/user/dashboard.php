@@ -146,7 +146,7 @@ function getNoticeFallbackThumb($id) {
                 <div class="stat-label">Gói đang chạy</div>
                 <div class="stat-value" style="color: var(--ios-success);"><?= $activeSubCount ?></div>
             </div>
-            <a href="/subscriptions" class="stat-link">Xem chi tiết &rarr;</a>
+            <a href="/subscriptions" class="stat-link">Xem chi tiết</a>
         </div>
         <div class="glass-card stat-card-item festival-stat-card">
             <span class="festival-stat-icon festival-stat-lantern" aria-hidden="true"></span>
@@ -154,7 +154,7 @@ function getNoticeFallbackThumb($id) {
                 <div class="stat-label">Số lượng đơn hàng</div>
                 <div class="stat-value"><?= is_array($orders ?? null) ? count($orders) : 0 ?></div>
             </div>
-            <a href="/orders" class="stat-link">Xem chi tiết &rarr;</a>
+            <a href="/orders" class="stat-link">Xem chi tiết</a>
         </div>
         <div class="glass-card stat-card-item festival-stat-card">
             <span class="festival-stat-icon festival-stat-star" aria-hidden="true"></span>
@@ -162,7 +162,7 @@ function getNoticeFallbackThumb($id) {
                 <div class="stat-label">Ticket hỗ trợ</div>
                 <div class="stat-value"><?= is_array($tickets ?? null) ? count($tickets) : 0 ?></div>
             </div>
-            <a href="/tickets" class="stat-link">Xem chi tiết &rarr;</a>
+            <a href="/tickets" class="stat-link">Xem chi tiết</a>
         </div>
         <div class="glass-card stat-card-item festival-stat-card">
             <span class="festival-stat-icon festival-stat-coin" aria-hidden="true"></span>
@@ -170,7 +170,7 @@ function getNoticeFallbackThumb($id) {
                 <div class="stat-label">Số dư tài khoản</div>
                 <div class="stat-value"><?= isset($formatMoney) ? $formatMoney($user['balance'] ?? 0) : number_format($user['balance'] ?? 0, 2) ?></div>
             </div>
-            <a href="/wallet" class="stat-link">Xem chi tiết &rarr;</a>
+            <a href="/wallet" class="stat-link">Xem chi tiết</a>
         </div>
     </div>
 </div>

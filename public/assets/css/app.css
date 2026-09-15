@@ -936,6 +936,7 @@ body.overlay-open .admin-main {
   text-decoration: none;
   white-space: nowrap;
   flex-shrink: 0;
+  align-self: flex-end;
   margin-left: 0.5rem;
   font-weight: 500;
 }
