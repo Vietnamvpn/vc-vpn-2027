@@ -10,7 +10,7 @@ ob_start();
         Trải nghiệm kết nối VPN thế hệ mới với hạ tầng tối ưu, bảo vệ quyền riêng tư tuyệt đối trên mọi thiết bị.
     </p>
     <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-        <a href="/home/plans" class="glass-btn" style="padding: 0.8rem 2rem; font-size: 1rem;">Xem Gói Dịch Vụ</a>
+        <a href="/plans" class="glass-btn" style="padding: 0.8rem 2rem; font-size: 1rem;">Xem Gói Dịch Vụ</a>
         <?php if (!empty($_SESSION['user_id'])): ?>
             <a href="/user/dashboard" class="glass-btn" style="padding: 0.8rem 2rem; font-size: 1rem; background: rgba(255, 255, 255, 0.2); color: var(--ios-text); border: 1px solid var(--glass-border);">Bảng Điều Khiển</a>
         <?php else: ?>
