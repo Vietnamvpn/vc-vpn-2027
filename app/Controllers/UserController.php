@@ -49,7 +49,14 @@ class UserController extends BaseController
 
         if (class_exists('App\Models\SupportTicket')) {
             $ticketModel = new SupportTicket();
-            $tickets = $ticketModel->getByUserId($userId);
+            if (method_exists($ticketModel, 'getByUserId')) {
+                $tickets = $ticketModel->getByUserId($userId);
+            } elseif (method_exists($ticketModel, 'allWithDetails')) {
+                $allTickets = $ticketModel->allWithDetails();
+                $tickets = array_values(array_filter($allTickets, static function ($t) use ($userId) {
+                    return (int)($t['user_id'] ?? 0) === (int)$userId;
+                }));
+            }
         }
 
         if (class_exists('App\Models\Post')) {
@@ -234,7 +241,14 @@ class UserController extends BaseController
 
         if (class_exists('App\Models\SupportTicket')) {
             $ticketModel = new SupportTicket();
-            $tickets = $ticketModel->getByUserId($userId);
+            if (method_exists($ticketModel, 'getByUserId')) {
+                $tickets = $ticketModel->getByUserId($userId);
+            } elseif (method_exists($ticketModel, 'allWithDetails')) {
+                $allTickets = $ticketModel->allWithDetails();
+                $tickets = array_values(array_filter($allTickets, static function ($t) use ($userId) {
+                    return (int)($t['user_id'] ?? 0) === (int)$userId;
+                }));
+            }
         }
 
         $this->render('user.tickets.index', [
