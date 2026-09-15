@@ -22,7 +22,7 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
     <p>Quản lý dịch vụ VPN và theo dõi tài khoản của bạn</p>
 </div>
 
-<!-- Phần 2: Slide bài viết / hướng dẫn -->
+<!-- Phần 2: Slide bài viết / hướng dẫn (Lấy đúng ảnh Thumbnail từ nội dung bài viết) -->
 <?php if (!empty($posts) && is_array($posts)): ?>
 <div class="glass-card tutorial-slider-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -31,7 +31,14 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
     <div class="tutorial-slider-wrapper">
         <div class="tutorial-slider" id="tutorialSlider">
             <?php foreach ($posts as $index => $post): 
-                $thumbUrl = !empty($post['thumbnail']) ? $post['thumbnail'] : '/assets/images/logo.png';
+                // Tự động tìm và tách đường dẫn ảnh (src) đầu tiên trong nội dung bài viết
+                $thumbUrl = '/assets/images/logo.png';
+                if (!empty($post['content'])) {
+                    preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $post['content'], $matches);
+                    if (!empty($matches[1])) {
+                        $thumbUrl = $matches[1];
+                    }
+                }
             ?>
                 <div class="tutorial-card" data-index="<?= $index ?>">
                     <img src="<?= htmlspecialchars($thumbUrl) ?>" alt="Thumbnail" class="tutorial-thumb" onerror="this.src='/assets/images/logo.png'">
@@ -53,6 +60,7 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
         </div>
     </div>
     
+    <!-- Số lượng chấm dưới chân hiển thị theo số lượng bài viết có trong CSDL -->
     <div class="tutorial-dots" id="tutorialDots">
         <?php foreach ($posts as $index => $post): ?>
             <span class="tutorial-dot <?= $index === 0 ? 'active' : '' ?>" onclick="goToSlide(<?= $index ?>)"></span>

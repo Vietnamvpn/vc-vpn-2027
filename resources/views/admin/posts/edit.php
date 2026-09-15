@@ -2,8 +2,22 @@
 $pageTitle = "Chỉnh Sửa Bài Viết - Quản Trị Hệ Thống";
 $activeMenu = "posts";
 
+// Tự động tách lấy Thumbnail URL đầu tiên trong nội dung bài viết (nếu có)
+$existingThumb = '';
+if (!empty($post['content'])) {
+    preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $post['content'], $matches);
+    if (!empty($matches[1])) {
+        $existingThumb = $matches[1];
+    }
+}
+
 ob_start();
 ?>
+
+<!-- Thư viện Summernote Lite & jQuery miễn phí hỗ trợ chèn Video YouTube -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
 <div style="margin-bottom: 1.25rem;">
     <h1 style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px;">Chỉnh Sửa Bài Viết #<?= $post['id'] ?></h1>
@@ -26,10 +40,15 @@ ob_start();
 <?php endif; ?>
 
 <div class="glass-card" style="padding: 1.75rem; width: 100%;">
-    <form method="POST" action="/admin/posts/edit?id=<?= $post['id'] ?>" style="display: flex; flex-direction: column; gap: 1.25rem;">
+    <form id="postForm" method="POST" action="/admin/posts/edit?id=<?= $post['id'] ?>" style="display: flex; flex-direction: column; gap: 1.25rem;">
         <div>
             <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tiêu Đề Bài Viết (*)</label>
             <input type="text" name="title" class="glass-input" value="<?= htmlspecialchars($post['title'] ?? '') ?>" required style="width: 100%;">
+        </div>
+
+        <div>
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Ảnh Đại Diện (Thumbnail URL)</label>
+            <input type="url" id="thumbnail_url" class="glass-input" value="<?= htmlspecialchars($existingThumb) ?>" placeholder="https://example.com/image.jpg (Đường dẫn hình ảnh đại diện)" style="width: 100%;">
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
@@ -59,7 +78,7 @@ ob_start();
 
         <div>
             <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Nội Dung Bài Viết (*)</label>
-            <textarea name="content" rows="12" class="glass-input" required style="width: 100%; resize: vertical; line-height: 1.5;"><?= htmlspecialchars($post['content'] ?? '') ?></textarea>
+            <textarea id="post_content" name="content" rows="12" class="glass-input" required style="width: 100%; resize: vertical; line-height: 1.5;"><?= htmlspecialchars($post['content'] ?? '') ?></textarea>
         </div>
 
         <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
@@ -67,6 +86,38 @@ ob_start();
         </div>
     </form>
 </div>
+
+<script>
+$(document).ready(function() {
+    $('#post_content').summernote({
+        placeholder: 'Soạn thảo nội dung bài viết, chèn hình ảnh hoặc dán link YouTube...',
+        tabsize: 2,
+        height: 380,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+    });
+
+    $('#postForm').on('submit', function() {
+        const thumbUrl = $('#thumbnail_url').val().trim();
+        let content = $('#post_content').summernote('code');
+        
+        if (thumbUrl !== '') {
+            // Xóa thẻ ảnh cũ nếu người dùng đổi URL ảnh đại diện mới
+            content = content.replace(/<p><img[^>]+class=["\']post-thumb-img["\'][^>]*><\/p>/i, '');
+            const imgTag = '<p><img src="' + thumbUrl + '" alt="Thumbnail" class="post-thumb-img"></p>';
+            content = imgTag + content;
+            $('#post_content').val(content);
+        }
+    });
+});
+</script>
 
 <?php
 $content = ob_get_clean();
