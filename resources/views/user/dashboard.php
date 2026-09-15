@@ -118,57 +118,57 @@ function getNoticeFallbackThumb($id) {
     <p>Quản lý dịch vụ VPN và theo dõi tài khoản của bạn</p>
 </div>
 
-<!-- Phần 2: Slide bài viết thông báo (Tự động chuyển bài lặp đi lặp lại) -->
+<!-- Phần 2: Slide bài viết thông báo (Tự động chuyển bài lặp đi lặp lại - Tiêu đề nằm độc lập ngoài thẻ) -->
 <?php if (!empty($noticePosts)): ?>
-<div class="glass-card tutorial-slider-container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0;">📢 Thông Báo Hệ Thống</h3>
-    </div>
-    <div class="tutorial-slider-wrapper">
-        <div class="tutorial-slider" id="tutorialSlider">
-            <?php foreach ($noticePosts as $index => $post): 
-                $thumbUrl = '';
-                
-                if (!empty($post['thumbnail'])) {
-                    $thumbUrl = $post['thumbnail'];
-                } elseif (!empty($post['content'])) {
-                    $rawContent = htmlspecialchars_decode($post['content']);
-                    if (preg_match('/<!--thumbnail:(.*?)-->/i', $rawContent, $mThumb)) {
-                        $thumbUrl = trim($mThumb[1]);
-                    } elseif (preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $rawContent, $mImg)) {
-                        $thumbUrl = trim($mImg[1]);
+<div style="margin-top: 1.5rem;">
+    <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0 0 0.8rem 0;">📢 Thông Báo Hệ Thống</h3>
+    <div class="glass-card tutorial-slider-container">
+        <div class="tutorial-slider-wrapper">
+            <div class="tutorial-slider" id="tutorialSlider">
+                <?php foreach ($noticePosts as $index => $post): 
+                    $thumbUrl = '';
+                    
+                    if (!empty($post['thumbnail'])) {
+                        $thumbUrl = $post['thumbnail'];
+                    } elseif (!empty($post['content'])) {
+                        $rawContent = htmlspecialchars_decode($post['content']);
+                        if (preg_match('/<!--thumbnail:(.*?)-->/i', $rawContent, $mThumb)) {
+                            $thumbUrl = trim($mThumb[1]);
+                        } elseif (preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $rawContent, $mImg)) {
+                            $thumbUrl = trim($mImg[1]);
+                        }
                     }
-                }
-                
-                // Nếu không tìm thấy ảnh tải lên -> sinh ảnh SVG ngẫu nhiên lập tức
-                if (empty($thumbUrl)) {
-                    $thumbUrl = getNoticeFallbackThumb($post['id'] ?? $index);
-                }
-            ?>
-                <div class="tutorial-card" data-index="<?= $index ?>">
-                    <img src="<?= htmlspecialchars($thumbUrl) ?>" alt="Thumbnail" class="tutorial-thumb">
-                    <div class="tutorial-content">
-                        <div>
-                            <span class="tutorial-badge">THÔNG BÁO</span>
-                            <h4 class="tutorial-title"><?= htmlspecialchars($post['title'] ?? '') ?></h4>
-                            <div class="tutorial-desc"><?= htmlspecialchars(strip_tags(htmlspecialchars_decode($post['content'] ?? ''))) ?></div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
-                            <span style="font-size: 0.75rem; color: var(--ios-text-secondary);">
-                                <?= isset($post['created_at']) ? date('d/m/Y', strtotime($post['created_at'])) : '' ?>
-                            </span>
-                            <a href="/post-detail?id=<?= (int)($post['id'] ?? 0) ?>" class="glass-btn" style="padding: 0.4rem 0.9rem; font-size: 0.8rem; text-decoration: none;">Xem chi tiết &rarr;</a>
+                    
+                    // Nếu không tìm thấy ảnh tải lên -> sinh ảnh SVG ngẫu nhiên lập tức
+                    if (empty($thumbUrl)) {
+                        $thumbUrl = getNoticeFallbackThumb($post['id'] ?? $index);
+                    }
+                ?>
+                    <div class="tutorial-card" data-index="<?= $index ?>">
+                        <img src="<?= htmlspecialchars($thumbUrl) ?>" alt="Thumbnail" class="tutorial-thumb">
+                        <div class="tutorial-content">
+                            <div>
+                                <span class="tutorial-badge">THÔNG BÁO</span>
+                                <h4 class="tutorial-title"><?= htmlspecialchars($post['title'] ?? '') ?></h4>
+                                <div class="tutorial-desc"><?= htmlspecialchars(strip_tags(htmlspecialchars_decode($post['content'] ?? ''))) ?></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                                <span style="font-size: 0.75rem; color: var(--ios-text-secondary);">
+                                    <?= isset($post['created_at']) ? date('d/m/Y', strtotime($post['created_at'])) : '' ?>
+                                </span>
+                                <a href="/post-detail?id=<?= (int)($post['id'] ?? 0) ?>" class="glass-btn" style="padding: 0.4rem 0.9rem; font-size: 0.8rem; text-decoration: none;">Xem chi tiết &rarr;</a>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        
+        <div class="tutorial-dots" id="tutorialDots">
+            <?php foreach ($noticePosts as $index => $post): ?>
+                <span class="tutorial-dot <?= $index === 0 ? 'active' : '' ?>" onclick="goToSlide(<?= $index ?>)"></span>
             <?php endforeach; ?>
         </div>
-    </div>
-    
-    <div class="tutorial-dots" id="tutorialDots">
-        <?php foreach ($noticePosts as $index => $post): ?>
-            <span class="tutorial-dot <?= $index === 0 ? 'active' : '' ?>" onclick="goToSlide(<?= $index ?>)"></span>
-        <?php endforeach; ?>
     </div>
 </div>
 <?php endif; ?>
@@ -205,7 +205,7 @@ function getNoticeFallbackThumb($id) {
     </div>
 </div>
 
-<!-- Phần 4: Bảng giá mặc định thuộc nhóm đầu tiên (Để tự nhiên theo giao diện, không bọc glass-card ngoài) -->
+<!-- Phần 4: Bảng giá mặc định thuộc nhóm đầu tiên -->
 <div style="margin-top: 1.5rem;">
     <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0 0 0.3rem 0;">Bảng giá gói dịch vụ</h3>
     <div style="font-size: 0.85rem; color: var(--ios-text-secondary); margin-bottom: 1.25rem;">
@@ -217,10 +217,13 @@ function getNoticeFallbackThumb($id) {
             <?php foreach ($firstGroupPlans as $plan): ?>
                 <div class="plan-item-card glass-card">
                     <div>
-                        <div class="plan-name"><?= htmlspecialchars($plan['name'] ?? '') ?></div>
-                        <div class="plan-price">
-                            <?= isset($formatMoney) ? $formatMoney($plan['price'] ?? 0) : number_format($plan['price'] ?? 0, 2) ?>
-                            <span>/ <?= (int)($plan['duration_days'] ?? 30) ?> ngày</span>
+                        <!-- Tên gói và giá cước cùng hàng, có đường gạch ngang bên dưới -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));">
+                            <div class="plan-name" style="margin: 0; font-weight: 600;"><?= htmlspecialchars($plan['name'] ?? '') ?></div>
+                            <div class="plan-price" style="margin: 0; text-align: right; white-space: nowrap;">
+                                <?= isset($formatMoney) ? $formatMoney($plan['price'] ?? 0) : number_format($plan['price'] ?? 0, 2) ?>
+                                <span style="font-size: 0.8rem; font-weight: normal;">/ <?= (int)($plan['duration_days'] ?? 30) ?> ngày</span>
+                            </div>
                         </div>
                         <ul class="info-list">
                             <li>
