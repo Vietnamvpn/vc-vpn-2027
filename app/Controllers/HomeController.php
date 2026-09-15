@@ -17,7 +17,8 @@ class HomeController extends BaseController
 
         $this->render('home.index', [
             'activeMenu' => 'home',
-            'plans' => $plans
+            'plans' => $plans,
+            'showSidebar' => !empty($_SESSION['user_id'])
         ]);
     }
 
@@ -31,7 +32,8 @@ class HomeController extends BaseController
 
         $this->render('home.plans', [
             'activeMenu' => 'plans',
-            'plans' => $plans
+            'plans' => $plans,
+            'showSidebar' => !empty($_SESSION['user_id'])
         ]);
     }
 
@@ -46,7 +48,8 @@ class HomeController extends BaseController
 
         $this->render('home.faq', [
             'activeMenu' => 'faq',
-            'posts' => $posts
+            'posts' => $posts,
+            'showSidebar' => !empty($_SESSION['user_id'])
         ]);
     }
 
@@ -62,7 +65,8 @@ class HomeController extends BaseController
 
         $this->render('home.post-detail', [
             'activeMenu' => 'faq',
-            'post' => $post
+            'post' => $post,
+            'showSidebar' => !empty($_SESSION['user_id'])
         ]);
     }
 
