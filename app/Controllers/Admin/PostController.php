@@ -54,6 +54,12 @@ class PostController extends BaseController
             $slug = $this->createSlug($title);
         }
 
+        // Xử lý tải ảnh đại diện từ máy tính (nếu có)
+        $thumbPath = $this->uploadThumbnail();
+        if ($thumbPath) {
+            $content = '<p><img src="' . htmlspecialchars($thumbPath) . '" alt="Thumbnail" class="post-thumb-img"></p>' . $content;
+        }
+
         $data = [
             'author_id'  => $_SESSION['user_id'],
             'title'      => $title,
@@ -121,6 +127,13 @@ class PostController extends BaseController
             $slug = $this->createSlug($title);
         }
 
+        // Xử lý tải ảnh đại diện mới từ máy tính (nếu có tải lên ảnh mới)
+        $thumbPath = $this->uploadThumbnail();
+        if ($thumbPath) {
+            $content = preg_replace('/<p><img[^>]+class=["\']post-thumb-img["\'][^>]*><\/p>/i', '', $content);
+            $content = '<p><img src="' . htmlspecialchars($thumbPath) . '" alt="Thumbnail" class="post-thumb-img"></p>' . $content;
+        }
+
         $data = [
             'title'   => $title,
             'slug'    => $slug,
@@ -176,6 +189,38 @@ class PostController extends BaseController
         $this->redirect('/admin/posts');
     }
 
+    /**
+     * Hàm hỗ trợ tải tệp ảnh đại diện từ máy tính vào thư mục public/uploads/posts/
+     */
+    private function uploadThumbnail(): ?string
+    {
+        if (!isset($_FILES['thumbnail']) || $_FILES['thumbnail']['error'] !== UPLOAD_ERR_OK) {
+            return null;
+        }
+
+        $file = $_FILES['thumbnail'];
+        $allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+        if (!in_array($ext, $allowedExts)) {
+            return null;
+        }
+
+        $uploadDir = BASE_PATH . '/public/uploads/posts/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $fileName = 'thumb_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+        $targetPath = $uploadDir . $fileName;
+
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            return '/uploads/posts/' . $fileName;
+        }
+
+        return null;
+    }
+
     private function createSlug(string $string): string
     {
         $search = [
@@ -200,15 +245,13 @@ class PostController extends BaseController
             'i', 'i', 'i', 'i', 'i',
             'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
             'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u',
-            'y', 'y', 'y', 'y', 'y',
-            'd',
+            'y', 'y', 'y', 'y', 'y', 'd',
             'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a',
             'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
             'i', 'i', 'i', 'i', 'i',
             'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
             'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u',
-            'y', 'y', 'y', 'y', 'y',
-            'd'
+            'y', 'y', 'y', 'y', 'y', 'd'
         ];
         $string = str_replace($search, $replace, $string);
         $string = preg_replace('/[^a-zA-Z0-9\s-]/', '', strtolower($string));

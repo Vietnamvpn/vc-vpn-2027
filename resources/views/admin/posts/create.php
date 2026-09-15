@@ -5,7 +5,7 @@ $activeMenu = "posts";
 ob_start();
 ?>
 
-<!-- Thư viện Summernote Lite & jQuery miễn phí hỗ trợ chèn Video YouTube -->
+<!-- Thư viện Summernote Lite & jQuery miễn phí (Hỗ trợ chèn link YouTube & ảnh) -->
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
@@ -31,15 +31,15 @@ ob_start();
 <?php endif; ?>
 
 <div class="glass-card" style="padding: 1.75rem; width: 100%;">
-    <form id="postForm" method="POST" action="/admin/posts/create" style="display: flex; flex-direction: column; gap: 1.25rem;">
+    <form method="POST" action="/admin/posts/create" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.25rem;">
         <div>
             <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tiêu Đề Bài Viết (*)</label>
             <input type="text" name="title" class="glass-input" required placeholder="Nhập tiêu đề bài viết..." autofocus style="width: 100%;">
         </div>
 
         <div>
-            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Ảnh Đại Diện (Thumbnail URL)</label>
-            <input type="url" id="thumbnail_url" class="glass-input" placeholder="https://example.com/image.jpg (Đường dẫn hình ảnh đại diện)" style="width: 100%;">
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tải Ảnh Đại Diện Từ Máy Tính (Thumbnail)</label>
+            <input type="file" name="thumbnail" accept="image/*" class="glass-input" style="width: 100%; padding: 0.4rem;">
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
@@ -93,17 +93,6 @@ $(document).ready(function() {
             ['insert', ['link', 'picture', 'video']],
             ['view', ['fullscreen', 'codeview', 'help']]
         ]
-    });
-
-    $('#postForm').on('submit', function() {
-        const thumbUrl = $('#thumbnail_url').val().trim();
-        let content = $('#post_content').summernote('code');
-        
-        if (thumbUrl !== '') {
-            const imgTag = '<p><img src="' + thumbUrl + '" alt="Thumbnail" class="post-thumb-img"></p>';
-            content = imgTag + content;
-            $('#post_content').val(content);
-        }
     });
 });
 </script>

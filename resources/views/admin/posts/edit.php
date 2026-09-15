@@ -2,7 +2,7 @@
 $pageTitle = "Chỉnh Sửa Bài Viết - Quản Trị Hệ Thống";
 $activeMenu = "posts";
 
-// Tự động tách lấy Thumbnail URL đầu tiên trong nội dung bài viết (nếu có)
+// Kiểm tra xem đã có ảnh đại diện trong nội dung bài viết chưa
 $existingThumb = '';
 if (!empty($post['content'])) {
     preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $post['content'], $matches);
@@ -14,7 +14,7 @@ if (!empty($post['content'])) {
 ob_start();
 ?>
 
-<!-- Thư viện Summernote Lite & jQuery miễn phí hỗ trợ chèn Video YouTube -->
+<!-- Thư viện Summernote Lite & jQuery miễn phí (Hỗ trợ chèn link YouTube & ảnh) -->
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
@@ -40,15 +40,21 @@ ob_start();
 <?php endif; ?>
 
 <div class="glass-card" style="padding: 1.75rem; width: 100%;">
-    <form id="postForm" method="POST" action="/admin/posts/edit?id=<?= $post['id'] ?>" style="display: flex; flex-direction: column; gap: 1.25rem;">
+    <form method="POST" action="/admin/posts/edit?id=<?= $post['id'] ?>" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.25rem;">
         <div>
             <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tiêu Đề Bài Viết (*)</label>
             <input type="text" name="title" class="glass-input" value="<?= htmlspecialchars($post['title'] ?? '') ?>" required style="width: 100%;">
         </div>
 
         <div>
-            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Ảnh Đại Diện (Thumbnail URL)</label>
-            <input type="url" id="thumbnail_url" class="glass-input" value="<?= htmlspecialchars($existingThumb) ?>" placeholder="https://example.com/image.jpg (Đường dẫn hình ảnh đại diện)" style="width: 100%;">
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Thay Đổi Ảnh Đại Diện Từ Máy Tính (Để trống nếu giữ ảnh hiện tại)</label>
+            <input type="file" name="thumbnail" accept="image/*" class="glass-input" style="width: 100%; padding: 0.4rem;">
+            <?php if (!empty($existingThumb)): ?>
+                <div style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 0.8rem; color: var(--ios-text-secondary);">Ảnh hiện tại:</span>
+                    <img src="<?= htmlspecialchars($existingThumb) ?>" alt="Current Thumb" style="height: 40px; border-radius: 4px; border: 1px solid var(--glass-border);">
+                </div>
+            <?php endif; ?>
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
@@ -102,19 +108,6 @@ $(document).ready(function() {
             ['insert', ['link', 'picture', 'video']],
             ['view', ['fullscreen', 'codeview', 'help']]
         ]
-    });
-
-    $('#postForm').on('submit', function() {
-        const thumbUrl = $('#thumbnail_url').val().trim();
-        let content = $('#post_content').summernote('code');
-        
-        if (thumbUrl !== '') {
-            // Xóa thẻ ảnh cũ nếu người dùng đổi URL ảnh đại diện mới
-            content = content.replace(/<p><img[^>]+class=["\']post-thumb-img["\'][^>]*><\/p>/i, '');
-            const imgTag = '<p><img src="' + thumbUrl + '" alt="Thumbnail" class="post-thumb-img"></p>';
-            content = imgTag + content;
-            $('#post_content').val(content);
-        }
     });
 });
 </script>
