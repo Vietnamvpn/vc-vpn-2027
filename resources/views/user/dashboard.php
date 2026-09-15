@@ -71,7 +71,7 @@ function getNoticeFallbackThumb($id) {
 ?>
 
 <style>
-/* Thẻ Thông báo */
+/* Cấu hình giới hạn thẻ Thông báo & Cắt văn bản chuẩn xác */
 .tutorial-card {
     display: flex;
     gap: 1.25rem;
@@ -118,11 +118,12 @@ function getNoticeFallbackThumb($id) {
     display: block;
 }
 
-/* 4 Thẻ thống kê: Hiển thị đầy đủ chữ, không cắt/ẩn chữ */
+/* 4 Thẻ thống kê: Tối ưu layout chữ gọn gàng, căn lề góc phải chuẩn responsive */
 .dashboard-grid-4 {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
+    margin-top: 1.5rem;
 }
 
 .stat-card-item {
@@ -132,38 +133,45 @@ function getNoticeFallbackThumb($id) {
     align-items: flex-end !important;
     padding: 1.1rem 1.25rem !important;
     box-sizing: border-box !important;
+    min-width: 0 !important;
 }
 
 .stat-main {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
+    min-width: 0;
     flex: 1;
 }
 
 .stat-label {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--ios-text-secondary, #8e8e93);
     font-weight: 500;
-    line-height: 1.3;
-    word-break: break-word;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .stat-value {
     font-size: 1.35rem;
     font-weight: 700;
     line-height: 1.1;
-    word-break: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .stat-link {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--ios-primary, #007aff);
     text-decoration: none;
     white-space: nowrap;
     flex-shrink: 0;
     margin-left: 0.5rem;
     font-weight: 500;
+    padding-bottom: 2px;
 }
 
 @media (max-width: 768px) {
@@ -173,11 +181,11 @@ function getNoticeFallbackThumb($id) {
     }
 
     .stat-card-item {
-        padding: 0.9rem 1rem !important;
+        padding: 0.85rem 0.9rem !important;
     }
 
     .stat-label {
-        font-size: 0.78rem !important;
+        font-size: 0.75rem !important;
     }
 
     .stat-value {
@@ -185,7 +193,7 @@ function getNoticeFallbackThumb($id) {
     }
 
     .stat-link {
-        font-size: 0.75rem !important;
+        font-size: 0.7rem !important;
     }
 
     .tutorial-card {
@@ -266,38 +274,35 @@ function getNoticeFallbackThumb($id) {
 </div>
 <?php endif; ?>
 
-<!-- Phần 3: 4 thẻ thống kê (Có tiêu đề riêng phía trên, chữ hiển thị tự nhiên) -->
-<div style="margin-top: 1.5rem;">
-    <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0 0 0.8rem 0;">📊 Thống Kê Tài Khoản</h3>
-    <div class="dashboard-grid-4">
-        <div class="glass-card stat-card-item">
-            <div class="stat-main">
-                <div class="stat-label">Gói đang chạy</div>
-                <div class="stat-value" style="color: var(--ios-success);"><?= $activeSubCount ?></div>
-            </div>
-            <a href="/subscriptions" class="stat-link">Xem chi tiết &rarr;</a>
+<!-- Phần 3: 4 thẻ thống kê chuẩn đẹp -->
+<div class="dashboard-grid-4">
+    <div class="glass-card stat-card-item">
+        <div class="stat-main">
+            <div class="stat-label">Gói đang chạy</div>
+            <div class="stat-value" style="color: var(--ios-success);"><?= $activeSubCount ?></div>
         </div>
-        <div class="glass-card stat-card-item">
-            <div class="stat-main">
-                <div class="stat-label">Số lượng đơn hàng</div>
-                <div class="stat-value"><?= is_array($orders ?? null) ? count($orders) : 0 ?></div>
-            </div>
-            <a href="/orders" class="stat-link">Xem chi tiết &rarr;</a>
+        <a href="/subscriptions" class="stat-link">Xem chi tiết &rarr;</a>
+    </div>
+    <div class="glass-card stat-card-item">
+        <div class="stat-main">
+            <div class="stat-label">Số lượng đơn hàng</div>
+            <div class="stat-value"><?= is_array($orders ?? null) ? count($orders) : 0 ?></div>
         </div>
-        <div class="glass-card stat-card-item">
-            <div class="stat-main">
-                <div class="stat-label">Ticket hỗ trợ</div>
-                <div class="stat-value"><?= is_array($tickets ?? null) ? count($tickets) : 0 ?></div>
-            </div>
-            <a href="/tickets" class="stat-link">Xem chi tiết &rarr;</a>
+        <a href="/orders" class="stat-link">Xem chi tiết &rarr;</a>
+    </div>
+    <div class="glass-card stat-card-item">
+        <div class="stat-main">
+            <div class="stat-label">Ticket hỗ trợ</div>
+            <div class="stat-value"><?= is_array($tickets ?? null) ? count($tickets) : 0 ?></div>
         </div>
-        <div class="glass-card stat-card-item">
-            <div class="stat-main">
-                <div class="stat-label">Số dư tài khoản</div>
-                <div class="stat-value"><?= isset($formatMoney) ? $formatMoney($user['balance'] ?? 0) : number_format($user['balance'] ?? 0, 2) ?></div>
-            </div>
-            <a href="/wallet" class="stat-link">Xem chi tiết &rarr;</a>
+        <a href="/tickets" class="stat-link">Xem chi tiết &rarr;</a>
+    </div>
+    <div class="glass-card stat-card-item">
+        <div class="stat-main">
+            <div class="stat-label">Số dư tài khoản</div>
+            <div class="stat-value"><?= isset($formatMoney) ? $formatMoney($user['balance'] ?? 0) : number_format($user['balance'] ?? 0, 2) ?></div>
         </div>
+        <a href="/wallet" class="stat-link">Xem chi tiết &rarr;</a>
     </div>
 </div>
 
