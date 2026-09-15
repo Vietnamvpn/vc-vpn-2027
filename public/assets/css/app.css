@@ -692,7 +692,7 @@ body.overlay-open .admin-main {
   margin: 0;
 }
 
-/* 2. Slide bài hướng dẫn */
+/* 2. Slide bài hướng dẫn / thông báo */
 .tutorial-slider-container {
   margin-bottom: 1.5rem;
   overflow: hidden;
@@ -720,37 +720,28 @@ body.overlay-open .admin-main {
   flex: 0 0 100%;
   scroll-snap-align: start;
   display: flex;
-  gap: 1.2rem;
-  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem;
   box-sizing: border-box;
 }
 
-@media (max-width: 650px) {
-  .tutorial-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .tutorial-thumb {
-    width: 100% !important;
-    height: 160px !important;
-  }
-}
-
 .tutorial-thumb {
-  width: 200px;
-  height: 125px;
+  width: 180px;
+  height: 110px;
   object-fit: cover;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm, 8px);
   border: 1px solid var(--glass-border);
   flex-shrink: 0;
+  display: block;
   background: rgba(0, 122, 255, 0.05);
 }
 
 .tutorial-content {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
+  flex: 1;
+  min-width: 0;
 }
 
 .tutorial-badge {
@@ -767,22 +758,26 @@ body.overlay-open .admin-main {
 }
 
 .tutorial-title {
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--ios-text);
-  margin: 0 0 0.4rem 0;
-  line-height: 1.3;
+  margin: 0.35rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tutorial-desc {
   font-size: 0.85rem;
-  color: var(--ios-text-secondary);
+  color: var(--ios-text-secondary, #8e8e93);
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-bottom: 0.8rem;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  margin-bottom: 0.5rem;
 }
 
 .tutorial-dots {
@@ -811,80 +806,79 @@ body.overlay-open .admin-main {
 /* 3. 4 Thẻ thống kê */
 .dashboard-grid-4 {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.2rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
 }
 
 .stat-card-item {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  padding: 1.1rem 1.25rem !important;
+  box-sizing: border-box !important;
 }
 
 .stat-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--ios-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--ios-text-secondary, #8e8e93);
+  font-weight: 500;
+  line-height: 1.3;
+  word-break: break-word;
 }
 
 .stat-value {
-  font-size: 1.6rem;
+  font-size: 1.35rem;
   font-weight: 700;
-  color: var(--ios-text);
-  margin-bottom: 0.8rem;
+  line-height: 1.1;
+  word-break: break-word;
 }
 
 .stat-link {
   font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--ios-blue);
+  color: var(--ios-primary, #007aff);
   text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: opacity 0.2s ease;
-}
-
-.stat-link:hover {
-  opacity: 0.8;
-  text-decoration: underline;
-}
-
-/* 4. Bảng giá & Tabs */
-.group-tabs {
-  display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
-  padding-bottom: 0.75rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid var(--glass-border);
-}
-
-.group-tab-btn {
-  padding: 0.5rem 1.2rem;
-  border-radius: 20px;
-  border: 1px solid var(--glass-border);
-  background: transparent;
-  color: var(--ios-text-secondary);
-  font-weight: 600;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
   white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+  font-weight: 500;
 }
 
-.group-tab-btn.active,
-.group-tab-btn:hover {
-  background: var(--ios-blue);
-  color: #ffffff;
-  border-color: var(--ios-blue);
+@media (max-width: 768px) {
+  .dashboard-grid-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+
+  .stat-card-item {
+    padding: 0.9rem 1rem !important;
+  }
+
+  .stat-label {
+    font-size: 0.78rem !important;
+  }
+
+  .stat-value {
+    font-size: 1.15rem !important;
+  }
+
+  .stat-link {
+    font-size: 0.75rem !important;
+  }
+
+  .tutorial-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .tutorial-thumb {
+    width: 100% !important;
+    height: 140px !important;
+    max-height: 140px !important;
+  }
 }
 
+/* 4. Bảng giá & Cards */
 .plans-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -909,14 +903,12 @@ body.overlay-open .admin-main {
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--ios-text);
-  margin-bottom: 0.5rem;
 }
 
 .plan-price {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 800;
   color: var(--ios-blue);
-  margin-bottom: 1rem;
 }
 
 .plan-price span {
@@ -946,24 +938,4 @@ body.overlay-open .admin-main {
 
 .info-list li:last-child {
   border-bottom: none;
-}
-
-/* Banner gợi ý cửa hàng */
-.shop-banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(0, 122, 255, 0.08);
-  border: 1px solid rgba(0, 122, 255, 0.2);
-  border-radius: var(--radius-md);
-  padding: 1rem 1.2rem;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.shop-banner-text {
-  font-size: 0.9rem;
-  color: var(--ios-text);
-  font-weight: 500;
 }

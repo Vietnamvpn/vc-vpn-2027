@@ -70,137 +70,6 @@ function getNoticeFallbackThumb($id) {
 }
 ?>
 
-<style>
-/* Thẻ Thông báo */
-.tutorial-card {
-    display: flex;
-    gap: 1.25rem;
-    padding: 1rem;
-    box-sizing: border-box;
-}
-
-.tutorial-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    flex: 1;
-    min-width: 0;
-}
-
-.tutorial-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0.35rem 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.tutorial-desc {
-    font-size: 0.85rem;
-    color: var(--ios-text-secondary, #8e8e93);
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-word;
-    margin-bottom: 0.5rem;
-}
-
-.tutorial-thumb {
-    width: 180px;
-    height: 110px;
-    object-fit: cover;
-    border-radius: var(--radius-sm, 8px);
-    flex-shrink: 0;
-    display: block;
-}
-
-/* 4 Thẻ thống kê: Hiển thị đầy đủ chữ, không cắt/ẩn chữ */
-.dashboard-grid-4 {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-}
-
-.stat-card-item {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: flex-end !important;
-    padding: 1.1rem 1.25rem !important;
-    box-sizing: border-box !important;
-}
-
-.stat-main {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-    flex: 1;
-}
-
-.stat-label {
-    font-size: 0.85rem;
-    color: var(--ios-text-secondary, #8e8e93);
-    font-weight: 500;
-    line-height: 1.3;
-    word-break: break-word;
-}
-
-.stat-value {
-    font-size: 1.35rem;
-    font-weight: 700;
-    line-height: 1.1;
-    word-break: break-word;
-}
-
-.stat-link {
-    font-size: 0.8rem;
-    color: var(--ios-primary, #007aff);
-    text-decoration: none;
-    white-space: nowrap;
-    flex-shrink: 0;
-    margin-left: 0.5rem;
-    font-weight: 500;
-}
-
-@media (max-width: 768px) {
-    .dashboard-grid-4 {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.75rem !important;
-    }
-
-    .stat-card-item {
-        padding: 0.9rem 1rem !important;
-    }
-
-    .stat-label {
-        font-size: 0.78rem !important;
-    }
-
-    .stat-value {
-        font-size: 1.15rem !important;
-    }
-
-    .stat-link {
-        font-size: 0.75rem !important;
-    }
-
-    .tutorial-card {
-        flex-direction: column !important;
-        align-items: stretch !important;
-    }
-
-    .tutorial-thumb {
-        width: 100% !important;
-        height: 140px !important;
-        max-height: 140px !important;
-    }
-}
-</style>
-
 <!-- Phần 1: Tiêu đề chào mừng căn giữa -->
 <div class="dashboard-header-welcome">
     <h1>Chào mừng trở lại, <?= htmlspecialchars($user['username'] ?? 'Thành viên') ?>! 👋</h1>
@@ -266,33 +135,33 @@ function getNoticeFallbackThumb($id) {
 </div>
 <?php endif; ?>
 
-<!-- Phần 3: 4 thẻ thống kê (Có tiêu đề riêng phía trên, chữ hiển thị tự nhiên) -->
+<!-- Phần 3: 4 thẻ thống kê chuẩn đẹp -->
 <div style="margin-top: 1.5rem;">
     <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0 0 0.8rem 0;">📊 Thống Kê Tài Khoản</h3>
     <div class="dashboard-grid-4">
         <div class="glass-card stat-card-item">
-            <div class="stat-main">
+            <div>
                 <div class="stat-label">Gói đang chạy</div>
                 <div class="stat-value" style="color: var(--ios-success);"><?= $activeSubCount ?></div>
             </div>
             <a href="/subscriptions" class="stat-link">Xem chi tiết &rarr;</a>
         </div>
         <div class="glass-card stat-card-item">
-            <div class="stat-main">
+            <div>
                 <div class="stat-label">Số lượng đơn hàng</div>
                 <div class="stat-value"><?= is_array($orders ?? null) ? count($orders) : 0 ?></div>
             </div>
             <a href="/orders" class="stat-link">Xem chi tiết &rarr;</a>
         </div>
         <div class="glass-card stat-card-item">
-            <div class="stat-main">
+            <div>
                 <div class="stat-label">Ticket hỗ trợ</div>
                 <div class="stat-value"><?= is_array($tickets ?? null) ? count($tickets) : 0 ?></div>
             </div>
             <a href="/tickets" class="stat-link">Xem chi tiết &rarr;</a>
         </div>
         <div class="glass-card stat-card-item">
-            <div class="stat-main">
+            <div>
                 <div class="stat-label">Số dư tài khoản</div>
                 <div class="stat-value"><?= isset($formatMoney) ? $formatMoney($user['balance'] ?? 0) : number_format($user['balance'] ?? 0, 2) ?></div>
             </div>
@@ -339,60 +208,6 @@ function getNoticeFallbackThumb($id) {
         <?php endif; ?>
     </div>
 </div>
-
-<script>
-// Logic tự động chuyển Slide thông báo lặp đi lặp lại
-(function() {
-    const slider = document.getElementById('tutorialSlider');
-    const dots = document.querySelectorAll('.tutorial-dot');
-    if (!slider || dots.length <= 1) return;
-
-    let currentIndex = 0;
-    const totalSlides = dots.length;
-    let autoTimer = null;
-
-    function scrollToSlide(index) {
-        const slideWidth = slider.clientWidth;
-        if (slideWidth > 0) {
-            slider.scrollTo({
-                left: slideWidth * index,
-                behavior: 'smooth'
-            });
-        }
-    }
-
-    window.goToSlide = function(index) {
-        currentIndex = index;
-        scrollToSlide(currentIndex);
-        restartTimer();
-    };
-
-    slider.addEventListener('scroll', () => {
-        const slideWidth = slider.clientWidth;
-        if (slideWidth > 0) {
-            const activeIndex = Math.round(slider.scrollLeft / slideWidth);
-            dots.forEach((dot, idx) => {
-                dot.classList.toggle('active', idx === activeIndex);
-            });
-            currentIndex = activeIndex;
-        }
-    });
-
-    function startTimer() {
-        autoTimer = setInterval(() => {
-            currentIndex = (currentIndex + 1) % totalSlides;
-            scrollToSlide(currentIndex);
-        }, 4000);
-    }
-
-    function restartTimer() {
-        if (autoTimer) clearInterval(autoTimer);
-        startTimer();
-    }
-
-    startTimer();
-})();
-</script>
 
 <?php
 // Kết thúc bộ đệm nội dung
