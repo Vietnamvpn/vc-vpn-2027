@@ -7,6 +7,25 @@ class SupportTicket extends BaseModel
     protected string $table = 'vc_support_tickets';
 
     /**
+     * Lấy danh sách ticket hỗ trợ theo user_id
+     */
+    public function getByUserId(int $userId): array
+    {
+        $stmt = self::$db->prepare("
+            SELECT t.*, 
+                   u1.username AS user_name, u1.email AS user_email,
+                   u2.username AS staff_name
+            FROM `{$this->table}` t
+            LEFT JOIN `vc_users` u1 ON t.user_id = u1.id
+            LEFT JOIN `vc_users` u2 ON t.assigned_staff_id = u2.id
+            WHERE t.user_id = :user_id
+            ORDER BY t.id DESC
+        ");
+        $stmt->execute(['user_id' => $userId]);
+        return $stmt->fetchAll() ?: [];
+    }
+
+    /**
      * Lấy danh sách tất cả ticket hỗ trợ kèm thông tin khách hàng và nhân viên xử lý
      */
     public function allWithDetails(): array
