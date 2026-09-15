@@ -18,8 +18,7 @@ foreach (($plans ?? []) as $plan) {
 }
 $loggedIn = !empty($_SESSION['user_id']);
 ?>
-<div class="home-page">
-    <section class="home-hero home-glass home-reveal">
+<section class="home-hero home-reveal">
         <div class="home-hero-grid"><div>
             <span class="home-eyebrow"><span class="home-dot"></span>KẾT NỐI AN TOÀN, KHÔNG GIỚI HẠN</span>
             <h1 class="home-title">Internet riêng tư.<br><strong>Trải nghiệm liền mạch.</strong></h1>
@@ -33,12 +32,10 @@ $loggedIn = !empty($_SESSION['user_id']);
         <article class="home-feature home-reveal"><div class="home-feature-icon">⌘</div><h3>Đa nền tảng</h3><p>Sử dụng trên iOS, Android, Windows, macOS và Linux.</p></article>
         <article class="home-feature home-reveal"><div class="home-feature-icon">✦</div><h3>Dễ bắt đầu</h3><p>Chọn gói, nhận cấu hình và kết nối trong vài bước ngắn gọn.</p></article>
     </div>
-    <section id="bang-gia" class="home-pricing home-glass home-reveal"><div class="home-pricing-header"><div><span class="home-badge">BẢNG GIÁ MINH BẠCH</span><h2>Chọn gói phù hợp với bạn</h2><p>Dữ liệu giá được cập nhật trực tiếp từ hệ thống.</p></div>
+    <section id="bang-gia" class="home-pricing home-reveal"><div class="home-pricing-header"><div><span class="home-badge">BẢNG GIÁ MINH BẠCH</span><h2>Chọn gói phù hợp với bạn</h2><p>Dữ liệu giá được cập nhật trực tiếp từ hệ thống.</p></div>
         <?php if ($groups): ?><div class="home-tabs" role="tablist"><?php $i = 0; foreach ($groups as $name => $items): ?><button class="home-tab" type="button" role="tab" aria-controls="home-panel-<?= $i ?>" aria-selected="<?= $i === 0 ? 'true' : 'false' ?>"><?= htmlspecialchars($name) ?></button><?php $i++; endforeach; ?></div><?php endif; ?></div>
         <?php if ($groups): ?><?php $i = 0; foreach ($groups as $name => $items): ?><div class="home-tab-panel" id="home-panel-<?= $i ?>" <?= $i ? 'hidden' : '' ?>><div class="home-plan-grid"><?php foreach ($items as $plan): ?><?php $checkout = '/checkout?id=' . (int) $plan['id']; ?><article class="home-plan home-reveal"><span class="home-badge"><?= htmlspecialchars($name) ?></span><h3><?= htmlspecialchars($plan['name']) ?></h3><div class="home-plan-price"><?= isset($formatMoney) ? $formatMoney($plan['price']) : number_format($plan['price'], 0, ',', '.') . ' đ' ?><small>/ <?= (int) $plan['duration_days'] ?> ngày</small></div><ul class="home-plan-list"><li><?= (int) ($plan['bandwidth_limit_gb'] ?? 0) ?: 'Không giới hạn' ?> <?= !empty($plan['bandwidth_limit_gb']) ? 'GB dữ liệu' : 'dữ liệu' ?></li><li>Tối đa <?= (int) ($plan['max_devices'] ?? 1) ?> thiết bị</li><li>Hỗ trợ cấu hình nhanh</li></ul><a class="home-button home-button-secondary" href="<?= $loggedIn ? $checkout : '/login?redirect=' . urlencode($checkout) ?>">Chọn gói này →</a></article><?php endforeach; ?></div></div><?php $i++; endforeach; ?><?php else: ?><div class="home-empty">Gói dịch vụ đang được cập nhật.</div><?php endif; ?>
     </section>
-</div>
-
 <?php
 $content = ob_get_clean();
 require_once __DIR__ . '/../layouts/app.php';
