@@ -26,8 +26,8 @@ ob_start();
 }
 .post-detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 2rem; align-items: start; }
 .post-article { min-width: 0; padding: .5rem 0 2rem; }
-.related-posts { height: fit-content; border-left: 1px solid var(--glass-border); padding-left: 1.5rem; }
-.related-posts a { display: block; padding: .8rem 0; border-bottom: 1px solid var(--glass-border); color: var(--ios-blue); text-decoration: none; font-weight: 600; }
+.related-posts { min-width: 0; height: fit-content; border-left: 1px solid var(--glass-border); padding-left: 1.5rem; }
+.related-posts a { display: block; padding: .8rem 0; border-bottom: 1px solid var(--glass-border); color: var(--ios-blue); text-decoration: none; font-weight: 600; overflow-wrap: anywhere; word-break: break-word; }
 .post-content { overflow-wrap: anywhere; }
 .post-content img, .post-content video, .post-content iframe { max-width: 100%; height: auto; }
 .post-content table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
