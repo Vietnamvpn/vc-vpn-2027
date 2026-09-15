@@ -175,12 +175,32 @@ class PostController extends BaseController
         $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
 
         if ($id > 0) {
-            if ($this->postModel->delete($id)) {
-                $this->logActivity('DELETE_POST', 'Xóa bài viết #' . $id);
-                $_SESSION['flash_message'] = 'Đã xóa bài viết thành công!';
-                $_SESSION['flash_type']    = 'success';
+            // 1. Tìm thông tin bài viết trước khi xóa
+            $post = $this->postModel->find($id);
+
+            if ($post) {
+                // 2. Tách đường dẫn và xóa file ảnh thumbnail trên máy chủ (nếu có)
+                if (!empty($post['content'])) {
+                    if (preg_match('/<!--thumbnail:(.*?)-->/i', $post['content'], $matches)) {
+                        $thumbPath = trim($matches[1]);
+                        $fullFilePath = BASE_PATH . '/public' . $thumbPath;
+
+                        if (file_exists($fullFilePath) && is_file($fullFilePath)) {
+                            @unlink($fullFilePath);
+                        }
+                    }
+                }
+
+                // 3. Xóa bài viết trong cơ sở dữ liệu
+                if ($this->postModel->delete($id)) {
+                    $this->logActivity('DELETE_POST', 'Xóa bài viết #' . $id);
+                    $_SESSION['flash_message'] = 'Đã xóa bài viết và file ảnh đại diện thành công!';
+                    $_SESSION['flash_type']    = 'success';
+                } else {
+                    $_SESSION['error'] = 'Không thể xóa bài viết này!';
+                }
             } else {
-                $_SESSION['error'] = 'Không thể xóa bài viết này!';
+                $_SESSION['error'] = 'Bài viết không tồn tại!';
             }
         } else {
             $_SESSION['error'] = 'Mã bài viết không hợp lệ!';

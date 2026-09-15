@@ -12,8 +12,62 @@ if (!empty($subscriptions) && is_array($subscriptions)) {
     }
 }
 
-// Lấy ID nhóm máy chủ đầu tiên làm mặc định
+// 1. Chỉ lọc ra các bài viết thuộc loại THÔNG BÁO (notice / faq)
+$noticePosts = [];
+if (!empty($posts) && is_array($posts)) {
+    foreach ($posts as $p) {
+        $type = strtolower($p['type'] ?? '');
+        if ($type === 'faq' || $type === 'notice') {
+            $noticePosts[] = $p;
+        }
+    }
+}
+
+// 2. Lấy ID nhóm máy chủ đầu tiên & lọc gói thuộc nhóm đầu tiên
 $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGroups[0]['id'] ?? 'all') : 'all';
+
+$firstGroupPlans = [];
+if (!empty($plans) && is_array($plans)) {
+    foreach ($plans as $plan) {
+        if ($firstGroupId === 'all') {
+            $firstGroupPlans[] = $plan;
+        } else {
+            $groupIds = [];
+            if (!empty($plan['group_id'])) {
+                if (is_array($plan['group_id'])) {
+                    $groupIds = $plan['group_id'];
+                } else {
+                    $decoded = json_decode($plan['group_id'], true);
+                    if (is_array($decoded)) $groupIds = $decoded;
+                }
+            }
+            if (empty($groupIds) || in_array((string)$firstGroupId, array_map('strval', $groupIds))) {
+                $firstGroupPlans[] = $plan;
+            }
+        }
+    }
+}
+
+// Hàm sinh ảnh đại diện SVG ngẫu nhiên an toàn (Chống giật / chống xoay vô hạn)
+function getNoticeFallbackThumb($id) {
+    $colors = [
+        ['#007aff', '#5856d6'],
+        ['#34c759', '#30b0c7'],
+        ['#ff9500', '#ff2d55'],
+        ['#af52de', '#ff2d55'],
+        ['#5856d6', '#007aff']
+    ];
+    $pair = $colors[(int)$id % count($colors)];
+    $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="125" viewBox="0 0 200 125">'
+         . '<defs><linearGradient id="g'.$id.'" x1="0%" y1="0%" x2="100%" y2="100%">'
+         . '<stop offset="0%" stop-color="'.$pair[0].'"/>'
+         . '<stop offset="100%" stop-color="'.$pair[1].'"/>'
+         . '</linearGradient></defs>'
+         . '<rect width="100%" height="100%" fill="url(#g'.$id.')"/>'
+         . '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="20" font-weight="bold">THÔNG BÁO</text>'
+         . '</svg>';
+    return 'data:image/svg+xml;base64,' . base64_encode($svg);
+}
 ?>
 
 <!-- Phần 1: Tiêu đề chào mừng căn giữa -->
@@ -22,39 +76,38 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
     <p>Quản lý dịch vụ VPN và theo dõi tài khoản của bạn</p>
 </div>
 
-<!-- Phần 2: Slide bài viết / hướng dẫn (Lấy Thumbnail đa tầng an toàn) -->
-<?php if (!empty($posts) && is_array($posts)): ?>
+<!-- Phần 2: Slide bài viết thông báo (Tự động chuyển bài lặp đi lặp lại) -->
+<?php if (!empty($noticePosts)): ?>
 <div class="glass-card tutorial-slider-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0;">📢 Bài viết & Hướng dẫn</h3>
+        <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0;">📢 Thông Báo Hệ Thống</h3>
     </div>
     <div class="tutorial-slider-wrapper">
         <div class="tutorial-slider" id="tutorialSlider">
-            <?php foreach ($posts as $index => $post): 
-                $thumbUrl = '/assets/images/logo.png';
+            <?php foreach ($noticePosts as $index => $post): 
+                $thumbUrl = '';
                 
-                // 1. Kiểm tra nếu có sẵn trường thumbnail riêng trong CSDL
                 if (!empty($post['thumbnail'])) {
                     $thumbUrl = $post['thumbnail'];
-                } 
-                // 2. Tìm mã comment ẩn hoặc ảnh <img> trong nội dung
-                elseif (!empty($post['content'])) {
+                } elseif (!empty($post['content'])) {
                     $rawContent = htmlspecialchars_decode($post['content']);
-                    
                     if (preg_match('/<!--thumbnail:(.*?)-->/i', $rawContent, $mThumb)) {
-                        $thumbUrl = trim($mThumb[1]);
-                    } elseif (preg_match('/<!--thumbnail:(.*?)-->/i', $post['content'], $mThumb)) {
                         $thumbUrl = trim($mThumb[1]);
                     } elseif (preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $rawContent, $mImg)) {
                         $thumbUrl = trim($mImg[1]);
                     }
                 }
+                
+                // Nếu không tìm thấy ảnh tải lên -> sinh ảnh SVG ngẫu nhiên lập tức
+                if (empty($thumbUrl)) {
+                    $thumbUrl = getNoticeFallbackThumb($post['id'] ?? $index);
+                }
             ?>
                 <div class="tutorial-card" data-index="<?= $index ?>">
-                    <img src="<?= htmlspecialchars($thumbUrl) ?>" alt="Thumbnail" class="tutorial-thumb" onerror="this.src='/assets/images/logo.png'">
+                    <img src="<?= htmlspecialchars($thumbUrl) ?>" alt="Thumbnail" class="tutorial-thumb">
                     <div class="tutorial-content">
                         <div>
-                            <span class="tutorial-badge"><?= htmlspecialchars(strtoupper(($post['type'] ?? '') === 'faq' ? 'NOTICE' : ($post['type'] ?? 'TUTORIAL'))) ?></span>
+                            <span class="tutorial-badge">THÔNG BÁO</span>
                             <h4 class="tutorial-title"><?= htmlspecialchars($post['title'] ?? '') ?></h4>
                             <div class="tutorial-desc"><?= htmlspecialchars(strip_tags(htmlspecialchars_decode($post['content'] ?? ''))) ?></div>
                         </div>
@@ -71,14 +124,14 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
     </div>
     
     <div class="tutorial-dots" id="tutorialDots">
-        <?php foreach ($posts as $index => $post): ?>
+        <?php foreach ($noticePosts as $index => $post): ?>
             <span class="tutorial-dot <?= $index === 0 ? 'active' : '' ?>" onclick="goToSlide(<?= $index ?>)"></span>
         <?php endforeach; ?>
     </div>
 </div>
 <?php endif; ?>
 
-<!-- Phần 3: 4 thẻ nhỏ hiển thị số lượng gói đang chạy, đơn hàng, ticket, số dư -->
+<!-- Phần 3: 4 thẻ thống kê số dư, đơn hàng, ticket, gói chạy -->
 <div class="dashboard-grid-4">
     <div class="glass-card stat-card-item">
         <div>
@@ -110,37 +163,17 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
     </div>
 </div>
 
-<!-- Phần 4: Bảng giá các gói cước phân loại nhóm theo tab ngang -->
+<!-- Phần 4: Bảng giá mặc định thuộc nhóm đầu tiên (Không tabs, gợi ý đặt ngay dưới tiêu đề) -->
 <div class="glass-card" style="margin-top: 1.5rem;">
-    <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0 0 1rem 0;">Bảng giá gói dịch vụ</h3>
-    
-    <div class="group-tabs">
-        <?php if (!empty($serverGroups) && is_array($serverGroups)): ?>
-            <?php foreach ($serverGroups as $index => $group): ?>
-                <button class="group-tab-btn <?= $index === 0 ? 'active' : '' ?>" data-group-id="<?= htmlspecialchars($group['id'] ?? '') ?>" onclick="switchGroupTab('<?= htmlspecialchars($group['id'] ?? '') ?>', this)">
-                    <?= htmlspecialchars($group['name'] ?? '') ?>
-                </button>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <button class="group-tab-btn active" data-group-id="all" onclick="switchGroupTab('all', this)">Tất cả nhóm</button>
-        <?php endif; ?>
+    <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0 0 0.3rem 0;">Bảng giá gói dịch vụ</h3>
+    <div style="font-size: 0.85rem; color: var(--ios-text-secondary); margin-bottom: 1.25rem;">
+        💡 Bạn muốn tham khảo thêm nhiều gói cước với tính năng nâng cao hơn?
     </div>
 
     <div class="plans-grid" id="plansGrid">
-        <?php if (!empty($plans) && is_array($plans)): ?>
-            <?php foreach ($plans as $plan): 
-                $groupIds = [];
-                if (!empty($plan['group_id'])) {
-                    if (is_array($plan['group_id'])) {
-                        $groupIds = $plan['group_id'];
-                    } else {
-                        $decoded = json_decode($plan['group_id'], true);
-                        if (is_array($decoded)) $groupIds = $decoded;
-                    }
-                }
-                $groupsStr = implode(',', $groupIds);
-            ?>
-                <div class="plan-item-card glass-card" data-groups="<?= htmlspecialchars($groupsStr) ?>">
+        <?php if (!empty($firstGroupPlans)): ?>
+            <?php foreach ($firstGroupPlans as $plan): ?>
+                <div class="plan-item-card glass-card">
                     <div>
                         <div class="plan-name"><?= htmlspecialchars($plan['name'] ?? '') ?></div>
                         <div class="plan-price">
@@ -162,15 +195,64 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
-            <p style="color: var(--ios-text-secondary); text-align: center; grid-column: 1 / -1; padding: 2rem 0;">Hiện chưa có gói dịch vụ nào.</p>
+            <p style="color: var(--ios-text-secondary); text-align: center; grid-column: 1 / -1; padding: 2rem 0;">Hiện chưa có gói dịch vụ nào cho nhóm này.</p>
         <?php endif; ?>
     </div>
-
-    <div class="shop-banner">
-        <div class="shop-banner-text">💡 Bạn muốn tham khảo thêm nhiều gói cước với tính năng nâng cao hơn?</div>
-        <a href="/user/plans" class="glass-btn" style="text-decoration: none; padding: 0.5rem 1rem; font-size: 0.85rem;">Truy cập Cửa Hàng &rarr;</a>
-    </div>
 </div>
+
+<script>
+// Logic tự động chuyển Slide thông báo lặp đi lặp lại
+(function() {
+    const slider = document.getElementById('tutorialSlider');
+    const dots = document.querySelectorAll('.tutorial-dot');
+    if (!slider || dots.length <= 1) return;
+
+    let currentIndex = 0;
+    const totalSlides = dots.length;
+    let autoTimer = null;
+
+    function scrollToSlide(index) {
+        const slideWidth = slider.clientWidth;
+        if (slideWidth > 0) {
+            slider.scrollTo({
+                left: slideWidth * index,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    window.goToSlide = function(index) {
+        currentIndex = index;
+        scrollToSlide(currentIndex);
+        restartTimer();
+    };
+
+    slider.addEventListener('scroll', () => {
+        const slideWidth = slider.clientWidth;
+        if (slideWidth > 0) {
+            const activeIndex = Math.round(slider.scrollLeft / slideWidth);
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === activeIndex);
+            });
+            currentIndex = activeIndex;
+        }
+    });
+
+    function startTimer() {
+        autoTimer = setInterval(() => {
+            currentIndex = (currentIndex + 1) % totalSlides;
+            scrollToSlide(currentIndex);
+        }, 4000);
+    }
+
+    function restartTimer() {
+        if (autoTimer) clearInterval(autoTimer);
+        startTimer();
+    }
+
+    startTimer();
+})();
+</script>
 
 <?php
 // Kết thúc bộ đệm nội dung
