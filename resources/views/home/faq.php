@@ -3,8 +3,12 @@ $pageTitle = "Hướng Dẫn & Câu Hỏi Thường Gặp - " . ($settings['site
 
 // Nhóm các bài viết theo Thể Loại (type)
 $groupedPosts = [];
+$search = trim($_GET['q'] ?? '');
 if (!empty($posts) && is_array($posts)) {
     foreach ($posts as $post) {
+        if ($search !== '' && stripos(($post['title'] ?? '') . ' ' . strip_tags($post['content'] ?? ''), $search) === false) {
+            continue;
+        }
         $type = !empty($post['type']) ? strtoupper($post['type']) : 'HƯỚNG DẪN CHUNG';
         $groupedPosts[$type][] = $post;
     }
@@ -96,6 +100,10 @@ ob_start();
 <div style="text-align: center; margin-bottom: 2.5rem;">
     <h1 style="font-size: 2rem; font-weight: 700;">Hướng Dẫn & Câu Hỏi Thường Gặp</h1>
     <p style="color: var(--ios-text-secondary); margin-top: 0.5rem;">Giải đáp các thắc mắc và hướng dẫn chi tiết cách sử dụng dịch vụ VPN</p>
+    <form action="/faq" method="get" style="max-width: 560px; margin: 1.25rem auto 0; display: flex; gap: .5rem;">
+        <input type="search" name="q" value="<?= htmlspecialchars($search) ?>" placeholder="Tìm hướng dẫn..." style="flex: 1; padding: .7rem .9rem; border: 1px solid var(--glass-border); border-radius: 10px; background: var(--glass-bg); color: var(--ios-text);">
+        <button type="submit" class="glass-btn" style="padding: .7rem 1rem;">Tìm kiếm</button>
+    </form>
 </div>
 
 <!-- Đã bỏ max-width: 900px, chuyển sang rộng linh hoạt toàn màn hình (width: 100%) -->
@@ -125,7 +133,7 @@ ob_start();
                                             <?= ($itemIndex + 1) ?>. <?= htmlspecialchars($post['title']) ?>
                                         </a>
                                     </h3>
-                                    <p style="color: var(--ios-text-secondary); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                    <p style="color: var(--ios-text-secondary); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5; display: -webkit-box; line-clamp: 2; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                         <?= htmlspecialchars(strip_tags($post['content'])) ?>
                                     </p>
                                 </div>

@@ -54,6 +54,13 @@ class Post extends BaseModel
         return $stmt->fetchAll() ?: [];
     }
 
+    public function getPublishedTutorials(): array
+    {
+        $stmt = self::$db->prepare("SELECT p.*, u.username AS author_name FROM `{$this->table}` p LEFT JOIN `vc_users` u ON p.author_id = u.id WHERE p.status = 'published' AND p.type = 'tutorial' ORDER BY p.id DESC");
+        $stmt->execute();
+        return $stmt->fetchAll() ?: [];
+    }
+
     /**
      * Lấy chi tiết bài viết theo slug
      */

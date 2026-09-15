@@ -23,6 +23,9 @@ ob_start();
     margin: 0 auto;
     box-sizing: border-box;
 }
+.post-detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 1.5rem; }
+.related-posts { padding: 1.25rem; height: fit-content; }
+.related-posts a { display: block; padding: .8rem 0; border-bottom: 1px solid var(--glass-border); color: var(--ios-blue); text-decoration: none; font-weight: 600; }
 
 .post-detail-card {
     padding: 2rem;
@@ -46,6 +49,7 @@ ob_start();
 
 /* Tối ưu hóa Responsive cho màn hình nhỏ (Mobile & Tablet) */
 @media (max-width: 768px) {
+    .post-detail-layout { grid-template-columns: 1fr; }
     .post-detail-card {
         padding: 1.25rem !important;
         border-radius: 14px;
@@ -63,6 +67,7 @@ ob_start();
 <div class="post-detail-wrapper">
 
     <?php if (!empty($post)): ?>
+        <div class="post-detail-layout">
         <article class="glass-card post-detail-card">
             <!-- Tiêu đề bài viết -->
             <h1 class="post-title" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.3; color: var(--ios-text);">
@@ -81,6 +86,8 @@ ob_start();
                 <?= $post['content'] ?>
             </div>
         </article>
+        <aside class="glass-card related-posts"><h3>Bài viết khác</h3><?php foreach (array_slice($relatedPosts ?? [], 0, 6) as $related): ?><a href="/post-detail?slug=<?= urlencode($related['slug']) ?>"><?= htmlspecialchars($related['title']) ?></a><?php endforeach; ?></aside>
+        </div>
     <?php else: ?>
         <div class="glass-card" style="text-align: center; padding: 3rem; color: var(--ios-text-secondary);">
             <div style="font-size: 3rem; margin-bottom: 0.5rem;">⚠️</div>

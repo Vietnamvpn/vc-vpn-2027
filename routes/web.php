@@ -3,7 +3,7 @@
 return [
     // Trang chủ & Công khai (Public)
     'GET /'                      => ['HomeController', 'index'],
-    'GET /plans'                 => ['HomeController', 'plans'],
+    'GET /download'              => ['HomeController', 'download'],
     'GET /faq'                   => ['HomeController', 'faq'],
     'GET /post-detail'           => ['HomeController', 'postDetail'],
     'GET /terms'                 => ['HomeController', 'terms'],

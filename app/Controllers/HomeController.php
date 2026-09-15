@@ -37,13 +37,21 @@ class HomeController extends BaseController
         ]);
     }
 
+    public function download(): void
+    {
+        $this->render('home.download', [
+            'activeMenu' => 'download',
+            'showSidebar' => !empty($_SESSION['user_id'])
+        ]);
+    }
+
     public function faq(): void
     {
         $posts = [];
         if (class_exists('App\Models\Post')) {
             $postModel = new Post();
             // Lấy danh sách bài viết/hướng dẫn từ cơ sở dữ liệu
-            $posts = $postModel->getAllPublished(); 
+            $posts = array_values(array_filter($postModel->getAllPublished(), fn ($item) => ($item['type'] ?? '') === 'tutorial'));
         }
 
         $this->render('home.faq', [
@@ -61,11 +69,13 @@ class HomeController extends BaseController
         if (!empty($slug) && class_exists('App\Models\Post')) {
             $postModel = new Post();
             $post = $postModel->getBySlug($slug);
+            $relatedPosts = array_values(array_filter($postModel->getAllPublished(), fn ($item) => ($item['type'] ?? '') === 'tutorial' && ($item['id'] ?? 0) !== ($post['id'] ?? 0)));
         }
 
         $this->render('home.post-detail', [
             'activeMenu' => 'faq',
             'post' => $post,
+            'relatedPosts' => $relatedPosts ?? [],
             'showSidebar' => !empty($_SESSION['user_id'])
         ]);
     }
