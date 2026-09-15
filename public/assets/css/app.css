@@ -549,7 +549,7 @@ body.overlay-open .admin-main {
 /* Footer phủ hết vùng nội dung, không tràn vào sidebar */
 .vc-footer {
     width: calc(100% + 2rem);
-    margin: auto -1rem 0;
+  margin: -1rem -1rem 0;
     padding: 2.5rem 1rem 1.5rem;
     color: #333333;
     font-size: 0.85rem;
