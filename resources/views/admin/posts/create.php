@@ -10,6 +10,14 @@ ob_start();
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
+<style>
+/* Khắc phục triệt để lỗi tối đen màn hình khi mở Modal chèn Video YouTube / Ảnh */
+.note-modal-backdrop { display: none !important; }
+.note-modal { z-index: 10000 !important; background: rgba(0, 0, 0, 0.5) !important; }
+.note-modal .modal-dialog { margin-top: 80px !important; }
+.note-modal .modal-content { background: #ffffff !important; color: #1c1c1e !important; border-radius: 10px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important; }
+</style>
+
 <div style="margin-bottom: 1.25rem;">
     <h1 style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px;">Thêm Bài Viết Mới</h1>
 </div>
@@ -31,15 +39,10 @@ ob_start();
 <?php endif; ?>
 
 <div class="glass-card" style="padding: 1.75rem; width: 100%;">
-    <form method="POST" action="/admin/posts/create" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.25rem;">
+    <form method="POST" action="/admin/posts/create" style="display: flex; flex-direction: column; gap: 1.25rem;">
         <div>
             <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tiêu Đề Bài Viết (*)</label>
             <input type="text" name="title" class="glass-input" required placeholder="Nhập tiêu đề bài viết..." autofocus style="width: 100%;">
-        </div>
-
-        <div>
-            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tải Ảnh Đại Diện Từ Máy Tính (Thumbnail)</label>
-            <input type="file" name="thumbnail" accept="image/*" class="glass-input" style="width: 100%; padding: 0.4rem;">
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
@@ -51,9 +54,8 @@ ob_start();
             <div>
                 <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Phân Loại (*)</label>
                 <select name="type" class="glass-input" style="width: 100%; cursor: pointer;">
-                    <option value="news">Tin tức (News)</option>
-                    <option value="tutorial">Hướng dẫn (Tutorial)</option>
-                    <option value="faq">Câu hỏi thường gặp (FAQ)</option>
+                    <option value="tutorial" selected>Hướng dẫn (Tutorial)</option>
+                    <option value="faq">Thông báo (Notice)</option>
                 </select>
             </div>
 
@@ -84,6 +86,7 @@ $(document).ready(function() {
         placeholder: 'Soạn thảo nội dung bài viết, chèn hình ảnh hoặc dán link YouTube...',
         tabsize: 2,
         height: 380,
+        dialogsInBody: true,
         toolbar: [
             ['style', ['style']],
             ['font', ['bold', 'underline', 'clear']],
