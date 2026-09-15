@@ -70,6 +70,48 @@ function getNoticeFallbackThumb($id) {
 }
 ?>
 
+<style>
+/* CSS Cấu hình Grid 4 thẻ thống kê hiển thị 2 cột trên màn hình nhỏ & nút xem chi tiết góc phải */
+.dashboard-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.stat-card-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem;
+}
+
+.stat-card-item .stat-link {
+    font-size: 0.8rem;
+    color: var(--ios-primary, #007aff);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .dashboard-grid-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem !important;
+    }
+    .stat-card-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 0.85rem 1rem !important;
+        position: relative;
+    }
+    .stat-card-item .stat-link {
+        align-self: flex-end !important;
+        font-size: 0.75rem !important;
+        margin-top: 0.25rem;
+    }
+}
+</style>
+
 <!-- Phần 1: Tiêu đề chào mừng căn giữa -->
 <div class="dashboard-header-welcome">
     <h1>Chào mừng trở lại, <?= htmlspecialchars($user['username'] ?? 'Thành viên') ?>! 👋</h1>
@@ -163,8 +205,8 @@ function getNoticeFallbackThumb($id) {
     </div>
 </div>
 
-<!-- Phần 4: Bảng giá mặc định thuộc nhóm đầu tiên (Không tabs, gợi ý đặt ngay dưới tiêu đề) -->
-<div class="glass-card" style="margin-top: 1.5rem;">
+<!-- Phần 4: Bảng giá mặc định thuộc nhóm đầu tiên (Để tự nhiên theo giao diện, không bọc glass-card ngoài) -->
+<div style="margin-top: 1.5rem;">
     <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0 0 0.3rem 0;">Bảng giá gói dịch vụ</h3>
     <div style="font-size: 0.85rem; color: var(--ios-text-secondary); margin-bottom: 1.25rem;">
         💡 Bạn muốn tham khảo thêm nhiều gói cước với tính năng nâng cao hơn?
