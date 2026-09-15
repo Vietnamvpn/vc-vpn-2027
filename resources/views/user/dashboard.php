@@ -80,7 +80,7 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
     <p>Quản lý dịch vụ VPN và theo dõi tài khoản của bạn</p>
 </div>
 
-<!-- 2. Slide bài viết / hướng dẫn (nhảy từng bài, thumbnail, nút xem chi tiết, chấm chỉ số) -->
+<!-- 2. Slide bài viết / hướng dẫn -->
 <?php if (!empty($posts) && is_array($posts)): ?>
 <div class="glass-card tutorial-slider-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -103,7 +103,7 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
                             <span style="font-size: 0.75rem; color: var(--ios-text-secondary);">
                                 <?= isset($post['created_at']) ? date('d/m/Y', strtotime($post['created_at'])) : '' ?>
                             </span>
-                            <a href="/post/detail?id=<?= (int)($post['id'] ?? 0) ?>" class="glass-btn" style="padding: 0.4rem 0.9rem; font-size: 0.8rem; text-decoration: none;">Xem chi tiết &rarr;</a>
+                            <a href="/post-detail?id=<?= (int)($post['id'] ?? 0) ?>" class="glass-btn" style="padding: 0.4rem 0.9rem; font-size: 0.8rem; text-decoration: none;">Xem chi tiết &rarr;</a>
                         </div>
                     </div>
                 </div>
@@ -120,35 +120,35 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
 </div>
 <?php endif; ?>
 
-<!-- 3. 4 thẻ nhỏ thống kê kèm nút xem chi tiết -->
+<!-- 3. 4 thẻ nhỏ thống kê kèm nút xem chi tiết khớp với routes/web.php -->
 <div class="dashboard-grid-4">
     <div class="glass-card stat-card-item">
         <div>
             <div class="stat-label">Gói đang chạy</div>
             <div class="stat-value" style="color: var(--ios-success);"><?= $activeSubCount ?></div>
         </div>
-        <a href="/user/subscriptions" class="stat-link">Xem chi tiết &rarr;</a>
+        <a href="/subscriptions" class="stat-link">Xem chi tiết &rarr;</a>
     </div>
     <div class="glass-card stat-card-item">
         <div>
             <div class="stat-label">Số lượng đơn hàng</div>
             <div class="stat-value"><?= count($orders ?? []) ?></div>
         </div>
-        <a href="/user/orders" class="stat-link">Xem chi tiết &rarr;</a>
+        <a href="/orders" class="stat-link">Xem chi tiết &rarr;</a>
     </div>
     <div class="glass-card stat-card-item">
         <div>
             <div class="stat-label">Ticket hỗ trợ</div>
             <div class="stat-value"><?= count($tickets ?? []) ?></div>
         </div>
-        <a href="/user/tickets" class="stat-link">Xem chi tiết &rarr;</a>
+        <a href="/tickets" class="stat-link">Xem chi tiết &rarr;</a>
     </div>
     <div class="glass-card stat-card-item">
         <div>
             <div class="stat-label">Số dư tài khoản</div>
             <div class="stat-value"><?= $formatMoney($user['balance'] ?? 0) ?></div>
         </div>
-        <a href="/user/wallet" class="stat-link">Xem chi tiết &rarr;</a>
+        <a href="/wallet" class="stat-link">Xem chi tiết &rarr;</a>
     </div>
 </div>
 
@@ -202,7 +202,7 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
                             </li>
                         </ul>
                     </div>
-                    <a href="/user/plans/checkout?id=<?= (int)($plan['id'] ?? 0) ?>" class="glass-btn" style="width: 100%; text-align: center; text-decoration: none;">Đăng ký ngay</a>
+                    <a href="/checkout?id=<?= (int)($plan['id'] ?? 0) ?>" class="glass-btn" style="width: 100%; text-align: center; text-decoration: none;">Đăng ký ngay</a>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
