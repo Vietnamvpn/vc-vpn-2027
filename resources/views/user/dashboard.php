@@ -48,7 +48,7 @@ if (!empty($plans) && is_array($plans)) {
     }
 }
 
-// Hàm sinh ảnh đại diện SVG ngẫu nhiên chuẩn responsive (Chống méo / tràn màn hình nhỏ)
+// Hàm sinh ảnh đại diện SVG ngẫu nhiên chuẩn responsive
 function getNoticeFallbackThumb($id) {
     $colors = [
         ['#007aff', '#5856d6'],
@@ -71,7 +71,45 @@ function getNoticeFallbackThumb($id) {
 ?>
 
 <style>
-/* 4 Thẻ thống kê: Nội dung luôn ở bên trái, Xem chi tiết luôn ở góc dưới bên phải */
+/* Cấu hình giới hạn thẻ Thông báo & Cắt văn bản chuẩn xác */
+.tutorial-card {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.tutorial-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    min-width: 0; /* Giúp text-overflow hoạt động chính xác */
+}
+
+.tutorial-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0.35rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tutorial-desc {
+    font-size: 0.85rem;
+    color: var(--ios-text-secondary, #8e8e93);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Giới hạn tối đa 2 dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    margin-bottom: 0.5rem;
+}
+
+/* 4 Thẻ thống kê */
 .dashboard-grid-4 {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -95,7 +133,6 @@ function getNoticeFallbackThumb($id) {
     margin-left: 0.5rem;
 }
 
-/* Định dạng hiển thị ảnh Thumbnail slider chuẩn trên máy tính & điện thoại */
 .tutorial-thumb {
     width: 180px;
     height: 110px;
@@ -119,11 +156,11 @@ function getNoticeFallbackThumb($id) {
         font-size: 0.75rem !important;
     }
 
-    /* Sửa lỗi hiển thị Thumbnail SVG trên màn hình nhỏ */
     .tutorial-card {
         flex-direction: column !important;
         align-items: stretch !important;
     }
+
     .tutorial-thumb {
         width: 100% !important;
         height: 140px !important;
@@ -138,7 +175,7 @@ function getNoticeFallbackThumb($id) {
     <p>Quản lý dịch vụ VPN và theo dõi tài khoản của bạn</p>
 </div>
 
-<!-- Phần 2: Slide bài viết thông báo (Tiêu đề nằm độc lập ngoài thẻ) -->
+<!-- Phần 2: Slide bài viết thông báo (Đã giới hạn độ dài nội dung) -->
 <?php if (!empty($noticePosts)): ?>
 <div style="margin-top: 1.5rem;">
     <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0 0 0.8rem 0;">📢 Thông Báo Hệ Thống</h3>
@@ -159,9 +196,14 @@ function getNoticeFallbackThumb($id) {
                         }
                     }
                     
-                    // Nếu không có ảnh tải lên -> sử dụng ảnh SVG ngẫu nhiên
                     if (empty($thumbUrl)) {
                         $thumbUrl = getNoticeFallbackThumb($post['id'] ?? $index);
+                    }
+
+                    // Xử lý cắt văn bản ngắn tối đa 120 ký tự
+                    $cleanDesc = strip_tags(htmlspecialchars_decode($post['content'] ?? ''));
+                    if (mb_strlen($cleanDesc, 'UTF-8') > 120) {
+                        $cleanDesc = mb_substr($cleanDesc, 0, 120, 'UTF-8') . '...';
                     }
                 ?>
                     <div class="tutorial-card" data-index="<?= $index ?>">
@@ -169,8 +211,8 @@ function getNoticeFallbackThumb($id) {
                         <div class="tutorial-content">
                             <div>
                                 <span class="tutorial-badge">THÔNG BÁO</span>
-                                <h4 class="tutorial-title"><?= htmlspecialchars($post['title'] ?? '') ?></h4>
-                                <div class="tutorial-desc"><?= htmlspecialchars(strip_tags(htmlspecialchars_decode($post['content'] ?? ''))) ?></div>
+                                <h4 class="tutorial-title" title="<?= htmlspecialchars($post['title'] ?? '') ?>"><?= htmlspecialchars($post['title'] ?? '') ?></h4>
+                                <div class="tutorial-desc"><?= htmlspecialchars($cleanDesc) ?></div>
                             </div>
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
                                 <span style="font-size: 0.75rem; color: var(--ios-text-secondary);">
@@ -193,7 +235,7 @@ function getNoticeFallbackThumb($id) {
 </div>
 <?php endif; ?>
 
-<!-- Phần 3: 4 thẻ thống kê (Nội dung bên trái, Xem chi tiết góc phải) -->
+<!-- Phần 3: 4 thẻ thống kê -->
 <div class="dashboard-grid-4">
     <div class="glass-card stat-card-item">
         <div>
@@ -237,7 +279,6 @@ function getNoticeFallbackThumb($id) {
             <?php foreach ($firstGroupPlans as $plan): ?>
                 <div class="plan-item-card glass-card">
                     <div>
-                        <!-- Tên gói và giá cước cùng hàng, có đường gạch ngang bên dưới -->
                         <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));">
                             <div class="plan-name" style="margin: 0; font-weight: 600;"><?= htmlspecialchars($plan['name'] ?? '') ?></div>
                             <div class="plan-price" style="margin: 0; text-align: right; white-space: nowrap;">
