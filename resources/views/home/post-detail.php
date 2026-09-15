@@ -1,5 +1,6 @@
 <?php
 $pageTitle = htmlspecialchars($post['title'] ?? 'Chi Tiết Hướng Dẫn') . " - " . ($settings['site_title'] ?? 'VC VPN 2027');
+$extraCss = 'home';
 ob_start();
 ?>
 

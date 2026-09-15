@@ -1,5 +1,6 @@
 <?php
 $pageTitle = "Hướng Dẫn & Câu Hỏi Thường Gặp - " . ($settings['site_title'] ?? 'VC VPN 2027');
+$extraCss = 'home';
 
 // Nhóm các bài viết theo Thể Loại (type)
 $groupedPosts = [];

@@ -1,5 +1,6 @@
 <?php
 $pageTitle = 'Tải Ứng Dụng - ' . ($settings['site_title'] ?? 'VC VPN 2027');
+$extraCss = 'home';
 ob_start();
 ?>
 <div class="glass-card" style="max-width: 820px; margin: 0 auto; padding: 2rem;">
