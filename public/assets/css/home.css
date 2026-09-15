@@ -60,7 +60,7 @@ body:has(.home-hero) .vc-footer-container { gap: 1.35rem; }
 
 /* Mid-Autumn theme for all public Home pages. */
 body.home-festival { --ios-bg: #fff8e8; --ios-text: #42202a; --ios-text-secondary: #82636a; --ios-blue: #a72f40; --ios-blue-hover: #7f1f30; --ios-success: #5b894f; --ios-warning: #c1841d; --glass-bg: rgba(255, 251, 241, .82); --glass-border: rgba(163, 47, 59, .16); --glass-shadow: 0 12px 28px rgba(90, 27, 39, .1), inset 0 1px 0 rgba(255,255,255,.84); background-color: var(--ios-bg); background-image: radial-gradient(circle at 86% 12%, rgba(255, 217, 119, .85) 0 52px, transparent 53px), radial-gradient(circle at 86% 12%, rgba(181, 55, 58, .22) 0 73px, transparent 74px), linear-gradient(150deg, #fff1d1, #fffaf0 52%, #f4ddd0); }
-body.home-festival .navbar-container { background: rgba(255, 250, 239, .87) !important; border-bottom-color: rgba(167, 47, 64, .16) !important; box-shadow: 0 5px 18px rgba(93, 28, 39, .07); }
+body.home-festival .navbar-container { background: rgba(235, 247, 255, .9) !important; border-bottom-color: rgba(25, 112, 185, .16) !important; box-shadow: 0 5px 18px rgba(16, 74, 132, .08); }
 body.home-festival .nav-public-link:hover { color: #a72f40; }
 body.home-festival .glass-card { border-color: rgba(167, 47, 64, .16); }
 body.home-festival .glass-btn { background: #a72f40; box-shadow: 0 5px 14px rgba(126, 30, 45, .23); }
@@ -78,6 +78,6 @@ body.home-festival .home-plan { --home-muted: rgba(255, 236, 198, .81); border-c
 body.home-festival .home-plan-list li::before { color: #ffd778; }
 body.home-festival .faq-group-section { background: rgba(255, 250, 240, .55); border-color: rgba(167, 47, 64, .16); } body.home-festival .faq-card:hover { border-color: #a72f40; box-shadow: 0 12px 30px rgba(167, 47, 64, .17); }
 body.home-festival .related-posts { border-color: rgba(167, 47, 64, .18); } body.home-festival .related-posts a { color: #a72f40; border-color: rgba(167, 47, 64, .16); }
-body.home-festival .vc-footer { color: #ffeec6; border-top-color: rgba(255, 220, 147, .2); background: #4a1728 !important; }
+body.home-festival .vc-footer { color: #e9f6ff; border-top-color: rgba(178, 222, 255, .2); background: #082553 !important; }
 body.home-festival .vc-footer-title, body.home-festival .vc-footer-col h4 { color: #ffe5a4; } body.home-festival .vc-footer-copyright-text { color: rgba(255, 238, 198, .68); }
 @media (max-width: 768px) { body.home-festival .home-hero::after { width: 76px; height: 76px; top: -13px; right: -8px; } }

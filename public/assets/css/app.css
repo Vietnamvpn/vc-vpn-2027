@@ -168,22 +168,22 @@ body.user-festival {
 }
 
 body.user-festival .admin-sidebar {
-  background: linear-gradient(180deg, #651e32, #3f1728);
-  border-right-color: rgba(255, 219, 137, 0.2);
-  box-shadow: 12px 0 28px rgba(67, 16, 29, 0.16);
+  background: linear-gradient(180deg, #123f7b, #082652);
+  border-right-color: rgba(184, 224, 255, 0.22);
+  box-shadow: 12px 0 28px rgba(8, 38, 82, 0.18);
 }
 
-body.user-festival .sidebar-brand { border-bottom-color: rgba(255, 222, 151, 0.2) !important; }
-body.user-festival .sidebar-brand a, body.user-festival .admin-sidebar > div { color: #ffecc0 !important; }
-body.user-festival .admin-sidebar .nav-item { color: rgba(255, 244, 219, 0.78); border-radius: 8px; }
-body.user-festival .admin-sidebar .nav-item:hover { color: #fff5d7; background: rgba(255, 213, 111, 0.12); border-color: rgba(255, 221, 145, 0.16); }
-body.user-festival .admin-sidebar .nav-item.active { color: #572032; background: #f7ca72; box-shadow: 0 7px 18px rgba(22, 6, 12, 0.24); }
+body.user-festival .sidebar-brand { border-bottom-color: rgba(184, 224, 255, 0.22) !important; }
+body.user-festival .sidebar-brand a, body.user-festival .admin-sidebar > div { color: #e7f4ff !important; }
+body.user-festival .admin-sidebar .nav-item { color: rgba(222, 241, 255, 0.82); border-radius: 8px; }
+body.user-festival .admin-sidebar .nav-item:hover { color: #ffffff; background: rgba(128, 197, 246, 0.16); border-color: rgba(184, 224, 255, 0.2); }
+body.user-festival .admin-sidebar .nav-item.active { color: #07366c; background: #91cef5; box-shadow: 0 7px 18px rgba(4, 27, 63, 0.28); }
 
 .festival-moon-mark { width: 26px; height: 26px; border-radius: 50%; display: inline-block; position: relative; flex: 0 0 26px; background: #ffd973; box-shadow: 0 0 0 5px rgba(255, 217, 115, 0.13), 0 0 18px rgba(255, 217, 115, 0.45); }
-.festival-moon-mark::after { content: ''; position: absolute; width: 21px; height: 21px; border-radius: 50%; top: -3px; right: -6px; background: #651e32; }
+.festival-moon-mark::after { content: ''; position: absolute; width: 21px; height: 21px; border-radius: 50%; top: -3px; right: -6px; background: #123f7b; }
 .festival-nav-icon { width: 18px; height: 18px; display: inline-block; position: relative; flex: 0 0 18px; color: #f8cf79; }
 .festival-nav-moon { border-radius: 50%; background: currentColor; box-shadow: 0 0 9px rgba(248, 207, 121, 0.4); }
-.festival-nav-moon::after { content: ''; position: absolute; width: 13px; height: 13px; top: -2px; right: -4px; border-radius: 50%; background: #651e32; }
+.festival-nav-moon::after { content: ''; position: absolute; width: 13px; height: 13px; top: -2px; right: -4px; border-radius: 50%; background: #123f7b; }
 .festival-nav-lantern { width: 13px; height: 16px; margin: 0 2px; border-radius: 5px; background: #e78e3d; border: 1px solid #ffdc87; box-shadow: 0 3px 0 -1px #e78e3d; }
 .festival-nav-lantern::before, .festival-nav-lantern::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); width: 7px; height: 1px; background: #ffdc87; }
 .festival-nav-lantern::before { top: -3px; } .festival-nav-lantern::after { bottom: -4px; }
@@ -191,21 +191,21 @@ body.user-festival .admin-sidebar .nav-item.active { color: #572032; background:
 .festival-nav-scroll { border: 1px solid currentColor; border-radius: 3px; transform: rotate(-8deg); }
 .festival-nav-scroll::after { content: ''; position: absolute; inset: 4px 3px; border-top: 1px solid currentColor; border-bottom: 1px solid currentColor; }
 .festival-nav-coin { border: 2px solid currentColor; border-radius: 50%; } .festival-nav-coin::after { content: ''; position: absolute; inset: 4px; border: 1px solid currentColor; border-radius: 50%; }
-.festival-nav-wallet { border: 1px solid currentColor; border-radius: 3px; } .festival-nav-wallet::after { content: ''; position: absolute; top: 6px; right: -2px; width: 5px; height: 4px; border: 1px solid currentColor; border-radius: 2px; background: #651e32; }
-.festival-nav-gift::before { content: ''; position: absolute; inset: 5px 1px 1px; border: 1px solid currentColor; border-radius: 2px; } .festival-nav-gift::after { content: ''; position: absolute; left: 8px; top: 1px; width: 2px; height: 16px; background: currentColor; box-shadow: -5px 2px 0 -1px #651e32, 5px 2px 0 -1px #651e32; }
+ .festival-nav-wallet { border: 1px solid currentColor; border-radius: 3px; } .festival-nav-wallet::after { content: ''; position: absolute; top: 6px; right: -2px; width: 5px; height: 4px; border: 1px solid currentColor; border-radius: 2px; background: #123f7b; }
+.festival-nav-gift::before { content: ''; position: absolute; inset: 5px 1px 1px; border: 1px solid currentColor; border-radius: 2px; } .festival-nav-gift::after { content: ''; position: absolute; left: 8px; top: 1px; width: 2px; height: 16px; background: currentColor; box-shadow: -5px 2px 0 -1px #123f7b, 5px 2px 0 -1px #123f7b; }
 .festival-nav-chat { border: 1px solid currentColor; border-radius: 50%; } .festival-nav-chat::after { content: ''; position: absolute; bottom: -3px; left: 3px; border: 3px solid transparent; border-top-color: currentColor; transform: rotate(25deg); }
 .festival-nav-user { border: 1px solid currentColor; border-radius: 50% 50% 42% 42%; } .festival-nav-user::before { content: ''; position: absolute; width: 5px; height: 5px; top: 3px; left: 5px; border: 1px solid currentColor; border-radius: 50%; } .festival-nav-user::after { content: ''; position: absolute; width: 9px; height: 4px; bottom: 2px; left: 3px; border: 1px solid currentColor; border-radius: 6px 6px 0 0; }
-body.user-festival .admin-sidebar .nav-item.active .festival-nav-icon { color: #872a39; }
-body.user-festival .admin-sidebar .nav-item.active .festival-nav-moon::after, body.user-festival .admin-sidebar .nav-item.active .festival-nav-wallet::after { background: #f7ca72; }
+body.user-festival .admin-sidebar .nav-item.active .festival-nav-icon { color: #0b4f8d; }
+body.user-festival .admin-sidebar .nav-item.active .festival-nav-moon::after, body.user-festival .admin-sidebar .nav-item.active .festival-nav-wallet::after { background: #91cef5; }
 
-body.user-festival .navbar-container { background: rgba(255, 249, 234, 0.86) !important; border-bottom-color: rgba(169, 45, 62, 0.14) !important; box-shadow: 0 5px 18px rgba(111, 37, 42, 0.07); }
-body.user-festival .profile-trigger { background: rgba(255, 236, 189, 0.6) !important; border-color: rgba(169, 45, 62, 0.18) !important; }
-body.user-festival .profile-menu { background: #fffaf0; border-color: rgba(169, 45, 62, 0.18); }
+body.user-festival .navbar-container { background: rgba(235, 247, 255, 0.9) !important; border-bottom-color: rgba(25, 112, 185, 0.16) !important; box-shadow: 0 5px 18px rgba(16, 74, 132, 0.08); }
+body.user-festival .profile-trigger { background: rgba(207, 235, 255, 0.64) !important; border-color: rgba(25, 112, 185, 0.18) !important; }
+body.user-festival .profile-menu { background: #f6fbff; border-color: rgba(25, 112, 185, 0.18); }
 body.user-festival .glass-card { border-color: rgba(169, 45, 62, 0.16); }
 body.user-festival .glass-btn { background: #a92d3e; box-shadow: 0 5px 14px rgba(126, 30, 45, 0.24); }
 body.user-festival .glass-btn:hover { background: #811d2e; }
 body.user-festival .glass-input:focus { border-color: #a92d3e; box-shadow: 0 0 0 4px rgba(169, 45, 62, 0.12); }
-body.user-festival .vc-footer { color: #ffeec6; border-top-color: rgba(255, 220, 147, 0.2); background: #4a1728; }
+body.user-festival .vc-footer { color: #e9f6ff; border-top-color: rgba(178, 222, 255, 0.2); background: #082553; }
 body.user-festival .vc-footer-title, body.user-festival .vc-footer-col h4 { color: #ffe5a4; }
 body.user-festival .vc-footer-copyright-text { color: rgba(255, 238, 198, 0.68); }
 
