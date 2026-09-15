@@ -9,8 +9,15 @@ class HomeController extends BaseController
 {
     public function index(): void
     {
+        $plans = [];
+        if (class_exists('App\\Models\\VpnPlan')) {
+            $planModel = new VpnPlan();
+            $plans = $planModel->getAllActive();
+        }
+
         $this->render('home.index', [
-            'activeMenu' => 'home'
+            'activeMenu' => 'home',
+            'plans' => $plans
         ]);
     }
 

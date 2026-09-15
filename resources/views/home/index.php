@@ -1,41 +1,37 @@
 <?php
 $pageTitle = ($settings['site_name'] ?? 'VC VPN 2027') . " - Dịch Vụ VPN Tốc Độ Cao";
+$extraCss = 'home';
+$extraJs = 'home';
 ob_start();
 ?>
 
-<!-- Hero Section -->
-<div class="glass-card" style="text-align: center; padding: 3rem 1.5rem; margin-bottom: 2rem; background: linear-gradient(135deg, rgba(0, 122, 255, 0.1), rgba(52, 199, 89, 0.05));">
-    <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.5px;">Bảo Mật & Tốc Độ Không Giới Hạn</h1>
-    <p style="color: var(--ios-text-secondary); max-width: 600px; margin: 0 auto 2rem; font-size: 1.1rem;">
-        Trải nghiệm kết nối VPN thế hệ mới với hạ tầng tối ưu, bảo vệ quyền riêng tư tuyệt đối trên mọi thiết bị.
-    </p>
-    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-        <a href="/plans" class="glass-btn" style="padding: 0.8rem 2rem; font-size: 1rem;">Xem Gói Dịch Vụ</a>
-        <?php if (!empty($_SESSION['user_id'])): ?>
-            <a href="/user/dashboard" class="glass-btn" style="padding: 0.8rem 2rem; font-size: 1rem; background: rgba(255, 255, 255, 0.2); color: var(--ios-text); border: 1px solid var(--glass-border);">Bảng Điều Khiển</a>
-        <?php else: ?>
-            <a href="/register" class="glass-btn" style="padding: 0.8rem 2rem; font-size: 1rem; background: rgba(255, 255, 255, 0.2); color: var(--ios-text); border: 1px solid var(--glass-border);">Đăng Ký Ngay</a>
-        <?php endif; ?>
+<?php
+$groups = [];
+foreach (($plans ?? []) as $plan) {
+    $group = $plan['group_name'] ?? $plan['server_group_name'] ?? 'Gói tiêu chuẩn';
+    $groups[$group][] = $plan;
+}
+$loggedIn = !empty($_SESSION['user_id']);
+?>
+<div class="home-page">
+    <section class="home-hero home-glass home-reveal">
+        <div class="home-hero-grid"><div>
+            <span class="home-eyebrow"><span class="home-dot"></span>KẾT NỐI AN TOÀN, KHÔNG GIỚI HẠN</span>
+            <h1 class="home-title">Internet riêng tư.<br><strong>Trải nghiệm liền mạch.</strong></h1>
+            <p class="home-lead">VPN tốc độ cao giúp bạn làm việc, giải trí và truy cập Internet với sự riêng tư trên mọi thiết bị.</p>
+            <div class="home-actions"><a class="home-button home-button-primary" href="#bang-gia">Khám phá gói dịch vụ →</a><a class="home-button home-button-secondary" href="<?= $loggedIn ? '/user/dashboard' : '/register' ?>"><?= $loggedIn ? 'Bảng điều khiển' : 'Tạo tài khoản' ?></a></div>
+        </div><aside class="home-status home-glass"><div class="home-status-title">Trạng thái hạ tầng</div><div class="home-status-item"><span><span class="home-dot"></span>Hệ thống</span><strong>Ổn định</strong></div><div class="home-status-item"><span>Hỗ trợ</span><strong>24/7</strong></div><div class="home-status-item"><span>Nền tảng</span><strong>Đa thiết bị</strong></div></aside></div>
+    </section>
+    <div class="home-features">
+        <article class="home-feature home-glass home-reveal"><div class="home-feature-icon">⚡</div><h3>Tốc độ tối ưu</h3><p>Phù hợp cho công việc, xem nội dung chất lượng cao và kết nối hằng ngày.</p></article>
+        <article class="home-feature home-glass home-reveal"><div class="home-feature-icon">◈</div><h3>Riêng tư mặc định</h3><p>Giao thức hiện đại bảo vệ phiên truy cập trên mạng công cộng.</p></article>
+        <article class="home-feature home-glass home-reveal"><div class="home-feature-icon">⌘</div><h3>Đa nền tảng</h3><p>Sử dụng trên iOS, Android, Windows, macOS và Linux.</p></article>
+        <article class="home-feature home-glass home-reveal"><div class="home-feature-icon">✦</div><h3>Dễ bắt đầu</h3><p>Chọn gói, nhận cấu hình và kết nối trong vài bước ngắn gọn.</p></article>
     </div>
-</div>
-
-<!-- Features Grid -->
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-    <div class="glass-card">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
-        <h3 style="margin-bottom: 0.5rem;">Tốc Độ Cực Đỉnh</h3>
-        <p style="color: var(--ios-text-secondary); font-size: 0.9rem;">Hạ tầng băng thông rộng, tối ưu hóa cho xem phim 4K, chơi game và truyền dữ liệu dung lượng lớn.</p>
-    </div>
-    <div class="glass-card">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔒</div>
-        <h3 style="margin-bottom: 0.5rem;">Mã Hóa An Toàn</h3>
-        <p style="color: var(--ios-text-secondary); font-size: 0.9rem;">Hỗ trợ các giao thức hiện đại nhất như VMess, VLess, Trojan, WireGuard, HY2 và TUIC.</p>
-    </div>
-    <div class="glass-card">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📱</div>
-        <h3 style="margin-bottom: 0.5rem;">Đa Nền Tảng</h3>
-        <p style="color: var(--ios-text-secondary); font-size: 0.9rem;">Dễ dàng đồng bộ và sử dụng trên iOS, Android, Windows, macOS và Linux.</p>
-    </div>
+    <section id="bang-gia" class="home-pricing home-glass home-reveal"><div class="home-pricing-header"><div><span class="home-badge">BẢNG GIÁ MINH BẠCH</span><h2>Chọn gói phù hợp với bạn</h2><p>Dữ liệu giá được cập nhật trực tiếp từ hệ thống.</p></div>
+        <?php if (count($groups) > 1): ?><div class="home-tabs" role="tablist"><?php $i = 0; foreach ($groups as $name => $items): ?><button class="home-tab" type="button" role="tab" aria-controls="home-panel-<?= $i ?>" aria-selected="<?= $i === 0 ? 'true' : 'false' ?>"><?= htmlspecialchars($name) ?></button><?php $i++; endforeach; ?></div><?php endif; ?></div>
+        <?php if ($groups): ?><?php $i = 0; foreach ($groups as $name => $items): ?><div class="home-tab-panel" id="home-panel-<?= $i ?>" <?= $i ? 'hidden' : '' ?>><div class="home-plan-grid"><?php foreach ($items as $plan): ?><?php $checkout = '/checkout?id=' . (int) $plan['id']; ?><article class="home-plan home-reveal"><span class="home-badge"><?= htmlspecialchars($name) ?></span><h3><?= htmlspecialchars($plan['name']) ?></h3><div class="home-plan-price"><?= isset($formatMoney) ? $formatMoney($plan['price']) : number_format($plan['price'], 0, ',', '.') . ' đ' ?><small>/ <?= (int) $plan['duration_days'] ?> ngày</small></div><ul class="home-plan-list"><li><?= (int) ($plan['bandwidth_limit_gb'] ?? 0) ?: 'Không giới hạn' ?> <?= !empty($plan['bandwidth_limit_gb']) ? 'GB dữ liệu' : 'dữ liệu' ?></li><li>Tối đa <?= (int) ($plan['max_devices'] ?? 1) ?> thiết bị</li><li>Hỗ trợ cấu hình nhanh</li></ul><a class="home-button home-button-secondary" href="<?= $loggedIn ? $checkout : '/login?redirect=' . urlencode($checkout) ?>">Chọn gói này →</a></article><?php endforeach; ?></div></div><?php $i++; endforeach; ?><?php else: ?><div class="home-empty">Gói dịch vụ đang được cập nhật.</div><?php endif; ?>
+    </section>
 </div>
 
 <?php
