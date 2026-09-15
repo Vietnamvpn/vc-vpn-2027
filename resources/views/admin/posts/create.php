@@ -16,6 +16,11 @@ ob_start();
 .note-modal { z-index: 10000 !important; background: rgba(0, 0, 0, 0.5) !important; }
 .note-modal .modal-dialog { margin-top: 80px !important; }
 .note-modal .modal-content { background: #ffffff !important; color: #1c1c1e !important; border-radius: 10px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important; }
+
+/* Ép hiển thị ảnh và video nhúng YouTube trong khung soạn thảo */
+.note-editable { background: #ffffff !important; color: #1c1c1e !important; }
+.note-editable img { max-width: 100% !important; height: auto !important; display: inline-block !important; }
+.note-editable iframe { width: 100% !important; height: 350px !important; display: block !important; border: 0 !important; }
 </style>
 
 <div style="margin-bottom: 1.25rem;">
