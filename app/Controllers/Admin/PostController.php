@@ -40,7 +40,7 @@ class PostController extends BaseController
     {
         $title   = trim($_POST['title'] ?? '');
         $slug    = trim($_POST['slug'] ?? '');
-        $type    = $_POST['type'] ?? 'news';
+        $type    = $_POST['type'] ?? 'tutorial';
         $status  = $_POST['status'] ?? 'published';
         $content = $_POST['content'] ?? '';
 
@@ -54,10 +54,10 @@ class PostController extends BaseController
             $slug = $this->createSlug($title);
         }
 
-        // Xử lý tải ảnh đại diện từ máy tính (nếu có)
+        // Tải ảnh đại diện từ máy tính và lưu mã ẩn (không chèn thẻ img hiển thị trong bài)
         $thumbPath = $this->uploadThumbnail();
         if ($thumbPath) {
-            $content = '<p><img src="' . htmlspecialchars($thumbPath) . '" alt="Thumbnail" class="post-thumb-img"></p>' . $content;
+            $content = '<!--thumbnail:' . htmlspecialchars($thumbPath) . '-->' . $content;
         }
 
         $data = [
@@ -113,7 +113,7 @@ class PostController extends BaseController
 
         $title   = trim($_POST['title'] ?? '');
         $slug    = trim($_POST['slug'] ?? '');
-        $type    = $_POST['type'] ?? 'news';
+        $type    = $_POST['type'] ?? 'tutorial';
         $status  = $_POST['status'] ?? 'published';
         $content = $_POST['content'] ?? '';
 
@@ -127,11 +127,11 @@ class PostController extends BaseController
             $slug = $this->createSlug($title);
         }
 
-        // Xử lý tải ảnh đại diện mới từ máy tính (nếu có tải lên ảnh mới)
+        // Nếu người dùng tải ảnh mới từ máy tính -> cập nhật mã thumbnail ẩn
         $thumbPath = $this->uploadThumbnail();
         if ($thumbPath) {
-            $content = preg_replace('/<p><img[^>]+class=["\']post-thumb-img["\'][^>]*><\/p>/i', '', $content);
-            $content = '<p><img src="' . htmlspecialchars($thumbPath) . '" alt="Thumbnail" class="post-thumb-img"></p>' . $content;
+            $content = preg_replace('/<!--thumbnail:.*?-->/i', '', $content);
+            $content = '<!--thumbnail:' . htmlspecialchars($thumbPath) . '-->' . $content;
         }
 
         $data = [
@@ -189,9 +189,6 @@ class PostController extends BaseController
         $this->redirect('/admin/posts');
     }
 
-    /**
-     * Hàm hỗ trợ tải tệp ảnh đại diện từ máy tính vào thư mục public/uploads/posts/
-     */
     private function uploadThumbnail(): ?string
     {
         if (!isset($_FILES['thumbnail']) || $_FILES['thumbnail']['error'] !== UPLOAD_ERR_OK) {

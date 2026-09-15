@@ -22,7 +22,7 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
     <p>Quản lý dịch vụ VPN và theo dõi tài khoản của bạn</p>
 </div>
 
-<!-- Phần 2: Slide bài viết / hướng dẫn -->
+<!-- Phần 2: Slide bài viết / hướng dẫn (Đọc ảnh đại diện từ mã ẩn hoặc ảnh đầu tiên trong nội dung) -->
 <?php if (!empty($posts) && is_array($posts)): ?>
 <div class="glass-card tutorial-slider-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -31,12 +31,12 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
     <div class="tutorial-slider-wrapper">
         <div class="tutorial-slider" id="tutorialSlider">
             <?php foreach ($posts as $index => $post): 
-                // Tự động tìm đường dẫn ảnh đại diện đã tải lên trong nội dung bài viết
                 $thumbUrl = '/assets/images/logo.png';
                 if (!empty($post['content'])) {
-                    preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $post['content'], $matches);
-                    if (!empty($matches[1])) {
-                        $thumbUrl = $matches[1];
+                    if (preg_match('/<!--thumbnail:(.*?)-->/i', $post['content'], $mThumb)) {
+                        $thumbUrl = $mThumb[1];
+                    } elseif (preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $post['content'], $mImg)) {
+                        $thumbUrl = $mImg[1];
                     }
                 }
             ?>
@@ -44,7 +44,7 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
                     <img src="<?= htmlspecialchars($thumbUrl) ?>" alt="Thumbnail" class="tutorial-thumb" onerror="this.src='/assets/images/logo.png'">
                     <div class="tutorial-content">
                         <div>
-                            <span class="tutorial-badge"><?= htmlspecialchars(strtoupper($post['type'] ?? 'TUTORIAL')) ?></span>
+                            <span class="tutorial-badge"><?= htmlspecialchars(strtoupper(($post['type'] ?? '') === 'faq' ? 'NOTICE' : ($post['type'] ?? 'TUTORIAL'))) ?></span>
                             <h4 class="tutorial-title"><?= htmlspecialchars($post['title'] ?? '') ?></h4>
                             <div class="tutorial-desc"><?= htmlspecialchars(strip_tags($post['content'] ?? '')) ?></div>
                         </div>

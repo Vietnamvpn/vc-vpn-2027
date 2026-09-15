@@ -5,13 +5,13 @@ $activeMenu = "posts";
 ob_start();
 ?>
 
-<!-- Thư viện Summernote Lite & jQuery miễn phí (Hỗ trợ chèn link YouTube & ảnh) -->
+<!-- Thư viện Summernote Lite & jQuery miễn phí -->
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
 <style>
-/* Khắc phục triệt để lỗi tối đen màn hình khi mở Modal chèn Video YouTube / Ảnh */
+/* Sửa lỗi z-index làm tối đen màn hình của Summernote modal */
 .note-modal-backdrop { display: none !important; }
 .note-modal { z-index: 10000 !important; background: rgba(0, 0, 0, 0.5) !important; }
 .note-modal .modal-dialog { margin-top: 80px !important; }
@@ -39,10 +39,15 @@ ob_start();
 <?php endif; ?>
 
 <div class="glass-card" style="padding: 1.75rem; width: 100%;">
-    <form method="POST" action="/admin/posts/create" style="display: flex; flex-direction: column; gap: 1.25rem;">
+    <form method="POST" action="/admin/posts/create" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.25rem;">
         <div>
             <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tiêu Đề Bài Viết (*)</label>
             <input type="text" name="title" class="glass-input" required placeholder="Nhập tiêu đề bài viết..." autofocus style="width: 100%;">
+        </div>
+
+        <div>
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem;">Tải Ảnh Đại Diện Từ Máy Tính (Thumbnail)</label>
+            <input type="file" name="thumbnail" accept="image/*" class="glass-input" style="width: 100%; padding: 0.4rem;">
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
