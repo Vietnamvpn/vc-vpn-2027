@@ -1135,12 +1135,12 @@ body.vpn-theme .plan-item-card:hover, body.vpn-theme .festival-stat-card:hover {
 .wallet-quick-amounts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .65rem; margin-bottom: 1.2rem; }
 .wallet-quick-amount { min-height: 2.5rem; border: 1px solid var(--glass-border); border-radius: var(--radius-md); background: rgba(22, 119, 255, .06); color: var(--ios-blue); cursor: pointer; font-size: .85rem; font-weight: 700; }
 .wallet-quick-amount:hover, .wallet-quick-amount.active { border-color: var(--ios-blue); background: rgba(22, 119, 255, .14); }
-.wallet-form-row { display: flex; flex-wrap: nowrap; gap: .8rem; align-items: end; }
+.wallet-form-row { display: flex; flex-wrap: nowrap; gap: .8rem; align-items: flex-start; }
 .wallet-form-group { min-width: 0; flex: 1; }
 .wallet-form-group .glass-input { box-sizing: border-box; }
-.wallet-form-row .glass-btn { flex: 0 0 auto; white-space: nowrap; }
+.wallet-form-row .glass-btn { align-self: flex-start; flex: 0 0 auto; margin-top: 1.82rem; white-space: nowrap; }
 .wallet-form-group label { display: block; margin-bottom: .45rem; color: var(--ios-text); font-size: .85rem; font-weight: 600; }
 .wallet-form-group small { display: block; margin-top: .4rem; color: var(--ios-text-secondary); font-size: .75rem; }
 .wallet-alert { margin-bottom: 1.2rem; padding: .85rem 1rem; border-radius: var(--radius-md); font-size: .88rem; font-weight: 600; }
 .wallet-alert.error { border: 1px solid rgba(255, 59, 48, .28); background: rgba(255, 59, 48, .1); color: var(--ios-danger); }
-@media (max-width: 768px) { .wallet-overview { grid-template-columns: 1fr; } .wallet-quick-amounts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .wallet-form-row { flex-direction: column; align-items: stretch; } .wallet-form-row .glass-btn { width: 100%; } }
+@media (max-width: 768px) { .wallet-overview { grid-template-columns: 1fr; } .wallet-quick-amounts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .wallet-form-row { flex-direction: column; align-items: stretch; } .wallet-form-row .glass-btn { width: 100%; margin-top: 0; } }
