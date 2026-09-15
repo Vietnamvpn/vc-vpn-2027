@@ -127,8 +127,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Ẩn preloader khi toàn bộ tài nguyên trang đã tải hoàn tất
+    // Ẩn preloader khi DOM hoặc Window hoàn tất, có thời gian ngắt an toàn 1.5s
+    hidePreloader();
     window.addEventListener('load', hidePreloader);
+    setTimeout(hidePreloader, 1500);
 
     // Đảm bảo ẩn preloader khi dùng nút Back/Forward của trình duyệt (bfcache)
     window.addEventListener('pageshow', function (event) {
@@ -166,4 +168,62 @@ document.addEventListener('DOMContentLoaded', function () {
             showPreloader();
         }
     });
+
+    // 7. Xử lý Slider Bài viết & Tab Nhóm máy chủ cho Dashboard
+    const slider = document.getElementById('tutorialSlider');
+    const dots = document.querySelectorAll('.tutorial-dot');
+
+    if (slider && dots.length > 0) {
+        slider.addEventListener('scroll', function () {
+            const slideWidth = slider.clientWidth;
+            if (slideWidth > 0) {
+                const activeIndex = Math.round(slider.scrollLeft / slideWidth);
+                dots.forEach((dot, idx) => {
+                    if (idx === activeIndex) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            }
+        });
+    }
+
+    window.goToSlide = function (index) {
+        if (!slider) return;
+        const slideWidth = slider.clientWidth;
+        if (slideWidth > 0) {
+            slider.scrollTo({
+                left: slideWidth * index,
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    window.switchGroupTab = function (groupId, btnElement) {
+        document.querySelectorAll('.group-tab-btn').forEach(btn => btn.classList.remove('active'));
+        if (btnElement) btnElement.classList.add('active');
+
+        const planCards = document.querySelectorAll('.plan-item-card');
+        planCards.forEach(card => {
+            if (groupId === 'all') {
+                card.style.display = 'flex';
+            } else {
+                const groupsAttr = card.getAttribute('data-groups') || '';
+                const groupsArray = groupsAttr.split(',').map(g => g.trim());
+
+                if (groupsArray.includes(groupId.toString()) || groupsAttr === '') {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            }
+        });
+    };
+
+    const firstTabBtn = document.querySelector('.group-tab-btn.active');
+    if (firstTabBtn) {
+        const defaultGroupId = firstTabBtn.getAttribute('data-group-id') || 'all';
+        window.switchGroupTab(defaultGroupId, firstTabBtn);
+    }
 });

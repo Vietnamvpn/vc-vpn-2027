@@ -16,66 +16,13 @@ if (!empty($subscriptions) && is_array($subscriptions)) {
 $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGroups[0]['id'] ?? 'all') : 'all';
 ?>
 
-<style>
-/* 1. Tiêu đề chào mừng căn giữa */
-.dashboard-header-welcome { text-align: center; margin-bottom: 2rem; }
-.dashboard-header-welcome h1 { font-size: 1.8rem; font-weight: 700; color: var(--ios-text); margin-bottom: 0.4rem; }
-.dashboard-header-welcome p { font-size: 0.95rem; color: var(--ios-text-secondary); margin: 0; }
-
-/* 2. Slide bài hướng dẫn */
-.tutorial-slider-container { margin-bottom: 1.5rem; overflow: hidden; position: relative; }
-.tutorial-slider-wrapper { width: 100%; overflow: hidden; }
-.tutorial-slider { display: flex; scroll-snap-type: x mandatory; scroll-behavior: smooth; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.tutorial-slider::-webkit-scrollbar { display: none; }
-.tutorial-card { flex: 0 0 100%; scroll-snap-align: start; display: flex; gap: 1.2rem; align-items: center; box-sizing: border-box; }
-@media (max-width: 650px) {
-    .tutorial-card { flex-direction: column; align-items: flex-start; }
-    .tutorial-thumb { width: 100% !important; height: 160px !important; }
-}
-.tutorial-thumb { width: 200px; height: 125px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); flex-shrink: 0; background: rgba(0, 122, 255, 0.05); }
-.tutorial-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-.tutorial-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; background: rgba(0, 122, 255, 0.15); color: var(--ios-blue); margin-bottom: 0.5rem; width: fit-content; }
-.tutorial-title { font-size: 1.1rem; font-weight: 700; color: var(--ios-text); margin: 0 0 0.4rem 0; line-height: 1.3; }
-.tutorial-desc { font-size: 0.85rem; color: var(--ios-text-secondary); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 0.8rem; }
-.tutorial-dots { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 1rem; }
-.tutorial-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); cursor: pointer; transition: all 0.3s ease; }
-.tutorial-dot.active { width: 22px; border-radius: 10px; background: var(--ios-blue); }
-
-/* 3. 4 Thẻ thống kê */
-.dashboard-grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem; margin-bottom: 1.5rem; }
-.stat-card-item { display: flex; flex-direction: column; justify-content: space-between; position: relative; }
-.stat-label { font-size: 0.75rem; font-weight: 700; color: var(--ios-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
-.stat-value { font-size: 1.6rem; font-weight: 700; color: var(--ios-text); margin-bottom: 0.8rem; }
-.stat-link { font-size: 0.8rem; font-weight: 600; color: var(--ios-blue); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; transition: opacity 0.2s ease; }
-.stat-link:hover { opacity: 0.8; text-decoration: underline; }
-
-/* 4. Bảng giá & Tabs */
-.group-tabs { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.75rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--glass-border); }
-.group-tab-btn { padding: 0.5rem 1.2rem; border-radius: 20px; border: 1px solid var(--glass-border); background: transparent; color: var(--ios-text-secondary); font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease; white-space: nowrap; }
-.group-tab-btn.active, .group-tab-btn:hover { background: var(--ios-blue); color: #ffffff; border-color: var(--ios-blue); }
-.plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; }
-.plan-item-card { border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s ease; }
-.plan-item-card:hover { transform: translateY(-3px); }
-.plan-name { font-size: 1.2rem; font-weight: 700; color: var(--ios-text); margin-bottom: 0.5rem; }
-.plan-price { font-size: 1.6rem; font-weight: 800; color: var(--ios-blue); margin-bottom: 1rem; }
-.plan-price span { font-size: 0.85rem; font-weight: 400; color: var(--ios-text-secondary); }
-.info-list { list-style: none; padding: 0; margin: 0 0 1.2rem 0; }
-.info-list li { padding: 0.6rem 0; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--ios-text-secondary); }
-.info-list li strong { color: var(--ios-text); }
-.info-list li:last-child { border-bottom: none; }
-
-/* Banner gợi ý cửa hàng */
-.shop-banner { display: flex; justify-content: space-between; align-items: center; background: rgba(0, 122, 255, 0.08); border: 1px solid rgba(0, 122, 255, 0.2); border-radius: var(--radius-md); padding: 1rem 1.2rem; margin-top: 1.5rem; flex-wrap: wrap; gap: 1rem; }
-.shop-banner-text { font-size: 0.9rem; color: var(--ios-text); font-weight: 500; }
-</style>
-
 <!-- Phần 1: Tiêu đề chào mừng căn giữa -->
 <div class="dashboard-header-welcome">
     <h1>Chào mừng trở lại, <?= htmlspecialchars($user['username'] ?? 'Thành viên') ?>! 👋</h1>
     <p>Quản lý dịch vụ VPN và theo dõi tài khoản của bạn</p>
 </div>
 
-<!-- Phần 2: Slide bài viết / hướng dẫn (có thumbnail, nhảy từng bài, nút xem chi tiết, chấm chỉ số sáng) -->
+<!-- Phần 2: Slide bài viết / hướng dẫn -->
 <?php if (!empty($posts) && is_array($posts)): ?>
 <div class="glass-card tutorial-slider-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -114,7 +61,7 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
 </div>
 <?php endif; ?>
 
-<!-- Phần 3: 4 thẻ nhỏ hiển thị số lượng gói đang chạy, đơn hàng, ticket, số dư (kèm nút xem chi tiết mở trang chính) -->
+<!-- Phần 3: 4 thẻ nhỏ hiển thị số lượng gói đang chạy, đơn hàng, ticket, số dư -->
 <div class="dashboard-grid-4">
     <div class="glass-card stat-card-item">
         <div>
@@ -146,19 +93,19 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
     </div>
 </div>
 
-<!-- Phần 4: Bảng giá các gói cước phân loại nhóm theo tab ngang (mặc định mở nhóm đầu tiên & gợi ý vào cửa hàng) -->
+<!-- Phần 4: Bảng giá các gói cước phân loại nhóm theo tab ngang -->
 <div class="glass-card" style="margin-top: 1.5rem;">
     <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0 0 1rem 0;">Bảng giá gói dịch vụ</h3>
     
     <div class="group-tabs">
         <?php if (!empty($serverGroups) && is_array($serverGroups)): ?>
             <?php foreach ($serverGroups as $index => $group): ?>
-                <button class="group-tab-btn <?= $index === 0 ? 'active' : '' ?>" onclick="switchGroupTab('<?= $group['id'] ?>', this)">
+                <button class="group-tab-btn <?= $index === 0 ? 'active' : '' ?>" data-group-id="<?= htmlspecialchars($group['id'] ?? '') ?>" onclick="switchGroupTab('<?= htmlspecialchars($group['id'] ?? '') ?>', this)">
                     <?= htmlspecialchars($group['name'] ?? '') ?>
                 </button>
             <?php endforeach; ?>
         <?php else: ?>
-            <button class="group-tab-btn active" onclick="switchGroupTab('all', this)">Tất cả nhóm</button>
+            <button class="group-tab-btn active" data-group-id="all" onclick="switchGroupTab('all', this)">Tất cả nhóm</button>
         <?php endif; ?>
     </div>
 
@@ -207,78 +154,6 @@ $firstGroupId = (!empty($serverGroups) && is_array($serverGroups)) ? ($serverGro
         <a href="/user/plans" class="glass-btn" style="text-decoration: none; padding: 0.5rem 1rem; font-size: 0.85rem;">Truy cập Cửa Hàng &rarr;</a>
     </div>
 </div>
-
-<script>
-// Tự động gỡ bỏ preloader xoay tròn nếu bị kẹt
-function unlockPreloader() {
-    const preloader = document.getElementById('page-preloader');
-    if (preloader) preloader.classList.add('preloader-hidden');
-}
-document.addEventListener('DOMContentLoaded', unlockPreloader);
-setTimeout(unlockPreloader, 1000);
-
-// Xử lý chuyển Slide bài hướng dẫn
-const slider = document.getElementById('tutorialSlider');
-const dots = document.querySelectorAll('.tutorial-dot');
-
-if (slider && dots.length > 0) {
-    slider.addEventListener('scroll', () => {
-        const slideWidth = slider.clientWidth;
-        if (slideWidth > 0) {
-            const activeIndex = Math.round(slider.scrollLeft / slideWidth);
-            dots.forEach((dot, idx) => {
-                if (idx === activeIndex) {
-                    dot.classList.add('active');
-                } else {
-                    dot.classList.remove('active');
-                }
-            });
-        }
-    });
-}
-
-function goToSlide(index) {
-    if (!slider) return;
-    const slideWidth = slider.clientWidth;
-    if (slideWidth > 0) {
-        slider.scrollTo({
-            left: slideWidth * index,
-            behavior: 'smooth'
-        });
-    }
-}
-
-// Xử lý chuyển Tab nhóm máy chủ
-function switchGroupTab(groupId, btnElement) {
-    document.querySelectorAll('.group-tab-btn').forEach(btn => btn.classList.remove('active'));
-    if (btnElement) btnElement.classList.add('active');
-
-    const planCards = document.querySelectorAll('.plan-item-card');
-    planCards.forEach(card => {
-        if (groupId === 'all') {
-            card.style.display = 'flex';
-        } else {
-            const groupsAttr = card.getAttribute('data-groups') || '';
-            const groupsArray = groupsAttr.split(',').map(g => g.trim());
-            
-            if (groupsArray.includes(groupId.toString()) || groupsAttr === '') {
-                card.style.display = 'flex';
-            } else {
-                card.style.display = 'none';
-            }
-        }
-    });
-}
-
-// Khởi tạo lọc gói theo nhóm đầu tiên
-document.addEventListener('DOMContentLoaded', () => {
-    const firstTabBtn = document.querySelector('.group-tab-btn.active');
-    if (firstTabBtn) {
-        const defaultGroupId = '<?= $firstGroupId ?>';
-        switchGroupTab(defaultGroupId, firstTabBtn);
-    }
-});
-</script>
 
 <?php
 // Kết thúc bộ đệm nội dung
