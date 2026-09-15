@@ -1,5 +1,6 @@
 <?php
 $siteTitle = $settings['site_title'] ?? 'VC VPN 2027';
+$homeAnchorPrefix = ($activeMenu ?? '') === 'home' ? '' : '/';
 ?>
 <nav class="glass-card navbar-container" style="margin: 0; padding: 0.875rem 1.5rem; border-radius: 0; border-top: none; border-left: none; border-right: none; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; width: 100%; position: relative; z-index: 1000; background: rgba(180, 187, 213, 0.49);">
     <!-- Bên trái: Toggle Sidebar Mobile (khi đã đăng nhập) OR Tên Web (khi chưa đăng nhập) -->
@@ -19,8 +20,9 @@ $siteTitle = $settings['site_title'] ?? 'VC VPN 2027';
     <?php if (!isset($_SESSION['user_id'])): ?>
         <div class="nav-public-links">
             <a href="/" class="nav-public-link">Trang chủ</a>
+            <a href="<?= $homeAnchorPrefix ?>#bang-gia" class="nav-public-link">Sản phẩm</a>
+            <a href="<?= $homeAnchorPrefix ?>#cau-hoi-thuong-gap" class="nav-public-link">Câu hỏi thường gặp</a>
             <a href="/download" class="nav-public-link">Tải ứng dụng</a>
-            <a href="/faq" class="nav-public-link">Hướng dẫn</a>
         </div>
     <?php endif; ?>
 
@@ -87,8 +89,9 @@ $siteTitle = $settings['site_title'] ?? 'VC VPN 2027';
     <?php if (!isset($_SESSION['user_id'])): ?>
         <div id="guest-dropdown-menu" class="guest-mobile-menu glass-card">
             <a href="/" class="guest-nav-link">Trang chủ</a>
-            <a href="/plans" class="guest-nav-link">Gói dịch vụ</a>
-            <a href="/faq" class="guest-nav-link">Hướng dẫn</a>
+            <a href="<?= $homeAnchorPrefix ?>#bang-gia" class="guest-nav-link">Sản phẩm</a>
+            <a href="<?= $homeAnchorPrefix ?>#cau-hoi-thuong-gap" class="guest-nav-link">Câu hỏi thường gặp</a>
+            <a href="/download" class="guest-nav-link">Tải ứng dụng</a>
             <div class="guest-auth-group">
                 <a href="/login" style="color: var(--ios-text); text-decoration: none; font-size: 0.85rem; font-weight: 600; text-align: center; padding: 0.5rem; background: rgba(239, 171, 12, 0.85); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;">Đăng nhập</a>
                 <a href="/register" class="glass-btn" style="padding: 0.5rem; font-size: 0.85rem; text-align: center; width: 100%;">Đăng ký</a>

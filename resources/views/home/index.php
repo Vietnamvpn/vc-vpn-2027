@@ -36,6 +36,31 @@ $loggedIn = !empty($_SESSION['user_id']);
         <?php if ($groups): ?><div class="home-tabs" role="tablist"><?php $i = 0; foreach ($groups as $name => $items): ?><button class="home-tab" type="button" role="tab" aria-controls="home-panel-<?= $i ?>" aria-selected="<?= $i === 0 ? 'true' : 'false' ?>"><?= htmlspecialchars($name) ?></button><?php $i++; endforeach; ?></div><?php endif; ?></div>
         <?php if ($groups): ?><?php $i = 0; foreach ($groups as $name => $items): ?><div class="home-tab-panel" id="home-panel-<?= $i ?>" <?= $i ? 'hidden' : '' ?>><div class="home-plan-grid"><?php foreach ($items as $plan): ?><?php $checkout = '/checkout?id=' . (int) $plan['id']; ?><article class="home-plan home-reveal"><div class="home-plan-heading"><h3><?= htmlspecialchars($plan['name']) ?></h3><div class="home-plan-price"><?= isset($formatMoney) ? $formatMoney($plan['price']) : number_format($plan['price'], 0, ',', '.') . ' đ' ?><small>| <?= (int) $plan['duration_days'] ?> ngày</small></div></div><ul class="home-plan-list"><li><?= (int) ($plan['bandwidth_limit_gb'] ?? 0) ?: 'Không giới hạn' ?> <?= !empty($plan['bandwidth_limit_gb']) ? 'GB dữ liệu' : 'dữ liệu' ?></li><li>Tối đa <?= (int) ($plan['max_devices'] ?? 1) ?> thiết bị</li><?php if (!empty($plan['description'])): ?><li><?= htmlspecialchars($plan['description']) ?></li><?php endif; ?></ul><a class="home-button home-button-secondary" href="<?= $loggedIn ? $checkout : '/login?redirect=' . urlencode($checkout) ?>">Chọn gói này →</a></article><?php endforeach; ?></div></div><?php $i++; endforeach; ?><?php else: ?><div class="home-empty">Gói dịch vụ đang được cập nhật.</div><?php endif; ?>
     </section>
+    <section id="cau-hoi-thuong-gap" class="home-faq home-reveal" aria-labelledby="home-faq-title">
+        <div class="home-faq-heading">
+            <span class="home-badge">HỖ TRỢ NHANH</span>
+            <h2 id="home-faq-title">Câu hỏi thường gặp</h2>
+            <p>Thông tin cần biết trước khi bắt đầu sử dụng dịch vụ VPN.</p>
+        </div>
+        <div class="home-faq-list">
+            <details class="home-faq-item" open>
+                <summary>VPN hoạt động như thế nào?</summary>
+                <p>VPN tạo một kết nối được mã hóa giữa thiết bị và máy chủ, giúp bảo vệ dữ liệu khi bạn truy cập Internet.</p>
+            </details>
+            <details class="home-faq-item">
+                <summary>Tôi có thể sử dụng trên bao nhiêu thiết bị?</summary>
+                <p>Mỗi gói hỗ trợ số thiết bị riêng. Bạn có thể xem giới hạn cụ thể trong thông tin của gói cước trước khi đăng ký.</p>
+            </details>
+            <details class="home-faq-item">
+                <summary>Sau khi thanh toán, tôi nhận cấu hình ở đâu?</summary>
+                <p>Thông tin kết nối sẽ xuất hiện trong bảng điều khiển tài khoản ngay sau khi đơn hàng được kích hoạt.</p>
+            </details>
+            <details class="home-faq-item">
+                <summary>Tôi cần hỗ trợ khi không kết nối được?</summary>
+                <p>Hãy tạo ticket trong tài khoản để đội ngũ hỗ trợ kiểm tra cấu hình và trạng thái dịch vụ cho bạn.</p>
+            </details>
+        </div>
+    </section>
 <?php
 $content = ob_get_clean();
 require_once __DIR__ . '/../layouts/app.php';
