@@ -23,37 +23,20 @@ ob_start();
     margin: 0 auto;
     box-sizing: border-box;
 }
-.post-detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 1.5rem; }
-.related-posts { padding: 1.25rem; height: fit-content; }
+.post-detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 2rem; align-items: start; }
+.post-article { min-width: 0; padding: .5rem 0 2rem; }
+.related-posts { height: fit-content; border-left: 1px solid var(--glass-border); padding-left: 1.5rem; }
 .related-posts a { display: block; padding: .8rem 0; border-bottom: 1px solid var(--glass-border); color: var(--ios-blue); text-decoration: none; font-weight: 600; }
-
-.post-detail-card {
-    padding: 2rem;
-    opacity: 0;
-    animation: assembleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
-                box-shadow 0.35s ease, 
-                border-color 0.35s ease;
-    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));
-    box-sizing: border-box;
-    word-break: break-word;
-}
-
-/* Hiệu ứng di chuột: Nhô nhẹ lên & viền phát sáng */
-.post-detail-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--ios-blue, #007aff);
-    box-shadow: 0 12px 30px rgba(0, 122, 255, 0.2), 
-                0 0 15px rgba(0, 122, 255, 0.15);
-}
+.post-content { overflow-wrap: anywhere; }
+.post-content img, .post-content video, .post-content iframe { max-width: 100%; height: auto; }
+.post-content table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+.post-content pre { max-width: 100%; overflow-x: auto; padding: 1rem; border-radius: 10px; }
 
 /* Tối ưu hóa Responsive cho màn hình nhỏ (Mobile & Tablet) */
 @media (max-width: 768px) {
     .post-detail-layout { grid-template-columns: 1fr; }
-    .post-detail-card {
-        padding: 1.25rem !important;
-        border-radius: 14px;
-    }
+    .post-article { padding-top: 0; }
+    .related-posts { border-top: 1px solid var(--glass-border); border-left: 0; padding: 1rem 0 0; }
     .post-title {
         font-size: 1.4rem !important;
     }
@@ -68,7 +51,7 @@ ob_start();
 
     <?php if (!empty($post)): ?>
         <div class="post-detail-layout">
-        <article class="glass-card post-detail-card">
+        <article class="post-article">
             <!-- Tiêu đề bài viết -->
             <h1 class="post-title" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.3; color: var(--ios-text);">
                 <?= htmlspecialchars($post['title']) ?>
@@ -86,7 +69,7 @@ ob_start();
                 <?= $post['content'] ?>
             </div>
         </article>
-        <aside class="glass-card related-posts"><h3>Bài viết khác</h3><?php foreach (array_slice($relatedPosts ?? [], 0, 6) as $related): ?><a href="/post-detail?slug=<?= urlencode($related['slug']) ?>"><?= htmlspecialchars($related['title']) ?></a><?php endforeach; ?></aside>
+        <aside class="related-posts"><h3>Bài viết khác</h3><?php foreach (array_slice($relatedPosts ?? [], 0, 6) as $related): ?><a href="/post-detail?slug=<?= urlencode($related['slug']) ?>"><?= htmlspecialchars($related['title']) ?></a><?php endforeach; ?></aside>
         </div>
     <?php else: ?>
         <div class="glass-card" style="text-align: center; padding: 3rem; color: var(--ios-text-secondary);">
