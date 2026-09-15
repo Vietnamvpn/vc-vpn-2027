@@ -62,13 +62,13 @@
 .faq-group-header { display: flex; align-items: center; gap: .6rem; margin: 0 0 1.25rem; padding-bottom: .75rem; border-bottom: 1px solid var(--glass-border); color: var(--ios-text); font-size: 1.35rem; font-weight: 700; word-break: break-word; }
 .faq-card { display: flex; align-items: stretch; position: relative; box-sizing: border-box; overflow: hidden; padding: 0; border: 1px solid var(--glass-border); opacity: 0; word-break: break-word; animation: assembleIn .6s cubic-bezier(.16, 1, .3, 1) forwards; transition: transform .35s cubic-bezier(.16, 1, .3, 1), box-shadow .35s ease, border-color .35s ease; }
 .faq-card-thumbnail { display: block; flex-shrink: 0; width: 160px; height: auto; border-right: 1px solid var(--glass-border); object-fit: cover; }
-.faq-card-body { display: flex; flex: 1; flex-direction: column; padding: 1.5rem; }
+.faq-card-body { display: flex; flex: 1; flex-direction: column; padding: 1rem; }
 .faq-card:hover { transform: translateY(-6px) scale(1.01); border-color: var(--ios-blue); box-shadow: 0 12px 30px rgba(0, 122, 255, .25), 0 0 20px rgba(0, 122, 255, .2); }
 .home-reveal { opacity: 0; transform: translateY(52px); transition: opacity .48s ease-out, transform .68s cubic-bezier(.34, 1.56, .64, 1); }
 .home-reveal.is-visible { opacity: 1; transform: translateY(0); }
 .home-reveal:nth-child(2) { transition-delay: .09s; } .home-reveal:nth-child(3) { transition-delay: .18s; } .home-reveal:nth-child(4) { transition-delay: .27s; }
 @media (max-width: 800px) { .home-hero-grid { grid-template-columns: 1fr; } .home-stats, .home-features { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 768px) { .faq-group-header { margin-bottom: 1rem; font-size: 1.15rem; } .faq-card { flex-direction: column; } .faq-card-thumbnail { width: 100%; height: 160px; border-right: 0; border-bottom: 1px solid var(--glass-border); } .faq-card-body { padding: 1.25rem; } }
+@media (max-width: 768px) { .faq-group-header { margin-bottom: 1rem; font-size: 1.15rem; } .faq-card { flex-direction: column; } .faq-card-thumbnail { width: 100%; height: 160px; border-right: 0; border-bottom: 1px solid var(--glass-border); } .faq-card-body { padding: 1rem; } }
 @media (max-width: 520px) { .home-hero { padding: 1.5rem; } .home-stats, .home-features { grid-template-columns: 1fr; } .home-actions .home-button { width: 100%; } .home-pricing { padding: 1rem; } }
 @media (prefers-reduced-motion: reduce) { .home-reveal { opacity: 1; transform: none; filter: none; transition: none; } }
 

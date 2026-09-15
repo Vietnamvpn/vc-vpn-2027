@@ -94,7 +94,7 @@ ob_start();
                                     <span>📅 Cập nhật: <?= date('d/m/Y', strtotime($post['created_at'])) ?></span>
                                     <span>🏷️ Chuyên mục: <?= htmlspecialchars($typeGroup) ?></span>
                                 </div>
-                                <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                                <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
                                     <a href="/post-detail?slug=<?= urlencode($post['slug']) ?>" class="glass-btn" style="font-size: 0.85rem; padding: 0.5rem 1rem; text-decoration: none; box-sizing: border-box;">
                                         Xem Chi Tiết
                                     </a>
