@@ -21,6 +21,7 @@ $homeAnchorPrefix = ($activeMenu ?? '') === 'home' ? '' : '/';
         <div class="nav-public-links">
             <a href="/" class="nav-public-link">Trang chủ</a>
             <a href="<?= $homeAnchorPrefix ?>#bang-gia" class="nav-public-link">Sản phẩm</a>
+            <a href="/faq" class="nav-public-link">Hướng dẫn</a>
             <a href="<?= $homeAnchorPrefix ?>#cau-hoi-thuong-gap" class="nav-public-link">Câu hỏi thường gặp</a>
             <a href="/download" class="nav-public-link">Tải ứng dụng</a>
         </div>
@@ -90,6 +91,7 @@ $homeAnchorPrefix = ($activeMenu ?? '') === 'home' ? '' : '/';
         <div id="guest-dropdown-menu" class="guest-mobile-menu glass-card">
             <a href="/" class="guest-nav-link">Trang chủ</a>
             <a href="<?= $homeAnchorPrefix ?>#bang-gia" class="guest-nav-link">Sản phẩm</a>
+            <a href="/faq" class="guest-nav-link">Hướng dẫn</a>
             <a href="<?= $homeAnchorPrefix ?>#cau-hoi-thuong-gap" class="guest-nav-link">Câu hỏi thường gặp</a>
             <a href="/download" class="guest-nav-link">Tải ứng dụng</a>
             <div class="guest-auth-group">
