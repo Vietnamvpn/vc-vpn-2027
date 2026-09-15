@@ -18,11 +18,6 @@ if (isset($_SESSION['user_id'])) {
     <div class="sidebar-brand" style="padding: 0.5rem 0.5rem 1rem 0.5rem; border-bottom: 1px solid var(--glass-border); margin-bottom: 0.75rem;">
         <a href="<?= $logoHref ?>" title="<?= ($userRole === 'admin') ? ($isAdminRoute ? 'Chuyển sang Trang User' : 'Chuyển sang Trang Admin') : 'Trang Chủ' ?>" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--ios-text); font-weight: 700; font-size: 1.1rem;">
             <span><?= htmlspecialchars($siteTitle) ?></span>
-            <?php if ($userRole === 'admin'): ?>
-                <span style="font-size: 0.65rem; background: rgba(0, 122, 255, 0.15); color: var(--ios-blue); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid rgba(0,122,255,0.2);">
-                    <?= $isAdminRoute ? 'ADMIN' : 'USER' ?>
-                </span>
-            <?php endif; ?>
         </a>
     </div>
 
