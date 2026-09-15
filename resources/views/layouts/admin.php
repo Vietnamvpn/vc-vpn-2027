@@ -26,7 +26,7 @@ require_once __DIR__ . '/header.php';
             ]
         ],
         'business' => [
-            'menus' => ['coupons', 'orders', 'payments', 'subscriptions', 'referrals', 'withdrawals', 'tickets'],
+            'menus' => ['coupons', 'orders', 'payments', 'subscriptions', 'referrals', 'withdrawals'],
             'label' => 'Quản Lý Kinh Doanh',
             'tabs' => [
                 'coupons' => ['label' => 'Mã Giảm Giá', 'icon' => '🏷️', 'url' => '/admin/coupons'],
@@ -34,8 +34,7 @@ require_once __DIR__ . '/header.php';
                 'payments' => ['label' => 'Thanh Toán', 'icon' => '💵', 'url' => '/admin/payments'],
                 'subscriptions' => ['label' => 'Đăng Ký VPN', 'icon' => '🔑', 'url' => '/admin/subscriptions'],
                 'referrals' => ['label' => 'Hoa Hồng', 'icon' => '🤝', 'url' => '/admin/referrals'],
-                'withdrawals' => ['label' => 'Rút Tiền', 'icon' => '🏦', 'url' => '/admin/withdrawals'],
-                'tickets' => ['label' => 'Ticket Hỗ Trợ', 'icon' => '🎫', 'url' => '/admin/tickets']
+                'withdrawals' => ['label' => 'Rút Tiền', 'icon' => '🏦', 'url' => '/admin/withdrawals']
             ]
         ]
     ];

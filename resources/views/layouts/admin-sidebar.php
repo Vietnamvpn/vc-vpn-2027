@@ -5,7 +5,7 @@ $userRole = $_SESSION['role'] ?? 'user';
 $siteTitle = $settings['site_title'] ?? 'VC VPN 2027';
 $activeMenu = $activeMenu ?? '';
 $infrastructureMenus = ['server-groups', 'servers', 'nodes', 'plans'];
-$businessMenus = ['coupons', 'orders', 'payments', 'subscriptions', 'referrals', 'withdrawals', 'tickets'];
+$businessMenus = ['coupons', 'orders', 'payments', 'subscriptions', 'referrals', 'withdrawals'];
 
 $logoHref = '/';
 if (isset($_SESSION['user_id'])) {
@@ -31,6 +31,7 @@ if (isset($_SESSION['user_id'])) {
     <a href="/admin/users" class="nav-item <?= $activeMenu === 'users' ? 'active' : '' ?>">👥 Người Dùng</a>
     <a href="/admin/server-groups" class="nav-item <?= in_array($activeMenu, $infrastructureMenus, true) ? 'active' : '' ?>">🖥️ Quản Lý Hạ Tầng VPN</a>
     <a href="/admin/coupons" class="nav-item <?= in_array($activeMenu, $businessMenus, true) ? 'active' : '' ?>">🧾 Quản Lý Kinh Doanh</a>
+    <a href="/admin/tickets" class="nav-item <?= $activeMenu === 'tickets' ? 'active' : '' ?>">🎫 Ticket Hỗ Trợ</a>
     <a href="/admin/posts" class="nav-item <?= $activeMenu === 'posts' ? 'active' : '' ?>">📰 Bài Viết</a>
     <a href="/admin/expenses" class="nav-item <?= $activeMenu === 'expenses' ? 'active' : '' ?>">💸 Chi Phí</a>
     <a href="/admin/settings" class="nav-item <?= $activeMenu === 'settings' ? 'active' : '' ?>">⚙️ Cài Đặt</a>
