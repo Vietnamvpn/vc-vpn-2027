@@ -81,7 +81,7 @@ ob_start();
         </div>
     </div>
 
-<div class="glass-card" style="max-width: 680px; margin-top: 1.2rem;">
+<div class="glass-card" style="width: 100%; box-sizing: border-box; margin-top: 1.2rem;">
     <h2 class="profile-header">Bảo mật tài khoản</h2>
     <form action="/user/profile/update" method="POST">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '') ?>">
