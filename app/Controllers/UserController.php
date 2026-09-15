@@ -8,6 +8,8 @@ use App\Models\Subscription;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\SupportTicket;
+use App\Models\Post;
+use App\Models\ServerGroup;
 
 class UserController extends BaseController
 {
@@ -24,6 +26,11 @@ class UserController extends BaseController
         $userId = $_SESSION['user_id'];
         $user = [];
         $subscriptions = [];
+        $orders = [];
+        $tickets = [];
+        $posts = [];
+        $plans = [];
+        $serverGroups = [];
 
         if (class_exists('App\Models\User')) {
             $userModel = new User();
@@ -35,9 +42,43 @@ class UserController extends BaseController
             $subscriptions = $subModel->getByUserId($userId);
         }
 
+        if (class_exists('App\Models\Order')) {
+            $orderModel = new Order();
+            $orders = $orderModel->getByUserId($userId);
+        }
+
+        if (class_exists('App\Models\SupportTicket')) {
+            $ticketModel = new SupportTicket();
+            $tickets = $ticketModel->getByUserId($userId);
+        }
+
+        if (class_exists('App\Models\Post')) {
+            $postModel = new Post();
+            $posts = $postModel->getAllPublished();
+        }
+
+        if (class_exists('App\Models\VpnPlan')) {
+            $planModel = new VpnPlan();
+            $plans = $planModel->getAllActive();
+        }
+
+        if (class_exists('App\Models\ServerGroup')) {
+            $groupModel = new ServerGroup();
+            if (method_exists($groupModel, 'all')) {
+                $serverGroups = $groupModel->all();
+            } elseif (method_exists($groupModel, 'getAllActive')) {
+                $serverGroups = $groupModel->getAllActive();
+            }
+        }
+
         $this->render('user.dashboard', [
             'user' => $user,
             'subscriptions' => $subscriptions,
+            'orders' => $orders,
+            'tickets' => $tickets,
+            'posts' => $posts,
+            'plans' => $plans,
+            'serverGroups' => $serverGroups,
             'activeMenu' => 'dashboard'
         ]);
     }

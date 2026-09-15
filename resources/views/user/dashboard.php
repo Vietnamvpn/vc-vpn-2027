@@ -2,109 +2,183 @@
 // Bắt đầu lưu bộ đệm nội dung
 ob_start();
 
-// Lấy gói dịch vụ đang hoạt động (nếu có)
-$activeSubscription = null;
+// Đếm số lượng gói đang hoạt động
+$activeSubCount = 0;
 if (!empty($subscriptions) && is_array($subscriptions)) {
     foreach ($subscriptions as $sub) {
         if (isset($sub['status']) && $sub['status'] === 'active') {
-            $activeSubscription = $sub;
-            break;
+            $activeSubCount++;
         }
     }
 }
 ?>
 
 <style>
-/* CSS Layout riêng cho Dashboard - Đồng bộ với biến màu iOS trong app.css */
-.dashboard-grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem; margin-bottom: 1.5rem; }
-.dashboard-grid-2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.2rem; }
-@media (max-width: 768px) { .dashboard-grid-2 { grid-template-columns: 1fr; } }
+/* CSS Layout Dashboard & Tab System */
+.dashboard-header-welcome { text-align: center; margin-bottom: 2rem; }
+.dashboard-header-welcome h1 { font-size: 1.8rem; font-weight: 700; color: var(--ios-text); margin-bottom: 0.4rem; }
+.dashboard-header-welcome p { font-size: 0.95rem; color: var(--ios-text-secondary); margin: 0; }
 
+.dashboard-grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem; margin-bottom: 1.5rem; }
 .stat-label { font-size: 0.75rem; font-weight: 700; color: var(--ios-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
 .stat-value { font-size: 1.6rem; font-weight: 700; color: var(--ios-text); }
 
-.status-active { color: var(--ios-success); }
-.status-inactive { color: var(--ios-danger); }
+/* Slider Bài hướng dẫn */
+.tutorial-slider-container { margin-bottom: 1.5rem; overflow: hidden; }
+.tutorial-slider { display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 0.75rem; scroll-behavior: smooth; }
+.tutorial-slider::-webkit-scrollbar { height: 4px; }
+.tutorial-slider::-webkit-scrollbar-thumb { background: rgba(0, 122, 255, 0.3); border-radius: 4px; }
+.tutorial-card { min-width: 280px; flex: 0 0 calc(33.333% - 0.7rem); background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 1.2rem; display: flex; flex-direction: column; justify-content: space-between; }
+@media (max-width: 768px) { .tutorial-card { flex: 0 0 85%; } }
 
-.ref-box { padding: 1.5rem; border: 2px dashed var(--glass-border); border-radius: var(--radius-md); text-align: center; margin: 1rem 0; background: rgba(0, 122, 255, 0.05); }
-.ref-code { font-size: 1.5rem; font-weight: 800; color: var(--ios-blue); margin: 0; letter-spacing: 1px; }
+.tutorial-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; background: rgba(0, 122, 255, 0.15); color: var(--ios-blue); margin-bottom: 0.5rem; width: fit-content; }
+.tutorial-title { font-size: 1rem; font-weight: 600; color: var(--ios-text); margin: 0 0 0.5rem 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+.tutorial-desc { font-size: 0.85rem; color: var(--ios-text-secondary); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 0.8rem; }
 
-.info-list { list-style: none; padding: 0; margin: 0 0 1rem 0; }
-.info-list li { padding: 0.85rem 0; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-size: 0.9rem; }
+/* Bảng giá & Tabs */
+.group-tabs { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.75rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--glass-border); }
+.group-tab-btn { padding: 0.5rem 1.2rem; border-radius: 20px; border: 1px solid var(--glass-border); background: transparent; color: var(--ios-text-secondary); font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease; white-space: nowrap; }
+.group-tab-btn.active, .group-tab-btn:hover { background: var(--ios-blue); color: #ffffff; border-color: var(--ios-blue); }
+
+.plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; }
+.plan-item-card { border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s ease; }
+.plan-item-card:hover { transform: translateY(-3px); }
+.plan-name { font-size: 1.2rem; font-weight: 700; color: var(--ios-text); margin-bottom: 0.5rem; }
+.plan-price { font-size: 1.6rem; font-weight: 800; color: var(--ios-blue); margin-bottom: 1rem; }
+.plan-price span { font-size: 0.85rem; font-weight: 400; color: var(--ios-text-secondary); }
+
+.info-list { list-style: none; padding: 0; margin: 0 0 1.2rem 0; }
+.info-list li { padding: 0.6rem 0; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--ios-text-secondary); }
+.info-list li strong { color: var(--ios-text); }
 .info-list li:last-child { border-bottom: none; }
 </style>
 
+<!-- 1. Tiêu đề chào mừng căn giữa -->
+<div class="dashboard-header-welcome">
+    <h1>Chào mừng trở lại, <?= htmlspecialchars($user['username'] ?? 'Thành viên') ?>! 👋</h1>
+    <p>Quản lý dịch vụ VPN và theo dõi tài khoản của bạn</p>
+</div>
+
+<!-- 2. Slide bài viết / hướng dẫn (nếu trong SQL có) -->
+<?php if (!empty($posts) && is_array($posts)): ?>
+<div class="glass-card tutorial-slider-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0;">📢 Bài viết & Hướng dẫn</h3>
+    </div>
+    <div class="tutorial-slider">
+        <?php foreach ($posts as $post): ?>
+            <div class="tutorial-card">
+                <div>
+                    <span class="tutorial-badge"><?= htmlspecialchars(strtoupper($post['type'] ?? 'TUTORIAL')) ?></span>
+                    <h4 class="tutorial-title"><?= htmlspecialchars($post['title'] ?? '') ?></h4>
+                    <div class="tutorial-desc"><?= htmlspecialchars(strip_tags($post['content'] ?? '')) ?></div>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--ios-text-secondary);">
+                    <?= isset($post['created_at']) ? date('d/m/Y', strtotime($post['created_at'])) : '' ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+<?php endif; ?>
+
+<!-- 3. 4 thẻ nhỏ hiển thị số lượng gói đang chạy, đơn hàng, ticket, số dư -->
 <div class="dashboard-grid-4">
+    <div class="glass-card">
+        <div class="stat-label">Gói đang chạy</div>
+        <div class="stat-value" style="color: var(--ios-success);"><?= $activeSubCount ?></div>
+    </div>
+    <div class="glass-card">
+        <div class="stat-label">Số lượng đơn hàng</div>
+        <div class="stat-value"><?= count($orders ?? []) ?></div>
+    </div>
+    <div class="glass-card">
+        <div class="stat-label">Ticket hỗ trợ</div>
+        <div class="stat-value"><?= count($tickets ?? []) ?></div>
+    </div>
     <div class="glass-card">
         <div class="stat-label">Số dư tài khoản</div>
         <div class="stat-value"><?= $formatMoney($user['balance'] ?? 0) ?></div>
     </div>
-    <div class="glass-card">
-        <div class="stat-label">Hoa hồng giới thiệu</div>
-        <div class="stat-value"><?= $formatMoney($user['commission_balance'] ?? 0) ?></div>
-    </div>
-    <div class="glass-card">
-        <div class="stat-label">Gói dịch vụ</div>
-        <div class="stat-value" style="font-size: 1.2rem; margin-top: 0.4rem;">
-            <?= $activeSubscription ? htmlspecialchars($activeSubscription['plan_name'] ?? 'Đang hoạt động') : 'Chưa có' ?>
-        </div>
-    </div>
-    <div class="glass-card">
-        <div class="stat-label">Trạng thái</div>
-        <div class="stat-value <?= (($user['status'] ?? '') === 'active') ? 'status-active' : 'status-inactive' ?>">
-            <?= ucfirst($user['status'] ?? 'unknown') ?>
-        </div>
-    </div>
 </div>
 
-<div class="dashboard-grid-2">
-    <!-- Gói dịch vụ -->
-    <div class="glass-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.85rem;">
-            <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0;">Gói dịch vụ đang hoạt động</h3>
-            <a href="/user/subscriptions" style="color: var(--ios-blue); text-decoration: none; font-size: 0.85rem; font-weight: 600;">Xem tất cả</a>
-        </div>
-        
-        <?php if($activeSubscription): ?>
-            <ul class="info-list">
-                <li>
-                    <span style="color: var(--ios-text-secondary); font-weight: 600;">Lưu lượng đã dùng</span>
-                    <span style="font-weight: 600;"><?= number_format((($activeSubscription['upload'] ?? 0) + ($activeSubscription['download'] ?? 0)) / 1073741824, 2) ?> GB</span>
-                </li>
-                <li>
-                    <span style="color: var(--ios-text-secondary); font-weight: 600;">Ngày hết hạn</span>
-                    <span style="font-weight: 600;"><?= isset($activeSubscription['end_date']) ? date('d/m/Y', strtotime($activeSubscription['end_date'])) : 'N/A' ?></span>
-                </li>
-            </ul>
-            <a href="/user/subscriptions/connect?id=<?= $activeSubscription['id'] ?? 0 ?>" class="glass-btn" style="width: 100%; margin-top: 0.5rem;">Kết nối VPN ngay</a>
-        <?php else: ?>
-            <div style="text-align: center; padding: 2rem 0;">
-                <p style="color: var(--ios-text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">Bạn chưa có gói dịch vụ nào đang hoạt động.</p>
-                <a href="/user/plans" class="glass-btn">Mua gói ngay</a>
-            </div>
+<!-- 4. Bảng giá các gói, phân loại nhóm theo tab ngang -->
+<div class="glass-card" style="margin-top: 1.5rem;">
+    <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0 0 1rem 0;">Bảng giá gói dịch vụ</h3>
+    
+    <!-- Tab ngang nhóm máy chủ -->
+    <div class="group-tabs">
+        <button class="group-tab-btn active" onclick="switchGroupTab('all', this)">Tất cả nhóm</button>
+        <?php if (!empty($serverGroups) && is_array($serverGroups)): ?>
+            <?php foreach ($serverGroups as $group): ?>
+                <button class="group-tab-btn" onclick="switchGroupTab('<?= $group['id'] ?>', this)">
+                    <?= htmlspecialchars($group['name'] ?? '') ?>
+                </button>
+            <?php endforeach; ?>
         <?php endif; ?>
     </div>
 
-    <!-- Mã giới thiệu -->
-    <div class="glass-card">
-        <h3 style="font-size: 1.05rem; font-weight: 600; margin: 0 0 0.5rem 0; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.85rem;">Mã giới thiệu của bạn</h3>
-        <div class="ref-box">
-            <p class="ref-code" id="refCode"><?= htmlspecialchars($user['ref_code'] ?? 'Chưa có') ?></p>
-        </div>
-        <p style="font-size: 0.85rem; color: var(--ios-text-secondary); line-height: 1.4; margin-bottom: 1rem;">
-            Chia sẻ mã này để nhận <strong style="color: var(--ios-text);"><?= htmlspecialchars($settings['referral_commission_rate'] ?? '10') ?>%</strong> hoa hồng mỗi khi người được giới thiệu thanh toán đơn hàng.
-        </p>
-        <button class="glass-btn" style="width: 100%;" onclick="copyRefCode()">Sao chép liên kết</button>
+    <!-- Bảng danh sách gói -->
+    <div class="plans-grid">
+        <?php if (!empty($plans) && is_array($plans)): ?>
+            <?php foreach ($plans as $plan): 
+                $groupIds = [];
+                if (!empty($plan['group_id'])) {
+                    if (is_array($plan['group_id'])) {
+                        $groupIds = $plan['group_id'];
+                    } else {
+                        $decoded = json_decode($plan['group_id'], true);
+                        if (is_array($decoded)) $groupIds = $decoded;
+                    }
+                }
+                $groupsStr = implode(',', $groupIds);
+            ?>
+                <div class="plan-item-card glass-card" data-groups="<?= htmlspecialchars($groupsStr) ?>">
+                    <div>
+                        <div class="plan-name"><?= htmlspecialchars($plan['name'] ?? '') ?></div>
+                        <div class="plan-price">
+                            <?= $formatMoney($plan['price'] ?? 0) ?>
+                            <span>/ <?= (int)($plan['duration_days'] ?? 30) ?> ngày</span>
+                        </div>
+                        <ul class="info-list">
+                            <li>
+                                <span>Lưu lượng:</span>
+                                <strong><?= ((int)($plan['bandwidth_limit_gb'] ?? 0) > 0) ? (int)$plan['bandwidth_limit_gb'] . ' GB' : 'Không giới hạn' ?></strong>
+                            </li>
+                            <li>
+                                <span>Thiết bị tối đa:</span>
+                                <strong><?= (int)($plan['max_devices'] ?? 1) ?> thiết bị</strong>
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="/user/plans/checkout?id=<?= (int)($plan['id'] ?? 0) ?>" class="glass-btn" style="width: 100%; text-align: center; text-decoration: none;">Đăng ký ngay</a>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p style="color: var(--ios-text-secondary); text-align: center; grid-column: 1 / -1; padding: 2rem 0;">Hiện chưa có gói dịch vụ nào.</p>
+        <?php endif; ?>
     </div>
 </div>
 
 <script>
-function copyRefCode() {
-    const refCode = document.getElementById('refCode').innerText;
-    if (refCode === 'Chưa có' || refCode.trim() === '') return;
-    const link = window.location.origin + '/register?ref=' + refCode;
-    navigator.clipboard.writeText(link).then(() => {
-        alert('Đã sao chép liên kết giới thiệu!');
+function switchGroupTab(groupId, btnElement) {
+    document.querySelectorAll('.group-tab-btn').forEach(btn => btn.classList.remove('active'));
+    btnElement.classList.add('active');
+
+    const planCards = document.querySelectorAll('.plan-item-card');
+    planCards.forEach(card => {
+        if (groupId === 'all') {
+            card.style.display = 'flex';
+        } else {
+            const groupsAttr = card.getAttribute('data-groups') || '';
+            const groupsArray = groupsAttr.split(',').map(g => g.trim());
+            
+            if (groupsArray.includes(groupId.toString()) || groupsAttr === '') {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        }
     });
 }
 </script>
