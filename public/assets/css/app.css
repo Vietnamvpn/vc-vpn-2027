@@ -1016,3 +1016,48 @@ body.overlay-open .admin-main {
 .info-list li:last-child {
   border-bottom: none;
 }
+
+/* Unified VPN product palette. */
+body.vpn-theme {
+  --ios-bg: #f4f8fc;
+  --ios-text: #132238;
+  --ios-text-secondary: #617087;
+  --ios-blue: #1677ff;
+  --ios-blue-hover: #0d5fd1;
+  --ios-success: #22a66f;
+  --ios-warning: #e59a21;
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(43, 100, 163, 0.14);
+  --glass-shadow: 0 10px 26px rgba(26, 69, 117, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  background-color: var(--ios-bg);
+  background-image: linear-gradient(150deg, #f7fbff 0%, #eef7ff 52%, #eefaf7 100%);
+}
+
+body.vpn-theme .admin-sidebar { background: linear-gradient(180deg, #132b52, #0b1d38); border-right-color: rgba(106, 183, 255, 0.22); box-shadow: 12px 0 28px rgba(11, 29, 56, 0.18); }
+body.vpn-theme .sidebar-brand { border-bottom-color: rgba(125, 198, 255, 0.2) !important; }
+body.vpn-theme .sidebar-brand a, body.vpn-theme .admin-sidebar > div { color: #edf7ff !important; }
+body.vpn-theme .admin-sidebar .nav-item { color: rgba(219, 239, 255, 0.82); }
+body.vpn-theme .admin-sidebar .nav-item:hover { color: #ffffff; background: rgba(65, 157, 235, 0.16); border-color: rgba(125, 198, 255, 0.18); }
+body.vpn-theme .admin-sidebar .nav-item.active { color: #ffffff; background: #1677ff; box-shadow: 0 7px 18px rgba(4, 34, 76, 0.3); }
+body.vpn-theme .festival-moon-mark::after, body.vpn-theme .festival-nav-moon::after, body.vpn-theme .festival-nav-wallet::after { background: #132b52; }
+body.vpn-theme .admin-sidebar .nav-item.active .festival-nav-icon { color: #d8f3ff; }
+body.vpn-theme .admin-sidebar .nav-item.active .festival-nav-moon::after, body.vpn-theme .admin-sidebar .nav-item.active .festival-nav-wallet::after { background: #1677ff; }
+body.vpn-theme .navbar-container { background: rgba(255, 255, 255, 0.92) !important; border-bottom-color: rgba(43, 100, 163, 0.12) !important; box-shadow: 0 4px 16px rgba(26, 69, 117, 0.06); }
+body.vpn-theme .profile-trigger { background: #f0f7ff !important; border-color: rgba(22, 119, 255, 0.16) !important; }
+body.vpn-theme .profile-menu { background: #ffffff; border-color: rgba(43, 100, 163, 0.14); }
+body.vpn-theme .glass-card { border-color: rgba(43, 100, 163, 0.14); }
+body.vpn-theme .glass-btn { background: #1677ff; box-shadow: 0 5px 14px rgba(22, 119, 255, 0.25); }
+body.vpn-theme .glass-btn:hover { background: #0d5fd1; }
+body.vpn-theme .glass-input:focus { border-color: #1677ff; box-shadow: 0 0 0 4px rgba(22, 119, 255, 0.12); }
+body.vpn-theme .vc-footer { color: #dceeff; border-top-color: rgba(111, 191, 255, 0.18); background: #0b1d38; }
+body.vpn-theme .vc-footer-title, body.vpn-theme .vc-footer-col h4 { color: #ffffff; }
+body.vpn-theme .vc-footer-copyright-text { color: rgba(220, 238, 255, 0.66); }
+body.vpn-theme .moonlit-welcome { color: #eff9ff; border-color: rgba(127, 218, 255, 0.22); background: linear-gradient(115deg, #0b2b56, #145a9a 66%, #1677b8); box-shadow: 0 14px 32px rgba(15, 66, 124, 0.2); }
+body.vpn-theme .moonlit-welcome::before { background: #8ee6ee; box-shadow: 0 0 0 12px rgba(142, 230, 238, 0.09), 0 0 35px rgba(72, 204, 220, 0.35); }
+body.vpn-theme .moonlit-welcome h1 { color: #ffffff; } body.vpn-theme .moonlit-welcome p { color: rgba(229, 246, 255, 0.82); }
+body.vpn-theme .festival-kicker { color: #8ee6ee; }
+body.vpn-theme .festival-stat-card { border-top-color: #1677ff; } body.vpn-theme .festival-stat-card:nth-child(2) { border-top-color: #19c2d1; } body.vpn-theme .festival-stat-card:nth-child(3) { border-top-color: #22a66f; } body.vpn-theme .festival-stat-card:nth-child(4) { border-top-color: #e59a21; }
+body.vpn-theme .festival-stat-moon { background: #7edcf1; box-shadow: 0 0 0 5px rgba(126, 220, 241, 0.16); } body.vpn-theme .festival-stat-moon::after { background: #f4f8fc; }
+body.vpn-theme .festival-stat-lantern { border-color: #1677ff; background: #7edcf1; box-shadow: inset 0 0 0 4px #dff9ff; } body.vpn-theme .festival-stat-lantern::before, body.vpn-theme .festival-stat-lantern::after { background: #1677ff; }
+body.vpn-theme .festival-stat-star::before { color: #22a66f; } body.vpn-theme .festival-stat-coin, body.vpn-theme .festival-stat-coin::after { border-color: #e59a21; }
+body.vpn-theme .plan-item-card:hover, body.vpn-theme .festival-stat-card:hover { border-color: rgba(22, 119, 255, 0.38); box-shadow: 0 15px 26px rgba(22, 119, 255, 0.12); }

@@ -10,4 +10,4 @@
         <link rel="stylesheet" href="/assets/css/<?= $extraCss ?>.css?v=<?= time() ?>">
     <?php endif; ?>
 </head>
-<body class="midautumn-theme user-festival<?= ($extraCss ?? '') === 'home' ? ' home-festival' : '' ?>">
+<body class="vpn-theme user-festival<?= ($extraCss ?? '') === 'home' ? ' home-festival' : '' ?>">

@@ -72,7 +72,7 @@ function getNoticeFallbackThumb($id) {
 
 <!-- Phần 1: Tiêu đề chào mừng căn giữa -->
 <div class="dashboard-header-welcome moonlit-welcome">
-    <span class="festival-kicker">DEM HOI TRANG RAM</span>
+    <span class="festival-kicker">KET NOI BAO MAT</span>
     <h1>Chào mừng trở lại, <?= htmlspecialchars($user['username'] ?? 'Thành viên') ?>!</h1>
     <p>Quản lý dịch vụ VPN và theo dõi tài khoản của bạn</p>
 </div>

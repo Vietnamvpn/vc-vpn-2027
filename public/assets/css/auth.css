@@ -499,6 +499,16 @@ html, body {
     flex: 1;
     border-bottom: 1px solid #ddd;
 }
+
+/* Professional VPN palette overrides. */
+body.vpn-theme { background: #091a33; }
+body.vpn-theme .bg-overlay { background-color: rgba(6, 22, 45, 0.76); background-image: radial-gradient(rgba(116, 211, 255, .38) 1px, transparent 1px); background-size: 20px 20px; }
+body.vpn-theme .glow-left { background: radial-gradient(circle, rgba(22, 119, 255, .42) 0%, transparent 70%); } body.vpn-theme .glow-right { background: radial-gradient(circle, rgba(25, 194, 209, .3) 0%, transparent 70%); }
+body.vpn-theme .auth-card { border-color: rgba(116, 211, 255, .44); border-top-color: rgba(191, 239, 255, .85); background-color: rgba(10, 36, 71, .72); box-shadow: 0 20px 40px rgba(0, 9, 25, .34), 0 0 25px rgba(22, 119, 255, .2); }
+body.vpn-theme .royal-title, body.vpn-theme .form-group label, body.vpn-theme .input-group-text-custom, body.vpn-theme .btn-toggle-pw, body.vpn-theme .auth-footer a { color: #75d8ff; }
+body.vpn-theme .input-group-custom { border-color: rgba(116, 211, 255, .4); } body.vpn-theme .input-group-custom:focus-within { border-color: #19c2d1; box-shadow: 0 0 0 3px rgba(25, 194, 209, .18), 0 4px 12px rgba(22, 119, 255, .15); }
+body.vpn-theme .btn-login { border-color: #0d5fd1; background: linear-gradient(135deg, #1677ff, #0d5fd1); box-shadow: 0 4px 15px rgba(22, 119, 255, .35); } body.vpn-theme .btn-login:hover { background: linear-gradient(135deg, #0d5fd1, #0b4ca8); box-shadow: 0 8px 22px rgba(22, 119, 255, .48); }
+body.vpn-theme .auth-divider, body.vpn-theme .auth-footer .divider { color: #75d8ff; }
 .auth-divider span {
     padding: 0 10px;
     font-size: 12px;

@@ -81,3 +81,21 @@ body.home-festival .related-posts { border-color: rgba(167, 47, 64, .18); } body
 body.home-festival .vc-footer { color: #e9f6ff; border-top-color: rgba(178, 222, 255, .2); background: #082553 !important; }
 body.home-festival .vc-footer-title, body.home-festival .vc-footer-col h4 { color: #ffe5a4; } body.home-festival .vc-footer-copyright-text { color: rgba(255, 238, 198, .68); }
 @media (max-width: 768px) { body.home-festival .home-hero::after { width: 76px; height: 76px; top: -13px; right: -8px; } }
+
+/* VPN palette for public pages. */
+body.vpn-theme.home-festival { --ios-bg: #f4f8fc; --ios-text: #132238; --ios-text-secondary: #617087; --ios-blue: #1677ff; --ios-blue-hover: #0d5fd1; --ios-success: #22a66f; --ios-warning: #e59a21; --glass-bg: rgba(255, 255, 255, .84); --glass-border: rgba(43, 100, 163, .14); --glass-shadow: 0 10px 26px rgba(26, 69, 117, .09), inset 0 1px 0 rgba(255,255,255,.92); background-color: var(--ios-bg); background-image: linear-gradient(150deg, #f7fbff, #eef7ff 52%, #eefaf7); }
+body.vpn-theme.home-festival .navbar-container { background: rgba(255, 255, 255, .92) !important; border-bottom-color: rgba(43, 100, 163, .12) !important; box-shadow: 0 4px 16px rgba(26, 69, 117, .06); }
+body.vpn-theme.home-festival .nav-public-link:hover { color: #1677ff; }
+body.vpn-theme.home-festival .glass-card { border-color: rgba(43, 100, 163, .14); }
+body.vpn-theme.home-festival .glass-btn { background: #1677ff; box-shadow: 0 5px 14px rgba(22, 119, 255, .25); } body.vpn-theme.home-festival .glass-btn:hover { background: #0d5fd1; }
+body.vpn-theme.home-festival .home-hero { --home-ink: #effaff; --home-muted: rgba(220, 244, 255, .82); --home-line: rgba(158, 224, 255, .22); background: linear-gradient(125deg, #09264b 0%, #0e4f86 57%, #087f9a 100%); box-shadow: 0 22px 50px rgba(15, 66, 124, .22); }
+body.vpn-theme.home-festival .home-hero::after { background: #83e2ef; box-shadow: 0 0 0 12px rgba(131, 226, 239, .08), 0 0 35px rgba(72, 204, 220, .34); }
+body.vpn-theme.home-festival .home-title strong { color: #8ee6ee; } body.vpn-theme.home-festival .home-button-primary { background: #1677ff; } body.vpn-theme.home-festival .home-status::after { background: rgba(86, 211, 224, .25); }
+body.vpn-theme.home-festival .home-feature { border-bottom-color: rgba(43, 100, 163, .16); } body.vpn-theme.home-festival .home-feature-icon { background: rgba(22, 119, 255, .1); border-color: rgba(22, 119, 255, .15); }
+body.vpn-theme.home-festival .home-pricing .home-badge { color: #1677ff; border-color: rgba(22, 119, 255, .22); background: rgba(22, 119, 255, .07); }
+body.vpn-theme.home-festival .home-tabs { background: rgba(22, 119, 255, .07); } body.vpn-theme.home-festival .home-tab[aria-selected="true"] { background: #1677ff; }
+body.vpn-theme.home-festival .home-plan { --home-muted: rgba(220, 244, 255, .78); border-color: rgba(135, 220, 241, .2); background: linear-gradient(145deg, #0c3768, #125a88); box-shadow: 0 12px 22px rgba(15, 66, 124, .14); }
+body.vpn-theme.home-festival .home-plan-list li::before { color: #63e0a1; }
+body.vpn-theme.home-festival .faq-group-section { background: rgba(255, 255, 255, .55); border-color: rgba(43, 100, 163, .14); } body.vpn-theme.home-festival .faq-card:hover { border-color: #1677ff; box-shadow: 0 12px 30px rgba(22, 119, 255, .14); }
+body.vpn-theme.home-festival .related-posts { border-color: rgba(43, 100, 163, .16); } body.vpn-theme.home-festival .related-posts a { color: #1677ff; border-color: rgba(43, 100, 163, .14); }
+body.vpn-theme.home-festival .vc-footer { color: #dceeff; border-top-color: rgba(111, 191, 255, .18); background: #0b1d38 !important; } body.vpn-theme.home-festival .vc-footer-title, body.vpn-theme.home-festival .vc-footer-col h4 { color: #ffffff; } body.vpn-theme.home-festival .vc-footer-copyright-text { color: rgba(220, 238, 255, .66); }
