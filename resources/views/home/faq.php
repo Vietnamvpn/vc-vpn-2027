@@ -69,7 +69,7 @@ ob_start();
 
 .faq-card {
     display: flex;
-    flex-direction: column;
+    align-items: stretch;
     padding: 0;
     opacity: 0;
     animation: assembleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -85,15 +85,18 @@ ob_start();
 
 .faq-card-thumbnail {
     display: block;
-    width: 100%;
-    height: 190px;
+    width: 260px;
+    height: auto;
     flex-shrink: 0;
     object-fit: cover;
-    border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));
+    border-right: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));
 }
 
 .faq-card-body {
     padding: 1.5rem;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
 }
 
 /* Hiệu ứng di chuột: Nhô nhẹ lên & viền phát sáng */
@@ -113,8 +116,14 @@ ob_start();
     .faq-card-body {
         padding: 1.25rem;
     }
+    .faq-card {
+        flex-direction: column;
+    }
     .faq-card-thumbnail {
+        width: 100%;
         height: 160px;
+        border-right: 0;
+        border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));
     }
 }
 </style>
