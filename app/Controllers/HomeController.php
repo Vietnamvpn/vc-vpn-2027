@@ -69,7 +69,7 @@ class HomeController extends BaseController
         if (!empty($slug) && class_exists('App\Models\Post')) {
             $postModel = new Post();
             $post = $postModel->getBySlug($slug);
-            $relatedPosts = array_values(array_filter($postModel->getAllPublished(), fn ($item) => ($item['type'] ?? '') === 'tutorial' && ($item['id'] ?? 0) !== ($post['id'] ?? 0)));
+            $relatedPosts = array_values(array_filter($postModel->getAllPublished(), fn ($item) => ($item['id'] ?? 0) !== ($post['id'] ?? 0)));
         }
 
         $this->render('home.post-detail', [
