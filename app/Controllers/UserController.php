@@ -168,6 +168,32 @@ class UserController extends BaseController
         ]);
     }
 
+    public function orderDetail(): void
+    {
+        $orderId = (int) ($_GET['id'] ?? 0);
+        $order = null;
+
+        if ($orderId > 0 && class_exists('App\Models\Order')) {
+            $orderModel = new Order();
+            $candidate = $orderModel->findWithDetails($orderId);
+
+            if ($candidate && (int) ($candidate['user_id'] ?? 0) === (int) $_SESSION['user_id']) {
+                $order = $candidate;
+            }
+        }
+
+        if ($order === null) {
+            $_SESSION['error'] = 'Không tìm thấy đơn hàng hoặc bạn không có quyền truy cập.';
+            $this->redirect('/orders');
+            return;
+        }
+
+        $this->render('user.orders.detail', [
+            'order' => $order,
+            'activeMenu' => 'orders'
+        ]);
+    }
+
     public function payments(): void
     {
         $userId = $_SESSION['user_id'];
