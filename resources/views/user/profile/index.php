@@ -80,7 +80,6 @@ ob_start();
             </ul>
         </div>
     </div>
-</div>
 
 <div class="glass-card" style="max-width: 680px; margin-top: 1.2rem;">
     <h2 class="profile-header">Bảo mật tài khoản</h2>
