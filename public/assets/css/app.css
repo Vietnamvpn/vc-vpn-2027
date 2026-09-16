@@ -1119,9 +1119,11 @@ body.vpn-theme .plan-item-card:hover, body.vpn-theme .festival-stat-card:hover {
 
 /* User orders */
 .user-orders-page { width: 100%; max-width: 1120px; margin: 0 auto; }
-.user-orders-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.user-orders-header { margin-bottom: 1.5rem; }
 .user-orders-header h1 { margin: .3rem 0; color: var(--ios-text); font-size: 1.8rem; }
 .user-orders-header p { margin: 0; color: var(--ios-text-secondary); }
+.user-orders-intro { margin-bottom: 1rem; text-align: center; }
+.user-orders-title-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .user-orders-kicker { color: var(--ios-blue) !important; font-size: .75rem; font-weight: 800; letter-spacing: .08em; }
 .user-orders-total-count { display: inline-flex; min-width: 1.75rem; justify-content: center; padding: .15rem .45rem; border-radius: 999px; background: rgba(0, 122, 255, .12); color: var(--ios-blue); font-size: .9rem; vertical-align: middle; }
 .user-orders-new-link { flex-shrink: 0; text-decoration: none; }
@@ -1153,7 +1155,7 @@ body.vpn-theme .user-order-stat-expired { border-top-color: #8e8e93; }
 .user-orders-empty h2 { margin: 0 0 .5rem; color: var(--ios-text); font-size: 1.25rem; }
 .user-orders-empty p { margin: 0 0 1.25rem; color: var(--ios-text-secondary); }
 .user-orders-empty a { display: inline-block; text-decoration: none; }
-.user-orders-detail-header { align-items: center; flex-direction: column; text-align: center; }
+.user-orders-detail-header { display: flex; align-items: center; flex-direction: column; text-align: center; }
 .user-order-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .user-order-detail-card { padding: 1.25rem; }
 .user-order-detail-card h2 { margin: 0 0 1rem; color: var(--ios-text); font-size: 1.05rem; }
@@ -1161,7 +1163,7 @@ body.vpn-theme .user-order-stat-expired { border-top-color: #8e8e93; }
 .user-order-detail-list div { display: flex; justify-content: space-between; gap: 1rem; padding: .75rem 0; border-top: 1px solid var(--glass-border); }
 .user-order-detail-list dt { color: var(--ios-text-secondary); font-size: .85rem; }
 .user-order-detail-list dd { margin: 0; color: var(--ios-text); font-size: .9rem; font-weight: 700; text-align: right; overflow-wrap: anywhere; }
-@media (max-width: 700px) { .user-orders-header { align-items: flex-start; flex-direction: column; } .user-order-stats, .user-order-detail-grid { grid-template-columns: 1fr; } .user-orders-table-wrap { overflow: visible; } .user-orders-table, .user-orders-table tbody, .user-orders-table tr, .user-orders-table td { display: block; width: 100%; } .user-orders-table thead { display: none; } .user-orders-table tr { padding: .75rem 1rem; border-bottom: 1px solid var(--glass-border); } .user-orders-table tbody tr:last-child { border-bottom: 0; } .user-orders-table td { display: flex; justify-content: space-between; gap: 1rem; padding: .45rem 0; border: 0; white-space: normal; text-align: right; } .user-orders-table td::before { content: attr(data-label); color: var(--ios-text-secondary); font-size: .78rem; text-align: left; } .user-orders-table .user-order-action { justify-content: flex-end; margin-top: .35rem; } .user-orders-table .user-order-action::before { content: ''; } }
+@media (max-width: 700px) { .user-order-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .user-order-detail-grid { grid-template-columns: 1fr; } .user-orders-table-wrap { overflow: visible; } .user-orders-table, .user-orders-table tbody, .user-orders-table tr, .user-orders-table td { display: block; width: 100%; } .user-orders-table thead { display: none; } .user-orders-table tr { padding: .75rem 1rem; border-bottom: 1px solid var(--glass-border); } .user-orders-table tbody tr:last-child { border-bottom: 0; } .user-orders-table td { display: flex; justify-content: space-between; gap: 1rem; padding: .45rem 0; border: 0; white-space: normal; text-align: right; } .user-orders-table td::before { content: attr(data-label); color: var(--ios-text-secondary); font-size: .78rem; text-align: left; } .user-orders-table .user-order-action { justify-content: flex-end; margin-top: .35rem; } .user-orders-table .user-order-action::before { content: ''; } }
 
 /* User wallet */
 .wallet-page-header { margin-bottom: 1.25rem; }

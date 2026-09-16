@@ -16,12 +16,14 @@ ob_start();
 
 <section class="user-orders-page">
 	<header class="user-orders-header">
-		<div>
+		<div class="user-orders-intro">
 			<p class="user-orders-kicker">LỊCH SỬ MUA HÀNG</p>
-			<h1>Đơn hàng <span class="user-orders-total-count"><?= count($userOrders) ?></span></h1>
 			<p>Theo dõi trạng thái thanh toán và gói dịch vụ đã đăng ký.</p>
 		</div>
-		<a href="/user/plans" class="glass-btn user-orders-new-link">Mua gói dịch vụ</a>
+		<div class="user-orders-title-row">
+			<h1>Đơn hàng <span class="user-orders-total-count"><?= count($userOrders) ?></span></h1>
+			<a href="/user/plans" class="glass-btn user-orders-new-link">Mua gói dịch vụ</a>
+		</div>
 	</header>
 
 	<div class="user-order-stats" aria-label="Tổng quan đơn hàng">
