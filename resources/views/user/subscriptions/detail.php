@@ -62,11 +62,10 @@ ob_start();
 						<button type="button" class="glass-btn subscription-copy-button" data-copy-value="<?= htmlspecialchars($connectionUrl) ?>">Sao chép</button>
 					</div>
 					<div class="user-subscription-app-actions">
-						<a href="v2rayng://install-config?url=<?= urlencode($connectionUrl) ?>" data-no-loader>Mở v2rayNG</a>
 						<a href="karing://install-config?url=<?= urlencode($connectionUrl) ?>" data-no-loader>Mở Karing</a>
 						<button type="button" class="subscription-qr-toggle" data-qr-modal-open="subscription-qr-modal" aria-controls="subscription-qr-modal">Lấy mã QR</button>
 					</div>
-					<p>Không chia sẻ liên kết hoặc mã QR này vì chúng cấp quyền dùng cấu hình VPN của bạn.</p>
+					<p class="user-subscription-security-note">Không chia sẻ liên kết hoặc mã QR này vì chúng cấp quyền dùng cấu hình VPN của bạn.</p>
 				</div>
 			</div>
 			<div id="subscription-qr-modal" class="subscription-qr-modal" role="dialog" aria-modal="true" aria-labelledby="subscription-qr-title" hidden>

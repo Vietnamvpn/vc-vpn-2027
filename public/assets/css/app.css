@@ -1225,13 +1225,14 @@ body.vpn-theme .user-order-stat-expired { border-top-color: #8e8e93; }
 .user-subscription-connection-content label { display: block; margin-bottom: .5rem; color: var(--ios-text); font-size: .9rem; font-weight: 700; }
 .user-subscription-app-actions { display: flex; flex-wrap: wrap; gap: .65rem; margin: .85rem 0; }
 .user-subscription-app-actions a, .subscription-copy-link, .subscription-qr-toggle { border: 1px solid rgba(0, 122, 255, .2); border-radius: var(--radius-sm); background: rgba(0, 122, 255, .08); color: var(--ios-blue); cursor: pointer; font: inherit; font-size: .82rem; font-weight: 700; padding: .45rem .7rem; text-decoration: none; }
+.user-subscription-security-note { margin: 0; padding: .7rem .8rem; border-left: 3px solid var(--ios-warning); background: rgba(255, 149, 0, .1); color: #9a6500; font-size: .82rem; line-height: 1.5; }
 .user-subscription-inbounds { margin-top: 1.5rem; }
 .user-subscription-inbound-item { margin-bottom: .65rem; padding: .8rem 1rem; }
 .user-subscription-inbound-heading { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
 .user-subscription-inbound-item strong, .user-subscription-inbound-item span { display: block; }
 .user-subscription-inbound-item strong { color: var(--ios-text); font-size: .9rem; }
 .user-subscription-inbound-item span { margin-top: .2rem; color: var(--ios-text-secondary); font-size: .72rem; font-weight: 700; }
-.user-subscription-inbound-item code { display: block; margin-top: .6rem; overflow: hidden; color: var(--ios-text-secondary); font-size: .75rem; text-overflow: ellipsis; white-space: nowrap; }
+.user-subscription-inbound-item code { display: block; margin-top: .6rem; overflow: hidden; color: var(--ios-text-secondary); font-size: .75rem; opacity: .68; text-overflow: ellipsis; white-space: nowrap; }
 .user-subscription-empty-inbounds { color: var(--ios-text-secondary); font-size: .9rem; }
 .user-subscription-connect-page { max-width: 760px; }
 .user-subscription-connect-card { padding: 1.5rem; }
