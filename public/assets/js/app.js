@@ -143,6 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const href = link.getAttribute('href');
         const target = link.getAttribute('target');
+        const isCustomScheme = /^[a-z][a-z\d+.-]*:/i.test(href || '') && !/^https?:/i.test(href || '');
 
         if (
             href &&
@@ -151,6 +152,8 @@ document.addEventListener('DOMContentLoaded', function () {
             !href.startsWith('mailto:') &&
             !href.startsWith('tel:') &&
             target !== '_blank' &&
+            !link.hasAttribute('data-no-loader') &&
+            !isCustomScheme &&
             !e.ctrlKey &&
             !e.metaKey
         ) {
@@ -188,6 +191,18 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(function () {
                 button.textContent = originalLabel;
             }, 1800);
+        });
+    });
+
+    document.querySelectorAll('[data-qr-toggle]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const qrCode = document.getElementById(button.dataset.qrToggle || '');
+            if (!qrCode) return;
+
+            const isOpening = qrCode.hidden;
+            qrCode.hidden = !isOpening;
+            button.setAttribute('aria-expanded', String(isOpening));
+            button.textContent = isOpening ? 'Ẩn mã QR' : 'Hiện mã QR';
         });
     });
 

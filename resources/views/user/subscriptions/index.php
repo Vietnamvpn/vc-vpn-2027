@@ -8,12 +8,14 @@ ob_start();
 
 <section class="user-subscriptions-page">
 	<header class="user-subscriptions-header">
-		<div>
+		<div class="user-subscriptions-intro">
 			<p class="user-subscriptions-kicker">DỊCH VỤ VPN</p>
-			<h1>Gói đã mua <span class="user-subscriptions-count"><?= count($userSubscriptions) ?></span></h1>
 			<p>Quản lý dung lượng, thời hạn và cấu hình kết nối của bạn.</p>
 		</div>
-		<a href="/user/plans" class="glass-btn user-subscriptions-buy-link">Mua gói dịch vụ</a>
+		<div class="user-subscriptions-title-row">
+			<h1>Gói đã mua <span class="user-subscriptions-count"><?= count($userSubscriptions) ?></span></h1>
+			<a href="/user/plans" class="glass-btn user-subscriptions-buy-link">Mua gói dịch vụ</a>
+		</div>
 	</header>
 
 	<?php if (!empty($_SESSION['error'])): ?>

@@ -5,6 +5,14 @@ $statusLabels = ['active' => 'Đang hoạt động', 'expired' => 'Hết hạn',
 $usedBytes = (float) ($subscription['upload'] ?? 0) + (float) ($subscription['download'] ?? 0);
 $limitBytes = (float) ($subscription['transfer_enable'] ?? 0);
 $usagePercent = $limitBytes > 0 ? min(100, ($usedBytes / $limitBytes) * 100) : 0;
+$formatTraffic = static function (float $bytes): string {
+	if ($bytes < 1073741824) {
+		return number_format($bytes / 1048576, 2) . ' MB';
+	}
+
+	return number_format($bytes / 1073741824, 2) . ' GB';
+};
+$usageText = $formatTraffic($usedBytes) . ' / ' . ($limitBytes > 0 ? $formatTraffic($limitBytes) : 'Không giới hạn');
 $connectionUrl = isset($subscriptionUrl) ? $subscriptionUrl : '';
 $inboundLinks = isset($inboundLinks) && is_array($inboundLinks) ? $inboundLinks : [];
 $qrCodeDataUri = isset($qrCodeDataUri) ? $qrCodeDataUri : '';
@@ -16,17 +24,17 @@ ob_start();
 	<header class="user-subscriptions-detail-header">
 		<p class="user-subscriptions-kicker">CHI TIẾT GÓI DỊCH VỤ</p>
 		<h1><?= htmlspecialchars($subscription['plan_name'] ?? ('Gói dịch vụ #' . ($subscription['plan_id'] ?? ''))) ?></h1>
-		<span class="user-subscription-status user-subscription-status-<?= htmlspecialchars($status) ?>"><?= htmlspecialchars($statusLabels[$status] ?? ucfirst($status)) ?></span>
 	</header>
 
 	<div class="user-subscription-detail-grid">
 		<article class="glass-card user-subscription-detail-card">
 			<h2>Lưu lượng</h2>
-			<div class="user-subscription-detail-traffic"><strong><?= number_format($usedBytes / 1073741824, 2) ?> GB</strong><span>đã sử dụng<?= $limitBytes > 0 ? ' trên ' . number_format($limitBytes / 1073741824, 2) . ' GB' : '' ?></span></div>
+			<div class="user-subscription-detail-traffic"><strong><?= htmlspecialchars($usageText) ?></strong><span>lưu lượng đã sử dụng</span></div>
 			<div class="user-subscription-progress"><span style="width: <?= $usagePercent ?>%"></span></div>
+			<p class="user-subscription-progress-label"><?= htmlspecialchars($usageText) ?></p>
 			<dl class="user-subscription-detail-list">
-				<div><dt>Đã tải lên</dt><dd><?= number_format((float) ($subscription['upload'] ?? 0) / 1073741824, 2) ?> GB</dd></div>
-				<div><dt>Đã tải xuống</dt><dd><?= number_format((float) ($subscription['download'] ?? 0) / 1073741824, 2) ?> GB</dd></div>
+				<div><dt>Đã tải lên</dt><dd><?= $formatTraffic((float) ($subscription['upload'] ?? 0)) ?></dd></div>
+				<div><dt>Đã tải xuống</dt><dd><?= $formatTraffic((float) ($subscription['download'] ?? 0)) ?></dd></div>
 				<div><dt>Thiết bị trực tuyến</dt><dd><?= (int) ($subscription['online_devices'] ?? 0) ?><?= !empty($subscription['device_limit']) ? ' / ' . (int) $subscription['device_limit'] : '' ?></dd></div>
 			</dl>
 		</article>
@@ -34,6 +42,7 @@ ob_start();
 			<h2>Thông tin dịch vụ</h2>
 			<dl class="user-subscription-detail-list">
 				<div><dt>Mã gói</dt><dd><?= htmlspecialchars($subscription['plan_code'] ?? '-') ?></dd></div>
+				<div><dt>Trạng thái</dt><dd><span class="user-subscription-status user-subscription-status-<?= htmlspecialchars($status) ?>"><?= htmlspecialchars($statusLabels[$status] ?? ucfirst($status)) ?></span></dd></div>
 				<div><dt>Ngày bắt đầu</dt><dd><?= !empty($subscription['start_date']) ? date('d/m/Y', strtotime($subscription['start_date'])) : '-' ?></dd></div>
 				<div><dt>Ngày hết hạn</dt><dd><?= !empty($subscription['end_date']) ? date('d/m/Y', strtotime($subscription['end_date'])) : '-' ?></dd></div>
 				<div><dt>IP kết nối cuối</dt><dd><?= htmlspecialchars($subscription['last_used_ip'] ?? 'Chưa kết nối') ?></dd></div>
@@ -46,13 +55,6 @@ ob_start();
 		<h2>Kết nối thiết bị</h2>
 		<?php if ($canConnect): ?>
 			<div class="glass-card user-subscription-connection-card">
-				<div class="user-subscription-qr">
-					<?php if ($qrCodeDataUri !== ''): ?>
-						<img src="<?= htmlspecialchars($qrCodeDataUri) ?>" alt="Mã QR liên kết đăng ký VPN">
-					<?php else: ?>
-						<p>Mã QR chưa sẵn sàng.</p>
-					<?php endif; ?>
-				</div>
 				<div class="user-subscription-connection-content">
 					<label for="subscription-url">Liên kết đăng ký</label>
 					<div class="user-subscription-copy-row">
@@ -60,21 +62,28 @@ ob_start();
 						<button type="button" class="glass-btn subscription-copy-button" data-copy-value="<?= htmlspecialchars($connectionUrl) ?>">Sao chép</button>
 					</div>
 					<div class="user-subscription-app-actions">
-						<a href="v2rayng://install-config?url=<?= urlencode($connectionUrl) ?>">Mở v2rayNG</a>
-						<a href="karing://install-config?url=<?= urlencode($connectionUrl) ?>">Mở Karing</a>
+						<a href="v2rayng://install-config?url=<?= urlencode($connectionUrl) ?>" data-no-loader>Mở v2rayNG</a>
+						<a href="karing://install-config?url=<?= urlencode($connectionUrl) ?>" data-no-loader>Mở Karing</a>
+						<button type="button" class="subscription-qr-toggle" data-qr-toggle="subscription-qr" aria-controls="subscription-qr" aria-expanded="false">Hiện mã QR</button>
 					</div>
 					<p>Không chia sẻ liên kết hoặc mã QR này vì chúng cấp quyền dùng cấu hình VPN của bạn.</p>
+				</div>
+				<div id="subscription-qr" class="user-subscription-qr" hidden>
+					<?php if ($qrCodeDataUri !== ''): ?>
+						<img src="<?= htmlspecialchars($qrCodeDataUri) ?>" alt="Mã QR liên kết đăng ký VPN">
+					<?php else: ?>
+						<p>Mã QR chưa sẵn sàng.</p>
+					<?php endif; ?>
 				</div>
 			</div>
 
 			<div class="user-subscription-inbounds">
-				<h3>Danh sách inbound của gói</h3>
+				<h3>Danh sách inbound của gói <span><?= count($inboundLinks) ?></span></h3>
 				<?php if (!empty($inboundLinks)): ?>
 					<?php foreach ($inboundLinks as $inbound): ?>
 						<div class="glass-card user-subscription-inbound-item">
-							<div><strong><?= htmlspecialchars($inbound['name']) ?></strong><span><?= htmlspecialchars($inbound['protocol']) ?></span></div>
+							<div class="user-subscription-inbound-heading"><div><strong><?= htmlspecialchars($inbound['name']) ?></strong><span><?= htmlspecialchars($inbound['protocol']) ?></span></div><button type="button" class="subscription-copy-link" data-copy-value="<?= htmlspecialchars($inbound['link']) ?>">Sao chép</button></div>
 							<code><?= htmlspecialchars($inbound['link']) ?></code>
-							<button type="button" class="subscription-copy-link" data-copy-value="<?= htmlspecialchars($inbound['link']) ?>">Sao chép</button>
 						</div>
 					<?php endforeach; ?>
 				<?php else: ?>
