@@ -17,7 +17,7 @@ class UserController extends BaseController
     {
         parent::__construct();
         if (!isset($_SESSION['user_id'])) {
-            $this->redirect('/auth/login');
+            $this->redirect('/login');
         }
     }
 
@@ -164,7 +164,8 @@ class UserController extends BaseController
 
         $this->render('user.orders.index', [
             'orders' => $orders,
-            'activeMenu' => 'orders'
+            'activeMenu' => 'orders',
+            'showSidebar' => true
         ]);
     }
 
@@ -190,7 +191,8 @@ class UserController extends BaseController
 
         $this->render('user.orders.detail', [
             'order' => $order,
-            'activeMenu' => 'orders'
+            'activeMenu' => 'orders',
+            'showSidebar' => true
         ]);
     }
 

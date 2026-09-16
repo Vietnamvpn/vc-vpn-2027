@@ -2,11 +2,19 @@
 
 declare(strict_types=1);
 
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 ini_set('error_log', '/tmp/php_error.log');
 
+// Configure the session cookie before starting the session.
+$isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (string) ($_SERVER['SERVER_PORT'] ?? '') === '443';
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'secure' => $isHttps,
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
 session_start();
 
 // Lưu nguồn truy cập đầu tiên của phiên để gắn vào Access Log khi người dùng đăng nhập.
@@ -96,9 +104,10 @@ if (file_exists(BASE_PATH . '/.env')) {
 $appConfig = file_exists(BASE_PATH . '/config/app.php') ? require BASE_PATH . '/config/app.php' : [];
 date_default_timezone_set($appConfig['timezone'] ?? 'Asia/Ho_Chi_Minh');
 
-// Ép buộc bật chế độ hiển thị lỗi để phục vụ debug
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
+// Only expose errors when debug mode is explicitly enabled.
+$debugMode = (bool) ($appConfig['debug'] ?? false);
+ini_set('display_errors', $debugMode ? '1' : '0');
+ini_set('display_startup_errors', $debugMode ? '1' : '0');
 error_reporting(E_ALL);
 
 // 4. Autoload đơn giản cho các class thuộc App\ namespace
@@ -133,6 +142,21 @@ if (array_key_exists($routeKey, $routes)) {
     $handler = $routes[$routeKey];
     $controllerName = "App\\Controllers\\" . $handler[0];
     $methodName = $handler[1];
+
+    $isUserRoute = $handler[0] === 'UserController';
+    $isAdminRoute = str_starts_with($handler[0], 'Admin\\');
+    if (($isUserRoute || $isAdminRoute) && empty($_SESSION['user_id'])) {
+        $_SESSION['error'] = 'Vui lòng đăng nhập để tiếp tục.';
+        header('Location: /login', true, 302);
+        exit;
+    }
+
+    if ($isAdminRoute && ($_SESSION['role'] ?? '') !== 'admin') {
+        http_response_code(403);
+        header('Content-Type: text/plain; charset=utf-8');
+        echo '403 | Bạn không có quyền truy cập trang này.';
+        exit;
+    }
 
     if (class_exists($controllerName)) {
         $controller = new $controllerName();
