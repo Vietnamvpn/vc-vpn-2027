@@ -1126,11 +1126,12 @@ body.vpn-theme .plan-item-card:hover, body.vpn-theme .festival-stat-card:hover {
 .user-orders-total-count { display: inline-flex; min-width: 1.75rem; justify-content: center; padding: .15rem .45rem; border-radius: 999px; background: rgba(0, 122, 255, .12); color: var(--ios-blue); font-size: .9rem; vertical-align: middle; }
 .user-orders-new-link { flex-shrink: 0; text-decoration: none; }
 .user-order-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-.user-order-stat { padding: 1rem 1.15rem; border-top: 3px solid var(--ios-blue); }
+.user-order-stat { padding: 1rem 1.15rem; border-top: 3px solid var(--ios-blue); transition: transform .2s ease, box-shadow .2s ease; }
 .user-order-stat-completed { border-top-color: var(--ios-success); }
 .user-order-stat-pending { border-top-color: var(--ios-warning); }
 .user-order-stat-cancelled { border-top-color: var(--ios-danger); }
-.user-order-stat-expired { border-top-color: var(--ios-text-secondary); }
+.user-order-stat-expired { border-top-color: #8e8e93; }
+.user-order-stat:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(26, 69, 117, .14); }
 .user-order-stat span { display: block; color: var(--ios-text-secondary); font-size: .82rem; }
 .user-order-stat strong { display: block; margin-top: .25rem; color: var(--ios-text); font-size: 1.5rem; }
 .user-orders-alert { margin: 0 0 1.25rem; padding: .9rem 1rem; border-left: 3px solid var(--ios-warning); background: rgba(255, 149, 0, .1); color: var(--ios-text); font-size: .9rem; }

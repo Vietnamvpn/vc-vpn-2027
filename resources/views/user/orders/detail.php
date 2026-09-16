@@ -12,7 +12,6 @@ ob_start();
 			<h1><?= htmlspecialchars($order['order_code'] ?? ('Đơn hàng #' . ($order['id'] ?? ''))) ?></h1>
 			<p>Được tạo lúc <?= !empty($order['created_at']) ? date('H:i, d/m/Y', strtotime($order['created_at'])) : '-' ?></p>
 		</div>
-		<span class="user-order-status user-order-status-<?= htmlspecialchars($status) ?>"><?= htmlspecialchars($statusLabels[$status] ?? ucfirst($status)) ?></span>
 	</header>
 
 	<div class="user-order-detail-grid">
