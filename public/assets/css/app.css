@@ -1177,7 +1177,11 @@ body.vpn-theme .user-order-stat-expired { border-top-color: #8e8e93; }
 .user-subscriptions-buy-link, .user-subscription-connect-link { flex-shrink: 0; text-decoration: none; }
 .user-subscriptions-alert { margin: 0 0 1.25rem; padding: .9rem 1rem; border-left: 3px solid var(--ios-warning); background: rgba(255, 149, 0, .1); color: var(--ios-text); font-size: .9rem; }
 .user-subscriptions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
-.user-subscription-card { display: flex; flex-direction: column; padding: 1rem; }
+.user-subscription-card { display: flex; flex-direction: column; padding: 1rem; border-top: 3px solid var(--ios-blue); }
+body.vpn-theme .user-subscription-card-status-active { border-top-color: var(--ios-success); }
+body.vpn-theme .user-subscription-card-status-expired { border-top-color: var(--ios-warning); }
+body.vpn-theme .user-subscription-card-status-suspended { border-top-color: var(--ios-danger); }
+body.vpn-theme .user-subscription-card-status-cancelled { border-top-color: #8e8e93; }
 .user-subscription-card-top, .user-subscription-meta, .user-subscription-actions { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
 .user-subscription-code { margin: 0 0 .3rem; color: var(--ios-blue); font-size: .72rem; font-weight: 800; letter-spacing: .06em; }
 .user-subscription-card h2 { margin: 0; color: var(--ios-text); font-size: 1.1rem; }
@@ -1193,7 +1197,8 @@ body.vpn-theme .user-order-stat-expired { border-top-color: #8e8e93; }
 .user-subscription-meta { padding-top: .75rem; border-top: 1px solid var(--glass-border); color: var(--ios-text-secondary); font-size: .82rem; }
 .user-subscription-meta strong { color: var(--ios-text); }
 .user-subscription-actions { margin-top: .75rem; justify-content: flex-end; }
-.user-subscription-actions a:first-child { color: var(--ios-blue); font-size: .85rem; font-weight: 700; text-decoration: none; }
+.user-subscription-detail-button { border-radius: var(--radius-sm); background: var(--ios-blue); color: #fff; font-size: .85rem; font-weight: 700; padding: .5rem .85rem; text-decoration: none; }
+.user-subscription-detail-button:hover { background: var(--ios-blue-hover); color: #fff; }
 .user-subscription-actions .glass-btn { padding: .5rem .85rem; font-size: .85rem; text-decoration: none; }
 .user-subscriptions-empty { padding: 3rem 1.5rem; text-align: center; }
 .user-subscriptions-empty h2, .user-subscription-connect-card h2 { margin: 0 0 .5rem; color: var(--ios-text); font-size: 1.25rem; }
@@ -1232,7 +1237,7 @@ body.vpn-theme .user-order-stat-expired { border-top-color: #8e8e93; }
 .user-subscription-inbound-item strong, .user-subscription-inbound-item span { display: block; }
 .user-subscription-inbound-item strong { color: var(--ios-text); font-size: .9rem; }
 .user-subscription-inbound-item span { margin-top: .2rem; color: var(--ios-text-secondary); font-size: .72rem; font-weight: 700; }
-.user-subscription-inbound-item code { display: block; margin-top: .6rem; overflow: hidden; color: var(--ios-text-secondary); font-size: .75rem; opacity: .68; text-overflow: ellipsis; white-space: nowrap; }
+.user-subscription-inbound-item code { display: block; margin-top: .6rem; overflow: hidden; color: var(--ios-text-secondary); font-size: .75rem; filter: blur(3px); opacity: .72; text-overflow: ellipsis; user-select: none; white-space: nowrap; }
 .user-subscription-empty-inbounds { color: var(--ios-text-secondary); font-size: .9rem; }
 .user-subscription-connect-page { max-width: 760px; }
 .user-subscription-connect-card { padding: 1.5rem; }

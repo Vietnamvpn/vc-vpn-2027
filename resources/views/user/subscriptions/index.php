@@ -32,14 +32,15 @@ ob_start();
 				$limitBytes = (float) ($subscription['transfer_enable'] ?? 0);
 				$usagePercent = $limitBytes > 0 ? min(100, ($usedBytes / $limitBytes) * 100) : 0;
 				$isActive = $status === 'active' && strtotime($subscription['end_date'] ?? '') >= time();
+				$displayStatus = $isActive ? 'active' : $status;
 				?>
-				<article class="glass-card user-subscription-card">
+				<article class="glass-card user-subscription-card user-subscription-card-status-<?= htmlspecialchars($displayStatus) ?>">
 					<div class="user-subscription-card-top">
 						<div>
 							<p class="user-subscription-code"><?= htmlspecialchars($subscription['plan_code'] ?? ('GÓI #' . ($subscription['plan_id'] ?? ''))) ?></p>
 							<h2><?= htmlspecialchars($subscription['plan_name'] ?? ('Gói dịch vụ #' . ($subscription['plan_id'] ?? ''))) ?></h2>
 						</div>
-						<span class="user-subscription-status user-subscription-status-<?= htmlspecialchars($isActive ? 'active' : $status) ?>"><?= htmlspecialchars($statusLabels[$isActive ? 'active' : $status] ?? ucfirst($status)) ?></span>
+						<span class="user-subscription-status user-subscription-status-<?= htmlspecialchars($displayStatus) ?>"><?= htmlspecialchars($statusLabels[$displayStatus] ?? ucfirst($status)) ?></span>
 					</div>
 					<div class="user-subscription-usage">
 						<div><span>Lưu lượng đã dùng</span><strong><?= number_format($usedBytes / 1073741824, 2) ?> GB<?= $limitBytes > 0 ? ' / ' . number_format($limitBytes / 1073741824, 2) . ' GB' : ' / Không giới hạn' ?></strong></div>
@@ -47,7 +48,7 @@ ob_start();
 					</div>
 					<div class="user-subscription-meta"><span>Hết hạn</span><strong><?= !empty($subscription['end_date']) ? date('d/m/Y', strtotime($subscription['end_date'])) : '-' ?></strong></div>
 					<div class="user-subscription-actions">
-						<a href="/subscriptions/detail?id=<?= (int) ($subscription['id'] ?? 0) ?>">Chi tiết</a>
+						<a href="/subscriptions/detail?id=<?= (int) ($subscription['id'] ?? 0) ?>" class="user-subscription-detail-button">Chi tiết</a>
 					</div>
 				</article>
 			<?php endforeach; ?>
