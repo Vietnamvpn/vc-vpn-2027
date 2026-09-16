@@ -57,7 +57,13 @@ class Subscription extends BaseModel
 
     public function getByUserId(int $userId): array
     {
-        $stmt = self::$db->prepare("SELECT * FROM `{$this->table}` WHERE `user_id` = :user_id ORDER BY `id` DESC");
+        $stmt = self::$db->prepare("
+            SELECT s.*, p.name AS plan_name, p.code AS plan_code, p.max_devices AS device_limit
+            FROM `{$this->table}` s
+            LEFT JOIN `vc_vpn_plans` p ON s.plan_id = p.id
+            WHERE s.user_id = :user_id
+            ORDER BY s.id DESC
+        ");
         $stmt->execute(['user_id' => $userId]);
         return $stmt->fetchAll() ?: [];
     }

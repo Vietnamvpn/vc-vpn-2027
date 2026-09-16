@@ -148,8 +148,62 @@ class UserController extends BaseController
 
         $this->render('user.subscriptions.index', [
             'subscriptions' => $subscriptions,
-            'activeMenu' => 'subscriptions'
+            'activeMenu' => 'subscriptions',
+            'showSidebar' => true
         ]);
+    }
+
+    public function subscriptionDetail(): void
+    {
+        $subscription = $this->getOwnedSubscription((int) ($_GET['id'] ?? 0));
+        if ($subscription === null) {
+            $_SESSION['error'] = 'Không tìm thấy gói dịch vụ hoặc bạn không có quyền truy cập.';
+            $this->redirect('/subscriptions');
+            return;
+        }
+
+        $this->render('user.subscriptions.detail', [
+            'subscription' => $subscription,
+            'activeMenu' => 'subscriptions',
+            'showSidebar' => true
+        ]);
+    }
+
+    public function subscriptionConnect(): void
+    {
+        $subscription = $this->getOwnedSubscription((int) ($_GET['id'] ?? 0));
+        if ($subscription === null) {
+            $_SESSION['error'] = 'Không tìm thấy gói dịch vụ hoặc bạn không có quyền truy cập.';
+            $this->redirect('/subscriptions');
+            return;
+        }
+
+        $appConfig = require BASE_PATH . '/config/app.php';
+        $subscriptionUrl = rtrim((string) ($appConfig['url'] ?? ''), '/')
+            . '/sub?uuid=' . rawurlencode((string) ($subscription['uuid'] ?? ''));
+
+        $this->render('user.subscriptions.connect', [
+            'subscription' => $subscription,
+            'subscriptionUrl' => $subscriptionUrl,
+            'activeMenu' => 'subscriptions',
+            'showSidebar' => true
+        ]);
+    }
+
+    private function getOwnedSubscription(int $subscriptionId): ?array
+    {
+        if ($subscriptionId <= 0 || !class_exists('App\Models\Subscription')) {
+            return null;
+        }
+
+        $subscriptionModel = new Subscription();
+        $subscription = $subscriptionModel->findWithDetails($subscriptionId);
+
+        if (!$subscription || (int) ($subscription['user_id'] ?? 0) !== (int) $_SESSION['user_id']) {
+            return null;
+        }
+
+        return $subscription;
     }
 
     public function orders(): void

@@ -165,6 +165,32 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    document.querySelectorAll('[data-copy-value]').forEach(function (button) {
+        button.addEventListener('click', async function () {
+            const value = button.dataset.copyValue || '';
+            if (!value) return;
+
+            try {
+                await navigator.clipboard.writeText(value);
+            } catch (error) {
+                const textArea = document.createElement('textarea');
+                textArea.value = value;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                textArea.remove();
+            }
+
+            const originalLabel = button.textContent;
+            button.textContent = 'Đã sao chép';
+            setTimeout(function () {
+                button.textContent = originalLabel;
+            }, 1800);
+        });
+    });
+
     // 7. Logic tự động chạy và đồng bộ Slide Thông báo cho Dashboard
     const slider = document.getElementById('tutorialSlider');
     const dots = document.querySelectorAll('.tutorial-dot');
