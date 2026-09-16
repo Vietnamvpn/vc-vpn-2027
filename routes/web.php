@@ -38,7 +38,6 @@ return [
     // Gói dịch vụ đã mua & Kết nối VPN (Subscriptions)
     'GET /subscriptions'         => ['UserController', 'subscriptions'],
     'GET /subscriptions/detail'  => ['UserController', 'subscriptionDetail'],
-    'GET /subscriptions/connect' => ['UserController', 'subscriptionConnect'],
 
     // Đơn hàng (Orders)
     'GET /orders'                => ['UserController', 'orders'],

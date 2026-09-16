@@ -1208,13 +1208,29 @@ body.vpn-theme .user-order-stat-expired { border-top-color: #8e8e93; }
 .user-subscription-detail-list dt { color: var(--ios-text-secondary); font-size: .85rem; }
 .user-subscription-detail-list dd { margin: 0; color: var(--ios-text); font-size: .9rem; font-weight: 700; text-align: right; overflow-wrap: anywhere; }
 .user-subscription-connect-link { display: inline-block; margin-top: 1rem; }
+.user-subscription-connection-section { margin-top: 1.5rem; }
+.user-subscription-connection-section > h2, .user-subscription-inbounds h3 { margin: 0 0 1rem; color: var(--ios-text); font-size: 1.1rem; }
+.user-subscription-connection-card { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 1.5rem; align-items: center; padding: 1.25rem; }
+.user-subscription-qr { display: grid; min-height: 180px; place-items: center; background: #fff; }
+.user-subscription-qr img { display: block; width: 100%; max-width: 180px; height: auto; }
+.user-subscription-qr p { margin: 0; color: var(--ios-text-secondary); font-size: .82rem; text-align: center; }
+.user-subscription-connection-content label { display: block; margin-bottom: .5rem; color: var(--ios-text); font-size: .9rem; font-weight: 700; }
+.user-subscription-app-actions { display: flex; flex-wrap: wrap; gap: .65rem; margin: .85rem 0; }
+.user-subscription-app-actions a, .subscription-copy-link { border: 1px solid rgba(0, 122, 255, .2); border-radius: var(--radius-sm); background: rgba(0, 122, 255, .08); color: var(--ios-blue); cursor: pointer; font: inherit; font-size: .82rem; font-weight: 700; padding: .45rem .7rem; text-decoration: none; }
+.user-subscription-inbounds { margin-top: 1.5rem; }
+.user-subscription-inbound-item { display: grid; grid-template-columns: minmax(130px, .5fr) minmax(0, 1.5fr) auto; gap: .75rem; align-items: center; margin-bottom: .65rem; padding: .8rem 1rem; }
+.user-subscription-inbound-item strong, .user-subscription-inbound-item span { display: block; }
+.user-subscription-inbound-item strong { color: var(--ios-text); font-size: .9rem; }
+.user-subscription-inbound-item span { margin-top: .2rem; color: var(--ios-text-secondary); font-size: .72rem; font-weight: 700; }
+.user-subscription-inbound-item code { overflow: hidden; color: var(--ios-text-secondary); font-size: .75rem; text-overflow: ellipsis; white-space: nowrap; }
+.user-subscription-empty-inbounds { color: var(--ios-text-secondary); font-size: .9rem; }
 .user-subscription-connect-page { max-width: 760px; }
 .user-subscription-connect-card { padding: 1.5rem; }
 .user-subscription-connect-card label { display: block; margin-bottom: .5rem; color: var(--ios-text); font-size: .9rem; font-weight: 700; }
 .user-subscription-copy-row { display: flex; gap: .65rem; margin-bottom: .85rem; }
 .user-subscription-copy-row input { min-width: 0; flex: 1; padding: .7rem .8rem; border: 1px solid var(--glass-border); border-radius: var(--radius-sm); background: rgba(0, 122, 255, .06); color: var(--ios-text); font-family: monospace; font-size: .8rem; }
 .subscription-copy-button { flex-shrink: 0; padding: .6rem .9rem; font-size: .85rem; }
-@media (max-width: 700px) { .user-subscriptions-header { align-items: flex-start; flex-direction: column; } .user-subscription-detail-grid { grid-template-columns: 1fr; } .user-subscriptions-buy-link { width: 100%; text-align: center; } .user-subscription-copy-row { align-items: stretch; flex-direction: column; } .subscription-copy-button { width: 100%; } }
+@media (max-width: 700px) { .user-subscriptions-header { align-items: flex-start; flex-direction: column; } .user-subscription-detail-grid { grid-template-columns: 1fr; } .user-subscriptions-buy-link { width: 100%; text-align: center; } .user-subscription-copy-row { align-items: stretch; flex-direction: column; } .subscription-copy-button { width: 100%; } .user-subscription-connection-card { grid-template-columns: 1fr; } .user-subscription-inbound-item { grid-template-columns: 1fr; } .user-subscription-inbound-item code { max-width: 100%; } .subscription-copy-link { width: 100%; } }
 
 /* User wallet */
 .wallet-page-header { margin-bottom: 1.25rem; }

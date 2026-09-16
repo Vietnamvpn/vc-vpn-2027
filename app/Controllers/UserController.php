@@ -10,6 +10,8 @@ use App\Models\Payment;
 use App\Models\SupportTicket;
 use App\Models\Post;
 use App\Models\ServerGroup;
+use App\Models\NodeInbound;
+use App\Services\VpnService;
 
 class UserController extends BaseController
 {
@@ -162,32 +164,63 @@ class UserController extends BaseController
             return;
         }
 
+        $connectionData = $this->buildSubscriptionConnection($subscription);
         $this->render('user.subscriptions.detail', [
             'subscription' => $subscription,
+            ...$connectionData,
             'activeMenu' => 'subscriptions',
             'showSidebar' => true
         ]);
     }
 
-    public function subscriptionConnect(): void
+    private function buildSubscriptionConnection(array $subscription): array
     {
-        $subscription = $this->getOwnedSubscription((int) ($_GET['id'] ?? 0));
-        if ($subscription === null) {
-            $_SESSION['error'] = 'Không tìm thấy gói dịch vụ hoặc bạn không có quyền truy cập.';
-            $this->redirect('/subscriptions');
-            return;
-        }
-
         $appConfig = require BASE_PATH . '/config/app.php';
         $subscriptionUrl = rtrim((string) ($appConfig['url'] ?? ''), '/')
             . '/sub?uuid=' . rawurlencode((string) ($subscription['uuid'] ?? ''));
-
-        $this->render('user.subscriptions.connect', [
-            'subscription' => $subscription,
+        $connectionData = [
             'subscriptionUrl' => $subscriptionUrl,
-            'activeMenu' => 'subscriptions',
-            'showSidebar' => true
-        ]);
+            'inboundLinks' => [],
+            'qrCodeDataUri' => ''
+        ];
+
+        $isActive = ($subscription['status'] ?? '') === 'active'
+            && !empty($subscription['end_date'])
+            && strtotime($subscription['end_date']) >= time();
+        if (!$isActive) {
+            return $connectionData;
+        }
+
+        $groupIds = json_decode((string) ($subscription['group_id'] ?? '[]'), true);
+        if (!is_array($groupIds)) {
+            $groupIds = !empty($subscription['group_id']) ? [(int) $subscription['group_id']] : [];
+        }
+
+        $nodeInboundModel = new NodeInbound();
+        $vpnService = new VpnService();
+        foreach ($nodeInboundModel->getAllActiveWithServer($groupIds) as $inbound) {
+            $link = $vpnService->buildLink($inbound, (string) $subscription['uuid']);
+            if ($link === null) {
+                continue;
+            }
+
+            $connectionData['inboundLinks'][] = [
+                'name' => $inbound['tag'] ?? ($inbound['server_name'] ?? 'VPN Server'),
+                'protocol' => strtoupper((string) ($inbound['protocol'] ?? '')),
+                'link' => $link
+            ];
+        }
+
+        if (class_exists('\Endroid\QrCode\QrCode') && class_exists('\Endroid\QrCode\Writer\PngWriter')) {
+            try {
+                $qrCode = \Endroid\QrCode\QrCode::create($subscriptionUrl)->setSize(280)->setMargin(10);
+                $connectionData['qrCodeDataUri'] = (new \Endroid\QrCode\Writer\PngWriter())->write($qrCode)->getDataUri();
+            } catch (\Throwable) {
+                $connectionData['qrCodeDataUri'] = '';
+            }
+        }
+
+        return $connectionData;
     }
 
     private function getOwnedSubscription(int $subscriptionId): ?array

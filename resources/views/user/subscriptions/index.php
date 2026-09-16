@@ -46,7 +46,6 @@ ob_start();
 					<div class="user-subscription-meta"><span>Hết hạn</span><strong><?= !empty($subscription['end_date']) ? date('d/m/Y', strtotime($subscription['end_date'])) : '-' ?></strong></div>
 					<div class="user-subscription-actions">
 						<a href="/subscriptions/detail?id=<?= (int) ($subscription['id'] ?? 0) ?>">Chi tiết</a>
-						<a href="/subscriptions/connect?id=<?= (int) ($subscription['id'] ?? 0) ?>" class="glass-btn">Kết nối</a>
 					</div>
 				</article>
 			<?php endforeach; ?>
