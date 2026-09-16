@@ -1123,9 +1123,14 @@ body.vpn-theme .plan-item-card:hover, body.vpn-theme .festival-stat-card:hover {
 .user-orders-header h1 { margin: .3rem 0; color: var(--ios-text); font-size: 1.8rem; }
 .user-orders-header p { margin: 0; color: var(--ios-text-secondary); }
 .user-orders-kicker { color: var(--ios-blue) !important; font-size: .75rem; font-weight: 800; letter-spacing: .08em; }
+.user-orders-total-count { display: inline-flex; min-width: 1.75rem; justify-content: center; padding: .15rem .45rem; border-radius: 999px; background: rgba(0, 122, 255, .12); color: var(--ios-blue); font-size: .9rem; vertical-align: middle; }
 .user-orders-new-link { flex-shrink: 0; text-decoration: none; }
-.user-order-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-.user-order-stat { padding: 1rem 1.15rem; }
+.user-order-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.user-order-stat { padding: 1rem 1.15rem; border-top: 3px solid var(--ios-blue); }
+.user-order-stat-completed { border-top-color: var(--ios-success); }
+.user-order-stat-pending { border-top-color: var(--ios-warning); }
+.user-order-stat-cancelled { border-top-color: var(--ios-danger); }
+.user-order-stat-expired { border-top-color: var(--ios-text-secondary); }
 .user-order-stat span { display: block; color: var(--ios-text-secondary); font-size: .82rem; }
 .user-order-stat strong { display: block; margin-top: .25rem; color: var(--ios-text); font-size: 1.5rem; }
 .user-orders-alert { margin: 0 0 1.25rem; padding: .9rem 1rem; border-left: 3px solid var(--ios-warning); background: rgba(255, 149, 0, .1); color: var(--ios-text); font-size: .9rem; }
@@ -1142,13 +1147,12 @@ body.vpn-theme .plan-item-card:hover, body.vpn-theme .festival-stat-card:hover {
 .user-order-status-completed { background: rgba(52, 199, 89, .14); color: var(--ios-success); }
 .user-order-status-failed, .user-order-status-cancelled { background: rgba(255, 59, 48, .12); color: var(--ios-danger); }
 .user-order-action { text-align: right; }
-.user-order-action a, .user-orders-back-link { color: var(--ios-blue); font-size: .85rem; font-weight: 700; text-decoration: none; }
+.user-order-action a { color: var(--ios-blue); font-size: .85rem; font-weight: 700; text-decoration: none; }
 .user-orders-empty { padding: 3rem 1.5rem; text-align: center; }
 .user-orders-empty h2 { margin: 0 0 .5rem; color: var(--ios-text); font-size: 1.25rem; }
 .user-orders-empty p { margin: 0 0 1.25rem; color: var(--ios-text-secondary); }
 .user-orders-empty a { display: inline-block; text-decoration: none; }
-.user-orders-back-link { display: inline-block; margin-bottom: 1.25rem; }
-.user-orders-detail-header { align-items: center; }
+.user-orders-detail-header { align-items: center; flex-direction: column; text-align: center; }
 .user-order-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .user-order-detail-card { padding: 1.25rem; }
 .user-order-detail-card h2 { margin: 0 0 1rem; color: var(--ios-text); font-size: 1.05rem; }

@@ -6,7 +6,6 @@ ob_start();
 ?>
 
 <section class="user-orders-page">
-	<a href="/orders" class="user-orders-back-link">Quay lại đơn hàng</a>
 	<header class="user-orders-header user-orders-detail-header">
 		<div>
 			<p class="user-orders-kicker">CHI TIẾT ĐƠN HÀNG</p>

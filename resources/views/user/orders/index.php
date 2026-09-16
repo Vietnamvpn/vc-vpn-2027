@@ -9,6 +9,8 @@ $statusLabels = [
 $userOrders = isset($orders) && is_array($orders) ? $orders : [];
 $completedCount = count(array_filter($userOrders, static fn($order) => ($order['payment_status'] ?? '') === 'completed'));
 $pendingCount = count(array_filter($userOrders, static fn($order) => ($order['payment_status'] ?? '') === 'pending'));
+$cancelledCount = count(array_filter($userOrders, static fn($order) => ($order['payment_status'] ?? '') === 'cancelled'));
+$expiredCount = count(array_filter($userOrders, static fn($order) => ($order['payment_status'] ?? '') === 'failed'));
 ob_start();
 ?>
 
@@ -16,16 +18,17 @@ ob_start();
 	<header class="user-orders-header">
 		<div>
 			<p class="user-orders-kicker">LỊCH SỬ MUA HÀNG</p>
-			<h1>Đơn hàng</h1>
+			<h1>Đơn hàng <span class="user-orders-total-count"><?= count($userOrders) ?></span></h1>
 			<p>Theo dõi trạng thái thanh toán và gói dịch vụ đã đăng ký.</p>
 		</div>
 		<a href="/user/plans" class="glass-btn user-orders-new-link">Mua gói dịch vụ</a>
 	</header>
 
 	<div class="user-order-stats" aria-label="Tổng quan đơn hàng">
-		<div class="glass-card user-order-stat"><span>Tổng đơn hàng</span><strong><?= count($userOrders) ?></strong></div>
-		<div class="glass-card user-order-stat"><span>Đã hoàn tất</span><strong><?= $completedCount ?></strong></div>
-		<div class="glass-card user-order-stat"><span>Đang chờ</span><strong><?= $pendingCount ?></strong></div>
+		<div class="glass-card user-order-stat user-order-stat-completed"><span>Đã hoàn tất</span><strong><?= $completedCount ?></strong></div>
+		<div class="glass-card user-order-stat user-order-stat-pending"><span>Đang chờ</span><strong><?= $pendingCount ?></strong></div>
+		<div class="glass-card user-order-stat user-order-stat-cancelled"><span>Đã hủy</span><strong><?= $cancelledCount ?></strong></div>
+		<div class="glass-card user-order-stat user-order-stat-expired"><span>Hết hạn</span><strong><?= $expiredCount ?></strong></div>
 	</div>
 
 	<?php if (!empty($_SESSION['error'])): ?>
