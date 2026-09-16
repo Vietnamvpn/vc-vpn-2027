@@ -28,7 +28,7 @@ ob_start();
 
 	<div class="user-subscription-detail-grid">
 		<article class="glass-card user-subscription-detail-card">
-			<h2>Lưu lượng</h2>
+			<h2><span class="user-subscription-title-icon" aria-hidden="true">&#8645;</span>Lưu lượng</h2>
 			<div class="user-subscription-detail-traffic"><strong><?= htmlspecialchars($usageText) ?></strong><span>lưu lượng đã sử dụng</span></div>
 			<div class="user-subscription-progress"><span style="width: <?= $usagePercent ?>%"></span></div>
 			<p class="user-subscription-progress-label"><?= htmlspecialchars($usageText) ?></p>
@@ -39,7 +39,7 @@ ob_start();
 			</dl>
 		</article>
 		<article class="glass-card user-subscription-detail-card">
-			<h2>Thông tin dịch vụ</h2>
+			<h2><span class="user-subscription-title-icon" aria-hidden="true">&#9432;</span>Thông tin dịch vụ</h2>
 			<dl class="user-subscription-detail-list">
 				<div><dt>Mã gói</dt><dd><?= htmlspecialchars($subscription['plan_code'] ?? '-') ?></dd></div>
 				<div><dt>Trạng thái</dt><dd><span class="user-subscription-status user-subscription-status-<?= htmlspecialchars($status) ?>"><?= htmlspecialchars($statusLabels[$status] ?? ucfirst($status)) ?></span></dd></div>
@@ -52,7 +52,7 @@ ob_start();
 	</div>
 
 	<section class="user-subscription-connection-section">
-		<h2>Kết nối thiết bị</h2>
+		<h2><span class="user-subscription-title-icon" aria-hidden="true">&#128268;</span>Kết nối thiết bị</h2>
 		<?php if ($canConnect): ?>
 			<div class="glass-card user-subscription-connection-card">
 				<div class="user-subscription-connection-content">
@@ -64,21 +64,27 @@ ob_start();
 					<div class="user-subscription-app-actions">
 						<a href="v2rayng://install-config?url=<?= urlencode($connectionUrl) ?>" data-no-loader>Mở v2rayNG</a>
 						<a href="karing://install-config?url=<?= urlencode($connectionUrl) ?>" data-no-loader>Mở Karing</a>
-						<button type="button" class="subscription-qr-toggle" data-qr-toggle="subscription-qr" aria-controls="subscription-qr" aria-expanded="false">Hiện mã QR</button>
+						<button type="button" class="subscription-qr-toggle" data-qr-modal-open="subscription-qr-modal" aria-controls="subscription-qr-modal">Lấy mã QR</button>
 					</div>
 					<p>Không chia sẻ liên kết hoặc mã QR này vì chúng cấp quyền dùng cấu hình VPN của bạn.</p>
 				</div>
-				<div id="subscription-qr" class="user-subscription-qr" hidden>
-					<?php if ($qrCodeDataUri !== ''): ?>
-						<img src="<?= htmlspecialchars($qrCodeDataUri) ?>" alt="Mã QR liên kết đăng ký VPN">
-					<?php else: ?>
-						<p>Mã QR chưa sẵn sàng.</p>
-					<?php endif; ?>
+			</div>
+			<div id="subscription-qr-modal" class="subscription-qr-modal" role="dialog" aria-modal="true" aria-labelledby="subscription-qr-title" hidden>
+				<div class="subscription-qr-modal-dialog">
+					<button type="button" class="subscription-qr-modal-close" data-qr-modal-close aria-label="Đóng mã QR">&times;</button>
+					<h3 id="subscription-qr-title">Mã QR kết nối</h3>
+					<div class="user-subscription-qr">
+						<?php if ($qrCodeDataUri !== ''): ?>
+							<img src="<?= htmlspecialchars($qrCodeDataUri) ?>" alt="Mã QR liên kết đăng ký VPN">
+						<?php else: ?>
+							<p>Chưa thể tạo mã QR. Vui lòng chạy composer install trên máy chủ.</p>
+						<?php endif; ?>
+					</div>
 				</div>
 			</div>
 
 			<div class="user-subscription-inbounds">
-				<h3>Danh sách inbound của gói <span><?= count($inboundLinks) ?></span></h3>
+				<h3><span class="user-subscription-title-icon" aria-hidden="true">&#8801;</span>Danh sách inbound của gói <span><?= count($inboundLinks) ?></span></h3>
 				<?php if (!empty($inboundLinks)): ?>
 					<?php foreach ($inboundLinks as $inbound): ?>
 						<div class="glass-card user-subscription-inbound-item">

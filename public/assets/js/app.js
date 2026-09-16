@@ -194,16 +194,32 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    document.querySelectorAll('[data-qr-toggle]').forEach(function (button) {
+    document.querySelectorAll('[data-qr-modal-open]').forEach(function (button) {
         button.addEventListener('click', function () {
-            const qrCode = document.getElementById(button.dataset.qrToggle || '');
-            if (!qrCode) return;
-
-            const isOpening = qrCode.hidden;
-            qrCode.hidden = !isOpening;
-            button.setAttribute('aria-expanded', String(isOpening));
-            button.textContent = isOpening ? 'Ẩn mã QR' : 'Hiện mã QR';
+            const modal = document.getElementById(button.dataset.qrModalOpen || '');
+            if (modal) modal.hidden = false;
         });
+    });
+
+    document.querySelectorAll('[data-qr-modal-close]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const modal = button.closest('.subscription-qr-modal');
+            if (modal) modal.hidden = true;
+        });
+    });
+
+    document.querySelectorAll('.subscription-qr-modal').forEach(function (modal) {
+        modal.addEventListener('click', function (event) {
+            if (event.target === modal) modal.hidden = true;
+        });
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            document.querySelectorAll('.subscription-qr-modal').forEach(function (modal) {
+                modal.hidden = true;
+            });
+        }
     });
 
     // 7. Logic tự động chạy và đồng bộ Slide Thông báo cho Dashboard
